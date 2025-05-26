@@ -5,14 +5,14 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
-const SideBar = () => {
+const SideBar = ({ setSelectedMenu }: { setSelectedMenu: (menu: string) => void }) => {
   return (
     <Sider width={220} className="sider">
-      <Menu className="menu" mode="inline" defaultSelectedKeys={['dashboard']} style={{ width: 220 }}>
-        <Menu.Item key="dashboard" style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}>< HomeOutlined style={{padding:'10px', fontSize: '17px'}}/> <Link to={""}>Dashboard</Link></Menu.Item>
+      <Menu className="menu" mode="inline" defaultSelectedKeys={['dashboard']} style={{ width: 220 }} onClick={({ key }) => setSelectedMenu(key)}>
+        <Menu.Item key="Dashboard" style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}>< HomeOutlined style={{padding:'10px', fontSize: '17px'}}/> <Link to={""}>Dashboard</Link></Menu.Item>
       <SubMenu key="movies" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Movies </span>}>
-        <Menu.Item key="list"><Link to={"/movies/list"}>Movies List</Link></Menu.Item>
-        <Menu.Item key="add-movies">Add New Products</Menu.Item>
+        <Menu.Item key="List Movies"><Link to={"/movies/list"}>List Movies</Link></Menu.Item>
+        <Menu.Item key="Add New Movies"><Link to={"/movies/add"}>Add New Movies</Link></Menu.Item>
       </SubMenu>
       <SubMenu key="category" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><AppstoreOutlined style={{padding:'10px', fontSize: '17px'}}/> Category</span>}>
         <Menu.Item key="electronics">Electronics</Menu.Item>

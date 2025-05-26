@@ -25,3 +25,8 @@ export const getDelete = async ({resource = "movies" , id} : Props) => {
   const {data} = await axiosClient.delete(`${resource}/${id}`)
   return data;
 }
+
+export const getCreate = async ({resource = "movies" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}

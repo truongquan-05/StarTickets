@@ -6,18 +6,14 @@ import SideBar from './Side-bar';
 import '../../assets/css/indexAdmin.css';
 
 const User: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false); // Quản lý trạng thái sidebar
-
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
-  };
-
+  const [selectedMenu, setSelectedMenu] = useState("");
   return (
     <Layout className="main-layout">
-      <HeaderUser />
+      <HeaderUser/>
       <Layout>
-        <SideBar  />
+        <SideBar setSelectedMenu={setSelectedMenu}  />
         <Layout style={{ padding: '16px' }}>
+          <h2 className='title-page'>{selectedMenu}</h2>
           <Content className="content">
             <Outlet />
           </Content>
