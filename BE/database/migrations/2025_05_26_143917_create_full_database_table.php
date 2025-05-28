@@ -212,3 +212,4 @@ return new class extends Migration {
         // Có thể thêm logic rollback ở đây nếu cần
     }
 };
+
