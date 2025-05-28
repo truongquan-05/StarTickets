@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\VaiTro;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+
 
 class VaiTroController extends Controller
 {
@@ -14,24 +16,16 @@ class VaiTroController extends Controller
     public function index()
     {
         $data = VaiTro::all();
-        if($data -> isEmpty()){
+        if ($data->isEmpty()) {
             return response()->json([
                 'message' => 'Không có dữ liệu',
                 'data' => []
-            ] )->setStatusCode(404);
+            ])->setStatusCode(404);
         }
         return response()->json([
             'message' => 'Danh sách vai trò',
-            'data' => '123'
+            'data' => $data
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -39,23 +33,45 @@ class VaiTroController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'ten_vai_tro' => 'required|max:50',
+            'mo_ta' => 'nullable|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $data = $request->only(['ten_vai_tro', 'mo_ta']);
+        $vaiTro = VaiTro::create($data);
+
+        return response()->json([
+            'message' => 'Thêm thành công',
+            'data' => $vaiTro,
+        ]);
     }
+
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        $data = VaiTro::find($id);
+        if (!$data) {
+            return response()->json([
+                'message' => 'Không có dữ liệu'
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Thông tin vai trò',
+                'data' => $data
+            ]);
+        }
     }
 
     /**
@@ -63,14 +79,50 @@ class VaiTroController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'ten_vai_tro' => 'required|max:50',
+            'mo_ta' => 'nullable|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $vaiTro = VaiTro::find($id);
+
+        if (!$vaiTro) {
+            return response()->json([
+                'message' => 'Không tìm thấy dữ liệu'
+            ], 404);
+        }
+
+        $vaiTro->update($request->all());
+
+        return response()->json([
+            'message' => 'Cập nhật thành công',
+            'data' => $vaiTro
+        ]);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $data = VaiTro::find($id);
+        if (!$data) {
+            return response()->json([
+                'message' => 'Không tìm thấy dữ liệu'
+            ], 404);
+        }
+        $data->delete();
+        return response()->json([
+            'message' => 'Xóa thành công',
+            
+        ]);
     }
 }
