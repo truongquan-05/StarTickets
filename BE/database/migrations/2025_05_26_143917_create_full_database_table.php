@@ -169,7 +169,7 @@ return new class extends Migration {
         Schema::create('tin_nhan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('nhan_vien_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('nhan_vien_id')->constrained('nguoi_dung');
             $table->text('noi_dung');
             $table->timestamp('thoi_gian');
             $table->enum('trang_thai', ['chua_tra_loi', 'da_tra_loi', 'da_dong']);
