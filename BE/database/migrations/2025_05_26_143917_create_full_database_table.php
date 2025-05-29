@@ -217,7 +217,8 @@ return new class extends Migration {
         Schema::create('diem_thanh_vien', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('diem');
+            $table->float('diem');
+            $table->float('tong_diem');
             $table->string('cap_do', 50);
             $table->timestamps();
         });
@@ -227,7 +228,7 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('so_diem');
             $table->text('mo_ta')->nullable();
-            $table->string('loai_giao_dich', 10);
+            $table->string('loai_giao_dich', 100);
             $table->timestamps();
         });
 
