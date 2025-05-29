@@ -69,5 +69,23 @@
   height: 30px;
 }
 .title-page{
-  padding-left: 20px;
+  padding-left: 30px;
+}
+.add-movies{
+  background-color: #43b9b2;
+  color: white;
+  font-weight: bold;
+  text-align: right;
+  margin-left: 10px;
+}
+.table{
+  margin-top: 10px;
+}
+.export-file{
+ background-color: #43b9b2;
+  color: white;
+}
+.action-movie{
+  display: flex;
+  justify-content: flex-end;
 }
