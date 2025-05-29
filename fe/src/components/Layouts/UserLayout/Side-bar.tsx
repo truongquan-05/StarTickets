@@ -12,7 +12,6 @@ const SideBar = ({ setSelectedMenu }: { setSelectedMenu: (menu: string) => void 
         <Menu.Item key="Dashboard" style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}>< HomeOutlined style={{padding:'10px', fontSize: '17px'}}/> <Link to={""}>Dashboard</Link></Menu.Item>
       <SubMenu key="movies" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Movies </span>}>
         <Menu.Item key="List Movies"><Link to={"/movies/list"}>List Movies</Link></Menu.Item>
-        <Menu.Item key="Add New Movies"><Link to={"/movies/add"}>Add New Movies</Link></Menu.Item>
       </SubMenu>
       <SubMenu key="category" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><AppstoreOutlined style={{padding:'10px', fontSize: '17px'}}/> Category</span>}>
         <Menu.Item key="electronics">Electronics</Menu.Item>

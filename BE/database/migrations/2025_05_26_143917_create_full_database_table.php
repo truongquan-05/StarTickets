@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->string('ten_vai_tro', 50);
             $table->text('mo_ta')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
 
         Schema::create('nguoi_dung', function (Blueprint $table) {
@@ -187,9 +186,9 @@ return new class extends Migration {
             $table->string('ma', 50)->unique();
             $table->integer('phan_tram_giam');
             $table->date('han_su_dung');
-             $table->date('ngay_bat_dau');
+            $table->date('ngay_bat_dau');
             $table->integer('so_lan_su_dung');
-            $table->boolean('trang_thai')->default(false);            
+            $table->boolean('trang_thai')->default(false);
             $table->timestamps();
         });
 
@@ -200,7 +199,6 @@ return new class extends Migration {
             $table->text('noi_dung');
             $table->enum('trang_thai', ['chua_tra_loi', 'da_tra_loi', 'da_dong']);
             $table->timestamps();
-            
         });
 
         Schema::create('tin_tuc', function (Blueprint $table) {
@@ -211,7 +209,6 @@ return new class extends Migration {
             $table->date('ngay_dang');
             $table->timestamps();
             $table->softDeletes();
-            
         });
 
         Schema::create('diem_thanh_vien', function (Blueprint $table) {
