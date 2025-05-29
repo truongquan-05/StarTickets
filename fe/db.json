@@ -16,7 +16,7 @@
     }
   ],
   "phim": [
-<<<<<<< .merge_file_FpAMoc
+
     {
       "ten_phim": "Avengers: Endgame ",
       "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
@@ -28,67 +28,9 @@
       "ngay_cong_chieu": "2019-04-26",
       "do_tuoi_gioi_han": "13+",
       "trang_thai": true,
-      "id": 1
-    },
-    {
-      "id": 2,
-      "ten_phim": "Parasite",
-      "mo_ta": "Một bộ phim tâm lý xã hội Hàn Quốc đoạt giải Oscar.",
-      "thoi_luong": 132,
-      "trailer": "https://youtube.com/watch?v=5xH0HfJHsaY",
-      "ngon_ngu": "Tiếng Hàn",
-      "quoc_gia": "Hàn Quốc",
-      "anh_poster": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRfRdDvnOOpyqJUy2uS0NSES30HSz5CAAd-sxSK9ratdCXE7ljR7qIAtK4IhDqrp9c_z_1CDzUmsx3DrUE8h_773pl8ElZ06d5ovmu0khi-",
-      "ngay_cong_chieu": "2019-05-30",
-      "tinh_trang": "Đã chiếu",
-      "do_tuoi_gioi_han": "16+",
-      "trang_thai": true,
-      "the_loai_id": 2
-    },
-    {
-      "id": 3,
-      "ten_phim": "Spider-Man: No Way Home",
-      "mo_ta": "Peter Parker nhờ Doctor Strange giúp đỡ nhưng mọi thứ trở nên hỗn loạn.",
-      "thoi_luong": 148,
-      "trailer": "https://youtube.com/watch?v=JfVOs4VSpmA",
-      "ngon_ngu": "Tiếng Anh",
-      "quoc_gia": "Mỹ",
-      "anh_poster": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSS0V8XTIYc4v7_2hXdTxpqetH0BaHUFA-NoJnzbg1eEwZFJ8xq2-WD03e50CBwzk2jW6jLB0QN8xpteOhsP9QFYD4hA5RdakPbKQ70-9mbhw",
-      "ngay_cong_chieu": "2021-12-17",
-      "tinh_trang": "Đã chiếu",
-      "do_tuoi_gioi_han": "13+",
-      "trang_thai": true,
-      "the_loai_id": 1
-    }
-  ],
-  "the_loai": [
-    {
-      "id": 1,
-      "name": "Hành động"
-    },
-    {
-      "id": 2,
-      "name": "Tâm lý"
-    },
-    {
-      "id": 3,
-=======
-    {
-      "ten_phim": "Avengers: Endgame 123",
-      "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
-      "thoi_luong": 181,
-      "trailer": "https://youtube.com/watch?v=TcMBFSGVi1c",
-      "ngon_ngu": "Tiếng Anh",
-      "quoc_gia": "Mỹ",
-      "anh_poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlyzfAy8xFShylyYTGhue0JryA1NJMzYpnigMK4pEIUU3qIPut4skv32uYatUhUU6sRKjffaBYMnGLslcEgBXdpXlgDXZG7Yv9aqRmG2DZOw",
-      "ngay_cong_chieu": "2019-04-26",
-      "do_tuoi_gioi_han": "13+",
-      "trang_thai": true,
-      "the_loai": "3",
       "id": "1"
     },
     {
-      "id": "2",
       "ten_phim": "Parasite",
       "mo_ta": "Một bộ phim tâm lý xã hội Hàn Quốc đoạt giải Oscar.",
       "thoi_luong": 132,
@@ -97,38 +39,10 @@
       "quoc_gia": "Hàn Quốc",
       "anh_poster": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRfRdDvnOOpyqJUy2uS0NSES30HSz5CAAd-sxSK9ratdCXE7ljR7qIAtK4IhDqrp9c_z_1CDzUmsx3DrUE8h_773pl8ElZ06d5ovmu0khi-",
       "ngay_cong_chieu": "2019-05-30",
-      "tinh_trang": "Đã chiếu",
       "do_tuoi_gioi_han": "16+",
       "trang_thai": true,
-      "the_loai_id": 2
-    },
-    {
-      "id": "3",
-      "ten_phim": "Spider-Man: No Way Home",
-      "mo_ta": "Peter Parker nhờ Doctor Strange giúp đỡ nhưng mọi thứ trở nên hỗn loạn.",
-      "thoi_luong": 148,
-      "trailer": "https://youtube.com/watch?v=JfVOs4VSpmA",
-      "ngon_ngu": "Tiếng Anh",
-      "quoc_gia": "Mỹ",
-      "anh_poster": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSS0V8XTIYc4v7_2hXdTxpqetH0BaHUFA-NoJnzbg1eEwZFJ8xq2-WD03e50CBwzk2jW6jLB0QN8xpteOhsP9QFYD4hA5RdakPbKQ70-9mbhw",
-      "ngay_cong_chieu": "2021-12-17",
-      "tinh_trang": "Đã chiếu",
-      "do_tuoi_gioi_han": "13+",
-      "trang_thai": true,
-      "the_loai_id": 1
-    },
-    {
-      "id": "e28a",
-      "ten_phim": "Avengers: Endgame ",
-      "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
-      "thoi_luong": 181,
-      "trailer": "https://youtube.com/watch?v=TcMBFSGVi1c",
-      "ngon_ngu": "Tiếng Anh",
-      "quoc_gia": "Mỹ",
-      "anh_poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlyzfAy8xFShylyYTGhue0JryA1NJMzYpnigMK4pEIUU3qIPut4skv32uYatUhUU6sRKjffaBYMnGLslcEgBXdpXlgDXZG7Yv9aqRmG2DZOw",
-      "ngay_cong_chieu": "2019-04-26",
-      "do_tuoi_gioi_han": "13+",
-      "trang_thai": true
+      "the_loai": 2,
+      "id": "2"
     }
   ],
   "the_loai": [
@@ -141,8 +55,7 @@
       "name": "Tâm lý"
     },
     {
-      "id": "3",
->>>>>>> .merge_file_JAZBKZ
+      "id": 3,
       "name": "Viễn tưởng"
     }
   ],
