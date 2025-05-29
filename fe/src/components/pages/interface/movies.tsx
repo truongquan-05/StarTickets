@@ -1,3 +1,4 @@
+
 export interface IMovies {
   id: number;
   ten_phim: string;
@@ -28,4 +29,5 @@ export interface MoviesForm {
   trang_thai: boolean;
   the_loai_id: number;
 }
+
 
