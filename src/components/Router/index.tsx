@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRoutes } from 'react-router-dom'
 import User from '../Layouts/UserLayout/User'
-import List from '../pages/MoviesPage/List'
+import ListCinema from '../pages/Cinema/List'
 import Dashboard from '../pages/Dashboard'
 
 const Routermain = () => {
@@ -15,8 +15,8 @@ const Routermain = () => {
           element:<Dashboard/>
         },
         {
-          path:"movies/list",
-          element:<List/>
+          path:"cinemas/list",
+          element:<ListCinema/>
         },
       ]
     }

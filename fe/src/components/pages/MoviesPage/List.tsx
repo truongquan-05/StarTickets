@@ -22,15 +22,15 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCreate, useDelete, useList, useUpdate } from "../../hook";
+import { useCreateMovies, useDeleteMovies, useListMovies, useUpdateMovies } from "../../hook/moviesHook";
 import axios from "axios";
-import { getGenreList } from "../../provider";
+import { getGenreList } from "../../provider/moviesProvider";
 import { IMovies, MoviesForm } from "../interface/movies";
 
 const List = () => {
   const [form] = Form.useForm();
-  const { data, isLoading } = useList({ resource: "phim" });
-  const { mutate: deleteMutate } = useDelete({
+  const { data, isLoading } = useListMovies({ resource: "phim" });
+  const { mutate: deleteMutate } = useDeleteMovies({
     resource: "phim",
   });
   const [isModalOpen, setModalOpen] = useState(false);
@@ -62,8 +62,8 @@ const List = () => {
     });
   }
 }, [isModalOpen, editingItem]);
-  const { mutate: createMutate } = useCreate({ resource: "phim" });
-  const { mutate: updateMutate } = useUpdate({ resource: "phim" });
+  const { mutate: createMutate } = useCreateMovies({ resource: "phim" });
+  const { mutate: updateMutate } = useUpdateMovies({ resource: "phim" });
   const onCreateOrUpdate = (values: MoviesForm) => {
     if (editingItem === undefined) {
       createMutate(values);

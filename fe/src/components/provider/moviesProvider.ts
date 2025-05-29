@@ -14,23 +14,23 @@ export type Props = {
   id?: number | string;
   values?: any;
 };
-export const getList = async ({resource = "phim"} : Props) => {
+export const getListMovies = async ({resource = "phim"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data
 }
 
-export const getDelete = async ({resource = "phim" , id} : Props) => {
+export const getDeleteMovies = async ({resource = "phim" , id} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.delete(`${resource}/${id}`)
   return data;
 }
 
-export const getCreate = async ({resource = "phim" , values} : Props) => {
+export const getCreateMovies = async ({resource = "phim" , values} : Props) => {
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
 
-export const getUpdate = async ({resource = "phim", id, values} : Props) => {
+export const getUpdateMovies = async ({resource = "phim", id, values} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.put(`${resource}/${id}`,values);
   return data
