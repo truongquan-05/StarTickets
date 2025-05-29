@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ten_the_loai', 100);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('phim', function (Blueprint $table) {
@@ -57,6 +58,7 @@ return new class extends Migration {
             $table->boolean('trang_thai')->default(true);
             $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('danh_gia', function (Blueprint $table) {
@@ -74,6 +76,7 @@ return new class extends Migration {
             $table->string('ten_rap', 100);
             $table->string('dia_chi', 255);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('phong_chieu', function (Blueprint $table) {
@@ -81,6 +84,7 @@ return new class extends Migration {
             $table->foreignId('rap_id')->constrained('rap')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ten_phong', 100);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('loai_ghe', function (Blueprint $table) {
@@ -103,6 +107,7 @@ return new class extends Migration {
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->dateTime('thoi_gian_chieu');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('gia_ve', function (Blueprint $table) {
@@ -165,6 +170,7 @@ return new class extends Migration {
             $table->decimal('gia', 10, 2);
             $table->integer('so_luong_ton');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('don_do_an', function (Blueprint $table) {
@@ -180,7 +186,9 @@ return new class extends Migration {
             $table->string('ma', 50)->unique();
             $table->integer('phan_tram_giam');
             $table->date('han_su_dung');
+            $table->date('ngay_bat_dau');
             $table->integer('so_lan_su_dung');
+            $table->boolean('trang_thai')->default(false);
             $table->timestamps();
         });
 
@@ -189,7 +197,6 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('nhan_vien_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->text('noi_dung');
-          
             $table->enum('trang_thai', ['chua_tra_loi', 'da_tra_loi', 'da_dong']);
             $table->timestamps();
         });
@@ -201,12 +208,14 @@ return new class extends Migration {
             $table->string('hinh_anh', 255);
             $table->date('ngay_dang');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('diem_thanh_vien', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('diem');
+            $table->float('diem');
+            $table->float('tong_diem');
             $table->string('cap_do', 50);
             $table->timestamps();
         });
@@ -216,7 +225,7 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('so_diem');
             $table->text('mo_ta')->nullable();
-            $table->string('loai_giao_dich', 10);
+            $table->string('loai_giao_dich', 100);
             $table->timestamps();
         });
 
