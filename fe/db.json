@@ -15,6 +15,28 @@
       "role": "admin"
     }
   ],
+  "genres": [
+    {
+      "id": 1,
+      "name": "kinh di"
+    },
+    {
+      "id": 2,
+      "name": "Hoat hinh"
+    },
+    {
+      "name": "hoạt hình",
+      "id": 3
+    },
+    {
+      "name": "hoàng du",
+      "id": 4
+    },
+    {
+      "name": "linhkimochi",
+      "id": 5
+    }
+  ],
   "movies": [
     {
       "id": 1,
@@ -58,12 +80,6 @@
       "showtimeId": 1,
       "seatNumber": "A2",
       "isBooked": true
-    },
-    {
-      "id": 3,
-      "showtimeId": 2,
-      "seatNumber": "B1",
-      "isBooked": false
     }
   ],
   "bookings": [

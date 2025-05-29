@@ -5,6 +5,9 @@ import List from '../pages/Product/List'
 import Dashboard from '../pages/Dashboard'
 import Edit from '../pages/Product/Edit'
 import Add from '../pages/Product/Add'
+import GenreAdd from '../pages/Genre/Add'
+import GenreList from '../pages/Genre/List'
+import GenreEdit from '../pages/Genre/Edit'
 
 const Routermain = () => {
   const element = useRoutes([
@@ -27,6 +30,20 @@ const Routermain = () => {
         {
           path:"movies/add",
           element:<Add/>
+        },
+
+
+        {
+        path:"movies/genres",
+        element:<GenreList/>
+        },
+        {
+        path:"movies/genres/add",
+        element:<GenreAdd/>
+        },
+        {
+        path:"movies/genres/edit/:id",
+        element:<GenreEdit/>
         }
       ]
     }
