@@ -27,7 +27,7 @@ export const useCreateMovies = ({resource = "phim"} : Props) => {
     onSuccess: () => {
       message.success("Thêm thành công");
       queryClient.invalidateQueries({queryKey:[resource]});
-      navigate("")
+      navigate("/movies/list")
     },
     onError : () => {
       message.error("Thêm thất bại");

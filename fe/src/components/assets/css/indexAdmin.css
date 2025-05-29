@@ -1,5 +1,6 @@
 .main-layout {
-  height: 100vh;
+  min-height: 100vh;
+
 }
 
 .header {
@@ -68,9 +69,7 @@
   width: 30px;
   height: 30px;
 }
-.title-page{
-  padding-left: 30px;
-}
+
 .add-movies{
   background-color: #43b9b2;
   color: white;
@@ -88,4 +87,21 @@
 .action-movie{
   display: flex;
   justify-content: flex-end;
+}
+.form-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.form-col {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.btn-add{
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
 }

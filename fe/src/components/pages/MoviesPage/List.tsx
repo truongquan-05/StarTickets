@@ -22,7 +22,12 @@ import {
 } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCreateMovies, useDeleteMovies, useListMovies, useUpdateMovies } from "../../hook/moviesHook";
+import {
+  useCreateMovies,
+  useDeleteMovies,
+  useListMovies,
+  useUpdateMovies,
+} from "../../hook/moviesHook";
 import axios from "axios";
 import { getGenreList } from "../../provider/moviesProvider";
 import { IMovies, MoviesForm } from "../interface/movies";
@@ -55,13 +60,13 @@ const List = () => {
     fetchGenres();
   }, []);
   useEffect(() => {
-  if (isModalOpen && editingItem) {
-    form.setFieldsValue({
-      ...editingItem,
-      the_loai: editingItem.the_loai_id,
-    });
-  }
-}, [isModalOpen, editingItem]);
+    if (isModalOpen && editingItem) {
+      form.setFieldsValue({
+        ...editingItem,
+        the_loai: editingItem.the_loai_id,
+      });
+    }
+  }, [isModalOpen, editingItem]);
   const { mutate: createMutate } = useCreateMovies({ resource: "phim" });
   const { mutate: updateMutate } = useUpdateMovies({ resource: "phim" });
   const onCreateOrUpdate = (values: MoviesForm) => {
@@ -78,6 +83,7 @@ const List = () => {
       title: "Name",
       dataIndex: "ten_phim",
       key: "ten_phim",
+      sorter: (a: IMovies, b: IMovies) => a.ten_phim.localeCompare(b.ten_phim),
     },
     {
       title: "Description",
@@ -141,13 +147,11 @@ const List = () => {
   ];
   return (
     <div className="container">
+      <h2 className="title-page">List Movies</h2>
       <div className="action-movie">
         <Button className="export-file" icon={<ExportOutlined />}></Button>
-        <Button
-          className="add-movies"
-          onClick={() => createOrUpdateOpenModal(undefined)}
-        >
-          Add Movies
+        <Button className="add-movies">
+          <Link to={"/movies/add"}>Add Movies</Link>
         </Button>
       </div>
       <div className="table">
@@ -174,44 +178,112 @@ const List = () => {
           }}
           layout="vertical"
         >
-          <Form.Item label="Name" name="ten_phim">
+          <Form.Item
+            label="Name"
+            name="ten_phim"
+            rules={[{ required: true, message: "Vui lòng nhập tên phim!" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Description" name="mo_ta">
+
+          <Form.Item
+            label="Description"
+            name="mo_ta"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Time" name="thoi_luong">
+
+          <Form.Item
+            label="Time"
+            name="thoi_luong"
+            rules={[
+              { required: true, message: "Vui lòng nhập thời lượng!" },
+              { type: "number", min: 1, message: "Thời lượng phải lớn hơn 0!" },
+            ]}
+          >
             <InputNumber />
           </Form.Item>
-          <Form.Item label="Trailer" name="trailer">
+
+          <Form.Item
+            label="Trailer"
+            name="trailer"
+            rules={[
+              { required: true, message: "Vui lòng nhập trailer!" },
+              { type: "url", message: "Đường dẫn trailer không hợp lệ!" },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Language" name="ngon_ngu">
+
+          <Form.Item
+            label="Language"
+            name="ngon_ngu"
+            rules={[{ required: true, message: "Vui lòng nhập ngôn ngữ!" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Country" name="quoc_gia">
+
+          <Form.Item
+            label="Country"
+            name="quoc_gia"
+            rules={[{ required: true, message: "Vui lòng nhập quốc gia!" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Poster" name="anh_poster">
+
+          <Form.Item
+            label="Poster"
+            name="anh_poster"
+            rules={[
+              { required: true, message: "Vui lòng nhập đường dẫn poster!" },
+              { type: "url", message: "Đường dẫn poster không hợp lệ!" },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Date" name="ngay_cong_chieu">
+
+          <Form.Item
+            label="Date"
+            name="ngay_cong_chieu"
+            rules={[
+              { required: true, message: "Vui lòng chọn ngày công chiếu!" },
+            ]}
+          >
             <Select placeholder="Select state">
               <Option value="Sắp chiếu">Coming Soon</Option>
               <Option value="Đang chiếu">Now Showing</Option>
               <Option value="Đã chiếu">Finished Showing</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Age limit" name="do_tuoi_gioi_han">
+
+          <Form.Item
+            label="Age limit"
+            name="do_tuoi_gioi_han"
+            rules={[
+              { required: true, message: "Vui lòng nhập độ tuổi giới hạn!" },
+              { type: "number", min: 0, message: "Độ tuổi phải >= 0!" },
+            ]}
+          >
             <InputNumber />
           </Form.Item>
-          <Form.Item label="Status" name="trang_thai">
+
+          <Form.Item
+            label="Status"
+            name="trang_thai"
+            rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
+          >
             <Select placeholder="Select status">
               <Option value={true}>Available</Option>
               <Option value={false}>Unavailable</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Category" name="the_loai">
+
+          <Form.Item
+            label="Category"
+            name="the_loai_id"
+            rules={[{ required: true, message: "Vui lòng chọn thể loại!" }]}
+          >
             <Select placeholder="Chọn thể loại" style={{ width: 200 }}>
               {genre.map((item) => (
                 <Option key={item.id} value={item.id}>
@@ -220,6 +292,7 @@ const List = () => {
               ))}
             </Select>
           </Form.Item>
+
           <Button type="primary" htmlType="submit">
             {editingItem == undefined ? "Thêm mới" : "Cập nhật"}
           </Button>

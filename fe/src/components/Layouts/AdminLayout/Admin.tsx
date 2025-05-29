@@ -13,7 +13,6 @@ const User: React.FC = () => {
       <Layout>
         <SideBar setSelectedMenu={setSelectedMenu}  />
         <Layout style={{ padding: '16px' }}>
-          <h2 className='title-page'>{selectedMenu}</h2>
           <Content className="content">
             <Outlet />
           </Content>

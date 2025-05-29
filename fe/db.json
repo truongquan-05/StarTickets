@@ -25,12 +25,12 @@
       "quoc_gia": "Mỹ",
       "anh_poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlyzfAy8xFShylyYTGhue0JryA1NJMzYpnigMK4pEIUU3qIPut4skv32uYatUhUU6sRKjffaBYMnGLslcEgBXdpXlgDXZG7Yv9aqRmG2DZOw",
       "ngay_cong_chieu": "2019-04-26",
-      "do_tuoi_gioi_han": "13+",
+      "do_tuoi_gioi_han": 13,
       "trang_thai": true,
+      "the_loai_id": 2,
       "id": 1
     },
     {
-      "id": 2,
       "ten_phim": "Parasite",
       "mo_ta": "Một bộ phim tâm lý xã hội Hàn Quốc đoạt giải Oscar.",
       "thoi_luong": 132,
@@ -39,10 +39,10 @@
       "quoc_gia": "Hàn Quốc",
       "anh_poster": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRfRdDvnOOpyqJUy2uS0NSES30HSz5CAAd-sxSK9ratdCXE7ljR7qIAtK4IhDqrp9c_z_1CDzUmsx3DrUE8h_773pl8ElZ06d5ovmu0khi-",
       "ngay_cong_chieu": "2019-05-30",
-      "tinh_trang": "Đã chiếu",
-      "do_tuoi_gioi_han": "16+",
+      "do_tuoi_gioi_han": 16,
       "trang_thai": true,
-      "the_loai_id": 2
+      "the_loai_id": 3,
+      "id": 2
     },
     {
       "id": 3,
