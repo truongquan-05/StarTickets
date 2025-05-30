@@ -4,6 +4,7 @@ import User from '../Layouts/AdminLayout/Admin'
 import List from '../pages/MoviesPage/List'
 import Dashboard from '../pages/Dashboard'
 import AddMoviesPage from '../pages/MoviesPage/AddMoviesPage'
+import ListCategoryChair from '../pages/CategoryChairPage/ListCategoryChair'
 
 const Routermain = () => {
   const element = useRoutes([
@@ -22,6 +23,10 @@ const Routermain = () => {
         {
           path:"movies/add",
           element:<AddMoviesPage/>
+        },
+        {
+          path:"category_chair/list",
+          element:<ListCategoryChair/>
         },
       ]
     }

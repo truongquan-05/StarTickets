@@ -13,9 +13,9 @@ import {
   useDeleteMovies,
   useListMovies,
   useUpdateMovies,
-} from "../../hook/moviesHook";
+} from "../../hook/hungHook";
 import axios from "axios";
-import { getGenreList } from "../../provider/moviesProvider";
+import { getGenreList } from "../../provider/hungProvider";
 import { IMovies, MoviesForm } from "../interface/movies";
 
 const { Option } = Select;
@@ -43,7 +43,7 @@ const AddMoviesPage = () => {
   };
   return (
     <div className="container">
-      <h2 className='title-page'>Add Movies</h2>
+      <h2 className='title-page'>Thêm mới</h2>
     <Form
   form={form}
   layout="vertical"

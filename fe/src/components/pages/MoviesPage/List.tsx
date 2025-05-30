@@ -27,9 +27,9 @@ import {
   useDeleteMovies,
   useListMovies,
   useUpdateMovies,
-} from "../../hook/moviesHook";
+} from "../../hook/hungHook";
 import axios from "axios";
-import { getGenreList } from "../../provider/moviesProvider";
+import { getGenreList } from "../../provider/hungProvider";
 import { IMovies, MoviesForm } from "../interface/movies";
 
 const List = () => {
@@ -147,11 +147,11 @@ const List = () => {
   ];
   return (
     <div className="container">
-      <h2 className="title-page">List Movies</h2>
+      <h2 className="title-page">Danh sách</h2>
       <div className="action-movie">
         <Button className="export-file" icon={<ExportOutlined />}></Button>
         <Button className="add-movies">
-          <Link to={"/movies/add"}>Add Movies</Link>
+          <Link to={"/movies/add"}>Thêm mới</Link>
         </Button>
       </div>
       <div className="table">
