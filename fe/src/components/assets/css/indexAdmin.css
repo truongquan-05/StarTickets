@@ -105,3 +105,15 @@
   justify-content: flex-end;
   margin-top: 30px;
 }
+.add-category-chair{
+  background-color: #43b9b2;
+  color: white;
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 15px;
+}
+.btn-category-chair{
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}

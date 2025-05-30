@@ -1,13 +1,40 @@
-import React from 'react';
-import { useDeleteCategoryChair, useListCategoryChair } from '../../hook/hungHook';
-import { Button, message, Popconfirm, Space, Table, Card } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useCreateCategoryChairs, useDeleteCategoryChair, useListCategoryChair, useUpdateCategoryChair } from '../../hook/hungHook';
+import { Button, message, Popconfirm, Space, Table, Card, Form, Select, Input, InputNumber, Modal } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { ICategoryChair } from '../interface/categoryChair';
 
 const ListCategoryChair = () => {
+  const [form] = Form.useForm();
+  const { Option } = Select;
   const { data } = useListCategoryChair({ resource: "loai_ghe" });
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ICategoryChair | undefined>(undefined);
   const { mutate: deleteCategoryChair } = useDeleteCategoryChair({
       resource: "loai_ghe",
     });
+  const createOrUpdateOpenModal = (record: ICategoryChair | undefined) => {
+      setModalOpen(true);
+      setEditingItem(record);
+    };
+  const { mutate: createCategoryChair } = useCreateCategoryChairs({ resource: "loai_ghe" });
+  const { mutate: updateCategoryChair } = useUpdateCategoryChair({ resource: "loai_ghe" });
+  const onCreateOrUpdate = (values: ICategoryChair) => {
+      if (editingItem === undefined) {
+        createCategoryChair(values);
+      } else {
+        updateCategoryChair({ id: editingItem.id, values });
+      }
+      setModalOpen(false);
+      form.resetFields();
+    };
+    useEffect(() => {
+        if (isModalOpen && editingItem) {
+          form.setFieldsValue({
+            ...editingItem
+          });
+        }
+      }, [isModalOpen, editingItem]);
   const columns = [
     {
       title: "ID",
@@ -33,6 +60,7 @@ const ListCategoryChair = () => {
             shape="circle"
             icon={<EditOutlined />}
             title="Sửa"
+            onClick={()=>createOrUpdateOpenModal(record)}
           />
           <Popconfirm
             title="Bạn có chắc chắn muốn xoá thể loại này?"
@@ -57,6 +85,7 @@ const ListCategoryChair = () => {
 
   return (
     <Card title="Danh sách thể loại ghế" style={{ margin: '20px' }}>
+      <div className='btn-category-chair'><Button className="add-category-chair" onClick={()=>createOrUpdateOpenModal(undefined)}>Thêm mới</Button></div>
       <Table
         dataSource={data}
         columns={columns}
@@ -64,6 +93,34 @@ const ListCategoryChair = () => {
         bordered
         pagination={{ pageSize: 10 }}
       />
+      <div>
+        <Modal
+        title={"Category Chair Detail"}
+        open={isModalOpen}
+        onCancel={() => setModalOpen(false)}
+        footer={null}
+      >
+        <Form
+          form={form}
+          onFinish={(values) => {
+            onCreateOrUpdate(values);
+          }}
+          layout="vertical"
+        >
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Vui lòng nhập tên loại ghế!" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Button type="primary" htmlType="submit">
+            {editingItem == undefined ? "Thêm mới" : "Cập nhật"}
+          </Button>
+        </Form>
+      </Modal>
+      </div>
     </Card>
   );
 };
