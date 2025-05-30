@@ -5,6 +5,7 @@ import List from '../pages/MoviesPage/List'
 import Dashboard from '../pages/Dashboard'
 import AddMoviesPage from '../pages/MoviesPage/AddMoviesPage'
 import ListCategoryChair from '../pages/CategoryChairPage/ListCategoryChair'
+import ListCinemas from '../pages/CinemasPage/ListCinemas'
 
 const Routermain = () => {
   const element = useRoutes([
@@ -27,6 +28,10 @@ const Routermain = () => {
         {
           path:"category_chair/list",
           element:<ListCategoryChair/>
+        },
+        {
+          path:"cinemas/list",
+          element:<ListCinemas/>
         },
       ]
     }
