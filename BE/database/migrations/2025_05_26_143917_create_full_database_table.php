@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ten_the_loai', 100);
             $table->timestamps();
+             $table->softDeletes();
         });
 
         Schema::create('phim', function (Blueprint $table) {
@@ -57,6 +58,7 @@ return new class extends Migration {
             $table->boolean('trang_thai')->default(true);
             $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('danh_gia', function (Blueprint $table) {
