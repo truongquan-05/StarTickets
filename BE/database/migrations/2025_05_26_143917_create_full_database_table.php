@@ -97,6 +97,8 @@ return new class extends Migration {
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('loai_ghe_id')->constrained('loai_ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->string('so_ghe', 10);
+            $table->char('hang', 1);
+            $table->unsignedTinyInteger('cot');
             $table->timestamps();
         });
 
