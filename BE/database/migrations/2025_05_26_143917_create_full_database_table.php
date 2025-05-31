@@ -67,7 +67,6 @@ return new class extends Migration {
             $table->foreignId('phim_id')->constrained('phim')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('so_sao');
             $table->text('noi_dung');
-            $table->dateTime('ngay_danh_gia');
             $table->timestamps();
         });
 
@@ -185,6 +184,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ma', 50)->unique();
             $table->integer('phan_tram_giam');
+            $table->json('dieu_kien');
             $table->date('han_su_dung');
             $table->date('ngay_bat_dau');
             $table->integer('so_lan_su_dung');
@@ -206,7 +206,6 @@ return new class extends Migration {
             $table->string('tieu_de', 255);
             $table->text('noi_dung');
             $table->string('hinh_anh', 255);
-            $table->date('ngay_dang');
             $table->timestamps();
             $table->softDeletes();
         });
