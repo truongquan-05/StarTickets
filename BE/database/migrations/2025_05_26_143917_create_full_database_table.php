@@ -100,6 +100,7 @@ return new class extends Migration {
             $table->string('so_ghe', 10);
             $table->char('hang', 1);
             $table->unsignedTinyInteger('cot');
+            $table->boolean('trang_thai')->default(true);
             $table->timestamps();
         });
 
