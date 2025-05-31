@@ -82,6 +82,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('rap_id')->constrained('rap')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ten_phong', 100);
+            $table->string('loai_so_do', 50);
             $table->timestamps();
             $table->softDeletes();
         });
