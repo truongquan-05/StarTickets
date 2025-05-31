@@ -146,24 +146,45 @@ const List = () => {
     },
   ];
   return (
-    <div className="container">
-      <h2 className="title-page">Danh sách</h2>
-      <div className="action-movie">
-        <Button className="export-file" icon={<ExportOutlined />}></Button>
-        <Button className="add-movies">
-          <Link to={"/movies/add"}>Thêm mới</Link>
-        </Button>
-      </div>
-      <div className="table">
-        <Table
-          rowKey="id"
-          dataSource={data}
-          columns={columns}
-          loading={isLoading}
-          bordered
-          pagination={{ pageSize: 5 }}
-          locale={{ emptyText: "No products found." }}
-        />
+    <div className="page-body">
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-sm-12">
+            <div className="card card-table">
+              <div className="card-body">
+                <div className="title-header option-title d-sm-flex d-block">
+                  <h5>Products List</h5>
+                  <div className="right-options">
+                    <ul>
+                      <Button className="btn-export" icon={<ExportOutlined/>}></Button>
+                      <li>
+                        <Link to={"/movies/add"} className="btn btn-solid">
+                          Add Product
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="table-container">
+                  <div id="table_id_filter" className="dataTables_filter"><label><Input type="search" className="" placeholder="Tìm kiếm" aria-controls="table_id"/></label></div>
+                  <div className="table-responsive">
+                    <Table
+                      className="table-image"
+                      rowKey="id"
+                      dataSource={data}
+                      columns={columns}
+                      loading={isLoading}
+                      bordered
+                      pagination={{ pageSize: 5 }}
+                      locale={{ emptyText: "No products found." }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <Modal
         title={"Movies Detail"}
