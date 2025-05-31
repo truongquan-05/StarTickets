@@ -40,13 +40,24 @@ export const getGenreList = async ({ resource = "the_loai" }: Props) => {
   return data;
 };
 
-export const deleteGenre = async ({ resource = "the_loai", id }: Props) => {
-  if (!id) return;
-  const { data } = await axiosClient.delete(`${resource}/${id}`);
+export const getListCategoryChair = async ({resource = "loai_ghe"} : Props) => {
+  const {data} = await axiosClient.get(resource);
   return data;
-};
+}
 
-export const createGenre = async ({ resource = "the_loai", values }: Props) => {
-  const { data } = await axiosClient.post(resource, values);
+export const getDeleteCategoryChair  = async ({resource = "loai_ghe" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
   return data;
-};
+}
+
+export const getCreateCategoryChair = async ({resource = "loai_ghe" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdateCategoryChair  = async ({resource = "loai_ghe", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
