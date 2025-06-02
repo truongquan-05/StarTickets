@@ -1,14 +1,14 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Nguyen Van A",
       "email": "a@example.com",
       "password": "123456",
       "role": "customer"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Admin",
       "email": "admin@example.com",
       "password": "admin123",
@@ -16,6 +16,7 @@
     }
   ],
   "phim": [
+
     {
       "ten_phim": "Avengers: Endgame ",
       "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
@@ -47,11 +48,11 @@
   ],
   "the_loai": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Hành động"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Tâm lý"
     },
     {
@@ -61,8 +62,8 @@
   ],
   "loai_ghe": [
     {
-      "id": 1,
-      "name": "Đơn thường"
+      "name": "Đơn thường ",
+      "id": 1
     },
     {
       "id": 2,
@@ -75,19 +76,19 @@
   ],
   "cinemas": [
     {
-      "id": 1,
+      "id": "1",
       "name": "CGV Vincom",
       "address": "Vincom Đồng Khởi, Q.1, TP.HCM"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Lotte Cinema",
       "address": "Lotte Mart Q.7, TP.HCM"
     }
   ],
   "showtimes": [
     {
-      "id": 1,
+      "id": "1",
       "movieId": 1,
       "cinemaId": 1,
       "datetime": "2025-05-12T19:00:00"
@@ -95,13 +96,13 @@
   ],
   "seats": [
     {
-      "id": 1,
+      "id": "1",
       "showtimeId": 1,
       "seatNumber": "A1",
       "isBooked": false
     },
     {
-      "id": 2,
+      "id": "2",
       "showtimeId": 1,
       "seatNumber": "A2",
       "isBooked": true
@@ -109,7 +110,7 @@
   ],
   "bookings": [
     {
-      "id": 1,
+      "id": "1",
       "userId": 1,
       "showtimeId": 1,
       "seats": [

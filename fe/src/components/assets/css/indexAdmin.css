@@ -1,3 +1,15 @@
+@import url("linearicon.css");
+@import url("animate.css");
+@import url("bootstrap.css");
+@import url("datatables.css");
+@import url("feather-icon.css");
+@import url("font-awesome.css");
+@import url("remixicon.css");
+@import url("scrollbar.css");
+@import url("style.css");
+@import url("themify.css");
+
+
 .main-layout {
   min-height: 100vh;
 
@@ -80,9 +92,10 @@
 .table{
   margin-top: 10px;
 }
-.export-file{
- background-color: #43b9b2;
+.btn-export{
+  background-color: #0da487;
   color: white;
+  height: 40px;
 }
 .action-movie{
   display: flex;
@@ -104,4 +117,14 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 30px;
+}
+.btn-category-chair{
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+.dataTables_filter{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
 }
