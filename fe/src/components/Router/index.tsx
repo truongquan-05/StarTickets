@@ -9,6 +9,8 @@ import ListCategoryChair from '../pages/Admin/CategoryChairPage/ListCategoryChai
 import Dashboard from '../pages/Admin/DashboardAdmin'
 import AddMoviesPage from '../pages/Admin/MoviesPage/AddMoviesPage'
 import DashboardUser from '../pages/User/DashboardUser'
+import ListCinemas from '../pages/CinemasPage/ListCinemas'
+import AddCinemasPage from '../pages/CinemasPage/AddCinemaForm'
 
 const Routermain = () => {
   const element = useRoutes([
@@ -42,6 +44,14 @@ const Routermain = () => {
           path:"category_chair/list",
           element:<ListCategoryChair/>
         },
+        {
+          path:"cinemas/list",
+          element:<ListCinemas/>
+        },
+        {
+          path:"cinemas/add",
+          element:<AddCinemasPage/>
+        }
       ]
     },
   ])

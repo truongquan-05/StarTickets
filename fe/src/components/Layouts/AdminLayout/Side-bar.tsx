@@ -13,6 +13,10 @@ const SideBar = () => {
         <Menu.Item key="Danh sách"><Link to={"movies/list"}>Danh sách</Link></Menu.Item>
         <Menu.Item key="Thêm mới"><Link to={"movies/add"}>Thêm mới</Link></Menu.Item>
       </SubMenu>
+      <SubMenu key="cinemas" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Rạp </span>}>
+        <Menu.Item key="Danh sách"><Link to={"cinemas/list"}>Danh sách</Link></Menu.Item>
+        <Menu.Item key="Thêm mới"><Link to={"cinemas/add"}>Thêm mới</Link></Menu.Item>
+      </SubMenu>
       <SubMenu key="category" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><AppstoreOutlined style={{padding:'10px', fontSize: '17px'}}/> Thể Loại</span>}>
         <Menu.Item key="Danh sách"><Link to={"category_chair/list"}>Thể loại ghế</Link></Menu.Item>
       </SubMenu>
