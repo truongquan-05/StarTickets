@@ -16,7 +16,6 @@
     }
   ],
   "phim": [
-
     {
       "ten_phim": "Avengers: Endgame ",
       "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
@@ -43,7 +42,8 @@
       "do_tuoi_gioi_han": 16,
       "trang_thai": false,
       "the_loai_id": 3,
-      "id": 2
+      "id": 2,
+      "tinh_trang": "Sắp chiếu"
     }
   ],
   "the_loai": [
@@ -84,6 +84,16 @@
       "id": "2",
       "name": "Lotte Cinema",
       "address": "Lotte Mart Q.7, TP.HCM"
+    },
+    {
+      "name": "Oppo A9",
+      "address": "51/6 Ngọa Long Minh Khai",
+      "id": "LPBVOB8"
+    },
+    {
+      "name": "Thịnh",
+      "address": "51/6 Ngọa Long ",
+      "id": "SEy4a-u"
     }
   ],
   "showtimes": [

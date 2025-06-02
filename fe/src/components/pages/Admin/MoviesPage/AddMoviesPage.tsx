@@ -1,22 +1,10 @@
-import {
-  EditOutlined,
-  DeleteOutlined,
-  FileAddOutlined,
-  PlusOutlined,
-  ExportOutlined,
-} from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Select } from "antd";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  useCreateMovies,
-  useDeleteMovies,
-  useListMovies,
-  useUpdateMovies,
-} from "../../hook/hungHook";
-import axios from "axios";
-import { getGenreList } from "../../provider/hungProvider";
-import { IMovies, MoviesForm } from "../interface/movies";
+import  { useEffect, useState } from "react";
+
+
+import {  MoviesForm } from "../interface/movies";
+import { getGenreList } from "../../../provider/hungProvider";
+import { useCreateMovies } from "../../../hook/hungHook";
 
 const { Option } = Select;
 

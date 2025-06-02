@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import HeaderUser from './HeaderUser';
+import React from 'react';
+import HeaderUser from './HeaderAdmin';
 import { Outlet } from 'react-router-dom';
 import Layout, { Content } from 'antd/es/layout/layout';
 import SideBar from './Side-bar';
 import '../../assets/css/indexAdmin.css';
+import HeaderAdmin from './HeaderAdmin';
 
-const User: React.FC = () => {
-  const [selectedMenu, setSelectedMenu] = useState("");
+const Admin: React.FC = () => {
   return (
     <Layout className="main-layout">
-      <HeaderUser/>
+      <HeaderAdmin/>
       <Layout>
-        <SideBar setSelectedMenu={setSelectedMenu}  />
+        <SideBar  />
         <Layout style={{ padding: '16px' }}>
           <Content className="content">
             <Outlet />
@@ -22,4 +22,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default Admin;
