@@ -1,4 +1,5 @@
 import axios from "axios";
+import { User } from "../types/Uses";
 
 const token = localStorage.getItem("token");
 
@@ -30,3 +31,13 @@ export const getCreate = async ({resource = "movies" , values} : Props) => {
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
+
+export const getUsers = () => axiosClient.get<User[]>("users");
+
+export const getUserById = (id: number) => axiosClient.get<User>(`users/${id}`);
+
+export const createUser = (user: Omit<User, "id">) => axiosClient.post("users", user);
+
+export const updateUser = (id: number, user: Partial<User>) => axiosClient.put(`users/${id}`, user);
+
+export const deleteUser = (id: number) => axiosClient.delete(`users/${id}`);

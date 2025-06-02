@@ -10,9 +10,14 @@ const SideBar = ({ setSelectedMenu }: { setSelectedMenu: (menu: string) => void 
     <Sider width={220} className="sider">
       <Menu className="menu" mode="inline" defaultSelectedKeys={['dashboard']} style={{ width: 220 }} onClick={({ key }) => setSelectedMenu(key)}>
         <Menu.Item key="Dashboard" style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}>< HomeOutlined style={{padding:'10px', fontSize: '17px'}}/> <Link to={""}>Dashboard</Link></Menu.Item>
+        <SubMenu key="users" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><AppstoreOutlined style={{padding:'10px', fontSize: '17px'}}/> Users</span>}>
+        <Menu.Item key="Users List"><Link to={"/users"}>Users List</Link></Menu.Item>
+        <Menu.Item key="Users Add"><Link to={"/users/add"}>Users Add</Link></Menu.Item>
+      </SubMenu>
+       <SubMenu key="genre" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Genre </span>}>
+        <Menu.Item key="Genre List"><Link to={"/movies/genre"}>Genre List</Link></Menu.Item>
+        </SubMenu>
       <SubMenu key="movies" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Movies </span>}>
-        <Menu.Item key="Genre List"><Link to={"/movies/genres"}>Genre List</Link></Menu.Item>
-        <Menu.Item key="Genre Add "><Link to={"/movies/genres/add"}>Genre Add</Link></Menu.Item>
         <Menu.Item key="List Movies"><Link to={"/movies/list"}>List Movies</Link></Menu.Item>
         <Menu.Item key="Add New Movies"><Link to={"/movies/add"}>Add New Movies</Link></Menu.Item>
       </SubMenu>

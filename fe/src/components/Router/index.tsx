@@ -5,9 +5,11 @@ import List from '../pages/Product/List'
 import Dashboard from '../pages/Dashboard'
 import Edit from '../pages/Product/Edit'
 import Add from '../pages/Product/Add'
-import GenreAdd from '../pages/Genre/Add'
-import GenreList from '../pages/Genre/List'
-import GenreEdit from '../pages/Genre/Edit'
+
+import UserList from '../pages/User/List'
+import UserEdit from '../pages/User/Edit'
+import UserAdd from '../pages/User/Add'
+import GenresManager from '../GenresManager'
 
 const Routermain = () => {
   const element = useRoutes([
@@ -33,17 +35,23 @@ const Routermain = () => {
         },
 
 
+        
+
         {
-        path:"movies/genres",
-        element:<GenreList/>
+        path:"/users",
+        element:<UserList/>
         },
         {
-        path:"movies/genres/add",
-        element:<GenreAdd/>
+        path:"/users/add",
+        element:<UserAdd/>
         },
         {
-        path:"movies/genres/edit/:id",
-        element:<GenreEdit/>
+        path:"/users/edit/:id",
+        element:<UserEdit/>
+        },
+        {
+          path:"movies/genre",
+          element:<GenresManager/>
         }
       ]
     }
