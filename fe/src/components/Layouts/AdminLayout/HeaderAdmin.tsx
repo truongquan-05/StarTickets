@@ -1,14 +1,10 @@
 import {
   UserOutlined,
   DownOutlined,
-  BellOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   MenuOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Layout, Menu } from "antd";
-import React, { useState } from "react";
 import ImageMain from "../../../assets/logo.png";
 import Flag from "../../../assets/cờ.jpg"
 const { Header } = Layout;
@@ -20,7 +16,7 @@ const userMenu = (
     ]}
   />
 );
-const HeaderUser = () => {
+const HeaderAdmin = () => {
   return (
     <Header className="header">
       <div className="header-left">
@@ -47,4 +43,4 @@ const HeaderUser = () => {
   );
 };
 
-export default HeaderUser;
+export default HeaderAdmin;

@@ -50,14 +50,14 @@ export const useUpdateMovies = ({ resource = "phim" }) => {
   });
 };
 
-export const useListCategoryChair = ({resource = "loai_ghe"}) => {
+export const useListCategoryChair = ({resource = "loai-ghe"}) => {
   return useQuery({
     queryKey:[resource],
     queryFn: () => getListCategoryChair({resource})
   })
 }
 
-export const useDeleteCategoryChair = ({resource = "loai_ghe"} : Props) => {
+export const useDeleteCategoryChair = ({resource = "loai-ghe"} : Props) => {
   const queryclient = useQueryClient();
   return useMutation({
     mutationFn: (id ? : string | number ) => getDeleteCategoryChair({resource , id}),
@@ -66,7 +66,7 @@ export const useDeleteCategoryChair = ({resource = "loai_ghe"} : Props) => {
     }
   })
 }
-export const useCreateCategoryChairs = ({resource = "loai_ghe"} : Props) => {
+export const useCreateCategoryChairs = ({resource = "loai-ghe"} : Props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
@@ -82,7 +82,7 @@ export const useCreateCategoryChairs = ({resource = "loai_ghe"} : Props) => {
   })
 }
 
-export const useUpdateCategoryChair = ({ resource = "loai_ghe" }) => {
+export const useUpdateCategoryChair = ({ resource = "loai-ghe" }) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, values }: { id: number | string; values: any }) =>

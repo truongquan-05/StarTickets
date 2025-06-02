@@ -1,13 +1,16 @@
 import axios from "axios";
 
+
 const token = localStorage.getItem("token");
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
-    Authorization: token && `Bearer ${token}`,
+    Authorization: token ? `Bearer ${token}` : "",
   },
 });
+//npm run dev : api giả
+//npm run build -> npm run preview: api theo backend
 
 export type Props = {
   resource: string;
@@ -40,23 +43,23 @@ export const getGenreList = async ({ resource = "the_loai" }: Props) => {
   return data;
 };
 
-export const getListCategoryChair = async ({resource = "loai_ghe"} : Props) => {
+export const getListCategoryChair = async ({resource = "loai-ghe"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data;
 }
 
-export const getDeleteCategoryChair  = async ({resource = "loai_ghe" , id} : Props) => {
+export const getDeleteCategoryChair  = async ({resource = "loai-ghe" , id} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.delete(`${resource}/${id}`)
   return data;
 }
 
-export const getCreateCategoryChair = async ({resource = "loai_ghe" , values} : Props) => {
+export const getCreateCategoryChair = async ({resource = "loai-ghe" , values} : Props) => {
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
 
-export const getUpdateCategoryChair  = async ({resource = "loai_ghe", id, values} : Props) => {
+export const getUpdateCategoryChair  = async ({resource = "loai-ghe", id, values} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.put(`${resource}/${id}`,values);
   return data
