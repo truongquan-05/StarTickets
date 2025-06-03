@@ -241,6 +241,7 @@ return new class extends Migration {
             $table->string('email', 100);
             $table->string('so_dien_thoai', 15);
             $table->text('noi_dung');
+              $table->boolean('trang_thai')->default(false);
             $table->timestamps();
         });
 
