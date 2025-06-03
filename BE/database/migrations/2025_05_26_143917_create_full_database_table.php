@@ -235,6 +235,15 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+        Schema::create('phan_hoi_khach_hang', function (Blueprint $table) {
+            $table->id();
+            $table->string('ho_ten', 100);
+            $table->string('email', 100);
+            $table->string('so_dien_thoai', 15);
+            $table->text('noi_dung');
+            $table->timestamps();
+        });
+
         Schema::create('dat_lai_mat_khau', function (Blueprint $table) {
             $table->string('email', 100);
             $table->string('token', 255);
