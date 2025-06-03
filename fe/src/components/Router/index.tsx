@@ -12,6 +12,11 @@ import DashboardUser from '../pages/User/DashboardUser'
 import ListCinemas from '../pages/CinemasPage/ListCinemas'
 import AddCinemasPage from '../pages/CinemasPage/AddCinemaForm'
 
+import UserList from '../pages/User/List'
+import UserEdit from '../pages/User/Edit'
+import UserAdd from '../pages/User/Add'
+import GenresManager from '../GenresManager'
+
 const Routermain = () => {
   const element = useRoutes([
     {
@@ -41,6 +46,7 @@ const Routermain = () => {
           element:<AddMoviesPage/>
         },
         {
+<<<<<<< HEAD
           path:"category_chair/list",
           element:<ListCategoryChair/>
         },
@@ -51,6 +57,30 @@ const Routermain = () => {
         {
           path:"cinemas/add",
           element:<AddCinemasPage/>
+=======
+          path:"movies/add",
+          element:<Add/>
+        },
+
+
+        
+
+        {
+        path:"/users",
+        element:<UserList/>
+        },
+        {
+        path:"/users/add",
+        element:<UserAdd/>
+        },
+        {
+        path:"/users/edit/:id",
+        element:<UserEdit/>
+        },
+        {
+          path:"movies/genre",
+          element:<GenresManager/>
+>>>>>>> hoangdu
         }
       ]
     },
