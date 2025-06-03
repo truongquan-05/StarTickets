@@ -1,27 +1,37 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\TheLoaiController;
+use App\Http\Controllers\API\PhimController;
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 
-use App\Http\Controllers\Admin\VaiTroController;
-use App\Http\Controllers\Admin\LoaiGheController;
-use App\Http\Controllers\Admin\NguoiDungController;
+// // Test API
+// Route::get('testapi', function () {
+//     return response()->json(['message' => 'Test API thành công!']);
+// });
+// Route::post('testapi', function (Request $request) {
+//     return response()->json([
+//         'received_data' => $request->all()
+//     ]);
+// });
 
-Route::get('/user', function (Request $request) {
-    return 'Quan';
-})->middleware('auth:sanctum');
+// Thể loại phim 
+Route::get('theloai', [TheLoaiController::class, 'index']);           // Lấy danh sách
+Route::post('theloai', [TheLoaiController::class, 'store']);          // Thêm mới
+Route::get('theloai/{id}', [TheLoaiController::class, 'show']);       // Xem chi tiết
+Route::put('theloai/{id}', [TheLoaiController::class, 'update']);     // Cập nhật
+Route::delete('theloai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);   // Xóa mềm
+Route::delete('theloai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
+Route::post('theloai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
 
+// Phim 
 
-Route::apiResource('vai-tro',VaiTroController::class);
-
-Route::apiResource('loai-ghe', LoaiGheController::class);
-// Route::post('/loai-ghe/{id}/restore', [LoaiGheController::class, 'restore'])->name('loai-ghe.restore'); 
-// Route::delete('/loai-ghe/{id}/force-delete', [LoaiGheController::class, 'forceDelete'])->name('loai-ghe.force-delete'); 
-
-Route::apiResource('nguoi-dung', NguoiDungController::class);
-
-
-
-
-
-// http://127.0.0.1:8000/api/....
+Route::get('phim', [PhimController::class, 'index']);
+Route::post('phim', [PhimController::class, 'store']);
+Route::get('phim/{id}', [PhimController::class, 'show']);
+Route::put('phim/{id}', [PhimController::class, 'update']);
+Route::delete('phim/{id}', [PhimController::class, 'delete']);
+Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
+Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
