@@ -3,9 +3,10 @@ import {
   DeleteOutlined,
   ExportOutlined,
 } from "@ant-design/icons";
+import { useState } from "react";
+
 import {
   message,
-  Typography,
   Space,
   Button,
   Popconfirm,
@@ -14,8 +15,7 @@ import {
   Form,
   Input,
 } from "antd";
-import React, { useState } from "react";
-import { ICinemas } from "../interface/cinemas";
+import { ICinemas } from "../Admin/interface/cinemas";
 import {
   useListCinemas,
   useUpdateCinema,
@@ -126,7 +126,10 @@ const ListCinemas = () => {
                   <h5>Cinemas List</h5>
                   <div className="right-options">
                     <Space>
-                      <Button icon={<ExportOutlined />} className="btn-export" />
+                      <Button
+                        icon={<ExportOutlined />}
+                        className="btn-export"
+                      />
                     </Space>
                   </div>
                 </div>
