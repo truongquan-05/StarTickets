@@ -19,13 +19,13 @@ use App\Http\Controllers\API\DoAnController;
 // });
 
 // qli Thể loại phim 
-Route::get('the_loai', [TheLoaiController::class, 'index']);           // Lấy danh sách
-Route::post('the_loai', [TheLoaiController::class, 'store']);          // Thêm mới
-Route::get('the_loai/{id}', [TheLoaiController::class, 'show']);       // Xem chi tiết
-Route::put('the_loai/{id}', [TheLoaiController::class, 'update']);     // Cập nhật
-Route::delete('the_loai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);   // Xóa mềm
-Route::delete('the_loai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
-Route::post('the_loai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
+Route::get('the-loai', [TheLoaiController::class, 'index']);           // Lấy danh sách
+Route::post('the-loai', [TheLoaiController::class, 'store']);          // Thêm mới
+Route::get('the-loai/{id}', [TheLoaiController::class, 'show']);       // Xem chi tiết
+Route::put('the-loai/{id}', [TheLoaiController::class, 'update']);     // Cập nhật
+Route::delete('the-loai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);   // Xóa mềm
+Route::delete('the-loai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
+Route::post('the-loai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
 
 //qliqli Phim 
 
@@ -38,11 +38,11 @@ Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
 
 // Đồ ăn
-Route::get('doan', [DoAnController::class, 'index']);
-Route::post('doan', [DoAnController::class, 'store']);
-Route::get('doan/{id}', [DoAnController::class, 'show']);
-Route::put('doan/{id}', [DoAnController::class, 'update']);
-Route::delete('doan/{id}', [DoAnController::class, 'delete']);
-Route::delete('doan/soft-delete/{id}', [DoAnController::class, 'softDelete']);
-Route::post('doan/restore/{id}', [DoAnController::class, 'restore']);
+Route::get('do-an', [DoAnController::class, 'index']);
+Route::post('do-an', [DoAnController::class, 'store']);
+Route::get('do-an/{id}', [DoAnController::class, 'show']);
+Route::put('do-an/{id}', [DoAnController::class, 'update']);
+Route::delete('do-an/{id}', [DoAnController::class, 'delete']);
+Route::delete('do-an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
+Route::post('do-an/restore/{id}', [DoAnController::class, 'restore']);
 
