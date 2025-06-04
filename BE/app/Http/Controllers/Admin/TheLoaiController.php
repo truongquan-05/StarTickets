@@ -1,7 +1,6 @@
 <?php
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
-
 use App\Models\TheLoai;
 use App\Http\Requests\StoreTheLoaiRequest;
 use App\Http\Requests\UpdateTheLoaiRequest;

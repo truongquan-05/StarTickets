@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DoAnRequest;
 use Illuminate\Http\Request;
@@ -7,8 +7,20 @@ use App\Models\DoAn;
 
 class DoAnController extends Controller
 {
-public function index() {
-    $items = DoAn::all();
+public function index(Request $request)
+{
+    $query = DoAn::query();
+
+    // Tìm kiếm theo tên
+    if ($request->has('search')) {
+        $search = $request->input('search');
+        $query->where('ten_do_an', 'like', "%{$search}%");
+    }
+
+    // Phân trang
+    $perPage = $request->input('per_page', 10); // mặc định 10 item/trang
+    $items = $query->paginate($perPage);
+
     return response()->json($items);
 }
 
