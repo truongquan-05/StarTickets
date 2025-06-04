@@ -1,4 +1,8 @@
 <?php
+
+use App\Http\Controllers\Admin\DoAnController;
+use App\Http\Controllers\Admin\PhimController;
+use App\Http\Controllers\Admin\TheLoaiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\PhimController;
