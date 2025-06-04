@@ -15,6 +15,7 @@ export const useDeleteMovies = ({resource = "phim"} : Props) => {
   return useMutation({
     mutationFn: (id ? : string | number ) => getDeleteMovies({resource , id}),
     onSuccess : () => {
+      message.success("Xóa thành công")
       queryclient.invalidateQueries({queryKey:[resource]})
     }
   })
@@ -27,11 +28,16 @@ export const useCreateMovies = ({resource = "phim"} : Props) => {
     onSuccess: () => {
       message.success("Thêm thành công");
       queryClient.invalidateQueries({queryKey:[resource]});
-      navigate("/movies/list")
+      navigate("/admin/movies/list")
     },
-    onError : () => {
-      message.error("Thêm thất bại");
-    }
+    onError: (error: any) => {
+  if (error.response?.data?.errors) {
+    console.error("Validation errors:", error.response.data.errors);
+    message.error("Lỗi nhập liệu: " + JSON.stringify(error.response.data.errors));
+  } else {
+    message.error("Thêm thất bại");
+  }
+}
   })
 }
 
@@ -42,13 +48,22 @@ export const useUpdateMovies = ({ resource = "phim" }) => {
       getUpdateMovies({ resource, id, values }),
     onSuccess: () => {
       message.success("Cập nhật thành công");
-      queryClient.invalidateQueries({queryKey:[resource]})
+      queryClient.invalidateQueries({ queryKey: [resource] });
     },
-    onError: () => {
-      message.error("Cập nhật thất bại");
-    },
+    onError: (error: any) => {
+  console.error("Update movie error:", error.response?.data || error);
+  if (error.response?.data?.errors) {
+    const errors = error.response.data.errors;
+    const messages = Object.values(errors).flat().join("\n");
+    message.error(messages);
+  } else {
+    message.error("Cập nhật thất bại");
+  }
+},
+
   });
 };
+
 
 export const useListCategoryChair = ({resource = "loai-ghe"}) => {
   return useQuery({

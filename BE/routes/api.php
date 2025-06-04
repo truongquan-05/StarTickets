@@ -18,13 +18,13 @@ use App\Http\Controllers\API\PhimController;
 // });
 
 // Thể loại phim 
-Route::get('theloai', [TheLoaiController::class, 'index']);           // Lấy danh sách
-Route::post('theloai', [TheLoaiController::class, 'store']);          // Thêm mới
-Route::get('theloai/{id}', [TheLoaiController::class, 'show']);       // Xem chi tiết
-Route::put('theloai/{id}', [TheLoaiController::class, 'update']);     // Cập nhật
-Route::delete('theloai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);   // Xóa mềm
-Route::delete('theloai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
-Route::post('theloai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
+Route::get('the_loai', [TheLoaiController::class, 'index']);           // Lấy danh sách
+Route::post('the_loai', [TheLoaiController::class, 'store']);          // Thêm mới
+Route::get('the_loai/{id}', [TheLoaiController::class, 'show']);       // Xem chi tiết
+Route::put('the_loai/{id}', [TheLoaiController::class, 'update']);     // Cập nhật
+Route::delete('the_loai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);   // Xóa mềm
+Route::delete('the_loai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
+Route::post('the_loai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
 
 // Phim 
 

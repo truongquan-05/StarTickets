@@ -9,8 +9,6 @@ const axiosClient = axios.create({
     Authorization: token ? `Bearer ${token}` : "",
   },
 });
-//npm run dev : api giả
-//npm run build -> npm run preview: api theo backend
 
 export type Props = {
   resource: string;
@@ -28,16 +26,31 @@ export const getDeleteMovies = async ({resource = "phim" , id} : Props) => {
   return data;
 }
 
-export const getCreateMovies = async ({resource = "phim" , values} : Props) => {
-  const {data} = await  axiosClient.post(resource,values);
+export const getCreateMovies = async ({ resource = "phim", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
-}
+};
 
-export const getUpdateMovies = async ({resource = "phim", id, values} : Props) => {
-  if(!id) return;
-  const {data} = await axiosClient.put(`${resource}/${id}`,values);
-  return data
-}
+
+export const getUpdateMovies = async ({ resource = "phim", id, values }: Props) => {
+  if (!id) return;
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  }
+
+  // Nếu không có file, thì dùng PUT bình thường
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  return data;
+};
+
 export const getGenreList = async ({ resource = "the_loai" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
