@@ -22,13 +22,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
     // Thể loại phim
-    Route::get('the-loai', [TheLoaiController::class, 'index']);
-    Route::post('the-loai', [TheLoaiController::class, 'store']);
-    Route::get('the-loai/{id}', [TheLoaiController::class, 'show']);
-    Route::put('the-loai/{id}', [TheLoaiController::class, 'update']);
-    Route::delete('the-loai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);
-    Route::delete('the-loai/delete/{id}', [TheLoaiController::class, 'delete']);
-    Route::post('the-loai/restore/{id}', [TheLoaiController::class, 'restore']);
+    Route::get('the_loai', [TheLoaiController::class, 'index']);
+    Route::post('the_loai', [TheLoaiController::class, 'store']);
+    Route::get('the_loai/{id}', [TheLoaiController::class, 'show']);
+    Route::put('the_loai/{id}', [TheLoaiController::class, 'update']);
+    Route::delete('the_loai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);
+    Route::delete('the_loai/delete/{id}', [TheLoaiController::class, 'delete']);
+    Route::post('the_loai/restore/{id}', [TheLoaiController::class, 'restore']);
 
     // Phim
     Route::get('phim', [PhimController::class, 'index']);
@@ -40,11 +40,11 @@ Route::prefix('admin')->group(function () {
     Route::post('phim/restore/{id}', [PhimController::class, 'restore']);
 
     // Đồ ăn
-    Route::get('do-an', [DoAnController::class, 'index']);
-    Route::post('do-an', [DoAnController::class, 'store']);
-    Route::get('do-an/{id}', [DoAnController::class, 'show']);
-    Route::put('do-an/{id}', [DoAnController::class, 'update']);
-    Route::delete('do-an/{id}', [DoAnController::class, 'delete']);
-    Route::delete('do-an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
-    Route::post('do-an/restore/{id}', [DoAnController::class, 'restore']);
+    Route::get('do_an', [DoAnController::class, 'index']);
+    Route::post('do_an', [DoAnController::class, 'store']);
+    Route::get('do_an/{id}', [DoAnController::class, 'show']);
+    Route::put('do_an/{id}', [DoAnController::class, 'update']);
+    Route::delete('do_an/{id}', [DoAnController::class, 'delete']);
+    Route::delete('do_an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
+    Route::post('do_an/restore/{id}', [DoAnController::class, 'restore']);
 });
