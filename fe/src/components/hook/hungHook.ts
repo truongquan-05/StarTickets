@@ -15,6 +15,7 @@ export const useDeleteMovies = ({resource = "phim"} : Props) => {
   return useMutation({
     mutationFn: (id ? : string | number ) => getDeleteMovies({resource , id}),
     onSuccess : () => {
+      message.success("Xóa thành công")
       queryclient.invalidateQueries({queryKey:[resource]})
     }
   })
@@ -27,11 +28,16 @@ export const useCreateMovies = ({resource = "phim"} : Props) => {
     onSuccess: () => {
       message.success("Thêm thành công");
       queryClient.invalidateQueries({queryKey:[resource]});
-      navigate("/movies/list")
+      navigate("/admin/movies/list")
     },
-    onError : () => {
-      message.error("Thêm thất bại");
-    }
+    onError: (error: any) => {
+  if (error.response?.data?.errors) {
+    console.error("Validation errors:", error.response.data.errors);
+    message.error("Lỗi nhập liệu: " + JSON.stringify(error.response.data.errors));
+  } else {
+    message.error("Thêm thất bại");
+  }
+}
   })
 }
 
@@ -42,22 +48,31 @@ export const useUpdateMovies = ({ resource = "phim" }) => {
       getUpdateMovies({ resource, id, values }),
     onSuccess: () => {
       message.success("Cập nhật thành công");
-      queryClient.invalidateQueries({queryKey:[resource]})
+      queryClient.invalidateQueries({ queryKey: [resource] });
     },
-    onError: () => {
-      message.error("Cập nhật thất bại");
-    },
+    onError: (error: any) => {
+  console.error("Update movie error:", error.response?.data || error);
+  if (error.response?.data?.errors) {
+    const errors = error.response.data.errors;
+    const messages = Object.values(errors).flat().join("\n");
+    message.error(messages);
+  } else {
+    message.error("Cập nhật thất bại");
+  }
+},
+
   });
 };
 
-export const useListCategoryChair = ({resource = "loai-ghe"}) => {
+
+export const useListCategoryChair = ({resource = "loai_ghe"}) => {
   return useQuery({
     queryKey:[resource],
     queryFn: () => getListCategoryChair({resource})
   })
 }
 
-export const useDeleteCategoryChair = ({resource = "loai-ghe"} : Props) => {
+export const useDeleteCategoryChair = ({resource = "loai_ghe"} : Props) => {
   const queryclient = useQueryClient();
   return useMutation({
     mutationFn: (id ? : string | number ) => getDeleteCategoryChair({resource , id}),
@@ -66,7 +81,7 @@ export const useDeleteCategoryChair = ({resource = "loai-ghe"} : Props) => {
     }
   })
 }
-export const useCreateCategoryChairs = ({resource = "loai-ghe"} : Props) => {
+export const useCreateCategoryChairs = ({resource = "loai_ghe"} : Props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
@@ -82,7 +97,7 @@ export const useCreateCategoryChairs = ({resource = "loai-ghe"} : Props) => {
   })
 }
 
-export const useUpdateCategoryChair = ({ resource = "loai-ghe" }) => {
+export const useUpdateCategoryChair = ({ resource = "loai_ghe" }) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, values }: { id: number | string; values: any }) =>

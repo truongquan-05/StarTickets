@@ -1,12 +1,11 @@
-import { useState } from "react";
-import { DownOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+
+import {  UserOutlined } from "@ant-design/icons";
 import logo from "../../../assets/logo for a movie ticket booking website.png";
 import flag from "../../../assets/cờ.jpg"
 import { Button, Input, Space } from "antd";
 
 
 const HeaderUser = () => {
-  const [selectedCinema, setSelectedCinema] = useState("TP.HCM");
 
   return (
     <header className="header-cinestar">

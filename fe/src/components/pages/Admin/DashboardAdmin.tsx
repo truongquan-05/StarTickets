@@ -1,9 +1,8 @@
 
-
-const Dashboard = () => {
+const DashboardAdmin = () => {
   return (
-    <div>Dashboard</div>
+    <div>DashboardAdmin</div>
   )
 }
 
-export default Dashboard
+export default DashboardAdmin
