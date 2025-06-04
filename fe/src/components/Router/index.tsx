@@ -40,6 +40,14 @@ const Routermain = () => {
           path:"category_chair/list",
           element:<ListCategoryChair/>
         },
+        {
+          path:"cinemas/list",
+          element:<ListCinemas/>
+        },
+        {
+          path:"cinemas/add",
+          element:<AddCinemasPage/>
+        }
       ]
     },
   ])
