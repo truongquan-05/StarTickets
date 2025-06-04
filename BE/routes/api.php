@@ -5,8 +5,6 @@ use App\Http\Controllers\Admin\PhimController;
 use App\Http\Controllers\Admin\TheLoaiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\PhimController;
-use App\Http\Controllers\API\TheLoaiController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\NguoiDungController;
@@ -16,16 +14,18 @@ use App\Http\Controllers\Admin\NguoiDungController;
 
 
 
-// Thể loại phim 
-Route::get('the_loai', [TheLoaiController::class, 'index']);           // Lấy danh sách
-Route::post('the_loai', [TheLoaiController::class, 'store']);          // Thêm mới
-Route::get('the_loai/{id}', [TheLoaiController::class, 'show']);       // Xem chi tiết
-Route::put('the_loai/{id}', [TheLoaiController::class, 'update']);     // Cập nhật
-Route::delete('the_loai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);   // Xóa mềm
-Route::delete('the_loai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
-Route::post('the_loai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
+Route::prefix('admin')->group(function () {
+    // Thể loại phim
+    Route::get('the_loai', [TheLoaiController::class, 'index']);
+    Route::post('the_loai', [TheLoaiController::class, 'store']);
+    Route::get('the_loai/{id}', [TheLoaiController::class, 'show']);
+    Route::put('the_loai/{id}', [TheLoaiController::class, 'update']);
+    Route::delete('the_loai/soft-delete/{id}', [TheLoaiController::class, 'softDelete']);
+    Route::delete('the_loai/delete/{id}', [TheLoaiController::class, 'delete']);
+    Route::post('the_loai/restore/{id}', [TheLoaiController::class, 'restore']);
 
-// Phim 
+
+
 
 
 Route::apiResource('vai_tro',VaiTroController::class);
@@ -49,4 +49,15 @@ Route::put('phim/{id}', [PhimController::class, 'update']);
 Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
+
+
+    // Đồ ăn
+    Route::get('do_an', [DoAnController::class, 'index']);
+    Route::post('do_an', [DoAnController::class, 'store']);
+    Route::get('do_an/{id}', [DoAnController::class, 'show']);
+    Route::put('do_an/{id}', [DoAnController::class, 'update']);
+    Route::delete('do_an/{id}', [DoAnController::class, 'delete']);
+    Route::delete('do_an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
+    Route::post('do_an/restore/{id}', [DoAnController::class, 'restore']);
+});
 
