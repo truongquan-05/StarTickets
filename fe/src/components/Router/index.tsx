@@ -7,6 +7,8 @@ import AddMoviesPage from '../pages/Admin/MoviesPage/AddMoviesPage'
 import DashboardUser from '../pages/User/DashboardUser'
 import List from '../pages/Admin/MoviesPage/List'
 import DashboardAdmin from '../pages/Admin/DashboardAdmin'
+import ListCinemas from '../pages/CinemasPage/ListCinemas'
+import AddCinemasPage from '../pages/CinemasPage/AddCinemaForm'
 
 const Routermain = () => {
   const element = useRoutes([
