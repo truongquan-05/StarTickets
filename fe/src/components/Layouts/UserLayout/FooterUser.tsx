@@ -1,4 +1,4 @@
-import React from 'react';
+
 import logo from "../../../assets/logo for a movie ticket booking website.png";
 
 const FooterUser = () => {

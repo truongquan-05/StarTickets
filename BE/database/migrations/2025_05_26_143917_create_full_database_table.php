@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ten_the_loai', 100);
             $table->timestamps();
+             $table->softDeletes();
             $table->softDeletes();
         });
 

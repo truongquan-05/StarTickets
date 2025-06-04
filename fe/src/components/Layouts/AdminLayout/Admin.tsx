@@ -1,5 +1,4 @@
 import React from 'react';
-import HeaderUser from './HeaderAdmin';
 import { Outlet } from 'react-router-dom';
 import Layout, { Content } from 'antd/es/layout/layout';
 import SideBar from './Side-bar';

@@ -1,14 +1,12 @@
-
 import { useRoutes } from 'react-router-dom'
 import Admin from '../Layouts/AdminLayout/Admin'
-import Login from '../pages/auth/Login'
-import Register from '../pages/auth/Register'
 import User from '../Layouts/UserLayout/User'
-import { List } from 'antd'
 import ListCategoryChair from '../pages/Admin/CategoryChairPage/ListCategoryChair'
-import Dashboard from '../pages/Admin/DashboardAdmin'
+
 import AddMoviesPage from '../pages/Admin/MoviesPage/AddMoviesPage'
 import DashboardUser from '../pages/User/DashboardUser'
+import List from '../pages/Admin/MoviesPage/List'
+import DashboardAdmin from '../pages/Admin/DashboardAdmin'
 import ListCinemas from '../pages/CinemasPage/ListCinemas'
 import AddCinemasPage from '../pages/CinemasPage/AddCinemaForm'
 
@@ -29,8 +27,8 @@ const Routermain = () => {
       element:<Admin/>,
       children:[
         {
-          path:"admin",
-          element:<Dashboard/>
+          path:"",
+          element:<DashboardAdmin/>
         },
         {
           path:"movies/list",
