@@ -12,13 +12,13 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::apiResource('vai-tro',VaiTroController::class);
+Route::apiResource('vai_tro',VaiTroController::class);
 
-Route::apiResource('loai-ghe', LoaiGheController::class);
+Route::apiResource('loai_ghe', LoaiGheController::class);
 // Route::post('/loai-ghe/{id}/restore', [LoaiGheController::class, 'restore'])->name('loai-ghe.restore'); 
 // Route::delete('/loai-ghe/{id}/force-delete', [LoaiGheController::class, 'forceDelete'])->name('loai-ghe.force-delete'); 
 
-Route::apiResource('nguoi-dung', NguoiDungController::class);
+Route::apiResource('nguoi_dung', NguoiDungController::class);
 
 
 
