@@ -1,0 +1,133 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Nguyen Van A",
+      "email": "a@example.com",
+      "password": "123456",
+      "role": "customer"
+    },
+    {
+      "id": "2",
+      "name": "Admin",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "role": "admin"
+    }
+  ],
+  "phim": [
+    {
+      "ten_phim": "Avengers: Endgame ",
+      "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
+      "thoi_luong": 181,
+      "trailer": "https://youtube.com/watch?v=TcMBFSGVi1c",
+      "ngon_ngu": "Tiếng Anh",
+      "quoc_gia": "Mỹ",
+      "anh_poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlyzfAy8xFShylyYTGhue0JryA1NJMzYpnigMK4pEIUU3qIPut4skv32uYatUhUU6sRKjffaBYMnGLslcEgBXdpXlgDXZG7Yv9aqRmG2DZOw",
+      "ngay_cong_chieu": "2019-04-26",
+      "do_tuoi_gioi_han": 13,
+      "trang_thai": true,
+      "the_loai_id": 2,
+      "id": 1
+    },
+    {
+      "ten_phim": "Parasite 111",
+      "mo_ta": "Một bộ phim tâm lý xã hội Hàn Quốc đoạt giải Oscar.",
+      "thoi_luong": 132,
+      "trailer": "https://youtube.com/watch?v=5xH0HfJHsaY",
+      "ngon_ngu": "Tiếng Hàn",
+      "quoc_gia": "Hàn Quốc",
+      "anh_poster": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRfRdDvnOOpyqJUy2uS0NSES30HSz5CAAd-sxSK9ratdCXE7ljR7qIAtK4IhDqrp9c_z_1CDzUmsx3DrUE8h_773pl8ElZ06d5ovmu0khi-",
+      "ngay_cong_chieu": "2019-05-30",
+      "do_tuoi_gioi_han": 16,
+      "trang_thai": false,
+      "the_loai_id": 3,
+      "id": 2,
+      "tinh_trang": "Sắp chiếu"
+    }
+  ],
+  "the_loai": [
+    {
+      "id": "1",
+      "name": "Hành động"
+    },
+    {
+      "id": "2",
+      "name": "Tâm lý"
+    },
+    {
+      "id": 3,
+      "name": "Viễn tưởng"
+    }
+  ],
+  "loai_ghe": [
+    {
+      "name": "Đơn thường ",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "Đơn vip"
+    },
+    {
+      "id": 3,
+      "name": "Đôi"
+    }
+  ],
+  "cinemas": [
+    {
+      "id": "1",
+      "name": "CGV Vincom",
+      "address": "Vincom Đồng Khởi, Q.1, TP.HCM"
+    },
+    {
+      "id": "2",
+      "name": "Lotte Cinema",
+      "address": "Lotte Mart Q.7, TP.HCM"
+    },
+    {
+      "name": "Oppo A9",
+      "address": "51/6 Ngọa Long Minh Khai",
+      "id": "LPBVOB8"
+    },
+    {
+      "name": "Thịnh",
+      "address": "51/6 Ngọa Long ",
+      "id": "SEy4a-u"
+    }
+  ],
+  "showtimes": [
+    {
+      "id": "1",
+      "movieId": 1,
+      "cinemaId": 1,
+      "datetime": "2025-05-12T19:00:00"
+    }
+  ],
+  "seats": [
+    {
+      "id": "1",
+      "showtimeId": 1,
+      "seatNumber": "A1",
+      "isBooked": false
+    },
+    {
+      "id": "2",
+      "showtimeId": 1,
+      "seatNumber": "A2",
+      "isBooked": true
+    }
+  ],
+  "bookings": [
+    {
+      "id": "1",
+      "userId": 1,
+      "showtimeId": 1,
+      "seats": [
+        "A2"
+      ],
+      "totalPrice": 100000,
+      "bookingTime": "2025-05-12T10:00:00"
+    }
+  ]
+}

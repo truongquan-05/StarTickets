@@ -1,0 +1,15 @@
+import './index.js';
+import './config.js';
+import './bootstrap-notify.min.js';
+import './bootstrap.bundle.min.js';
+import './custom-data-table.js';
+import './custom.js';
+import './customizer.js';
+import './feather-icon.js';
+import './feather.min.js';
+import './jquery-3.6.0.min.js';
+import './jquery.dataTables.js';
+import './script.js';
+import './sidebar-menu.js';
+import './sidebareffect.js';
+import './simplebar.js';
