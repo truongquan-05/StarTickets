@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\NguoiDungController;
 
 
 
-Route::prefix('admin')->group(function () {
+
     // Thể loại phim
     Route::get('the_loai', [TheLoaiController::class, 'index']);
     Route::post('the_loai', [TheLoaiController::class, 'store']);
@@ -59,5 +59,5 @@ Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
     Route::delete('do_an/{id}', [DoAnController::class, 'delete']);
     Route::delete('do_an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
     Route::post('do_an/restore/{id}', [DoAnController::class, 'restore']);
-});
+
 
