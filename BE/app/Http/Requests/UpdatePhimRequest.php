@@ -33,7 +33,7 @@ class UpdatePhimRequest extends FormRequest
             ],
             'thoi_luong' => 'required|integer|min:1|max:500',
             'mo_ta' => 'nullable|string|max:1000',
-            'id_the_loai' => 'required|exists:the_loai,id',
+        
             'trailer' => 'nullable|url',
             'ngon_ngu' => 'nullable|string|max:50',
             'quoc_gia' => 'nullable|string|max:50',
