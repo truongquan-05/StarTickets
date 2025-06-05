@@ -10,6 +10,9 @@ import UserList from '../pages/User/List'
 import UserEdit from '../pages/User/Edit'
 import UserAdd from '../pages/User/Add'
 import GenresManager from '../GenresManager'
+import FoodList from '../pages/Food/List'
+import AddFood from '../pages/Food/Add'
+import EditFood from '../pages/Food/Edit'
 
 const Routermain = () => {
   const element = useRoutes([
@@ -52,6 +55,19 @@ const Routermain = () => {
         {
           path:"movies/genre",
           element:<GenresManager/>
+        },
+
+         {
+          path:"/food",
+          element:<FoodList/>
+        },
+        {
+          path:"/food/add",
+          element:<AddFood/>
+        },
+        {
+          path:"/food/edit/:id",
+          element:<EditFood/>
         }
       ]
     }

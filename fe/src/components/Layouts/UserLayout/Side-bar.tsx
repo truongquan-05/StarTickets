@@ -16,9 +16,8 @@ const SideBar = ({ setSelectedMenu }: { setSelectedMenu: (menu: string) => void 
        <SubMenu key="genre" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Thể loại </span>}>
         <Menu.Item key="Genre List"><Link to={"/movies/genre"}>Danh sách thể loại</Link></Menu.Item>
         </SubMenu>
-      <SubMenu key="movies" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Phim </span>}>
-        <Menu.Item key="List Movies"><Link to={"/movies/list"}>List Movies</Link></Menu.Item>
-        <Menu.Item key="Add New Movies"><Link to={"/movies/add"}>Add New Movies</Link></Menu.Item>
+      <SubMenu key="food" title={<span style={{color:'#43b9b2',fontFamily:'"Outfit", sans-serif',fontWeight:'600'}}><ProductOutlined style={{padding:'10px', fontSize: '17px'}}/> Dịch vụ và ưu đãi </span>}>
+        <Menu.Item key="List food"><Link to={"/food"}>Quản lý đồ ăn</Link></Menu.Item>
       </SubMenu>
     </Menu>
 
