@@ -9,7 +9,17 @@ export interface User {
   email: string;
   password: string;
   phone: string;
-  avatar: string; // URL ảnh đại diện
+  avatar: string; 
   role: "admin" | "user";
   isActive: boolean;
 }
+export type Food = {
+  id: number;
+  name: string;
+  type: string;
+  price: number;
+  image: string;
+  status: boolean;
+  description?: string;
+  deleted?: boolean;
+};

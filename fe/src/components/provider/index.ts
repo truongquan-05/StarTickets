@@ -1,5 +1,5 @@
 import axios from "axios";
-import { User } from "../types/Uses";
+import { Food, User } from "../types/Uses";
 
 const token = localStorage.getItem("token");
 
@@ -41,3 +41,29 @@ export const createUser = (user: Omit<User, "id">) => axiosClient.post("users", 
 export const updateUser = (id: number, user: Partial<User>) => axiosClient.put(`users/${id}`, user);
 
 export const deleteUser = (id: number) => axiosClient.delete(`users/${id}`);
+// === Food APIs ===
+export const getFoods = () => axiosClient.get<Food[]>("food");
+
+export const getFoodById = (id: number) => axiosClient.get<Food>(`food/${id}`);
+
+export const createFood = (food: Omit<Food, "id">) => axiosClient.post("food", food);
+
+export const updateFood = (id: number, food: Partial<Food>) =>
+  axiosClient.put(`food/${id}`, food);
+
+export const deleteFood = (id: number) => axiosClient.delete(`food/${id}`);
+
+// === Soft delete / Restore ===
+export const softDeleteFood = (id: number) =>
+  axiosClient.patch(`food/${id}`, { deleted: true });
+
+export const restoreFood = (id: number) =>
+  axiosClient.patch(`food/${id}`, { deleted: false });
+
+export const getActiveFoods = async () => {
+  const { data } = await axiosClient.get<Food[]>("food");
+  return data.filter((food) => !food.deleted);
+}
+
+
+

@@ -2,6 +2,7 @@
   "users": [
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       "id": "1",
       "name": "Nguyen Van A",
       "email": "a@example.com",
@@ -26,6 +27,8 @@
       "id": 1
     },
     {
+=======
+>>>>>>> hoangdu
       "name": "Sản phẩm 2",
       "email": "dunhph50785@gmail.com",
       "password": "88888888",
@@ -35,17 +38,6 @@
       "role": "user",
       "isActive": false,
       "id": 2
-    },
-    {
-      "name": "Sản phẩm 2",
-      "email": "dunhph50785@gmail.com",
-      "password": "88888888",
-      "confirmPassword": "88888888",
-      "phone": "0981876875",
-      "avatar": "https://heucollege.edu.vn/upload/2025/03/bo-99-anh-avatar-dep-cho-con-gai-ngau-chat-nhat-viet-nam-2.webp",
-      "role": "admin",
-      "isActive": true,
-      "id": 3
     },
     {
       "name": "Nguyễn Hoàng Du",
@@ -68,6 +60,36 @@
       "role": "user",
       "isActive": true,
       "id": 5
+    },
+    {
+      "name": "Nguyễn Hoàng Du",
+      "email": "dunhph50785@gmail.com",
+      "password": "123456",
+      "confirmPassword": "123456",
+      "phone": "0981876875",
+      "avatar": "https://heucollege.edu.vn/upload/2025/03/bo-99-anh-avatar-dep-cho-con-gai-ngau-chat-nhat-viet-nam-2.webp",
+      "role": "user",
+      "isActive": true,
+      "id": 6
+    }
+  ],
+  "food": [
+    {
+      "name": "dvdfdf",
+      "type": "Nướng",
+      "price": 312323,
+      "image": "tải xuống.jpg",
+      "status": true,
+      "description": "wd",
+      "id": 1
+    },
+    {
+      "name": "nước",
+      "type": "Nước",
+      "price": 2313,
+      "image": "638F6191-CB26-4370-BA5D-F5D8B72B38E2.png",
+      "status": true,
+      "id": 2
     }
   ],
   "genres": [
@@ -90,11 +112,14 @@
       "name": "Tình cảm",
       "isDeleted": false,
       "id": 5
+<<<<<<< HEAD
     },
     {
       "name": "Gia đình",
       "isDeleted": true,
       "id": 6
+>>>>>>> hoangdu
+=======
 >>>>>>> hoangdu
     }
   ],

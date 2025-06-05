@@ -2,33 +2,41 @@ import { useEffect, useState } from "react";
 import { getUsers, deleteUser } from "../../provider/index";
 import { User } from "../../types/Uses";
 import { Link } from "react-router-dom";
-import { Table, Button, Popconfirm, Space, Avatar, message } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {Table, Button,Popconfirm,Space,Avatar,message,Tag,Card,Typography,
+} from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+
+const { Title } = Typography;
 
 const List = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    getUsers().then(res => setUsers(res.data));
+    getUsers().then((res) => setUsers(res.data));
   }, []);
 
   const handleDelete = async (id: number) => {
-  try {
-    await deleteUser(id);
-    setUsers(users.filter(u => u.id !== id));
-    message.success("Đã xoá  thành công");
-  } catch (error) {
-    message.error("Xoá thất bại, vui lòng thử lại");
-    
-    
-  }
-};
+    try {
+      await deleteUser(id);
+      setUsers(users.filter((u) => u.id !== id));
+      message.success("Đã xoá thành công");
+    } catch (error) {
+      message.error("Xoá thất bại, vui lòng thử lại");
+      console.log(error);
+    }
+  };
 
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
       key: "id",
+    },
+    {
+      title: "Ảnh",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (url: string) => <Avatar size="large" src={url} />,
     },
     {
       title: "Tên",
@@ -46,12 +54,6 @@ const List = () => {
       key: "phone",
     },
     {
-      title: "Ảnh",
-      dataIndex: "avatar",
-      key: "avatar",
-      render: (url: string) => <Avatar src={url} />,
-    },
-    {
       title: "Role",
       dataIndex: "role",
       key: "role",
@@ -60,7 +62,12 @@ const List = () => {
       title: "Trạng thái",
       dataIndex: "isActive",
       key: "isActive",
-      render: (value: boolean) => (value ? "✔️" : "❌"),
+      render: (isActive: boolean) =>
+        isActive ? (
+          <Tag color="green">Hoạt động</Tag>
+        ) : (
+          <Tag color="red">Ngừng hoạt động</Tag>
+        ),
     },
     {
       title: "Hành động",
@@ -73,8 +80,8 @@ const List = () => {
           <Popconfirm
             title="Bạn có chắc chắn muốn xoá người dùng này?"
             onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
+            okText="Xác nhận"
+            cancelText="Huỷ"
           >
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -84,11 +91,25 @@ const List = () => {
   ];
 
   return (
-    <div>
-      <h1>Danh sách người dùng</h1>
-      <Link to="/users/add">
-        <Button type="primary" style={{ marginBottom: 16, marginLeft: 900 }}>+ Thêm người dùng</Button>
-      </Link>
+    <Card style={{ margin: "24px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 16,
+        }}
+      >
+        <Title level={3} style={{ margin: 0 }}>
+           Danh sách người dùng
+        </Title>
+        <Link to="/users/add">
+          <Button type="primary" icon={<PlusOutlined />}>
+            Thêm người dùng
+          </Button>
+        </Link>
+      </div>
+
       <Table
         rowKey="id"
         dataSource={users}
@@ -97,7 +118,7 @@ const List = () => {
         pagination={{ pageSize: 5 }}
         locale={{ emptyText: "Không có người dùng nào." }}
       />
-    </div>
+    </Card>
   );
 };
 

@@ -14,6 +14,9 @@ import UserList from '../pages/User/List'
 import UserEdit from '../pages/User/Edit'
 import UserAdd from '../pages/User/Add'
 import GenresManager from '../GenresManager'
+import FoodList from '../pages/Food/List'
+import AddFood from '../pages/Food/Add'
+import EditFood from '../pages/Food/Edit'
 
 const Routermain = () => {
   const element = useRoutes([
@@ -44,25 +47,13 @@ const Routermain = () => {
           element:<AddMoviesPage/>
         },
         {
-<<<<<<< HEAD
-          path:"category_chair/list",
-          element:<ListCategoryChair/>
-        },
-        {
           path:"cinemas/list",
           element:<ListCinemas/>
         },
         {
           path:"cinemas/add",
           element:<AddCinemasPage/>
-=======
-          path:"movies/add",
-          element:<Add/>
         },
-
-
-        
-
         {
         path:"/users",
         element:<UserList/>
@@ -78,7 +69,19 @@ const Routermain = () => {
         {
           path:"movies/genre",
           element:<GenresManager/>
->>>>>>> hoangdu
+        },
+
+         {
+          path:"/food",
+          element:<FoodList/>
+        },
+        {
+          path:"/food/add",
+          element:<AddFood/>
+        },
+        {
+          path:"/food/edit/:id",
+          element:<EditFood/>
         }
       ]
     },
