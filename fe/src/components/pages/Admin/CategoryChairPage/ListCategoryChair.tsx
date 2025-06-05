@@ -7,19 +7,19 @@ import { useListCategoryChair, useDeleteCategoryChair, useCreateCategoryChairs, 
 
 const ListCategoryChair = () => {
   const [form] = Form.useForm();
-  const { data } = useListCategoryChair({ resource: "loai-ghe" });
+  const { data } = useListCategoryChair({ resource: "loai_ghe" });
   const dataSource = data?.data || [];
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ICategoryChair | undefined>(undefined);
   const { mutate: deleteCategoryChair } = useDeleteCategoryChair({
-      resource: "loai-ghe",
+      resource: "loai_ghe",
     });
   const createOrUpdateOpenModal = (record: ICategoryChair | undefined) => {
       setModalOpen(true);
       setEditingItem(record);
     };
-  const { mutate: createCategoryChair } = useCreateCategoryChairs({ resource: "loai-ghe" });
-  const { mutate: updateCategoryChair } = useUpdateCategoryChair({ resource: "loai-ghe" });
+  const { mutate: createCategoryChair } = useCreateCategoryChairs({ resource: "loai_ghe" });
+  const { mutate: updateCategoryChair } = useUpdateCategoryChair({ resource: "loai_ghe" });
   const onCreateOrUpdate = (values: ICategoryChair) => {
       if (editingItem === undefined) {
         createCategoryChair(values);

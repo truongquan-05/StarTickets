@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ten_the_loai', 100);
             $table->timestamps();
+             $table->softDeletes();
             $table->softDeletes();
         });
 
@@ -232,6 +233,16 @@ return new class extends Migration {
             $table->integer('so_diem');
             $table->text('mo_ta')->nullable();
             $table->string('loai_giao_dich', 100);
+            $table->timestamps();
+        });
+
+        Schema::create('phan_hoi_khach_hang', function (Blueprint $table) {
+            $table->id();
+            $table->string('ho_ten', 100);
+            $table->string('email', 100);
+            $table->string('so_dien_thoai', 15);
+            $table->text('noi_dung');
+              $table->boolean('trang_thai')->default(false);
             $table->timestamps();
         });
 

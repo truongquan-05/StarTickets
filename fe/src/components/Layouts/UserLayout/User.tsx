@@ -1,7 +1,6 @@
 import { Layout } from 'antd'
-import React from 'react'
 import { Outlet } from 'react-router-dom'
-import { Content, Footer } from 'antd/es/layout/layout'
+import { Content } from 'antd/es/layout/layout'
 import HeaderUser from './HeaderUser'
 import FooterUser from './FooterUser'
 import '../../assets/css/indexUser.css'

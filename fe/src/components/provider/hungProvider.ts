@@ -9,8 +9,6 @@ const axiosClient = axios.create({
     Authorization: token ? `Bearer ${token}` : "",
   },
 });
-//npm run dev : api giả
-//npm run build -> npm run preview: api theo backend
 
 export type Props = {
   resource: string;
@@ -28,38 +26,53 @@ export const getDeleteMovies = async ({resource = "phim" , id} : Props) => {
   return data;
 }
 
-export const getCreateMovies = async ({resource = "phim" , values} : Props) => {
-  const {data} = await  axiosClient.post(resource,values);
+export const getCreateMovies = async ({ resource = "phim", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
-}
+};
 
-export const getUpdateMovies = async ({resource = "phim", id, values} : Props) => {
-  if(!id) return;
-  const {data} = await axiosClient.put(`${resource}/${id}`,values);
-  return data
-}
+
+export const getUpdateMovies = async ({ resource = "phim", id, values }: Props) => {
+  if (!id) return;
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  }
+
+  // Nếu không có file, thì dùng PUT bình thường
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  return data;
+};
+
 export const getGenreList = async ({ resource = "the_loai" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
 };
 
-export const getListCategoryChair = async ({resource = "loai-ghe"} : Props) => {
+export const getListCategoryChair = async ({resource = "loai_ghe"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data;
 }
 
-export const getDeleteCategoryChair  = async ({resource = "loai-ghe" , id} : Props) => {
+export const getDeleteCategoryChair  = async ({resource = "loai_ghe" , id} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.delete(`${resource}/${id}`)
   return data;
 }
 
-export const getCreateCategoryChair = async ({resource = "loai-ghe" , values} : Props) => {
+export const getCreateCategoryChair = async ({resource = "loai_ghe" , values} : Props) => {
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
 
-export const getUpdateCategoryChair  = async ({resource = "loai-ghe", id, values} : Props) => {
+export const getUpdateCategoryChair  = async ({resource = "loai_ghe", id, values} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.put(`${resource}/${id}`,values);
   return data
