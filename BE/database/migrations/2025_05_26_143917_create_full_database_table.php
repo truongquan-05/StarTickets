@@ -202,13 +202,17 @@ return new class extends Migration {
 
         Schema::create('ma_giam_gia', function (Blueprint $table) {
             $table->id();
-            $table->string('ma', 50)->unique();
-            $table->integer('phan_tram_giam');
-            $table->json('dieu_kien');
-            $table->date('han_su_dung');
-            $table->date('ngay_bat_dau');
-            $table->integer('so_lan_su_dung');
-            $table->boolean('trang_thai')->default(false);
+            $table->string('ma', 50)->unique()->comment('Mã giảm giá, ví dụ: SUMMER2025');
+            $table->enum('loai_giam_gia', ['PERCENTAGE', 'FIXED', 'FREE_TICKET'])->default('PERCENTAGE')->comment('Loại giảm giá: phần trăm, cố định, tặng vé');
+            $table->decimal('gia_tri_giam', 10, 2)->comment('Giá trị giảm: % cho PERCENTAGE, số tiền cho FIXED, số vé cho FREE_TICKET');
+            $table->decimal('giam_toi_da', 10, 2)->nullable()->comment('Số tiền giảm tối đa, áp dụng cho PERCENTAGE');
+            $table->decimal('gia_tri_don_hang_toi_thieu', 10, 2)->nullable()->comment('Giá trị đơn hàng tối thiểu để áp dụng');
+            $table->json('dieu_kien')->nullable()->comment('Điều kiện áp dụng: movie_id, theater_id, user_type, showtime');
+            $table->date('ngay_bat_dau')->comment('Ngày bắt đầu hiệu lực');
+            $table->date('han_su_dung')->comment('Ngày hết hạn');
+            $table->integer('so_lan_su_dung')->nullable()->comment('Số lần sử dụng tối đa, NULL nếu không giới hạn');
+            $table->integer('so_lan_da_su_dung')->default(0)->comment('Số lần đã sử dụng');
+            $table->enum('trang_thai', ['PENDING', 'ACTIVE', 'EXPIRED'])->default('PENDING')->comment('Trạng thái: chưa bắt đầu, đang hoạt động, hết hạn');
             $table->timestamps();
         });
 

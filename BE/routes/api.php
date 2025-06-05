@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\MaGiamGiaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\GheController;
@@ -66,4 +67,13 @@ Route::prefix('rap')->group(function () {
     Route::patch('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
     Route::post('/{id}/restore', [RapController::class, 'restore']);  // Khôi phục
     Route::delete('/{id}/force', [RapController::class, 'destroy']);  // Xóa vĩnh viễn
+});
+
+//API mã giảm giá
+Route::prefix('ma_giam_gia')->group(function () {
+    Route::get('/', [MaGiamGiaController::class, 'index']);         // Danh sách mã còn hạn
+    Route::get('/het_han', [MaGiamGiaController::class, 'hetHan']); // Danh sách mã đã hết hạn
+    Route::get('/{id}', [MaGiamGiaController::class, 'show']);      // Chi tiết
+    Route::post('/', [MaGiamGiaController::class, 'store']);        // Thêm
+    Route::put('/{id}', [MaGiamGiaController::class, 'update']);    // Cập nhật
 });
