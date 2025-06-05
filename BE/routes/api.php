@@ -1,10 +1,15 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\GheController;
+use App\Http\Controllers\API\RapController;
 use App\Http\Controllers\API\PhimController;
 use App\Http\Controllers\API\TheLoaiController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
+use App\Http\Controllers\API\MaTranGheController;
+use App\Http\Controllers\API\PhongChieuController;
 use App\Http\Controllers\Admin\NguoiDungController;
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -12,7 +17,7 @@ use App\Http\Controllers\Admin\NguoiDungController;
 
 
 
-// Thể loại phim 
+// Thể loại phim
 Route::get('the_loai', [TheLoaiController::class, 'index']);           // Lấy danh sách
 Route::post('the_loai', [TheLoaiController::class, 'store']);          // Thêm mới
 Route::get('the_loai/{id}', [TheLoaiController::class, 'show']);       // Xem chi tiết
@@ -21,14 +26,14 @@ Route::delete('the_loai/soft-delete/{id}', [TheLoaiController::class, 'softDelet
 Route::delete('the_loai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
 Route::post('the_loai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
 
-// Phim 
+// Phim
 
 
-Route::apiResource('vai_tro',VaiTroController::class);
+Route::apiResource('vai_tro', VaiTroController::class);
 
 Route::apiResource('loai_ghe', LoaiGheController::class);
-// Route::post('/loai-ghe/{id}/restore', [LoaiGheController::class, 'restore'])->name('loai-ghe.restore'); 
-// Route::delete('/loai-ghe/{id}/force-delete', [LoaiGheController::class, 'forceDelete'])->name('loai-ghe.force-delete'); 
+// Route::post('/loai-ghe/{id}/restore', [LoaiGheController::class, 'restore'])->name('loai-ghe.restore');
+// Route::delete('/loai-ghe/{id}/force-delete', [LoaiGheController::class, 'forceDelete'])->name('loai-ghe.force-delete');
 
 Route::apiResource('nguoi_dung', NguoiDungController::class);
 
@@ -46,3 +51,19 @@ Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
 
+
+//
+Route::apiResource('ma_tran_ghe', MaTranGheController::class);
+Route::apiResource('phong_chieu', PhongChieuController::class);
+Route::apiResource('ghe', GheController::class);
+
+//API rạp
+Route::apiResource('rap', RapController::class);
+
+// Các route tùy chỉnh cho soft delete
+Route::prefix('rap')->group(function () {
+    Route::get('/trashed/list', [RapController::class, 'trashed']);   // Danh sách đã xóa mềm
+    Route::patch('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
+    Route::post('/{id}/restore', [RapController::class, 'restore']);  // Khôi phục
+    Route::delete('/{id}/force', [RapController::class, 'destroy']);  // Xóa vĩnh viễn
+});

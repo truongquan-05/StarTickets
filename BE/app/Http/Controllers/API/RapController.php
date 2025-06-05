@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RapController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -29,12 +26,11 @@ class RapController extends Controller
         }
 
         $keyword = $request->input('keyword');
-        $sortBy = $request->input('sort_by', 'id'); // Mặc định sắp xếp theo id
-        $perPage = $request->input('per_page', 10); // Mặc định 10 kết quả/trang
+        $sortBy = $request->input('sort_by', 'id');
+        $perPage = $request->input('per_page', 10);
 
-        $query = Rap::where('isDeleted', false); // Chỉ lấy rạp chưa xóa mềm
+        $query = Rap::query();
 
-        // Tìm kiếm nếu có keyword
         if ($keyword) {
             $query->where(function ($q) use ($keyword) {
                 $q->where('ten_rap', 'LIKE', "%{$keyword}%")
@@ -42,7 +38,6 @@ class RapController extends Controller
             });
         }
 
-        // Sắp xếp và phân trang
         $raps = $query->orderBy($sortBy, 'DESC')->paginate($perPage);
 
         return response()->json([
@@ -58,9 +53,6 @@ class RapController extends Controller
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -76,10 +68,7 @@ class RapController extends Controller
             ], 422);
         }
 
-        $rap = Rap::create(array_merge(
-            $request->only(['ten_rap', 'dia_chi']),
-            ['isDeleted' => false] // Đảm bảo isDeleted mặc định là false
-        ));
+        $rap = Rap::create($request->only(['ten_rap', 'dia_chi']));
 
         return response()->json([
             'success' => true,
@@ -88,23 +77,14 @@ class RapController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $rap = Rap::find($id);
+
         if (!$rap) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy rạp.',
-            ], 404);
-        }
-
-        if ($rap->isDeleted) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Rạp đã bị xóa mềm',
+                'message' => 'Không tìm thấy rạp.'
             ], 404);
         }
 
@@ -114,16 +94,15 @@ class RapController extends Controller
             'data' => $rap
         ], 200);
     }
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, $id)
     {
         $rap = Rap::find($id);
-        if (!$rap || $rap->isDeleted) {
+
+        if (!$rap) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy rạp hoặc rạp đã bị xóa mềm',
+                'message' => 'Không tìm thấy rạp.'
             ], 404);
         }
 
@@ -141,6 +120,7 @@ class RapController extends Controller
         }
 
         $rap->update($request->only(['ten_rap', 'dia_chi']));
+
         return response()->json([
             'success' => true,
             'message' => 'Cập nhật rạp thành công',
@@ -148,64 +128,57 @@ class RapController extends Controller
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        $rap = Rap::find($id);
+        $rap = Rap::onlyTrashed()->find($id);
 
         if (!$rap) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy rạp.',
+                'message' => 'Không tìm thấy rạp đã xóa mềm.',
             ], 404);
         }
 
-        if (!$rap->isDeleted) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Rạp chưa được xóa mềm. Vui lòng xóa mềm trước khi xóa vĩnh viễn.',
-            ], 400);
-        }
+        $rap->forceDelete();
 
-        $rap->forceDelete(); // Xóa vĩnh viễn
         return response()->json([
             'success' => true,
             'message' => 'Xóa vĩnh viễn rạp thành công',
         ], 200);
     }
 
-    // xóa mềm
     public function softDelete($id)
     {
         $rap = Rap::find($id);
-        if (!$rap || $rap->isDeleted) {
+
+        if (!$rap) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy rạp hoặc rạp đã bị xóa mềm'
+                'message' => 'Không tìm thấy rạp'
             ], 404);
         }
 
-        $rap->update(['isDeleted' => true]);
+        $rap->delete();
+
         return response()->json([
             'success' => true,
             'message' => 'Xóa mềm rạp thành công'
         ], 200);
     }
 
-    // Khôi phục rạp đã xóa mềm
     public function restore($id)
     {
-        $rap = Rap::find($id);
-        if (!$rap || !$rap->isDeleted) {
+        $rap = Rap::onlyTrashed()->find($id);
+
+        if (!$rap) {
             return response()->json([
                 'success' => false,
-                'message' => 'Không tìm thấy rạp hoặc rạp chưa bị xóa mềm'
+                'message' => 'Không tìm thấy rạp đã xóa mềm'
             ], 404);
         }
 
-        $rap->update(['isDeleted' => false]);
+        $rap->restore();
+
         return response()->json([
             'success' => true,
             'message' => 'Khôi phục rạp thành công',
@@ -213,7 +186,6 @@ class RapController extends Controller
         ], 200);
     }
 
-    //Lấy danh sách rạp đã xóa mềm
     public function trashed(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -231,12 +203,11 @@ class RapController extends Controller
         }
 
         $keyword = $request->input('keyword');
-        $sortBy = $request->input('sort_by', 'id'); // Mặc định sắp xếp theo id
-        $perPage = $request->input('per_page', 10); // Mặc định 10 kết quả/trang
+        $sortBy = $request->input('sort_by', 'id');
+        $perPage = $request->input('per_page', 10);
 
-        $query = Rap::where('isDeleted', true); // Chỉ lấy rạp đã xóa mềm
+        $query = Rap::onlyTrashed();
 
-        // Tìm kiếm nếu có keyword
         if ($keyword) {
             $query->where(function ($q) use ($keyword) {
                 $q->where('ten_rap', 'LIKE', "%{$keyword}%")
@@ -244,7 +215,6 @@ class RapController extends Controller
             });
         }
 
-        // Sắp xếp và phân trang
         $raps = $query->orderBy($sortBy, 'DESC')->paginate($perPage);
 
         return response()->json([
