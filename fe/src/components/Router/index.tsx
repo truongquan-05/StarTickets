@@ -43,6 +43,10 @@ const Routermain = () => {
           element:<List/>
         },
         {
+          path:"category_chair/list",
+          element:<ListCategoryChair/>
+        },
+        {
           path:"movies/add",
           element:<AddMoviesPage/>
         },
@@ -55,15 +59,15 @@ const Routermain = () => {
           element:<AddCinemasPage/>
         },
         {
-        path:"/users",
+        path:"users",
         element:<UserList/>
         },
         {
-        path:"/users/add",
+        path:"users/add",
         element:<UserAdd/>
         },
         {
-        path:"/users/edit/:id",
+        path:"users/edit/:id",
         element:<UserEdit/>
         },
         {
@@ -72,15 +76,15 @@ const Routermain = () => {
         },
 
          {
-          path:"/food",
+          path:"food",
           element:<FoodList/>
         },
         {
-          path:"/food/add",
+          path:"food/add",
           element:<AddFood/>
         },
         {
-          path:"/food/edit/:id",
+          path:"food/edit/:id",
           element:<EditFood/>
         }
       ]

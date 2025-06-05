@@ -1,5 +1,5 @@
 import FoodForm from '../../../components/Food/FoodForm';
-import { createFood } from '../../provider/index';
+import { createFood } from '../../provider/duProvider';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd'; 
 

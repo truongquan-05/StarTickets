@@ -1,6 +1,6 @@
 import { message } from "antd";
 import UserForm from "../../../components/User/UserForm";
-import { createUser } from "../../provider/index";
+import { createUser } from "../../provider/duProvider";
 import { useNavigate } from "react-router-dom";
 
 const UserAdd = () => {

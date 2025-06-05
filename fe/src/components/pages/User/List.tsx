@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUsers, deleteUser } from "../../provider/index";
+import { getUsers, deleteUser } from "../../provider/duProvider";
 import { User } from "../../types/Uses";
 import { Link } from "react-router-dom";
 import {Table, Button,Popconfirm,Space,Avatar,message,Tag,Card,Typography,

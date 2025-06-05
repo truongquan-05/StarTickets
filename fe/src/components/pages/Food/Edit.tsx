@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import FoodForm from '../../../components/Food/FoodForm';
-import { getFoodById, updateFood } from '../../provider/index';
+import { getFoodById, updateFood } from '../../provider/duProvider';
 import { Food } from '../../types/Uses';
 import { message } from 'antd'; 
 

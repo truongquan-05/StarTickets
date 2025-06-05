@@ -1,7 +1,8 @@
 import { Table, Switch, Button, Popconfirm } from 'antd';
 import { Food } from '../types/Uses';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface Props {
   foods: Food[];
@@ -9,7 +10,18 @@ interface Props {
   onDelete: (id: number) => void;
 }
 
-const FoodTable: React.FC<Props> = ({ foods, onEdit, onDelete }) => {
+const FoodTable: React.FC<Props> = ({ onEdit, onDelete }) => {
+  const [food, setFoods] = useState<Food[]>([]);
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/api/do_an')
+      .then(res => {
+        setFoods(res.data.data);
+      })
+      .catch(err => {
+        console.error('Lỗi lấy dữ liệu:', err);
+      });
+  }, []);
+  
   const columns = [
     {
       title: '#',
@@ -17,26 +29,21 @@ const FoodTable: React.FC<Props> = ({ foods, onEdit, onDelete }) => {
     },
     {
       title: 'Tên đồ ăn',
-      dataIndex: 'name',
+      dataIndex: 'ten_do_an',
     },
     {
-      title: 'Loại đồ ăn',
-      dataIndex: 'type',
-    },
-    {
-      title: 'Hình ảnh',
-      dataIndex: 'image',
-      render: (url: string) => <img src={url} alt="food" width={50} />,
+      title: 'Mô tả',
+      dataIndex: 'mo_ta',
     },
     {
       title: 'Giá',
-      dataIndex: 'price',
+      dataIndex: 'gia',
       render: (value: number) => `${value} ₫`,
     },
     {
-      title: 'Hoạt động',
-      dataIndex: 'status',
-      render: (active: boolean) => <Switch checked={active} disabled />,
+      title: 'Số lượng tồn',
+      dataIndex: 'so_luong_ton',
+      render: (value: number) => `${value}`,
     },
     {
       title: 'Action',
@@ -51,7 +58,7 @@ const FoodTable: React.FC<Props> = ({ foods, onEdit, onDelete }) => {
     },
   ];
 
-  return <Table rowKey="id" columns={columns} dataSource={foods} />;
+  return <Table rowKey="id" columns={columns} dataSource={food} />;
 };
 
 export default FoodTable;

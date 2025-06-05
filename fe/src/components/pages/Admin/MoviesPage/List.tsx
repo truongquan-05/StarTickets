@@ -255,14 +255,6 @@ const List = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            label="Mô tả"
-            name="mo_ta"
-            rules={[{ required: true, message: "Mô tả là bắt buộc" }]}
-          >
-            <Input.TextArea rows={3} />
-          </Form.Item>
-
-          <Form.Item
             label="Thời lượng (phút)"
             name="thoi_luong"
             rules={[
@@ -275,65 +267,6 @@ const List = () => {
             ]}
           >
             <InputNumber min={1} max={500} style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            label="Trailer"
-            name="trailer"
-            rules={[
-              { required: true, message: "Trailer là bắt buộc" },
-              { type: "url", message: "Đường dẫn trailer không hợp lệ" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Ngôn ngữ"
-            name="ngon_ngu"
-            rules={[{ required: true, message: "Ngôn ngữ là bắt buộc" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Quốc gia"
-            name="quoc_gia"
-            rules={[{ required: true, message: "Quốc gia là bắt buộc" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="Ảnh Poster" tooltip="Chọn ảnh poster cho phim">
-            <input type="file" accept="image/*" onChange={onAnhPosterChange} />
-          </Form.Item>
-          {anhPosterPreview && (
-            <div style={{ marginBottom: 16 }}>
-              <img
-                src={anhPosterPreview}
-                alt="Poster preview"
-                style={{
-                  width: 230,
-                  height: 300,
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
-            </div>
-          )}
-          <Form.Item
-            label="Tình trạng"
-            name="tinh_trang"
-            rules={[{ required: true, message: "Tình trạng là bắt buộc" }]}
-          >
-            <Select>
-              <Option value="Sắp chiếu">Sắp chiếu</Option>
-              <Option value="Đang chiếu">Đang chiếu</Option>
-              <Option value="Đã chiếu">Đã chiếu</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Giới hạn tuổi"
-            name="do_tuoi_gioi_han"
-            rules={[{ required: true, message: "Giới hạn tuổi là bắt buộc" }]}
-          >
-            <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item
             label="Trạng thái"

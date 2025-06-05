@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getActiveFoods, deleteFood } from '../../provider/index';
+import { getActiveFoods, deleteFood } from '../../provider/duProvider';
 import { Food } from '../../types/Uses';
 import FoodTable from '../../../components/Food/FoodTable';
 import { useNavigate } from 'react-router-dom';

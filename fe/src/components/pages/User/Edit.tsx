@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import UserForm from "../../../components/User/UserForm";
-import { getUserById, updateUser } from "../../provider/index";
+import { getUserById, updateUser } from "../../provider/duProvider";
 import { User } from "../../types/Uses";
 import { message } from "antd";
 
