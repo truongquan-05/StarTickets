@@ -1,10 +1,14 @@
-import React from 'react'
 import { useRoutes } from 'react-router-dom'
+import Admin from '../Layouts/AdminLayout/Admin'
 import User from '../Layouts/UserLayout/User'
-import List from '../pages/Product/List'
-import Dashboard from '../pages/Dashboard'
-import Edit from '../pages/Product/Edit'
-import Add from '../pages/Product/Add'
+import ListCategoryChair from '../pages/Admin/CategoryChairPage/ListCategoryChair'
+
+import AddMoviesPage from '../pages/Admin/MoviesPage/AddMoviesPage'
+import DashboardUser from '../pages/User/DashboardUser'
+import List from '../pages/Admin/MoviesPage/List'
+import DashboardAdmin from '../pages/Admin/DashboardAdmin'
+import ListCinemas from '../pages/CinemasPage/ListCinemas'
+import AddCinemasPage from '../pages/CinemasPage/AddCinemaForm'
 
 import UserList from '../pages/User/List'
 import UserEdit from '../pages/User/Edit'
@@ -17,39 +21,53 @@ import EditFood from '../pages/Food/Edit'
 const Routermain = () => {
   const element = useRoutes([
     {
-      path:"",
+      path:"/",
       element:<User/>,
       children:[
         {
+          path:"/",
+          element:<DashboardUser/>
+        }
+      ]
+    },
+    {
+      path:"admin",
+      element:<Admin/>,
+      children:[
+        {
           path:"",
-          element:<Dashboard/>
+          element:<DashboardAdmin/>
         },
         {
           path:"movies/list",
           element:<List/>
         },
         {
-          path:"movies/edit/:id",
-          element:<Edit/>
+          path:"category_chair/list",
+          element:<ListCategoryChair/>
         },
         {
           path:"movies/add",
-          element:<Add/>
+          element:<AddMoviesPage/>
         },
-
-
-        
-
         {
-        path:"/users",
+          path:"cinemas/list",
+          element:<ListCinemas/>
+        },
+        {
+          path:"cinemas/add",
+          element:<AddCinemasPage/>
+        },
+        {
+        path:"users",
         element:<UserList/>
         },
         {
-        path:"/users/add",
+        path:"users/add",
         element:<UserAdd/>
         },
         {
-        path:"/users/edit/:id",
+        path:"users/edit/:id",
         element:<UserEdit/>
         },
         {
@@ -58,19 +76,19 @@ const Routermain = () => {
         },
 
          {
-          path:"/food",
+          path:"food",
           element:<FoodList/>
         },
         {
-          path:"/food/add",
+          path:"food/add",
           element:<AddFood/>
         },
         {
-          path:"/food/edit/:id",
+          path:"food/edit/:id",
           element:<EditFood/>
         }
       ]
-    }
+    },
   ])
   return (
     <div>{element}</div>

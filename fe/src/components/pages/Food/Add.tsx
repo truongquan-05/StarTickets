@@ -1,28 +1,57 @@
-import FoodForm from '../../../components/Food/FoodForm';
-import { createFood } from '../../provider/index';
-import { useNavigate } from 'react-router-dom';
-import { message } from 'antd'; 
+// pages/Food/FoodAdd.tsx
 
-const AddFood = () => {
-  const navigate = useNavigate();
+import { Form, Input, InputNumber, Button } from "antd";
+import { useCreateFood } from "../../hook/duHook";
+import { Food } from "../../types/Uses";
 
-  const handleFinish = async (values: any) => {
-    const image = values.image?.file?.name || '';
-    try {
-      await createFood({ ...values, image });
-      message.success('Thêm món ăn thành công'); 
-      navigate('/food');
-    } catch {
-      message.error('Thêm món ăn thất bại'); 
-    }
+
+const FoodAdd = () => {
+  
+  const [form] = Form.useForm();
+  const createFood = useCreateFood();
+
+  const onFinish = (values: Omit<Food, "id">) => {
+    createFood.mutate(values);
   };
 
   return (
-    <div>
-      <h2>Thêm đồ ăn</h2>
-      <FoodForm onFinish={handleFinish} />
-    </div>
+    <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form.Item name="ten_do_an" label="Tên món ăn" rules={[{ required: true, message: "Không được để trống" }]}>
+        <Input />
+      </Form.Item>
+
+      <Form.Item name="mo_ta" label="Mô tả" rules={[{ required: true, message: "Không được để trống" }]}>
+        <Input.TextArea rows={3} />
+      </Form.Item>
+
+      <Form.Item
+        name="gia"
+        label="Giá"
+        rules={[
+          { required: true, message: "Không được để trống" },
+          { type: "number", min: 1000, message: "Giá phải lớn hơn 1000" },
+        ]}
+      >
+        <InputNumber style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item
+        name="so_luong_ton"
+        label="Số lượng tồn"
+        rules={[
+          { required: true, message: "Không được để trống" },
+          { type: "number", min: 0, message: "Số lượng tồn phải từ 0 trở lên" },
+        ]}
+      >
+        <InputNumber style={{ width: "100%" }} />
+      </Form.Item>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">Thêm</Button>
+      </Form.Item>
+    </Form>
+    
   );
 };
 
-export default AddFood;
+export default FoodAdd;

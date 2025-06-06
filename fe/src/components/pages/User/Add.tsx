@@ -1,20 +1,15 @@
 import { message } from "antd";
 import UserForm from "../../../components/User/UserForm";
-import { createUser } from "../../provider/index";
-import { useNavigate } from "react-router-dom";
+import { useCreateUser } from "../../hook/duHook";
 
 const UserAdd = () => {
-  const navigate = useNavigate();
-
+   const { mutate: createUser } = useCreateUser({ resource: "users" });
   const handleSubmit = (data: any) => {
-  createUser(data)
-    .then(() => {
-      message.success("Thêm thành công");
-      navigate("/users");
-    })
-    .catch(() => {
-      message.error("Thêm thất bại, vui lòng thử lại");
-    });
+    try {
+      createUser(data)
+    } catch {
+      message.error("Xoá thất bại, vui lòng thử lại");
+    }
 };
 
 

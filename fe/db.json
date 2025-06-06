@@ -1,73 +1,37 @@
 {
   "users": [
     {
-      "name": "Sản phẩm 2",
-      "email": "dunhph50785@gmail.com",
-      "password": "88888888",
-      "confirmPassword": "88888888",
-      "phone": "0981876875",
-      "avatar": "https://heucollege.edu.vn/upload/2025/03/bo-99-anh-avatar-dep-cho-con-gai-ngau-chat-nhat-viet-nam-2.webp",
-      "role": "user",
-      "isActive": false,
-      "id": 2
-    },
-    {
-      "name": "Nguyễn Hoàng Du",
-      "email": "dunhph50785@gmail.com",
-      "password": "99999999",
-      "confirmPassword": "99999999",
-      "phone": "0981876875",
-      "avatar": "https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/459/anh-avatar-fb-5.jpg",
-      "role": "admin",
-      "isActive": true,
-      "id": 4
-    },
-    {
-      "name": "Nguyễn Hoàng Du",
-      "email": "dunhph50785@gmail.com",
-      "password": "12345678",
-      "confirmPassword": "12345678",
-      "phone": "0981876875",
-      "avatar": "https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/459/anh-avatar-fb-5.jpg",
-      "role": "user",
-      "isActive": true,
-      "id": 5
-    },
-    {
-      "name": "Nguyễn Hoàng Du",
+      "name": "fdfsdsdddddddđ",
       "email": "dunhph50785@gmail.com",
       "password": "123456",
       "confirmPassword": "123456",
       "phone": "0981876875",
-      "avatar": "https://heucollege.edu.vn/upload/2025/03/bo-99-anh-avatar-dep-cho-con-gai-ngau-chat-nhat-viet-nam-2.webp",
+      "avatar": "https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/459/anh-avatar-fb-5.jpg",
       "role": "user",
       "isActive": true,
-      "id": 6
+      "id": 1
     }
   ],
   "food": [
     {
-      "name": "cocaa",
-      "type": "Nướng",
-      "price": 312323,
-      "image": "tải xuống.jpg",
-      "status": true,
-      "description": "wd",
-      "id": 1
+      "ten_do_an": "sdsds4242343",
+      "mo_ta": "dsads",
+      "gia": 321323,
+      "so_luong_ton": 2121,
+      "id": 4
     },
     {
-      "name": "nước",
-      "type": "Nước",
-      "price": 2313,
-      "image": "638F6191-CB26-4370-BA5D-F5D8B72B38E2.png",
-      "status": true,
-      "id": 2
+      "ten_do_an": "cơm",
+      "mo_ta": "dsdsd",
+      "gia": 12312,
+      "so_luong_ton": 3213,
+      "id": 5
     }
   ],
   "genres": [
     {
       "name": "Hài hước",
-      "isDeleted": false,
+      "isDeleted": true,
       "id": 1
     },
     {
@@ -79,39 +43,92 @@
       "name": "Hoạt hình",
       "isDeleted": false,
       "id": 4
-    },
-    {
-      "name": "Tình cảm",
-      "isDeleted": true,
-      "id": 5
     }
   ],
-  "movies": [
+  "phim": [
     {
-      "id": 1,
-      "title": "Avengers: Endgame",
-      "poster": "https://cinestar.com.vn/_next/image/?url=https%3A%2F%2Fapi-website.cinestar.com.vn%2Fmedia%2Fwysiwyg%2FPosters%2F05-2025%2Fbuon-than-ban-thanh.jpg&w=1920&q=75",
-      "description": "Cuộc chiến cuối cùng chống lại Thanos",
-      "duration": 181,
-      "genre": "Hành động",
-      "rating": "13+"
+      "ten_phim": "Avengers: Endgame ",
+      "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
+      "thoi_luong": 181,
+      "trailer": "https://youtube.com/watch?v=TcMBFSGVi1c",
+      "ngon_ngu": "Tiếng Anh",
+      "quoc_gia": "Mỹ",
+      "anh_poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlyzfAy8xFShylyYTGhue0JryA1NJMzYpnigMK4pEIUU3qIPut4skv32uYatUhUU6sRKjffaBYMnGLslcEgBXdpXlgDXZG7Yv9aqRmG2DZOw",
+      "ngay_cong_chieu": "2019-04-26",
+      "do_tuoi_gioi_han": 13,
+      "trang_thai": true,
+      "the_loai_id": 2,
+      "id": 1
+    },
+    {
+      "ten_phim": "Parasite 111",
+      "mo_ta": "Một bộ phim tâm lý xã hội Hàn Quốc đoạt giải Oscar.",
+      "thoi_luong": 132,
+      "trailer": "https://youtube.com/watch?v=5xH0HfJHsaY",
+      "ngon_ngu": "Tiếng Hàn",
+      "quoc_gia": "Hàn Quốc",
+      "anh_poster": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRfRdDvnOOpyqJUy2uS0NSES30HSz5CAAd-sxSK9ratdCXE7ljR7qIAtK4IhDqrp9c_z_1CDzUmsx3DrUE8h_773pl8ElZ06d5ovmu0khi-",
+      "ngay_cong_chieu": "2019-05-30",
+      "do_tuoi_gioi_han": 16,
+      "trang_thai": false,
+      "the_loai_id": 3,
+      "id": 2,
+      "tinh_trang": "Sắp chiếu"
+    }
+  ],
+  "the_loai": [
+    {
+      "id": "1",
+      "name": "Hành động"
+    },
+    {
+      "id": "2",
+      "name": "Tâm lý"
+    },
+    {
+      "id": 3,
+      "name": "Viễn tưởng"
+    }
+  ],
+  "loai_ghe": [
+    {
+      "name": "Đơn thường ",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "name": "Đơn vip"
+    },
+    {
+      "id": 3,
+      "name": "Đôi"
     }
   ],
   "cinemas": [
     {
-      "id": 1,
+      "id": "1",
       "name": "CGV Vincom",
       "address": "Vincom Đồng Khởi, Q.1, TP.HCM"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Lotte Cinema",
       "address": "Lotte Mart Q.7, TP.HCM"
+    },
+    {
+      "name": "Oppo A9",
+      "address": "51/6 Ngọa Long Minh Khai",
+      "id": "LPBVOB8"
+    },
+    {
+      "name": "Thịnh",
+      "address": "51/6 Ngọa Long ",
+      "id": "SEy4a-u"
     }
   ],
   "showtimes": [
     {
-      "id": 1,
+      "id": "1",
       "movieId": 1,
       "cinemaId": 1,
       "datetime": "2025-05-12T19:00:00"
@@ -119,13 +136,13 @@
   ],
   "seats": [
     {
-      "id": 1,
+      "id": "1",
       "showtimeId": 1,
       "seatNumber": "A1",
       "isBooked": false
     },
     {
-      "id": 2,
+      "id": "2",
       "showtimeId": 1,
       "seatNumber": "A2",
       "isBooked": true

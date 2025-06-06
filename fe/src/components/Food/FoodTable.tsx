@@ -1,5 +1,5 @@
-import { Table, Switch, Button, Popconfirm } from 'antd';
-import { Food } from '../types/Uses';
+import { Table, Button, Popconfirm } from 'antd';
+import { Food } from '../types/Uses'; // chỉnh lại nếu path khác
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import React from 'react';
 
@@ -17,33 +17,39 @@ const FoodTable: React.FC<Props> = ({ foods, onEdit, onDelete }) => {
     },
     {
       title: 'Tên đồ ăn',
-      dataIndex: 'name',
+      dataIndex: 'ten_do_an',
     },
     {
-      title: 'Loại đồ ăn',
-      dataIndex: 'type',
-    },
-    {
-      title: 'Hình ảnh',
-      dataIndex: 'image',
-      render: (url: string) => <img src={url} alt="food" width={50} />,
+      title: 'Mô tả',
+      dataIndex: 'mo_ta',
     },
     {
       title: 'Giá',
-      dataIndex: 'price',
-      render: (value: number) => `${value} ₫`,
+      dataIndex: 'gia',
+      render: (value?: number) =>
+        value !== undefined && value !== null ? `${value.toLocaleString()} ₫` : 'N/A',
     },
     {
-      title: 'Hoạt động',
-      dataIndex: 'status',
-      render: (active: boolean) => <Switch checked={active} disabled />,
+      title: 'Số lượng tồn',
+      dataIndex: 'so_luong_ton',
+      render: (value?: number) =>
+        value !== undefined && value !== null ? value.toString() : 'N/A',
     },
     {
-      title: 'Action',
+      title: 'Hành động',
       render: (_: any, record: Food) => (
         <>
-          <Button icon={<EditOutlined />} onClick={() => onEdit(record.id)} style={{ marginRight: 8 }} />
-          <Popconfirm title="Bạn có muốn xóa nó không?" onConfirm={() => onDelete(record.id)}>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => onEdit(record.id)}
+            style={{ marginRight: 8 }}
+          />
+          <Popconfirm
+            title="Bạn có chắc chắn muốn xóa món ăn này?"
+            onConfirm={() => onDelete(record.id)}
+            okText="Xóa"
+            cancelText="Hủy"
+          >
             <Button icon={<DeleteOutlined />} danger />
           </Popconfirm>
         </>

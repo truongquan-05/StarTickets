@@ -122,7 +122,35 @@ class VaiTroController extends Controller
         $data->delete();
         return response()->json([
             'message' => 'Xóa thành công',
-            
+
         ]);
     }
+    //Xóa mềm + Khôi phục
+    // public function restore(string $id)
+    // {
+    //     $data = VaiTro::withTrashed()->find($id);
+    //     if (!$data) {
+    //         return response()->json([
+    //             'message' => 'Không tìm thấy dữ liệu'
+    //         ], 404);
+    //     }
+    //     $data->restore();
+    //     return response()->json([
+    //         'message' => 'Khôi phục thành công',
+    //         'data' => $data
+    //     ]);
+    // }
+    // public function forceDelete(string $id)
+    // {
+    //     $data = VaiTro::withTrashed()->find($id);
+    //     if (!$data) {
+    //         return response()->json([
+    //             'message' => 'Không tìm thấy dữ liệu'
+    //         ], 404);
+    //     }
+    //     $data->forceDelete();
+    //     return response()->json([
+    //         'message' => 'Xóa vĩnh viễn thành công',
+    //     ]);
+    // }
 }

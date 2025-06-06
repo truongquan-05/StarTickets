@@ -1,5 +1,17 @@
+@import url("linearicon.css");
+@import url("animate.css");
+@import url("bootstrap.css");
+@import url("datatables.css");
+@import url("feather-icon.css");
+@import url("font-awesome.css");
+@import url("remixicon.css");
+@import url("scrollbar.css");
+@import url("style.css");
+@import url("themify.css");
+
+
 .main-layout {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .header {
@@ -68,6 +80,87 @@
   width: 30px;
   height: 30px;
 }
-.title-page{
-  padding-left: 20px;
+
+.add-movies{
+  background-color: #43b9b2;
+  color: white;
+  font-weight: bold;
+  text-align: right;
+  margin-left: 10px;
 }
+.table{
+  margin-top: 10px;
+}
+.action-movie{
+  display: flex;
+  justify-content: flex-end;
+}
+.form-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.form-col {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.btn-category-chair{
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+.dataTables_filter{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.movie-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.movie-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.movie-table th {
+  background-color: #43b9b2;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+}
+
+.movie-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+.movie-actions {
+  display: flex;
+  gap: 10px;
+}
+.container-fluid{
+  border-radius: 5px;
+  background-color: white;
+  padding: 20px;
+}
+.btn-export{
+  color: white;
+  background-color: #1677ff;
+  display: flex;
+}
+.ten_phim{
+  padding-bottom: 20px;
+}
+

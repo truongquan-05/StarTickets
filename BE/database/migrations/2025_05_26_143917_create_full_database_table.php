@@ -40,6 +40,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ten_the_loai', 100);
             $table->timestamps();
+             $table->softDeletes();
             $table->softDeletes();
         });
 
@@ -67,7 +68,6 @@ return new class extends Migration {
             $table->foreignId('phim_id')->constrained('phim')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('so_sao');
             $table->text('noi_dung');
-            $table->dateTime('ngay_danh_gia');
             $table->timestamps();
         });
 
@@ -83,6 +83,10 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('rap_id')->constrained('rap')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ten_phong', 100);
+            $table->integer('loai_so_do');
+            $table->integer('hang_thuong');
+            $table->integer('hang_doi');
+            $table->integer('hang_vip');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -98,6 +102,9 @@ return new class extends Migration {
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('loai_ghe_id')->constrained('loai_ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->string('so_ghe', 10);
+            $table->char('hang', 1);
+            $table->unsignedTinyInteger('cot');
+            $table->boolean('trang_thai')->default(true);
             $table->timestamps();
         });
 
@@ -185,6 +192,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ma', 50)->unique();
             $table->integer('phan_tram_giam');
+            $table->json('dieu_kien');
             $table->date('han_su_dung');
             $table->date('ngay_bat_dau');
             $table->integer('so_lan_su_dung');
@@ -206,7 +214,6 @@ return new class extends Migration {
             $table->string('tieu_de', 255);
             $table->text('noi_dung');
             $table->string('hinh_anh', 255);
-            $table->date('ngay_dang');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -226,6 +233,16 @@ return new class extends Migration {
             $table->integer('so_diem');
             $table->text('mo_ta')->nullable();
             $table->string('loai_giao_dich', 100);
+            $table->timestamps();
+        });
+
+        Schema::create('phan_hoi_khach_hang', function (Blueprint $table) {
+            $table->id();
+            $table->string('ho_ten', 100);
+            $table->string('email', 100);
+            $table->string('so_dien_thoai', 15);
+            $table->text('noi_dung');
+              $table->boolean('trang_thai')->default(false);
             $table->timestamps();
         });
 

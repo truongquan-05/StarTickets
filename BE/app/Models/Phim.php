@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Phim extends Model
+{
+      use SoftDeletes;
+    protected $table = 'phim';
+    protected $fillable = [
+        'ten_phim',
+        'mo_ta',
+        'thoi_luong',
+        'trailer',
+        'ngon_ngu',
+        'quoc_gia',
+        'anh_poster',
+        'ngay_cong_chieu',
+        'tinh_trang',
+        'do_tuoi_gioi_han',
+        'trang_thai',
+        'the_loai_id'
+    ];
+    
+    // protected $dates = ['deleted_at', 'ngay_cong_chieu'];
+    public function theLoai()
+    {
+        return $this->belongsTo(TheLoai::class, 'the_loai_id');
+    }
+}
