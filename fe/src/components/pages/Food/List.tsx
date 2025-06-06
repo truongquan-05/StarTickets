@@ -43,7 +43,7 @@ const FoodList = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={() => navigate('/food/add')} style={{ marginBottom: 16 }}>
+      <Button type="primary" onClick={() => navigate('/food/add')} style={{ marginBottom: 16, marginLeft: 1200 }}>
         + Thêm đồ ăn
       </Button>
       <FoodTable

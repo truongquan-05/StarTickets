@@ -47,7 +47,7 @@
   ],
   "food": [
     {
-      "name": "dvdfdf",
+      "name": "cocaa",
       "type": "Nướng",
       "price": 312323,
       "image": "tải xuống.jpg",
@@ -82,7 +82,7 @@
     },
     {
       "name": "Tình cảm",
-      "isDeleted": false,
+      "isDeleted": true,
       "id": 5
     }
   ],
