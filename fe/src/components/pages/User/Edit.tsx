@@ -5,7 +5,7 @@ import { getUserById } from "../../provider/duProvider";
 import { User } from "../../types/Uses";
 import { useUpdateUser } from "../../hook/duHook";
 
-const Edit = () => {
+const UserEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
@@ -31,4 +31,4 @@ const Edit = () => {
   return <UserForm initialData={user} onSubmit={handleSubmit} />;
 };
 
-export default Edit;
+export default UserEdit;

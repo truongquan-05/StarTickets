@@ -14,18 +14,18 @@
   ],
   "food": [
     {
-      "ten_do_an": "sdsds4242343",
-      "mo_ta": "dsads",
-      "gia": 321323,
-      "so_luong_ton": 2121,
-      "id": 4
+      "ten_do_an": "cơm",
+      "mo_ta": "cơm cà ri",
+      "gia": 1000,
+      "so_luong_ton": 30,
+      "id": 1
     },
     {
-      "ten_do_an": "cơm",
-      "mo_ta": "dsdsd",
-      "gia": 12312,
-      "so_luong_ton": 3213,
-      "id": 5
+      "ten_do_an": "Bánh mỳ",
+      "mo_ta": "bánh mỳ thập cẩm",
+      "gia": 120,
+      "so_luong_ton": 32,
+      "id": 2
     }
   ],
   "genres": [

@@ -8,7 +8,7 @@ import { useDeleteUser, useListUsers } from "../../hook/duHook";
 
 const { Title } = Typography;
 
-const List = () => {
+const UserList = () => {
   const { data, isLoading } = useListUsers({ resource: "users" });
   const { mutate: deleteUser } = useDeleteUser({ resource: "users" });
   
@@ -125,4 +125,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default UserList;

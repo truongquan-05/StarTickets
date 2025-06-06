@@ -29,7 +29,7 @@ const FoodAdd = () => {
         label="Giá"
         rules={[
           { required: true, message: "Không được để trống" },
-          { type: "number", min: 1000, message: "Giá phải lớn hơn 1000" },
+          { type: "number", min: 100, message: "Giá phải lớn hơn 100" },
         ]}
       >
         <InputNumber style={{ width: "100%" }} />
