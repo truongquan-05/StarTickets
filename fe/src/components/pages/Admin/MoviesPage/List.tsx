@@ -28,6 +28,7 @@ import {
 } from "../../../hook/hungHook";
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
+import { ColumnsType } from "antd/es/table";
 
 const { Option } = Select;
 const { Text, Paragraph } = Typography;
@@ -43,9 +44,13 @@ const List = () => {
   const [editingItem, setEditingItem] = useState<IMovies | undefined>(
     undefined
   );
-  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>([]);
+  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>(
+    []
+  );
   const [filePoster, setFilePoster] = useState<File | null>(null);
-  const [anhPosterPreview, setAnhPosterPreview] = useState<string | undefined>();
+  const [anhPosterPreview, setAnhPosterPreview] = useState<
+    string | undefined
+  >();
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -142,14 +147,14 @@ const List = () => {
   };
 
   // Định nghĩa cột cho Ant Design Table
-  const columns = [
+  const columns: ColumnsType<IMovies> = [
     {
       title: "#ID",
       dataIndex: "id",
       key: "id",
       width: 70,
       sorter: (a: IMovies, b: IMovies) => a.id - b.id,
-      fixed: "left",
+      fixed: "left" as const,
     },
     {
       title: "Poster",
@@ -221,8 +226,7 @@ const List = () => {
         { text: "Đang chiếu", value: "Đang chiếu" },
         { text: "Đã chiếu", value: "Đã chiếu" },
       ],
-      onFilter: (value: string, record: IMovies) =>
-        record.tinh_trang === value,
+      onFilter: (value, record) => record.trang_thai === (value === true),
       render: (text: string) => (
         <Text
           style={{
@@ -254,14 +258,18 @@ const List = () => {
       key: "trang_thai",
       width: 100,
       filters: [
-        { text: "Hiển thị", value: 1 },
-        { text: "Ẩn", value: 0 },
+        { text: "Hiển thị", value: true },
+        { text: "Ẩn", value: false },
       ],
-      onFilter: (value: number, record: IMovies) =>
-        record.trang_thai === value,
-      render: (status: number) => (
-        <Text type={status === 1 ? "success" : "secondary"}>
-          {status === 1 ? "Hiển thị" : "Ẩn"}
+      onFilter: (value: boolean | React.Key, record: IMovies) => {
+        if (typeof value === "boolean") {
+          return record.trang_thai === value;
+        }
+        return false; // trường hợp khác trả false
+      },
+      render: (status: boolean) => (
+        <Text type={status ? "success" : "secondary"}>
+          {status ? "Hiển thị" : "Ẩn"}
         </Text>
       ),
     },
@@ -269,7 +277,7 @@ const List = () => {
       title: "Hành động",
       key: "action",
       width: 130,
-      fixed: "right",
+      fixed: "right" as const,
       render: (_: any, record: IMovies) => (
         <Space>
           <Button
@@ -286,7 +294,12 @@ const List = () => {
             okText="Xóa"
             cancelText="Hủy"
           >
-            <Button type="default" danger icon={<DeleteOutlined />} size="small">
+            <Button
+              type="default"
+              danger
+              icon={<DeleteOutlined />}
+              size="small"
+            >
               Xóa
             </Button>
           </Popconfirm>
@@ -348,41 +361,6 @@ const List = () => {
             >
               <Input placeholder="Nhập tên phim" />
             </Form.Item>
-
-            <Form.Item
-              label="Mô tả"
-              name="mo_ta"
-              rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
-            >
-              <Input.TextArea
-                rows={4}
-                placeholder="Nhập mô tả phim"
-                maxLength={500}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Trailer (URL)"
-              name="trailer"
-              rules={[
-                { type: "url", message: "Đường dẫn trailer không hợp lệ" },
-              ]}
-            >
-              <Input placeholder="Nhập link trailer" />
-            </Form.Item>
-
-            <Form.Item label="Poster" name="anh_poster">
-              <input type="file" accept="image/*" onChange={onAnhPosterChange} />
-              {anhPosterPreview && (
-                <Image
-                  src={anhPosterPreview}
-                  alt="Preview Poster"
-                  style={{ marginTop: 12, borderRadius: 6, maxWidth: "100%" }}
-                  preview={false}
-                />
-              )}
-            </Form.Item>
-
             <Form.Item
               label="Thời lượng (phút)"
               name="thoi_luong"
@@ -406,23 +384,6 @@ const List = () => {
                 style={{ width: "100%" }}
               />
             </Form.Item>
-
-            <Form.Item
-              label="Ngôn ngữ"
-              name="ngon_ngu"
-              rules={[{ required: true, message: "Vui lòng nhập ngôn ngữ" }]}
-            >
-              <Input placeholder="Nhập ngôn ngữ phim" />
-            </Form.Item>
-
-            <Form.Item
-              label="Quốc gia"
-              name="quoc_gia"
-              rules={[{ required: true, message: "Vui lòng nhập quốc gia" }]}
-            >
-              <Input placeholder="Nhập quốc gia" />
-            </Form.Item>
-
             <Form.Item
               label="Thể loại"
               name="the_loai_id"
@@ -456,7 +417,11 @@ const List = () => {
               <InputNumber style={{ width: "100%" }} />
             </Form.Item>
 
-            <Form.Item label="Trạng thái" name="trang_thai" valuePropName="checked">
+            <Form.Item
+              label="Trạng thái"
+              name="trang_thai"
+              valuePropName="checked"
+            >
               <Select>
                 <Option value={1}>Hiển thị</Option>
                 <Option value={0}>Ẩn</Option>
