@@ -1,44 +1,116 @@
+// src/Layouts/AdminLayout/HeaderAdmin.tsx
 import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  QrcodeOutlined,
+  FullscreenOutlined,
+  FullscreenExitOutlined,
+  BulbOutlined,
+  BulbFilled,
   UserOutlined,
-  DownOutlined,
-  MenuOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import { Avatar, Button, Dropdown, Layout, Menu } from "antd";
-import ImageMain from "../../../assets/logo.png";
-import Flag from "../../../assets/cờ.jpg"
+} from '@ant-design/icons';
+import {
+  Layout,
+  Button,
+  Space,
+  Avatar,
+  Typography,
+  Dropdown,
+  theme as antdTheme,
+  Menu,
+} from 'antd';
+import { useState } from 'react';
+
 const { Header } = Layout;
-const userMenu = (
-  <Menu
-    items={[
-      { key: "1", label: "Profile" },
-      { key: "2", label: "Logout" },
-    ]}
-  />
-);
-const HeaderAdmin = () => {
+const { Text } = Typography;
+
+const HeaderAdmin = ({
+  collapsed,
+  setCollapsed,
+}: {
+  collapsed: boolean;
+  setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const { token } = antdTheme.useToken();
+
+  const toggleFullScreen = async () => {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+      setIsFullScreen(true);
+    } else {
+      await document.exitFullscreen();
+      setIsFullScreen(false);
+    }
+  };
+
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    document.body.setAttribute('data-theme', newMode ? 'dark' : 'light');
+  };
+
+  const user = {
+    name: 'Nguyễn Văn A',
+    role: 'Quản trị viên',
+    avatar: '',
+  };
+
+  const accountMenu = (
+    <Menu
+      items={[
+        { key: '1', label: 'Thông tin cá nhân' },
+        { key: '2', label: 'Đăng xuất' },
+      ]}
+    />
+  );
+
   return (
-    <Header className="header">
-      <div className="header-left">
-        <img className="imgMain" src={ImageMain} alt="Logo" />
-        <Button id="toggle-btn" type="text" icon={<MenuOutlined />} />
-        <div className="search">
-          <input className="searchInput" type="text" placeholder="Tìm kiếm ..."/>
-          <Button className="button-search" icon={<SearchOutlined/>} htmlType="submit"></Button>
-        </div>
-      </div>
-      <Dropdown overlay={userMenu} placement="bottomRight" arrow>
-        <div className="user-info">
-          <div className="flag">
-            <img src={Flag} alt="" />
-          </div>
-          <div className="avatar">
-            <Avatar icon={<UserOutlined />} />
-          <span className="user-name">Wade Warren</span>
-          </div>
-          <DownOutlined />
-        </div>
-      </Dropdown>
+    <Header
+      style={{
+        padding: '0 16px',
+        background: token.colorBgContainer,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}
+    >
+      <Button
+        type="text"
+        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        onClick={() => setCollapsed(!collapsed)}
+        style={{ fontSize: 18 }}
+      />
+      <Space size="middle">
+        <Button type="text" icon={<QrcodeOutlined />} />
+        <Button
+          type="text"
+          icon={isFullScreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+          onClick={toggleFullScreen}
+        />
+        <Button
+          type="text"
+          icon={darkMode ? <BulbFilled /> : <BulbOutlined />}
+          onClick={toggleDarkMode}
+        />
+        <Dropdown overlay={accountMenu} placement="bottomRight">
+          <Space>
+            <Avatar
+              icon={<UserOutlined />}
+              src={user.avatar}
+              style={{ backgroundColor: '#87d068' }}
+            />
+            <div style={{ lineHeight: 1 }}>
+              <Text strong>Xin chào: {user.name}</Text>
+              <br />
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                {user.role}
+              </Text>
+            </div>
+          </Space>
+        </Dropdown>
+      </Space>
     </Header>
   );
 };
