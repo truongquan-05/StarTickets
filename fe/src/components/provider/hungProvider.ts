@@ -10,6 +10,7 @@ const axiosClient = axios.create({
   },
 });
 
+
 export type Props = {
   resource: string;
   id?: number | string;
@@ -27,9 +28,7 @@ export const getDeleteMovies = async ({resource = "phim" , id} : Props) => {
 }
 
 export const getCreateMovies = async ({ resource = "phim", values }: Props) => {
-  const { data } = await axiosClient.post(resource, values, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const { data } = await axiosClient.post(resource, values);
   return data;
 };
 
