@@ -1,8 +1,7 @@
-import { Table, Switch, Button, Popconfirm } from 'antd';
-import { Food } from '../types/Uses';
+import { Table, Button, Popconfirm } from 'antd';
+import { Food } from '../types/Uses'; // chỉnh lại nếu path khác
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
 interface Props {
   foods: Food[];
@@ -10,18 +9,7 @@ interface Props {
   onDelete: (id: number) => void;
 }
 
-const FoodTable: React.FC<Props> = ({ onEdit, onDelete }) => {
-  const [food, setFoods] = useState<Food[]>([]);
-  useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/do_an')
-      .then(res => {
-        setFoods(res.data.data);
-      })
-      .catch(err => {
-        console.error('Lỗi lấy dữ liệu:', err);
-      });
-  }, []);
-  
+const FoodTable: React.FC<Props> = ({ foods, onEdit, onDelete }) => {
   const columns = [
     {
       title: '#',
@@ -38,19 +26,30 @@ const FoodTable: React.FC<Props> = ({ onEdit, onDelete }) => {
     {
       title: 'Giá',
       dataIndex: 'gia',
-      render: (value: number) => `${value} ₫`,
+      render: (value?: number) =>
+        value !== undefined && value !== null ? `${value.toLocaleString()} ₫` : 'N/A',
     },
     {
       title: 'Số lượng tồn',
       dataIndex: 'so_luong_ton',
-      render: (value: number) => `${value}`,
+      render: (value?: number) =>
+        value !== undefined && value !== null ? value.toString() : 'N/A',
     },
     {
-      title: 'Action',
+      title: 'Hành động',
       render: (_: any, record: Food) => (
         <>
-          <Button icon={<EditOutlined />} onClick={() => onEdit(record.id)} style={{ marginRight: 8 }} />
-          <Popconfirm title="Bạn có muốn xóa nó không?" onConfirm={() => onDelete(record.id)}>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => onEdit(record.id)}
+            style={{ marginRight: 8 }}
+          />
+          <Popconfirm
+            title="Bạn có chắc chắn muốn xóa món ăn này?"
+            onConfirm={() => onDelete(record.id)}
+            okText="Xóa"
+            cancelText="Hủy"
+          >
             <Button icon={<DeleteOutlined />} danger />
           </Popconfirm>
         </>
@@ -58,7 +57,7 @@ const FoodTable: React.FC<Props> = ({ onEdit, onDelete }) => {
     },
   ];
 
-  return <Table rowKey="id" columns={columns} dataSource={food} />;
+  return <Table rowKey="id" columns={columns} dataSource={foods} />;
 };
 
 export default FoodTable;

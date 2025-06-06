@@ -1,25 +1,28 @@
-import { useEffect, useState } from "react";
-import { getUsers, deleteUser } from "../../provider/duProvider";
-import { User } from "../../types/Uses";
-import { Link } from "react-router-dom";
 import {Table, Button,Popconfirm,Space,Avatar,message,Tag,Card,Typography,
 } from "antd";
+import { Link } from "react-router-dom";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+
+import { User } from "../../types/Uses";
+import { useDeleteUser, useListUsers } from "../../hook/duHook";
 
 const { Title } = Typography;
 
-const List = () => {
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    getUsers().then((res) => setUsers(res.data));
-  }, []);
+const UserList = () => {
+  const { data, isLoading } = useListUsers({ resource: "users" });
+  const { mutate: deleteUser } = useDeleteUser({ resource: "users" });
+  
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteUser(id);
-      setUsers(users.filter((u) => u.id !== id));
-      message.success("Đã xoá thành công");
+          deleteUser(id, {
+            onSuccess: () => {
+              message.success(`Deleted user success`);
+            },
+            onError: () => {
+              message.error("Delete user failed");
+            },
+          });
     } catch (error) {
       message.error("Xoá thất bại, vui lòng thử lại");
       console.log(error);
@@ -74,7 +77,7 @@ const List = () => {
       key: "action",
       render: (_: any, record: User) => (
         <Space>
-          <Link to={`/users/edit/${record.id}`}>
+          <Link to={`/admin/users/edit/${record.id}`}>
             <Button type="primary" icon={<EditOutlined />} />
           </Link>
           <Popconfirm
@@ -103,16 +106,16 @@ const List = () => {
         <Title level={3} style={{ margin: 0 }}>
            Danh sách người dùng
         </Title>
-        <Link to="/users/add">
+        <Link to="/admin/users/add">
           <Button type="primary" icon={<PlusOutlined />}>
             Thêm người dùng
           </Button>
-        </Link>
+        </Link> 
       </div>
 
       <Table
         rowKey="id"
-        dataSource={users}
+        dataSource={data}
         columns={columns}
         bordered
         pagination={{ pageSize: 5 }}
@@ -122,4 +125,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default UserList;

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Food, User } from "../types/Uses";
+import { User } from "../types/Uses";
 
 const token = localStorage.getItem("token");
 
@@ -16,38 +16,64 @@ export type Props = {
   values?: any;
 };
 
-export const getUsers = () => axiosClient.get<User[]>("users");
+export const getListUsers = async ({resource = "users"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data
+}
 
-export const getUserById = (id: number) => axiosClient.get<User>(`users/${id}`);
+export const getDeleteUsers = async ({resource = "users" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
 
-export const createUser = (user: Omit<User, "id">) => axiosClient.post("users", user);
+export const getCreateUsers = async ({ resource = "users", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values);
+  return data;
+};
 
-export const updateUser = (id: number, user: Partial<User>) => axiosClient.put(`users/${id}`, user);
 
-export const deleteUser = (id: number) => axiosClient.delete(`users/${id}`);
+export const getUpdateUsers = async ({ resource = "users", id, values }: Props) => {
+  if (!id) return;
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  }
+
+  // Nếu không có file, thì dùng PUT bình thường
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  return data;
+};
+export const getUserById = async (id: number | string) => {
+  const { data } = await axiosClient.get<User>(`users/${id}`);
+  return data;
+};
+
 // === Food APIs ===
 
+export const getListFoods = async ({ resource = "food" }: Props) => {
+  const { data } = await axiosClient.get(`${resource}`);
+  return data;
+};
 
-export const getFoodById = (id: number) => axiosClient.get<Food>(`do_an/${id}`);
+export const getDeleteFood = async ({ resource = "food", id }: Props) => {
+  return await axiosClient.delete(`${resource}/${id}`);
+};
 
-export const createFood = (food: Omit<Food, "id">) => axiosClient.post("do_an", food);
+export const getCreateFood = async ({ resource = "food", values }: Props) => {
+  return await axiosClient.post(`${resource}`, values);
+};
 
-export const updateFood = (id: number, food: Partial<Food>) =>
-  axiosClient.put(`do_an/${id}`, food);
+export const getUpdateFood = async ({ resource = "food", id, values }: Props) => {
+  return await axiosClient.put(`${resource}/${id}`, values);
+};
 
-export const deleteFood = (id: number) => axiosClient.delete(`do_an/${id}`);
 
-// === Soft delete / Restore ===
-export const softDeleteFood = (id: number) =>
-  axiosClient.patch(`do_an/${id}`, { deleted: true });
-
-export const restoreFood = (id: number) =>
-  axiosClient.patch(`do_an/${id}`, { deleted: false });
-
-export const getActiveFoods = async () => {
-  const { data } = await axiosClient.get<Food[]>("do_an");
-  return data.filter((food) => !food.deleted);
-}
 
 
 
