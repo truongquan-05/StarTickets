@@ -9,8 +9,9 @@ import { useDeleteUser, useListUsers } from "../../hook/duHook";
 const { Title } = Typography;
 
 const UserList = () => {
-  const { data, isLoading } = useListUsers({ resource: "users" });
-  const { mutate: deleteUser } = useDeleteUser({ resource: "users" });
+  const { data, isLoading } = useListUsers({ resource: "nguoi_dung" });
+  const dataSource = data?.data || [];
+  const { mutate: deleteUser } = useDeleteUser({ resource: "nguoi_dung" });
   
 
   const handleDelete = async (id: number) => {
@@ -115,7 +116,7 @@ const UserList = () => {
 
       <Table
         rowKey="id"
-        dataSource={data}
+        dataSource={dataSource}
         columns={columns}
         bordered
         pagination={{ pageSize: 5 }}

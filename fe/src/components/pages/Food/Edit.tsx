@@ -13,7 +13,7 @@ const FoodEdit = () => {
 
   useEffect(() => {
     const fetchFood = async () => {
-      const { data } = await axios.get<Food>(`http://localhost:3000/food/${id}`);
+      const { data } = await axios.get<Food>(`http://127.0.0.1:8000/api/do_an/${id}`);
       form.setFieldsValue(data);
     };
     if (id) fetchFood();

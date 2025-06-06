@@ -1,9 +1,9 @@
 import { message } from "antd";
-import UserForm from "../../../components/User/UserForm";
+import UserForm from "../../User/UserForm";
 import { useCreateUser } from "../../hook/duHook";
 
 const UserAdd = () => {
-   const { mutate: createUser } = useCreateUser({ resource: "users" });
+   const { mutate: createUser } = useCreateUser({ resource: "nguoi_dung" });
   const handleSubmit = (data: any) => {
     try {
       createUser(data)

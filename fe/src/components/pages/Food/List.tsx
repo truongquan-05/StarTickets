@@ -7,7 +7,8 @@ const { confirm } = Modal;
 
 const FoodList = () => {
   const navigate = useNavigate();
-  const { data: foods = [] } = useListFoods();
+  const { data:resultData} = useListFoods();
+  const foods = resultData?.data ?? [];
   const deleteFood = useDeleteFood();
 
   const handleDelete = (id: number, ten_do_an: string) => {
@@ -34,7 +35,7 @@ const FoodList = () => {
         foods={foods}
         onEdit={(id) => navigate(`/admin/food/edit/${id}`)}
         onDelete={(id) => {
-          const food = foods.find((f) => f.id === id);
+          const food = foods.find((f:any) => f.id === id);
           if (food) handleDelete(id, food.ten_do_an);
         }}
       />

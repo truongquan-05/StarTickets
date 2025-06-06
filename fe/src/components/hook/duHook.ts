@@ -8,13 +8,13 @@ import {   getCreateFood, getCreateUsers, getDeleteFood, getDeleteUsers, getList
 import { Food } from "../types/Uses";
 
 
-export const useListUsers = ({ resource = "users" } : Props) => {
+export const useListUsers = ({ resource = "nguoi_dung" } : Props) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getListUsers({ resource }),
   });
 };
-export const useDeleteUser = ({resource = "users"} : Props) => {
+export const useDeleteUser = ({resource = "nguoi_dung"} : Props) => {
   const queryclient = useQueryClient();
   return useMutation({
     mutationFn: (id ? : string | number ) => getDeleteUsers({resource , id}),
@@ -24,7 +24,7 @@ export const useDeleteUser = ({resource = "users"} : Props) => {
     }
   })
 }
-export const useCreateUser = ({resource = "users"} : Props) => {
+export const useCreateUser = ({resource = "nguoi_dung"} : Props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
@@ -45,7 +45,7 @@ export const useCreateUser = ({resource = "users"} : Props) => {
   })
 }
 
-export const useUpdateUser = ({ resource = "users" }) => {
+export const useUpdateUser = ({ resource = "nguoi_dung" }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -73,7 +73,7 @@ export const useUpdateUser = ({ resource = "users" }) => {
 
 
 // Food
-const resource = "food";  // Giữ nguyên đường dẫn 'food' ở đây.
+const resource = "do_an";  // Giữ nguyên đường dẫn 'food' ở đây.
 
 export const useListFoods = () => {
   return useQuery({

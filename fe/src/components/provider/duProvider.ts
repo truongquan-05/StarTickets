@@ -16,24 +16,24 @@ export type Props = {
   values?: any;
 };
 
-export const getListUsers = async ({resource = "users"} : Props) => {
+export const getListUsers = async ({resource = "nguoi_dung"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data
 }
 
-export const getDeleteUsers = async ({resource = "users" , id} : Props) => {
+export const getDeleteUsers = async ({resource = "nguoi_dung" , id} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.delete(`${resource}/${id}`)
   return data;
 }
 
-export const getCreateUsers = async ({ resource = "users", values }: Props) => {
+export const getCreateUsers = async ({ resource = "nguoi_dung", values }: Props) => {
   const { data } = await axiosClient.post(resource, values);
   return data;
 };
 
 
-export const getUpdateUsers = async ({ resource = "users", id, values }: Props) => {
+export const getUpdateUsers = async ({ resource = "nguoi_dung", id, values }: Props) => {
   if (!id) return;
   if (values instanceof FormData) {
     values.append("_method", "PUT");
@@ -50,26 +50,26 @@ export const getUpdateUsers = async ({ resource = "users", id, values }: Props) 
   return data;
 };
 export const getUserById = async (id: number | string) => {
-  const { data } = await axiosClient.get<User>(`users/${id}`);
+  const { data } = await axiosClient.get<User>(`nguoi_dung/${id}`);
   return data;
 };
 
 // === Food APIs ===
 
-export const getListFoods = async ({ resource = "food" }: Props) => {
+export const getListFoods = async ({ resource = "do_an" }: Props) => {
   const { data } = await axiosClient.get(`${resource}`);
   return data;
 };
 
-export const getDeleteFood = async ({ resource = "food", id }: Props) => {
+export const getDeleteFood = async ({ resource = "do_an", id }: Props) => {
   return await axiosClient.delete(`${resource}/${id}`);
 };
 
-export const getCreateFood = async ({ resource = "food", values }: Props) => {
+export const getCreateFood = async ({ resource = "do_an", values }: Props) => {
   return await axiosClient.post(`${resource}`, values);
 };
 
-export const getUpdateFood = async ({ resource = "food", id, values }: Props) => {
+export const getUpdateFood = async ({ resource = "do_an", id, values }: Props) => {
   return await axiosClient.put(`${resource}/${id}`, values);
 };
 
