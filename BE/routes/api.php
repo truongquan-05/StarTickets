@@ -51,6 +51,14 @@ Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
 
 
+Route::get('do_an', [DoAnController::class, 'index']);
+Route::post('do_an', [DoAnController::class, 'store']);
+Route::get('do_an/{id}', [DoAnController::class, 'show']);
+Route::put('do_an/{id}', [DoAnController::class, 'update']);
+Route::delete('do_an/{id}', [DoAnController::class, 'delete']);
+Route::delete('do_an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
+Route::post('do_an/restore/{id}', [DoAnController::class, 'restore']);
+
 //
 Route::apiResource('ma_tran_ghe', MaTranGheController::class);
 Route::apiResource('phong_chieu', PhongChieuController::class);
