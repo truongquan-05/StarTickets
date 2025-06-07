@@ -28,7 +28,7 @@ const UserEdit = () => {
 
   if (!user) return <div>Đang tải...</div>;
 
-  return <UserForm initialData={user} onSubmit={handleSubmit} />;
+  return <UserForm initialData={user} onSubmit={handleSubmit} isEdit={true} />;
 };
 
 export default UserEdit;

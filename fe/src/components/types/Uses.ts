@@ -5,12 +5,12 @@ export interface Genre {
 }
 export interface User {
   id: number;
-  name: string;
+  ten: string;
   email: string;
   password: string;
-  phone: string;
-  avatar: string; 
-  role: "admin" | "user";
+  so_dien_thoai: string;
+  anh_dai_dien: string; 
+  vai_tro_id: "admin" | "user";
   isActive: boolean;
 }
 export interface Food {

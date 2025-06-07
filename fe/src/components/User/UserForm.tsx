@@ -5,19 +5,20 @@ import { useEffect } from "react";
 type Props = {
   initialData?: Partial<User>;
   onSubmit: (user: Omit<User, "id">) => void;
+  isEdit?: boolean;
 };
 
-const UserForm = ({ initialData = {}, onSubmit }: Props) => {
+const UserForm = ({ initialData = {}, onSubmit, isEdit = false }: Props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
     form.setFieldsValue({
-      name: "",
+      ten: "",
       email: "",
       password: "",
-      phone: "",
-      avatar: "",
-      role: "user",
+      so_dien_thoai: "",
+      anh_dai_dien: "",
+      vai_tro_id: "",
       isActive: true,
       ...initialData,
     });
@@ -36,7 +37,7 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
     >
       <Form.Item
         label="Tên"
-        name="name"
+        name="ten"
         rules={[{ required: true, message: "Vui lòng nhập tên người dùng" }]}
       >
         <Input placeholder="Nhập tên" />
@@ -47,7 +48,7 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
         name="email"
         rules={[{ required: true, message: "Vui lòng nhập email" }]}
       >
-        <Input placeholder="Nhập email" />
+        <Input placeholder="Nhập email" disabled={isEdit} />
       </Form.Item>
 
       <Form.Item
@@ -55,7 +56,7 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
         name="password"
         rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
       >
-        <Input.Password placeholder="Nhập mật khẩu" />
+        <Input.Password placeholder="Nhập mật khẩu" disabled={isEdit}  />
       </Form.Item>
       <Form.Item
         label="Nhập lại mật khẩu"
@@ -75,12 +76,12 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
     }),
   ]}
 >
-  <Input.Password placeholder="Nhập lại mật khẩu" />
+  <Input.Password placeholder="Nhập lại mật khẩu" disabled={isEdit}/>
 </Form.Item>
 
       <Form.Item
         label="Số điện thoại"
-        name="phone"
+        name="so_dien_thoai"
         rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
       >
         <Input placeholder="Nhập số điện thoại" />
@@ -88,16 +89,16 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
 
       <Form.Item
         label="Ảnh đại diện"
-        name="avatar"
+        name="anh_dai_dien"
         rules={[{ required: true, message: "Vui lòng nhập URL ảnh đại diện" }]}
       >
         <Input placeholder="Nhập URL ảnh" />
       </Form.Item>
 
-      <Form.Item label="Vai trò" name="role">
+      <Form.Item label="Vai trò" name="vai_tro_id">
         <Select>
-          <Select.Option value="user">User</Select.Option>
-          <Select.Option value="admin">Admin</Select.Option>
+          <Select.Option value={1}>User</Select.Option>
+          <Select.Option value={2}>Admin</Select.Option>
         </Select>
       </Form.Item>
 
