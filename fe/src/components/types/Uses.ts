@@ -13,13 +13,11 @@ export interface User {
   role: "admin" | "user";
   isActive: boolean;
 }
-export type Food = {
+export interface Food {
   id: number;
-  name: string;
-  type: string;
-  price: number;
-  image: string;
-  status: boolean;
-  description?: string;
-  deleted?: boolean;
-};
+  ten_do_an: string;
+  mo_ta: string;
+  gia: number;
+  so_luong_ton: number;
+}
+

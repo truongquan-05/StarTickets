@@ -10,7 +10,6 @@ const axiosClient = axios.create({
   },
 });
 
-
 export type Props = {
   resource: string;
   id?: number | string;

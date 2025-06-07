@@ -17,6 +17,7 @@ import {
   message,
   Table,
   Typography,
+  Card,
 } from "antd";
 import { useEffect, useState } from "react";
 import { IMovies, MoviesForm } from "../interface/movies";
@@ -297,6 +298,7 @@ const List = () => {
 
   return (
     <>
+    <Card style={{ margin: "15px" }}>
       <Typography.Title level={3} style={{ marginBottom: 16 }}>
         Danh sách phim
       </Typography.Title>
@@ -315,7 +317,7 @@ const List = () => {
         scroll={{ x: 1200 }}
         pagination={{ pageSize: 6 }}
       />
-
+</Card>
       <Modal
         open={isModalOpen}
         title={editingItem ? "Sửa phim" : "Thêm phim mới"}

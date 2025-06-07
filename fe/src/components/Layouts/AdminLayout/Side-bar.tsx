@@ -9,6 +9,7 @@ import {
   BarChartOutlined,
   UserOutlined,
   TableOutlined,
+  GiftOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -87,10 +88,20 @@ const SideBar: React.FC<SideBarProps> = ({
         <Link to="/admin/category_chair/list">Quản Lý Ghế</Link>
       </Menu.Item>
 
-      <Menu.Item key="/admin/user/list" icon={<UserOutlined />}>
-        <Link to="/admin/user/list">Quản Lý Tài Khoản</Link>
+      <Menu.Item key="/admin/users" icon={<UserOutlined />}>
+        <Link to="/admin/users">Quản Lý Tài Khoản</Link>
       </Menu.Item>
-
+      <Menu.SubMenu
+        key="food"
+        icon={<GiftOutlined/>}
+        title="Dịch vụ và ưu đãi"
+      >
+        <Menu.Item key="/admin/food">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/food">Quản lý đồ ăn</Link>
+        </Menu.Item>
+      </Menu.SubMenu>
+      
       <Menu.SubMenu key="cinemas" icon={<BankOutlined />} title="Quản Lý Rạp">
         <Menu.Item key="/admin/cinemas/list">
           <span style={{ marginLeft: 8 }}>•</span>{" "}
@@ -101,6 +112,9 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/cinemas/add">Add</Link>
         </Menu.Item>
       </Menu.SubMenu>
+      <Menu.Item key="/admin/genre" icon={<TagsOutlined/>}>
+        <Link to="/admin/genre">Thể loại phim</Link>
+      </Menu.Item>
 
       <Menu.Item key="/admin/bookings" icon={<TagsOutlined />}>
         <Link to="/admin/bookings">Bookings</Link>

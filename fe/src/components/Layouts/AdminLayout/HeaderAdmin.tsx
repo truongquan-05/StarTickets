@@ -2,12 +2,12 @@
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  QrcodeOutlined,
   FullscreenOutlined,
   FullscreenExitOutlined,
-  BulbOutlined,
-  BulbFilled,
   UserOutlined,
+  ScanOutlined,
+  MoonOutlined,
+  SunOutlined,
 } from '@ant-design/icons';
 import {
   Layout,
@@ -80,19 +80,21 @@ const HeaderAdmin = ({
         type="text"
         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         onClick={() => setCollapsed(!collapsed)}
-        style={{ fontSize: 18 }}
+        style={{ fontSize: 20 }}
       />
       <Space size="middle">
-        <Button type="text" icon={<QrcodeOutlined />} />
+        <Button type="text" icon={<ScanOutlined />} style={{ fontSize: 20 }}/>
         <Button
           type="text"
           icon={isFullScreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
           onClick={toggleFullScreen}
+          style={{ fontSize: 20 }}
         />
         <Button
           type="text"
-          icon={darkMode ? <BulbFilled /> : <BulbOutlined />}
+          icon={darkMode ? <MoonOutlined /> : <SunOutlined />}
           onClick={toggleDarkMode}
+          style={{ fontSize: 20 }}
         />
         <Dropdown overlay={accountMenu} placement="bottomRight">
           <Space>
