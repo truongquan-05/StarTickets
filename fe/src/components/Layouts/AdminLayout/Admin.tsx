@@ -1,24 +1,38 @@
-import React from 'react';
+import { Layout } from 'antd';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Layout, { Content } from 'antd/es/layout/layout';
 import SideBar from './Side-bar';
-import '../../assets/css/indexAdmin.css';
 import HeaderAdmin from './HeaderAdmin';
+import FooterAdmin from './FooterAdmin';
 
-const Admin: React.FC = () => {
+const { Content } = Layout;
+
+const AdminLayout = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+
   return (
-    <Layout className="main-layout">
-      <HeaderAdmin/>
+    <Layout style={{ minHeight: '100vh' }}>
+      <SideBar
+        collapsed={collapsed}
+        onCollapse={setCollapsed}
+        drawerVisible={drawerVisible}
+        setDrawerVisible={setDrawerVisible}
+        onToggleDrawer={() => setDrawerVisible(!drawerVisible)}
+      />
       <Layout>
-        <SideBar  />
-        <Layout style={{ padding: '16px' }}>
-          <Content className="content">
-            <Outlet />
-          </Content>
-        </Layout>
+        <HeaderAdmin
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          // onToggleDrawer={() => setDrawerVisible(!drawerVisible)}
+        />
+        <Content style={{ margin: 16 }}>
+          <Outlet />
+        </Content>
+        <FooterAdmin />
       </Layout>
     </Layout>
   );
 };
 
-export default Admin;
+export default AdminLayout;
