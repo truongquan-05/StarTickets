@@ -95,7 +95,7 @@ const UserList = () => {
   ];
 
   return (
-    <Card style={{ margin: "24px" }}>
+    <Card style={{ margin: "15px" }}>
       <div
         style={{
           display: "flex",
