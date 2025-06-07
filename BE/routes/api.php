@@ -3,15 +3,16 @@
 use App\Http\Controllers\API\MaGiamGiaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\GheController;
-use App\Http\Controllers\API\RapController;
-use App\Http\Controllers\API\PhimController;
-use App\Http\Controllers\API\TheLoaiController;
+use App\Http\Controllers\Admin\GheController;
+use App\Http\Controllers\Admin\RapController;
+use App\Http\Controllers\Admin\PhimController;
+use App\Http\Controllers\Admin\TheLoaiController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
-use App\Http\Controllers\API\MaTranGheController;
-use App\Http\Controllers\API\PhongChieuController;
+use App\Http\Controllers\Admin\MaTranGheController;
+use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\NguoiDungController;
+use App\Http\Controllers\Admin\DoAnController;
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
