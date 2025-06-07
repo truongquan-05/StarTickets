@@ -28,7 +28,7 @@ Route::apiResource('vai_tro',VaiTroController::class);
 
 Route::apiResource('nguoi_dung', NguoiDungController::class);
 
-
+//API phản hồi khách hàng
 Route::apiResource('phan_hoi', PhanHoiKhachHangController::class);
 
 
