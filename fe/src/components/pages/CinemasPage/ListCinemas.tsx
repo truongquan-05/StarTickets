@@ -15,12 +15,12 @@ import {
   Form,
   Input,
 } from "antd";
-import { ICinemas } from "../Admin/interface/cinemas";
 import {
   useListCinemas,
   useUpdateCinema,
   useDeleteCinema,
 } from "../../hook/thinhHook";
+import { ICinemas } from "../Admin/interface/cinemas";
 
 const ListCinemas = () => {
   const [editForm] = Form.useForm();
