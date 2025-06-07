@@ -11,14 +11,14 @@ import {
 
 import type { Props } from "../provider/thinhProvider";
 
-export const useListCinemas = ({ resource = "cinemas" }: Props) => {
+export const useListCinemas = ({ resource = "rap" }: Props) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getListCinemas({ resource }),
   });
 };
 
-export const useDeleteCinema = ({ resource = "cinemas" }: Props) => {
+export const useDeleteCinema = ({ resource = "rap" }: Props) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id?: string | number) => getDeleteCinemas({ resource, id }),
@@ -32,7 +32,7 @@ export const useDeleteCinema = ({ resource = "cinemas" }: Props) => {
   });
 };
 
-export const useCreateCinema = ({ resource = "cinemas" }: Props) => {
+export const useCreateCinema = ({ resource = "rap" }: Props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
@@ -40,7 +40,7 @@ export const useCreateCinema = ({ resource = "cinemas" }: Props) => {
     onSuccess: () => {
       message.success("Thêm thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
-      navigate("/cinemas/list");
+      navigate("/admin/cinemas/list");
     },
     onError: () => {
       message.error("Thêm thất bại");
@@ -48,7 +48,7 @@ export const useCreateCinema = ({ resource = "cinemas" }: Props) => {
   });
 };
 
-export const useUpdateCinema = ({ resource = "cinemas" }: Props) => {
+export const useUpdateCinema = ({ resource = "rap" }: Props) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, values }: { id: number | string; values: any }) =>

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getCreateCategoryChair, getCreateMovies, getDeleteCategoryChair, getDeleteMovies, getListCategoryChair, getListMovies, getUpdateCategoryChair, getUpdateMovies } from "../provider/hungProvider";
+import {  getCreateCategoryChair, getCreateMovies, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeleteVaiTro, getListCategoryChair, getListMovies, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -102,6 +102,50 @@ export const useUpdateCategoryChair = ({ resource = "loai_ghe" }) => {
   return useMutation({
     mutationFn: ({ id, values }: { id: number | string; values: any }) =>
       getUpdateCategoryChair({ resource, id, values }),
+    onSuccess: () => {
+      message.success("Cập nhật thành công");
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
+  });
+};
+export const useListVaiTro = ({resource = "vai_tro"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListVaiTro({resource})
+  })
+}
+
+export const useDeleteVaiTro = ({resource = "vai_tro"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeleteVaiTro({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+export const useCreateVaiTro = ({resource = "vai_tro"} : Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreateVaiTro({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdateVaiTro = ({ resource = "vai_tro" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateVaiTro({ resource, id, values }),
     onSuccess: () => {
       message.success("Cập nhật thành công");
       queryClient.invalidateQueries({queryKey:[resource]})

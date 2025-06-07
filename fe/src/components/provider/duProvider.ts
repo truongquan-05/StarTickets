@@ -20,6 +20,10 @@ export const getListUsers = async ({resource = "nguoi_dung"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data
 }
+export const getListVaiTro = async ({resource = "vai_tro"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
 
 export const getDeleteUsers = async ({resource = "nguoi_dung" , id} : Props) => {
   if(!id) return;
@@ -34,21 +38,26 @@ export const getCreateUsers = async ({ resource = "nguoi_dung", values }: Props)
 
 
 export const getUpdateUsers = async ({ resource = "nguoi_dung", id, values }: Props) => {
-  if (!id) return;
+  if (!id || !values) return;
+
   if (values instanceof FormData) {
+    // gửi POST với _method=PUT giả lập PUT để upload file
     values.append("_method", "PUT");
     const { data } = await axiosClient.post(`${resource}/${id}`, values, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log("Response from update user API:", data);
+    return data;
+    
+  } else {
+    // gửi PUT hoặc PATCH với JSON
+    const { data } = await axiosClient.put(`${resource}/${id}`, values);
     return data;
   }
-
-  // Nếu không có file, thì dùng PUT bình thường
-  const { data } = await axiosClient.put(`${resource}/${id}`, values);
-  return data;
 };
+
 export const getUserById = async (id: number | string) => {
   const { data } = await axiosClient.get<User>(`nguoi_dung/${id}`);
   return data;

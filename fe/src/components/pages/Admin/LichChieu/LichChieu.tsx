@@ -3,7 +3,7 @@ import { Table, Button, Space, Popconfirm, Input, message } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-const GenresManager = () => {
+const LichChieu = () => {
   const [genres, setGenres] = useState<any[]>([]);
   const [name, setName] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -183,4 +183,4 @@ const GenresManager = () => {
   );
 };
 
-export default GenresManager;
+export default LichChieu;

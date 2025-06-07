@@ -20,7 +20,7 @@ interface SideBarProps {
   onCollapse: (collapsed: boolean) => void;
   drawerVisible: boolean;
   setDrawerVisible: (visible: boolean) => void;
-  onToggleDrawer: () => void;
+  
 }
 
 const SideBar: React.FC<SideBarProps> = ({
@@ -82,15 +82,36 @@ const SideBar: React.FC<SideBarProps> = ({
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/movies/add">Add</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/genre"><span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Link to="/admin/genre">Thể loại phim</Link>
+      </Menu.Item>
+      <Menu.Item key="/admin/lichchieu/list"><span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
+      </Menu.Item>
+      </Menu.SubMenu>
+      <Menu.SubMenu
+        key="chair"
+        icon={<TableOutlined />}
+        title="Quản Lý Ghế"
+      >
+        <Menu.Item key="/admin/category_chair/list" >
+        <Link to="/admin/category_chair/list">Loại Ghế</Link>
+      </Menu.Item>
       </Menu.SubMenu>
 
-      <Menu.Item key="/admin/category_chair/list" icon={<TableOutlined />}>
-        <Link to="/admin/category_chair/list">Quản Lý Ghế</Link>
+      
+      <Menu.SubMenu
+        key="users"
+        icon={<UserOutlined />}
+        title="Quản Lý Tài Khoản"
+      >
+      <Menu.Item key="/admin/users"><span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Link to="/admin/users">Tài Khoản</Link>
       </Menu.Item>
-
-      <Menu.Item key="/admin/users" icon={<UserOutlined />}>
-        <Link to="/admin/users">Quản Lý Tài Khoản</Link>
+      <Menu.Item key="/admin/vaitro"><span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Link to="/admin/vaitro">Vai Trò</Link>
       </Menu.Item>
+      </Menu.SubMenu>
       <Menu.SubMenu
         key="food"
         icon={<GiftOutlined/>}
@@ -112,10 +133,6 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/cinemas/add">Add</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      <Menu.Item key="/admin/genre" icon={<TagsOutlined/>}>
-        <Link to="/admin/genre">Thể loại phim</Link>
-      </Menu.Item>
-
       <Menu.Item key="/admin/bookings" icon={<TagsOutlined />}>
         <Link to="/admin/bookings">Bookings</Link>
       </Menu.Item>
