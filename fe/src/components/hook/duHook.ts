@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 import type { Props } from "../provider/duProvider";
-import {   getCreateFood, getCreateUsers, getDeleteFood, getDeleteUsers, getListFoods, getListUsers, getUpdateFood, getUpdateUsers } from "../provider/duProvider";
+import {   getCreateFood, getCreateUsers, getDeleteFood, getDeleteUsers, getListFoods, getListUsers, getListVaiTro, getUpdateFood, getUpdateUsers } from "../provider/duProvider";
 import { Food } from "../types/Uses";
 
 
@@ -14,6 +14,12 @@ export const useListUsers = ({ resource = "nguoi_dung" } : Props) => {
     queryFn: () => getListUsers({ resource }),
   });
 };
+export const useListVaiTro = ({resource = "vai_tro"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListVaiTro({resource})
+  })
+}
 export const useDeleteUser = ({resource = "nguoi_dung"} : Props) => {
   const queryclient = useQueryClient();
   return useMutation({
@@ -26,13 +32,11 @@ export const useDeleteUser = ({resource = "nguoi_dung"} : Props) => {
 }
 export const useCreateUser = ({resource = "nguoi_dung"} : Props) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   return useMutation({
     mutationFn : (values : any) => getCreateUsers({resource,values}),
     onSuccess: () => {
       message.success("Thêm thành công");
       queryClient.invalidateQueries({queryKey:[resource]});
-      navigate("/admin/users")
     },
     onError: (error: any) => {
   if (error.response?.data?.errors) {
@@ -46,28 +50,32 @@ export const useCreateUser = ({resource = "nguoi_dung"} : Props) => {
 }
 
 export const useUpdateUser = ({ resource = "nguoi_dung" }) => {
+  
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   return useMutation({
     mutationFn: ({ id, values }: { id: number | string; values: any }) =>
       getUpdateUsers({ resource, id, values }),
-    onSuccess: () => {
-      message.success("Cập nhật thành công");
-      queryClient.invalidateQueries({ queryKey: [resource] });
-      navigate("/admin/users")
-    },
-    onError: (error: any) => {
-  console.error("Update movie error:", error.response?.data || error);
-  if (error.response?.data?.errors) {
-    const errors = error.response.data.errors;
-    const messages = Object.values(errors).flat().join("\n");
-    message.error(messages);
-  } else {
-    message.error("Cập nhật thất bại");
-  }
-},
 
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]});
+      navigate("/admin/users");
+    },
+
+    onError: (error: any) => {
+      console.error("Update user error:", error.response?.data || error);
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors;
+        // errors có thể là object dạng { field: [msg1, msg2], ... }
+        const messages = Object.values(errors)
+          .flat()
+          .join("\n");
+        message.error(messages);
+      } else {
+        message.error("Cập nhật thất bại");
+      }
+    },
   });
 };
 
