@@ -1,11 +1,12 @@
 import axios from "axios";
 
+
 const token = localStorage.getItem("token");
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: import.meta.env.VITE_API_URL,
   headers: {
-    Authorization: token && `Bearer ${token}`,
+    Authorization: token ? `Bearer ${token}` : "",
   },
 });
 
@@ -25,16 +26,29 @@ export const getDeleteMovies = async ({resource = "phim" , id} : Props) => {
   return data;
 }
 
-export const getCreateMovies = async ({resource = "phim" , values} : Props) => {
-  const {data} = await  axiosClient.post(resource,values);
+export const getCreateMovies = async ({ resource = "phim", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values);
   return data;
-}
+};
 
-export const getUpdateMovies = async ({resource = "phim", id, values} : Props) => {
-  if(!id) return;
-  const {data} = await axiosClient.put(`${resource}/${id}`,values);
-  return data
-}
+
+export const getUpdateMovies = async ({ resource = "phim", id, values }: Props) => {
+  if (!id) return;
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  }
+
+  // Nếu không có file, thì dùng PUT bình thường
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  return data;
+};
+
 export const getGenreList = async ({ resource = "the_loai" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;

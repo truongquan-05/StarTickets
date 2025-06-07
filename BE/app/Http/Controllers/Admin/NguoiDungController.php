@@ -53,6 +53,13 @@ class NguoiDungController extends Controller
         }
         $data = $request->all();
 
+         if ($request->hasFile('anh_dai_dien')) {
+            $file = $request->file('anh_dai_dien');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('uploads', $fileName);
+            $data['anh_dai_dien'] = $fileName;
+        }
+
 
         $data['password'] = bcrypt($data['password']); // Mã hóa mật khẩu
         $data['trang_thai'] = 1; // Mặc định trạng thái là 1 (hoạt động)

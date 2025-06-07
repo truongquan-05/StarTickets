@@ -1,22 +1,51 @@
 {
   "users": [
     {
-      "id": "1",
-      "name": "Nguyen Van A",
-      "email": "a@example.com",
+      "name": "fdfsdsdddddddđ",
+      "email": "dunhph50785@gmail.com",
       "password": "123456",
-      "role": "customer"
+      "confirmPassword": "123456",
+      "phone": "0981876875",
+      "avatar": "https://cdn.kona-blue.com/upload/kona-blue_com/post/images/2024/09/18/459/anh-avatar-fb-5.jpg",
+      "role": "user",
+      "isActive": true,
+      "id": 1
+    }
+  ],
+  "food": [
+    {
+      "ten_do_an": "cơm",
+      "mo_ta": "cơm cà ri",
+      "gia": 1000,
+      "so_luong_ton": 30,
+      "id": 1
     },
     {
-      "id": "2",
-      "name": "Admin",
-      "email": "admin@example.com",
-      "password": "admin123",
-      "role": "admin"
+      "ten_do_an": "Bánh mỳ",
+      "mo_ta": "bánh mỳ thập cẩm",
+      "gia": 120,
+      "so_luong_ton": 32,
+      "id": 2
+    }
+  ],
+  "genres": [
+    {
+      "name": "Hài hước",
+      "isDeleted": true,
+      "id": 1
+    },
+    {
+      "name": "Hành động",
+      "isDeleted": false,
+      "id": 3
+    },
+    {
+      "name": "Hoạt hình",
+      "isDeleted": false,
+      "id": 4
     }
   ],
   "phim": [
-
     {
       "ten_phim": "Avengers: Endgame ",
       "mo_ta": "Sau những sự kiện của Infinity War, các siêu anh hùng còn sống sót phải tìm cách đảo ngược thiệt hại do Thanos gây ra.",
@@ -43,7 +72,8 @@
       "do_tuoi_gioi_han": 16,
       "trang_thai": false,
       "the_loai_id": 3,
-      "id": 2
+      "id": 2,
+      "tinh_trang": "Sắp chiếu"
     }
   ],
   "the_loai": [
@@ -84,6 +114,16 @@
       "id": "2",
       "name": "Lotte Cinema",
       "address": "Lotte Mart Q.7, TP.HCM"
+    },
+    {
+      "name": "Oppo A9",
+      "address": "51/6 Ngọa Long Minh Khai",
+      "id": "LPBVOB8"
+    },
+    {
+      "name": "Thịnh",
+      "address": "51/6 Ngọa Long ",
+      "id": "SEy4a-u"
     }
   ],
   "showtimes": [
@@ -108,16 +148,5 @@
       "isBooked": true
     }
   ],
-  "bookings": [
-    {
-      "id": "1",
-      "userId": 1,
-      "showtimeId": 1,
-      "seats": [
-        "A2"
-      ],
-      "totalPrice": 100000,
-      "bookingTime": "2025-05-12T10:00:00"
-    }
-  ]
+  "bookings": []
 }
