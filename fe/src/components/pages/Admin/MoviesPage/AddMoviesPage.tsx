@@ -64,7 +64,6 @@ const AddMoviesPage = () => {
   return (
 
     <div className="container my-4" >
-      <h2 className="mb-4 text-center">Thêm mới</h2>
 
     <Card style={{ margin: "20px", padding: "20px" }}>
       <Title level={3} style={{ marginBottom: 20 }}>

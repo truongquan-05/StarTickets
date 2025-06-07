@@ -332,7 +332,7 @@ const List = () => {
               console.log("Validate Failed:", info);
             });
         }}
-        width={720}
+        width={1000}
         okText={editingItem ? "Cập nhật" : "Thêm"}
       >
         <Form
