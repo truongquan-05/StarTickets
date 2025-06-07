@@ -3,7 +3,6 @@ import {
   DeleteOutlined,
   ExportOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
 
 import {
   message,
@@ -15,6 +14,8 @@ import {
   Form,
   Input,
 } from "antd";
+
+import { useState } from "react";
 import {
   useListCinemas,
   useUpdateCinema,

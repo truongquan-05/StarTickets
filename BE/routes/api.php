@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
@@ -14,11 +13,23 @@ use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Admin\DoAnController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
+use App\Http\Controllers\Admin\PhanHoiKhachHangController;
+
+
+
 // Route::get('/user', function (Request $request) {
-//     return $request->user();
+//     return 'Quan';
 // })->middleware('auth:sanctum');
 
 
+Route::apiResource('vai_tro',VaiTroController::class);
+
+// Route::post('/loai-ghe/{id}/restore', [LoaiGheController::class, 'restore'])->name('loai-ghe('loai-ghe.force-delete');
+
+Route::apiResource('nguoi_dung', NguoiDungController::class);
+
+
+Route::apiResource('phan_hoi', PhanHoiKhachHangController::class);
 
 
 // Thể loại phim
@@ -85,3 +96,9 @@ Route::prefix('ma_giam_gia')->group(function () {
     Route::post('/', [MaGiamGiaController::class, 'store']);        // Thêm
     Route::put('/{id}', [MaGiamGiaController::class, 'update']);    // Cập nhật
 });
+
+
+
+
+
+// http://127.0.0.1:8000/api/....

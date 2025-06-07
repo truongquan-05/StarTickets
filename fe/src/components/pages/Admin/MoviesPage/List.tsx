@@ -21,7 +21,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { IMovies, MoviesForm } from "../interface/movies";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import {
   useListMovies,
   useDeleteMovies,
