@@ -10,6 +10,9 @@ import DashboardAdmin from '../pages/Admin/DashboardAdmin';
 import ListCinemas from '../pages/CinemasPage/ListCinemas';
 import AddCinemasPage from '../pages/CinemasPage/AddCinemaForm';
 
+import ListUser from '../pages/User/List';
+
+
 const Routermain = () => {
   const element = useRoutes([
     {
@@ -29,6 +32,9 @@ const Routermain = () => {
         { path: 'category_chair/list', element: <ListCategoryChair /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
+
+         { path: 'user/list', element: <ListUser /> },
+
       ],
     },
   ]);

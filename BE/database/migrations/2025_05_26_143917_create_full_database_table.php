@@ -40,7 +40,6 @@ return new class extends Migration {
             $table->id();
             $table->string('ten_the_loai', 100);
             $table->timestamps();
-             $table->softDeletes();
             $table->softDeletes();
         });
 
@@ -242,7 +241,7 @@ return new class extends Migration {
             $table->string('email', 100);
             $table->string('so_dien_thoai', 15);
             $table->text('noi_dung');
-              $table->boolean('trang_thai')->default(false);
+            $table->boolean('trang_thai')->default(false);
             $table->timestamps();
         });
 

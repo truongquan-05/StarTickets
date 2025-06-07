@@ -1,6 +1,5 @@
 // src/components/AddCinemaForm.tsx
 
-import React from "react";
 import { Button, Form, Input } from "antd";
 import { useCreateCinema } from "../../hook/thinhHook";
 

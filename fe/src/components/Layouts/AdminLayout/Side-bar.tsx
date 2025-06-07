@@ -19,6 +19,7 @@ interface SideBarProps {
   onCollapse: (collapsed: boolean) => void;
   drawerVisible: boolean;
   setDrawerVisible: (visible: boolean) => void;
+  onToggleDrawer: () => void;
 }
 
 const SideBar: React.FC<SideBarProps> = ({

@@ -8,7 +8,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
-const List = () => {
+const ListUser = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
@@ -122,4 +122,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default ListUser;
