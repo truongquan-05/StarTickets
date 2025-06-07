@@ -1,6 +1,5 @@
-import { HomeOutlined, ProductOutlined, AppstoreOutlined } from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
-import SubMenu from "antd/es/menu/SubMenu";
 import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
