@@ -81,6 +81,9 @@ const SideBar: React.FC<SideBarProps> = ({
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/movies/add">Add</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/genre"><span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Link to="/admin/genre">Thể loại phim</Link>
+      </Menu.Item>
       </Menu.SubMenu>
 
       <Menu.Item key="/admin/category_chair/list" icon={<TableOutlined />}>
@@ -111,10 +114,6 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/cinemas/add">Add</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      <Menu.Item key="/admin/genre" icon={<TagsOutlined/>}>
-        <Link to="/admin/genre">Thể loại phim</Link>
-      </Menu.Item>
-
       <Menu.Item key="/admin/bookings" icon={<TagsOutlined />}>
         <Link to="/admin/bookings">Bookings</Link>
       </Menu.Item>

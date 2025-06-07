@@ -125,11 +125,6 @@ const ListCinemas = () => {
               <div className="card-body">
                 <div className="title-header option-title d-sm-flex d-block">
                   <h5>Cinemas List</h5>
-                  <div className="right-options">
-                    <Space>
-                      <Button icon={<ExportOutlined />} className="btn-export" />
-                    </Space>
-                  </div>
                 </div>
 
                 <div className="table-container">

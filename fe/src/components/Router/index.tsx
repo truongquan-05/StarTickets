@@ -15,6 +15,7 @@ import UserList from '../pages/NguoiDung/List';
 import UserEdit from '../pages/NguoiDung/Edit';
 import UserAdd from '../pages/NguoiDung/Add';
 import GenresManager from '../GenresManager';
+import DashboardUser from '../pages/User/Dashboard';
 
 
 
@@ -25,7 +26,7 @@ const Routermain = () => {
       path: '/',
       element: <User />,
       children: [
-        { path: '/', element: <User /> },
+        { path: '/', element: <DashboardUser /> },
       ],
     },
     {
