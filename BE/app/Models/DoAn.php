@@ -9,6 +9,6 @@ class DoAn extends Model
     protected $table = 'do_an';
 
     protected $fillable = [
-        'ten_do_an', 'mo_ta', 'gia', 'so_luong_ton'
+      'ten_do_an', 'image', 'mo_ta', 'gia', 'so_luong_ton'
     ];
 }

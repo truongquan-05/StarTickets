@@ -15,6 +15,7 @@ class DoAnRequest extends FormRequest
     {
         return [
             'ten_do_an' => 'required|string|max:255',
+           'image' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048',
             'mo_ta' => 'nullable|string',
             'gia' => 'required|integer|min:0',
             'so_luong_ton' => 'nullable|integer|min:0',
