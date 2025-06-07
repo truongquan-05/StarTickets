@@ -40,9 +40,6 @@ Route::apiResource('loai_ghe', LoaiGheController::class);
 Route::apiResource('nguoi_dung', NguoiDungController::class);
 
 
-
-
-
 // http://127.0.0.1:8000/api/....
 
 Route::get('phim', [PhimController::class, 'index']);
