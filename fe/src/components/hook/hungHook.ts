@@ -89,7 +89,7 @@ export const useCreateCategoryChairs = ({resource = "loai_ghe"} : Props) => {
     onSuccess: () => {
       message.success("Thêm thành công");
       queryClient.invalidateQueries({queryKey:[resource]});
-      navigate("/category_chair/list")
+      navigate("/admin/category_chair/list")
     },
     onError : () => {
       message.error("Thêm thất bại");

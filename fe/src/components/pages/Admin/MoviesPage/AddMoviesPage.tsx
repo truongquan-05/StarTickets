@@ -48,6 +48,7 @@ const AddMoviesPage = () => {
     }
   });
   createMutate(formData);
+  console.log(formData);
   form.resetFields();
 };
   return (
@@ -130,7 +131,7 @@ const AddMoviesPage = () => {
               name="anh_poster"
               valuePropName="fileList"
               getValueFromEvent={normFile}
-              rules={[{ required: true, message: "Vui lòng chọn ảnh poster" }]}
+              // rules={[{ required: true, message: "Vui lòng chọn ảnh poster" }]}
             >
               <Upload
                 name="anh_poster"

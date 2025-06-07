@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\NguoiDungController;
 
 
 
+
 // Thể loại phim
 Route::get('the_loai', [TheLoaiController::class, 'index']);           // Lấy danh sách
 Route::post('the_loai', [TheLoaiController::class, 'store']);          // Thêm mới
