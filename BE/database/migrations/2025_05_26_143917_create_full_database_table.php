@@ -53,9 +53,10 @@ return new class extends Migration {
             $table->string('quoc_gia', 100);
             $table->string('anh_poster', 255)->nullable();
             $table->date('ngay_cong_chieu');
-            $table->string('tinh_trang', 20);
+            $table->date('ngay_ket_thuc')->nullable();
+            $table->string('trang_thai_phim', 100);
             $table->string('do_tuoi_gioi_han', 50);
-            $table->boolean('trang_thai')->default(true);
+            $table->string('loai_suat_chieu', 50);
             $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
@@ -124,7 +125,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('phim_id')->constrained('phim')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->dateTime('thoi_gian_chieu');
+            $table->dateTime('gio_chieu');
+            $table->dateTime('gio_ket_thuc');
             $table->timestamps();
             $table->softDeletes();
         });

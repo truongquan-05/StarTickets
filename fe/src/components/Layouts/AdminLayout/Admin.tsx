@@ -18,13 +18,13 @@ const AdminLayout = () => {
         onCollapse={setCollapsed}
         drawerVisible={drawerVisible}
         setDrawerVisible={setDrawerVisible}
-        onToggleDrawer={() => setDrawerVisible(!drawerVisible)}
+        
       />
       <Layout>
         <HeaderAdmin
           collapsed={collapsed}
           setCollapsed={setCollapsed}
-          // onToggleDrawer={() => setDrawerVisible(!drawerVisible)}
+          
         />
         <Content style={{ margin: 16 }}>
           <Outlet />
