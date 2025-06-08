@@ -185,7 +185,7 @@ return new class extends Migration {
         Schema::create('do_an', function (Blueprint $table) {
             $table->id();
             $table->string('ten_do_an', 100);
-            $table->string('image', 150)
+            $table->string('image', 150);
             $table->text('mo_ta')->nullable();
             $table->decimal('gia', 10, 2);
             $table->integer('so_luong_ton');
@@ -205,7 +205,7 @@ return new class extends Migration {
         Schema::create('ma_giam_gia', function (Blueprint $table) {
             $table->id();
             $table->string('ma', 50)->unique()->comment('Mã giảm giá, ví dụ: SUMMER2025');
-            $table->string('image', 150)
+            $table->string('image', 150);
             $table->enum('loai_giam_gia', ['PERCENTAGE', 'FIXED', 'FREE_TICKET'])->default('PERCENTAGE')->comment('Loại giảm giá: phần trăm, cố định, tặng vé');
             $table->decimal('gia_tri_giam', 10, 2)->comment('Giá trị giảm: % cho PERCENTAGE, số tiền cho FIXED, số vé cho FREE_TICKET');
             $table->decimal('giam_toi_da', 10, 2)->nullable()->comment('Số tiền giảm tối đa, áp dụng cho PERCENTAGE');
