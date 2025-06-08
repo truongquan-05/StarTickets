@@ -1,7 +1,6 @@
 import {
   EditOutlined,
   DeleteOutlined,
-  ExportOutlined,
 } from "@ant-design/icons";
 
 import {
@@ -61,7 +60,7 @@ const ListCinemas = () => {
     );
   };
 
-  const onDelete = (id: number, name: string) => {
+  const onDelete = (id: number) => {
     deleteMutate(id);
   };
 
