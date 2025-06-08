@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\MaGiamGiaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
@@ -12,7 +13,6 @@ use App\Http\Controllers\Admin\MaTranGheController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Admin\DoAnController;
-use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 
 

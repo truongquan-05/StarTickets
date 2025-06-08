@@ -28,9 +28,10 @@ const ListCinemas = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ICinemas | null>(null);
 
-  const { data, isLoading } = useListCinemas({ resource: "cinemas" });
-  const { mutate: deleteMutate } = useDeleteCinema({ resource: "cinemas" });
-  const { mutate: updateMutate } = useUpdateCinema({ resource: "cinemas" });
+  const { data, isLoading } = useListCinemas({ resource: "rap" });
+  const dataSource = data?.data ?? [];
+  const { mutate: deleteMutate } = useDeleteCinema({ resource: "rap" });
+  const { mutate: updateMutate } = useUpdateCinema({ resource: "rap" });
 
   const openEditModal = (record: ICinemas) => {
     setEditingItem(record);
@@ -61,14 +62,7 @@ const ListCinemas = () => {
   };
 
   const onDelete = (id: number, name: string) => {
-    deleteMutate(id, {
-      onSuccess: () => {
-        message.success(`Deleted cinema: ${name}`);
-      },
-      onError: () => {
-        message.error("Delete cinema failed");
-      },
-    });
+    deleteMutate(id);
   };
 
   const columns = [
@@ -80,13 +74,13 @@ const ListCinemas = () => {
     },
     {
       title: "Name",
-      dataIndex: "name",
+      dataIndex: "ten_rap",
       key: "name",
       width: "40%",
     },
     {
       title: "Address",
-      dataIndex: "address",
+      dataIndex: "dia_chi",
       key: "address",
       width: "35%",
     },
@@ -125,21 +119,13 @@ const ListCinemas = () => {
               <div className="card-body">
                 <div className="title-header option-title d-sm-flex d-block">
                   <h5>Cinemas List</h5>
-                  <div className="right-options">
-                    <Space>
-                      <Button
-                        icon={<ExportOutlined />}
-                        className="btn-export"
-                      />
-                    </Space>
-                  </div>
                 </div>
 
                 <div className="table-container">
                   <div className="table-responsive">
                     <Table
                       rowKey="id"
-                      dataSource={data}
+                      dataSource={dataSource}
                       columns={columns}
                       loading={isLoading}
                       bordered
@@ -165,7 +151,7 @@ const ListCinemas = () => {
                   >
                     <Form.Item
                       label="Name"
-                      name="name"
+                      name="ten_rap"
                       rules={[
                         { required: true, message: "Please enter cinema name" },
                       ]}
@@ -175,7 +161,7 @@ const ListCinemas = () => {
 
                     <Form.Item
                       label="Address"
-                      name="address"
+                      name="dia_chi"
                       rules={[
                         { required: true, message: "Please enter address" },
                       ]}
