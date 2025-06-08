@@ -29,6 +29,7 @@ import {
 } from "../../../hook/hungHook";
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const { Option } = Select;
 const { Text, Paragraph } = Typography;
@@ -306,9 +307,10 @@ const List = () => {
         type="primary"
         icon={<ExportOutlined />}
         style={{ marginBottom: 12 }}
-        onClick={() => createOrUpdateOpenModal(undefined)}
       >
+        <Link to={`/admin/movies/add`}>
         Thêm phim mới
+        </Link>
       </Button>
       <Table
         columns={columns}

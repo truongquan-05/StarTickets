@@ -10,6 +10,7 @@ import {
   UserOutlined,
   TableOutlined,
   GiftOutlined,
+  CommentOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -131,6 +132,12 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/cinemas/add">
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/cinemas/add">Add</Link>
+        </Menu.Item>
+      </Menu.SubMenu>
+      <Menu.SubMenu key="comment" icon={<CommentOutlined />} title="Quản Lý Phản Hồi">
+        <Menu.Item key="">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/comment/phanhoinguoidung">Phản Hồi Người Dùng</Link>
         </Menu.Item>
       </Menu.SubMenu>
       <Menu.Item key="/admin/bookings" icon={<TagsOutlined />}>

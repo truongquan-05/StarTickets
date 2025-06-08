@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getCreateCategoryChair, getCreateMovies, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeleteVaiTro, getListCategoryChair, getListMovies, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdateVaiTro } from "../provider/hungProvider";
+import {  getCreateCategoryChair, getCreateMovies, getCreatePhanHoiNguoiDung, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -148,6 +148,50 @@ export const useUpdateVaiTro = ({ resource = "vai_tro" }) => {
       getUpdateVaiTro({ resource, id, values }),
     onSuccess: () => {
       message.success("Cập nhật thành công");
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
+  });
+};
+
+export const useListPhanHoiNguoiDung = ({resource = "phan_hoi"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListPhanHoiNguoiDung({resource})
+  })
+}
+
+export const useDeletePhanHoiNguoiDung = ({resource = "phan_hoi"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeletePhanHoiNguoiDung({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+export const useCreatePhanHoiNguoiDung = ({resource = "phan_hoi"} : Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreatePhanHoiNguoiDung({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdatePhanHoiNguoiDung = ({ resource = "phan_hoi" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdatePhanHoiNguoiDung({ resource, id, values }),
+    onSuccess: () => {
       queryClient.invalidateQueries({queryKey:[resource]})
     },
     onError: () => {

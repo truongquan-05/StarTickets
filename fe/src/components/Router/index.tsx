@@ -16,6 +16,7 @@ import GenresManager from '../GenresManager';
 import DashboardUser from '../pages/User/Dashboard';
 import LichChieu from '../pages/Admin/LichChieu/LichChieu';
 import VaiTro from '../pages/NguoiDung/VaiTro';
+import PhanHoiNguoiDung from '../pages/Admin/CommentPage/PhanHoiNguoiDung';
 
 
 
@@ -43,6 +44,7 @@ const Routermain = () => {
         { path: 'lichchieu/list', element: <LichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
+        { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
 
 
 
