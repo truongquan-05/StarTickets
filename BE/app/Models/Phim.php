@@ -17,9 +17,11 @@ class Phim extends Model
         'quoc_gia',
         'anh_poster',
         'ngay_cong_chieu',
+        'ngay_ket_thuc',
         'tinh_trang',
         'do_tuoi_gioi_han',
-        'trang_thai',
+        'trang_thai_phim',
+        'loai_suat_chieu',
         'the_loai_id'
     ];
     

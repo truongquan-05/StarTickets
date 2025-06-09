@@ -9,6 +9,8 @@ export interface IMovies {
   quoc_gia: string;
   anh_poster: string;
   ngay_cong_chieu: string;
+  ngay_ket_thuc: string;
+  loai_suat_chieu:string
   tinh_trang: string;
   do_tuoi_gioi_han: number;
   trang_thai: boolean;
