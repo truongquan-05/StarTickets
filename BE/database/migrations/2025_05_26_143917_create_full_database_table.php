@@ -160,7 +160,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('so_ghe', 10);
+            $table->foreignId('ghe_id')->constrained('ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('trang_thai', ['trong', 'da_dat', 'dang_dat']);
 
             $table->timestamps();
