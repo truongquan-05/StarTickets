@@ -1,25 +1,25 @@
 <?php
 
-use App\Http\Controllers\Admin\DoAnController;
-use App\Http\Controllers\Admin\PhimController;
-use App\Http\Controllers\Admin\TheLoaiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+// Controllers Admin
+use App\Http\Controllers\Admin\VaiTroController;
+use App\Http\Controllers\Admin\LoaiGheController;
+use App\Http\Controllers\Admin\TheLoaiController;
+use App\Http\Controllers\Admin\PhimController;
+use App\Http\Controllers\Admin\DoAnController;
 
-// // Test API
-// Route::get('testapi', function () {
-//     return response()->json(['message' => 'Test API thành công!']);
-// });
-// Route::post('testapi', function (Request $request) {
-//     return response()->json([
-//         'received_data' => $request->all()
-//     ]);
-// });
+// Route test
+Route::get('/user', function (Request $request) {
+    return 'Quan';
+})->middleware('auth:sanctum');
 
+// Vai trò, loại ghế
+Route::apiResource('vai-tro', VaiTroController::class);
+Route::apiResource('loai-ghe', LoaiGheController::class);
+
+//admin/
 Route::prefix('admin')->group(function () {
     // Thể loại phim
     Route::get('the-loai', [TheLoaiController::class, 'index']);
