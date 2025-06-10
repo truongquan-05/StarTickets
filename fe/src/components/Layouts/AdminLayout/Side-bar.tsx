@@ -122,6 +122,10 @@ const SideBar: React.FC<SideBarProps> = ({
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/food">Quản lý đồ ăn</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/vouchers/list">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/vouchers/list">Quản lý vouchers</Link>
+        </Menu.Item>
       </Menu.SubMenu>
       
       <Menu.SubMenu key="cinemas" icon={<BankOutlined />} title="Quản Lý Rạp">

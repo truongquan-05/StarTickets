@@ -17,6 +17,7 @@ import DashboardUser from '../pages/User/Dashboard';
 import LichChieu from '../pages/Admin/LichChieu/LichChieu';
 import VaiTro from '../pages/NguoiDung/VaiTro';
 import PhanHoiNguoiDung from '../pages/Admin/CommentPage/PhanHoiNguoiDung';
+import VouchersList from '../pages/Voucher/List';
 
 
 
@@ -56,7 +57,7 @@ const Routermain = () => {
         { path: 'food', element: <FoodList /> },
         { path: 'food/add', element: <FoodAdd /> },
         { path: 'food/edit/:id', element: <FoodEdit /> },
-
+        { path: 'vouchers/list', element: <VouchersList /> },
       ],
     },
   ]);

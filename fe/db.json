@@ -148,5 +148,18 @@
       "isBooked": true
     }
   ],
-  "bookings": []
+  "bookings": [],
+  "ma_giam_gia": [
+    {
+      "id": 1,
+      "ma": "abcxyz",
+      "phan_tram_giam": 20,
+      "dieu_kien": {
+        "dieu_kien": "khong"
+      },
+      "han_su_dung": "2025-06-12",
+      "ngay_bat_dau": "2025-06-11",
+      "so_lan_su_dung": 20
+    }
+  ]
 }
