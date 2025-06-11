@@ -137,6 +137,14 @@ const SideBar: React.FC<SideBarProps> = ({
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/cinemas/add">Add</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/room/list">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/room/list">Danh Sách Phòng Chiếu</Link>
+        </Menu.Item>
+        <Menu.Item key="/admin/room/add">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/room/add">Thêm mới Phòng Chiếu</Link>
+        </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu key="comment" icon={<CommentOutlined />} title="Quản Lý Phản Hồi">
         <Menu.Item key="">

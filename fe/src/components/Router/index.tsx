@@ -17,7 +17,8 @@ import DashboardUser from '../pages/User/Dashboard';
 import LichChieu from '../pages/Admin/LichChieu/LichChieu';
 import VaiTro from '../pages/NguoiDung/VaiTro';
 import PhanHoiNguoiDung from '../pages/Admin/CommentPage/PhanHoiNguoiDung';
-import VouchersList from '../pages/Voucher/List';
+import ListPhongChieu from '../pages/Admin/PhongChieu/ListPhongChieu';
+import AddPhongChieu from '../pages/Admin/PhongChieu/AddPhongChieu';
 
 
 
@@ -45,6 +46,9 @@ const Routermain = () => {
         { path: 'lichchieu/list', element: <LichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
+        { path: 'room/list', element: <ListPhongChieu /> },
+        { path: 'room/add', element: <AddPhongChieu /> },
+
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
 
 
