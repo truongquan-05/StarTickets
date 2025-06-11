@@ -50,6 +50,7 @@ class GheController extends Controller
         ], 200);
     }
 
+    //cập nhật trạng thái ghế
     public function update(Request $request, Ghe $ghe)
     {
         $request->validate([
@@ -57,12 +58,34 @@ class GheController extends Controller
         ]);
 
         $ghe->update($request->only(['trang_thai']));
-        return response()->json($ghe, 200);
+        return response()->json([
+            'message' => 'Cập nhật trạng thái ghế thành công',
+            'data' => $ghe
+        ], 200);
     }
 
-    public function destroy(Ghe $ghe)
+    //xử lý thay đổi loại ghế
+    public function changeSeatType(Request $request, Ghe $ghe)
     {
-        $ghe->update(['trang_thai' => false]);
-        return response()->json(['message' => 'Ghế đã được đánh dấu là hỏng'], 200);
+        // Kiểm tra trạng thái phòng chiếu
+        if ($ghe->phong->trang_thai) {
+            return response()->json(['message' => 'Không thể thay đổi loại ghế khi phòng chiếu đã xuất bản'], 400);
+        }
+
+        // Validate dữ liệu
+        $request->validate([
+            'loai_ghe_id' => 'required|exists:loai_ghe,id',
+        ], [
+            'loai_ghe_id.required' => 'Vui lòng chọn loại ghế',
+            'loai_ghe_id.exists' => 'Loại ghế không tồn tại',
+        ]);
+
+        // Cập nhật loại ghế
+        $ghe->update(['loai_ghe_id' => $request->loai_ghe_id]);
+
+        return response()->json([
+            'message' => 'Thay đổi loại ghế thành công',
+            'data' => $ghe->load('phong', 'loaiGhe')
+        ], 200);
     }
 }
