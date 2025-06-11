@@ -99,7 +99,7 @@ export const getUpdateVaiTro = async ({resource = "vai_tro", id, values} : Props
 
 export const getListPhanHoiNguoiDung = async ({resource = "phan_hoi"} : Props) => {
   const {data} = await axiosClient.get(resource);
-  return data;
+  return data.data;
 }
 
 export const getDeletePhanHoiNguoiDung  = async ({resource = "phan_hoi" , id} : Props) => {

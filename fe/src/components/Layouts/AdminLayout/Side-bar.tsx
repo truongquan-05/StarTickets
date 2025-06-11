@@ -21,7 +21,6 @@ interface SideBarProps {
   onCollapse: (collapsed: boolean) => void;
   drawerVisible: boolean;
   setDrawerVisible: (visible: boolean) => void;
-  
 }
 
 const SideBar: React.FC<SideBarProps> = ({
@@ -83,39 +82,37 @@ const SideBar: React.FC<SideBarProps> = ({
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/movies/add">Add</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/genre"><span style={{ marginLeft: 8 }}>•</span>{" "}
-        <Link to="/admin/genre">Thể loại phim</Link>
-      </Menu.Item>
-      <Menu.Item key="/admin/lichchieu/list"><span style={{ marginLeft: 8 }}>•</span>{" "}
-        <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
-      </Menu.Item>
-      </Menu.SubMenu>
-      <Menu.SubMenu
-        key="chair"
-        icon={<TableOutlined />}
-        title="Quản Lý Ghế"
-      >
-        <Menu.Item key="/admin/category_chair/list" >
-        <Link to="/admin/category_chair/list">Loại Ghế</Link>
-      </Menu.Item>
+        <Menu.Item key="/admin/genre">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/genre">Thể loại phim</Link>
+        </Menu.Item>
+        <Menu.Item key="/admin/lichchieu/list">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
+        </Menu.Item>
       </Menu.SubMenu>
 
-      
+      <Menu.Item key="//admin/category_chair/list" icon={<TableOutlined />}>
+        <Link to="/admin/category_chair/list">Loại Ghế</Link>
+      </Menu.Item>
+
       <Menu.SubMenu
         key="users"
         icon={<UserOutlined />}
         title="Quản Lý Tài Khoản"
       >
-      <Menu.Item key="/admin/users"><span style={{ marginLeft: 8 }}>•</span>{" "}
-        <Link to="/admin/users">Tài Khoản</Link>
-      </Menu.Item>
-      <Menu.Item key="/admin/vaitro"><span style={{ marginLeft: 8 }}>•</span>{" "}
-        <Link to="/admin/vaitro">Vai Trò</Link>
-      </Menu.Item>
+        <Menu.Item key="/admin/users">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/users">Tài Khoản</Link>
+        </Menu.Item>
+        <Menu.Item key="/admin/vaitro">
+          <span style={{ marginLeft: 8 }}>•</span>{" "}
+          <Link to="/admin/vaitro">Vai Trò</Link>
+        </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
         key="food"
-        icon={<GiftOutlined/>}
+        icon={<GiftOutlined />}
         title="Dịch vụ và ưu đãi"
       >
         <Menu.Item key="/admin/food">
@@ -127,7 +124,7 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/vouchers/list">Quản lý vouchers</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      
+
       <Menu.SubMenu key="cinemas" icon={<BankOutlined />} title="Quản Lý Rạp">
         <Menu.Item key="/admin/cinemas/list">
           <span style={{ marginLeft: 8 }}>•</span>{" "}
@@ -146,7 +143,11 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/room/add">Thêm mới Phòng Chiếu</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      <Menu.SubMenu key="comment" icon={<CommentOutlined />} title="Quản Lý Phản Hồi">
+      <Menu.SubMenu
+        key="comment"
+        icon={<CommentOutlined />}
+        title="Quản Lý Phản Hồi"
+      >
         <Menu.Item key="">
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/comment/phanhoinguoidung">Phản Hồi Người Dùng</Link>
@@ -174,7 +175,7 @@ const SideBar: React.FC<SideBarProps> = ({
       >
         <div
           style={{
-            padding: collapsed ? 8 : 16, 
+            padding: collapsed ? 8 : 16,
             textAlign: "center",
             background: "rgba(255, 255, 255, 0.05)",
             cursor: "pointer",
@@ -221,8 +222,8 @@ const SideBar: React.FC<SideBarProps> = ({
           src={logoStar}
           alt="Logo"
           style={{
-            width: collapsed ? 40 : 160, 
-            height: collapsed ? 40 : 50, 
+            width: collapsed ? 40 : 160,
+            height: collapsed ? 40 : 50,
             objectFit: "contain",
             transition: "width 0.3s",
             margin: "0 auto",

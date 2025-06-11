@@ -1,158 +1,162 @@
-import React from "react";
+
+import { useState } from "react";
 import {
   useListPhanHoiNguoiDung,
   useUpdatePhanHoiNguoiDung,
 } from "../../../hook/hungHook";
+import { Modal, Button, List, Typography, Space, Card } from "antd";
 import {
-  Table,
-  Card,
-  Button,
-  message,
-  Space,
-} from "antd";
-import {
-  CheckOutlined,
-  CheckCircleTwoTone,
-  CloseCircleTwoTone,
+  MailOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
 } from "@ant-design/icons";
 
+interface Feedback {
+  id: number;
+  ho_ten: string;
+  email: string;
+  so_dien_thoai: string;
+  noi_dung: string;
+  trang_thai: number; // 0: chưa đọc, 1: đã đọc
+  created_at: string | null;
+}
+
 const PhanHoiNguoiDung = () => {
-  const { data, refetch } = useListPhanHoiNguoiDung({ resource: "phan_hoi" });
-  const dataSource = data?.data || [];
+  const { data: feedbackData = [], isError } = useListPhanHoiNguoiDung({});
+  const { mutate: updateFeedback } = useUpdatePhanHoiNguoiDung({});
 
-  const { mutate: updatePhanHoiNguoiDung } = useUpdatePhanHoiNguoiDung({
-    resource: "phan_hoi",
-  });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentFeedback, setCurrentFeedback] = useState<Feedback | null>(null);
 
-  // 👉 Hàm xử lý đánh dấu đã đọc
-  const handleMarkAsRead = (record: any) => {
-    updatePhanHoiNguoiDung(
-      {
-        id: record.id,
-        values: { ...record, trang_thai: true },
-      },
-      {
-        onSuccess: () => {
-          message.success("Đã đánh dấu là đã đọc");
-          refetch?.(); // làm mới lại bảng
-        },
-        onError: () => {
-          message.error("Đánh dấu thất bại");
-        },
-      }
+  const formatDate = (isoStr: string | null) => {
+    if (!isoStr) return "Không rõ";
+    const dt = new Date(isoStr);
+    return (
+      dt.toLocaleDateString("vi-VN") +
+      " " +
+      dt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
     );
   };
 
-  const columns = [
-    {
-      title: "Họ Tên",
-      dataIndex: "ho_ten",
-      key: "ho_ten",
-      align: "center" as const,
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      align: "center" as const,
-    },
-    {
-      title: "Số Điện Thoại",
-      dataIndex: "so_dien_thoai",
-      key: "so_dien_thoai",
-      align: "center" as const,
-    },
-    {
-      title: "Nội Dung",
-      dataIndex: "noi_dung",
-      key: "noi_dung",
-      align: "center" as const,
-    },
-    {
-      title: "Trạng Thái",
-      dataIndex: "trang_thai",
-      key: "trang_thai",
-      align: "center" as const,
-      render: (trang_thai: boolean) =>
-        trang_thai ? (
-          <span style={{ color: "green", fontWeight: 600 }}>
-            <CheckCircleTwoTone twoToneColor="#52c41a" /> Đã đọc
-          </span>
-        ) : (
-          <span style={{ color: "red", fontWeight: 600 }}>
-            <CloseCircleTwoTone twoToneColor="#f5222d" /> Chưa đọc
-          </span>
-        ),
-    },
-    {
-      title: "Thao tác",
-      key: "action",
-      align: "center" as const,
-      render: (_: any, record: any) =>
-        !record.trang_thai && (
-          <Space size="middle">
-            <Button
-              type="primary"
-              shape="round"
-              icon={<CheckOutlined />}
-              title="Đánh dấu đã đọc"
-              onClick={() => handleMarkAsRead(record)}
-            >
-              Đã đọc
-            </Button>
-          </Space>
-        ),
-    },
-  ];
-
-  // Style nội trang
-  const styles = {
-    card: {
-      margin: "20px",
-      borderRadius: "12px",
-      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-    },
-    tableHeader: {
-      backgroundColor: "#001529",
-      color: "#fff",
-      fontWeight: "600",
-      textAlign: "center",
-    },
-    tableCell: {
-      textAlign: "center",
-      fontSize: "15px",
-      padding: "12px 8px",
-    },
+  const toggleReadStatus = (fb: Feedback) => {
+    updateFeedback({
+      id: fb.id,
+      values: { trang_thai: fb.trang_thai === 1 ? 0 : 1 },
+    });
   };
 
-  const tableComponents = {
-    header: {
-      cell: (props: any) => (
-        <th {...props} style={{ ...styles.tableHeader, ...props.style }}>
-          {props.children}
-        </th>
-      ),
-    },
-    body: {
-      cell: (props: any) => (
-        <td {...props} style={{ ...styles.tableCell, ...props.style }}>
-          {props.children}
-        </td>
-      ),
-    },
+  const openModal = (feedback: Feedback) => {
+    setCurrentFeedback(feedback);
+    setModalVisible(true);
+    if (feedback.trang_thai === 0) {
+      toggleReadStatus(feedback);
+    }
   };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setCurrentFeedback(null);
+  };
+
+  if (isError)
+    return (
+      <Typography.Text type="danger">
+        Lỗi khi tải phản hồi người dùng.
+      </Typography.Text>
+    );
 
   return (
-    <Card title="Phản Hồi Người Dùng" style={styles.card}>
-      <Table
-        dataSource={dataSource}
-        columns={columns}
-        rowKey="id"
-        bordered
-        pagination={{ pageSize: 10 }}
-        components={tableComponents}
-      />
-    </Card>
+    <div style={{ padding: "24px", backgroundColor: "#fff", borderRadius: 8 }}>
+      <Typography.Title level={3}>Phản hồi người dùng</Typography.Title>
+
+      {feedbackData.length === 0 ? (
+        <Typography.Text type="secondary">
+          Không có phản hồi nào.
+        </Typography.Text>
+      ) : (
+        <List
+          itemLayout="vertical"
+          dataSource={feedbackData}
+          renderItem={(item: Feedback) => (
+            <Card
+              key={item.id}
+              style={{
+                marginBottom: 16,
+                backgroundColor: item.trang_thai === 1 ? "#f6f6f6" : "#ffffff",
+                cursor: "pointer",
+                borderInlineStart:
+                  item.trang_thai === 0
+                    ? "4px solid #52c41a"
+                    : "4px solid transparent", // Viền trái xanh nếu chưa đọc
+              }}
+              onClick={() => openModal(item)}
+              hoverable
+            >
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Space
+                  style={{ justifyContent: "space-between", width: "100%" }}
+                >
+                  <Typography.Text strong>{item.ho_ten}</Typography.Text>
+                  <Typography.Text type="secondary">
+                    {formatDate(item.created_at)}
+                  </Typography.Text>
+                </Space>
+
+                <Typography.Paragraph ellipsis={{ rows: 2 }}>
+                  {item.noi_dung}
+                </Typography.Paragraph>
+
+                <Space>
+                  <Button
+                    icon={
+                      item.trang_thai === 1 ? (
+                        <EyeInvisibleOutlined />
+                      ) : (
+                        <EyeOutlined />
+                      )
+                    }
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleReadStatus(item);
+                    }}
+                  >
+                    {item.trang_thai === 1
+                      ? "Đánh dấu chưa đọc"
+                      : "Đánh dấu đã đọc"}
+                  </Button>
+                </Space>
+              </Space>
+            </Card>
+          )}
+        />
+      )}
+
+      <Modal
+        open={modalVisible}
+        title={`Phản hồi từ ${currentFeedback?.ho_ten}`}
+        onCancel={closeModal}
+        footer={[
+          <Button key="close" onClick={closeModal}>
+            Đóng
+          </Button>,
+        ]}
+      >
+        {currentFeedback && (
+          <>
+            <Typography.Paragraph>
+              <MailOutlined /> <strong>Email:</strong> {currentFeedback.email}
+            </Typography.Paragraph>
+            <Typography.Paragraph>
+              📞 <strong>SĐT:</strong> {currentFeedback.so_dien_thoai}
+            </Typography.Paragraph>
+            <Typography.Paragraph style={{ fontSize: 18 }}>
+              📝 {currentFeedback.noi_dung}
+            </Typography.Paragraph>
+          </>
+        )}
+      </Modal>
+    </div>
   );
 };
 
