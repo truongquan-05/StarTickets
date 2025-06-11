@@ -148,6 +148,72 @@
       "isBooked": true
     }
   ],
+  "ghe":
+  [
+  {"id":1,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A1","hang":"A","cot":"1","trang_thai":true},
+  {"id":2,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A2","hang":"A","cot":"2","trang_thai":true},
+  {"id":3,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A3","hang":"A","cot":"3","trang_thai":true},
+  {"id":4,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A4","hang":"A","cot":"4","trang_thai":true},
+  {"id":5,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A5","hang":"A","cot":"5","trang_thai":true},
+  {"id":6,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A6","hang":"A","cot":"6","trang_thai":true},
+  {"id":7,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A7","hang":"A","cot":"7","trang_thai":true},
+  {"id":8,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A8","hang":"A","cot":"8","trang_thai":true},
+
+  {"id":9,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B1","hang":"B","cot":"1","trang_thai":true},
+  {"id":10,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B2","hang":"B","cot":"2","trang_thai":true},
+  {"id":11,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B3","hang":"B","cot":"3","trang_thai":true},
+  {"id":12,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B4","hang":"B","cot":"4","trang_thai":true},
+  {"id":13,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B5","hang":"B","cot":"5","trang_thai":true},
+  {"id":14,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B6","hang":"B","cot":"6","trang_thai":true},
+  {"id":15,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B7","hang":"B","cot":"7","trang_thai":true},
+  {"id":16,"phong_id":1,"loai_ghe_id":1,"so_ghe":"B8","hang":"B","cot":"8","trang_thai":true},
+
+  {"id":17,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C1","hang":"C","cot":"1","trang_thai":true},
+  {"id":18,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C2","hang":"C","cot":"2","trang_thai":true},
+  {"id":19,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C3","hang":"C","cot":"3","trang_thai":true},
+  {"id":20,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C4","hang":"C","cot":"4","trang_thai":true},
+  {"id":21,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C5","hang":"C","cot":"5","trang_thai":true},
+  {"id":22,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C6","hang":"C","cot":"6","trang_thai":true},
+  {"id":23,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C7","hang":"C","cot":"7","trang_thai":true},
+  {"id":24,"phong_id":1,"loai_ghe_id":1,"so_ghe":"C8","hang":"C","cot":"8","trang_thai":true},
+
+  {"id":25,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D1","hang":"D","cot":"1","trang_thai":true},
+  {"id":26,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D2","hang":"D","cot":"2","trang_thai":true},
+  {"id":27,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D3","hang":"D","cot":"3","trang_thai":true},
+  {"id":28,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D4","hang":"D","cot":"4","trang_thai":true},
+  {"id":29,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D5","hang":"D","cot":"5","trang_thai":true},
+  {"id":30,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D6","hang":"D","cot":"6","trang_thai":true},
+  {"id":31,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D7","hang":"D","cot":"7","trang_thai":true},
+  {"id":32,"phong_id":1,"loai_ghe_id":2,"so_ghe":"D8","hang":"D","cot":"8","trang_thai":true},
+
+  {"id":33,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E1","hang":"E","cot":"1","trang_thai":true},
+  {"id":34,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E2","hang":"E","cot":"2","trang_thai":true},
+  {"id":35,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E3","hang":"E","cot":"3","trang_thai":true},
+  {"id":36,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E4","hang":"E","cot":"4","trang_thai":true},
+  {"id":37,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E5","hang":"E","cot":"5","trang_thai":true},
+  {"id":38,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E6","hang":"E","cot":"6","trang_thai":true},
+  {"id":39,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E7","hang":"E","cot":"7","trang_thai":true},
+  {"id":40,"phong_id":1,"loai_ghe_id":2,"so_ghe":"E8","hang":"E","cot":"8","trang_thai":true},
+
+  {"id":41,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F1","hang":"F","cot":"1","trang_thai":true},
+  {"id":42,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F2","hang":"F","cot":"2","trang_thai":true},
+  {"id":43,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F3","hang":"F","cot":"3","trang_thai":true},
+  {"id":44,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F4","hang":"F","cot":"4","trang_thai":true},
+  {"id":45,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F5","hang":"F","cot":"5","trang_thai":true},
+  {"id":46,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F6","hang":"F","cot":"6","trang_thai":true},
+  {"id":47,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F7","hang":"F","cot":"7","trang_thai":true},
+  {"id":48,"phong_id":1,"loai_ghe_id":2,"so_ghe":"F8","hang":"F","cot":"8","trang_thai":true},
+
+  {"id":49,"phong_id":1,"loai_ghe_id":3,"so_ghe":"G1-G2","hang":"G","cot":"1-2","trang_thai":true},
+  {"id":50,"phong_id":1,"loai_ghe_id":3,"so_ghe":"G3-G4","hang":"G","cot":"3-4","trang_thai":true},
+  {"id":51,"phong_id":1,"loai_ghe_id":3,"so_ghe":"G5-G6","hang":"G","cot":"5-6","trang_thai":true},
+  {"id":52,"phong_id":1,"loai_ghe_id":3,"so_ghe":"G7-G8","hang":"G","cot":"7-8","trang_thai":true},
+
+  {"id":53,"phong_id":1,"loai_ghe_id":3,"so_ghe":"H1-H2","hang":"H","cot":"1-2","trang_thai":true},
+  {"id":54,"phong_id":1,"loai_ghe_id":3,"so_ghe":"H3-H4","hang":"H","cot":"3-4","trang_thai":true},
+  {"id":55,"phong_id":1,"loai_ghe_id":3,"so_ghe":"H5-H6","hang":"H","cot":"5-6","trang_thai":true},
+  {"id":56,"phong_id":1,"loai_ghe_id":3,"so_ghe":"H7-H8","hang":"H","cot":"7-8","trang_thai":true}
+],
   "bookings": [],
   "ma_giam_gia": [
     {
