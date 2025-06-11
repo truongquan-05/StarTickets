@@ -75,3 +75,46 @@ export const getUpdateCategoryChair  = async ({resource = "loai_ghe", id, values
   const {data} = await axiosClient.put(`${resource}/${id}`,values);
   return data
 }
+export const getListVaiTro = async ({resource = "vai_tro"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getDeleteVaiTro  = async ({resource = "vai_tro" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getCreateVaiTro = async ({resource = "vai_tro" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdateVaiTro = async ({resource = "vai_tro", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
+export const getListPhanHoiNguoiDung = async ({resource = "phan_hoi"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data.data;
+}
+
+export const getDeletePhanHoiNguoiDung  = async ({resource = "phan_hoi" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getCreatePhanHoiNguoiDung = async ({resource = "phan_hoi" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdatePhanHoiNguoiDung= async ({resource = "phan_hoi", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}

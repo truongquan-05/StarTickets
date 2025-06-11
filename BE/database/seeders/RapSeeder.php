@@ -16,31 +16,26 @@ class RapSeeder extends Seeder
         Rap::create([
             'ten_rap' => 'CGV Vincom',
             'dia_chi' => '123 Đường Láng, Hà Nội',
-            'isDeleted' => false
         ]);
 
         Rap::create([
             'ten_rap' => 'CGV Royal City',
             'dia_chi' => '456 Nguyễn Trãi, Hà Nội',
-            'isDeleted' => false
         ]);
 
         Rap::create([
             'ten_rap' => 'Lotte Cinema Landmark',
             'dia_chi' => '789 Keangnam, Hà Nội',
-            'isDeleted' => false
         ]);
 
         Rap::create([
             'ten_rap' => 'BHD Star Cineplex',
             'dia_chi' => '101 Lê Lợi, TP.HCM',
-            'isDeleted' => true
         ]);
 
         Rap::create([
             'ten_rap' => 'Galaxy Nguyễn Du',
             'dia_chi' => '321 Nguyễn Du, TP.HCM',
-            'isDeleted' => true
         ]);
     }
 }

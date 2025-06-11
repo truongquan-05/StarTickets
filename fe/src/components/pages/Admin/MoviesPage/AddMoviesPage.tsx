@@ -18,14 +18,15 @@ import { getGenreList } from "../../../provider/hungProvider";
 import { useCreateMovies } from "../../../hook/hungHook";
 import { UploadOutlined } from "@ant-design/icons";
 
-
 const { Option } = Select;
 const { Title } = Typography;
 
 const AddMoviesPage = () => {
   const [form] = Form.useForm();
   const { mutate: createMutate } = useCreateMovies({ resource: "phim" });
-  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>([]);
+  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>(
+    []
+  );
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -47,7 +48,6 @@ const AddMoviesPage = () => {
   const onCreateOrUpdate = (values: Record<string, any>) => {
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
-
       if (key === "anh_poster" && Array.isArray(value) && value.length > 0) {
         formData.append(key, value[0].originFileObj);
       } else if (key === "ngay_cong_chieu") {
@@ -62,166 +62,207 @@ const AddMoviesPage = () => {
   };
 
   return (
+    <div className="container my-4">
+      <Card style={{ margin: "20px", padding: "20px" }}>
+        <Title level={3} style={{ marginBottom: 20 }}>
+          Thêm Mới Phim
+        </Title>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onCreateOrUpdate}
+          className="row g-3"
+        >
+          {/* Cột trái */}
+          <div className="col-md-6">
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item
+                  label="Tên phim"
+                  name="ten_phim"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập tên phim" },
+                  ]}
+                >
+                  <Input placeholder="Nhập tên phim" />
+                </Form.Item>
 
-    <div className="container my-4" >
+                <Form.Item
+                  label="Thời lượng (phút)"
+                  name="thoi_luong"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập thời lượng" },
+                    { type: "number", min: 1, message: "Thời lượng phải > 0" },
+                  ]}
+                >
+                  <InputNumber
+                    style={{ width: "100%" }}
+                    placeholder="VD: 120"
+                  />
+                </Form.Item>
 
-    <Card style={{ margin: "20px", padding: "20px" }}>
-      <Title level={3} style={{ marginBottom: 20 }}>
-        Thêm Mới Phim
-      </Title>
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onCreateOrUpdate}
-        className="row g-3"
-      >
-        {/* Cột trái */}
-        <div className="col-md-6">
-       
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item
-              label="Tên phim"
-              name="ten_phim"
-              rules={[{ required: true, message: "Vui lòng nhập tên phim" }]}
-            >
-              <Input placeholder="Nhập tên phim" />
+                <Form.Item
+                  label="Trailer (URL)"
+                  name="trailer"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập link trailer" },
+                    { type: "url", message: "Phải là URL hợp lệ" },
+                  ]}
+                >
+                  <Input placeholder="https://youtube.com/..." />
+                </Form.Item>
+
+                <Form.Item
+                  label="Ngôn ngữ"
+                  name="ngon_ngu"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập ngôn ngữ" },
+                  ]}
+                >
+                  <Input placeholder="VD: Tiếng Việt, English..." />
+                </Form.Item>
+
+                <Form.Item
+                  label="Thể loại"
+                  name="the_loai_id"
+                  rules={[
+                    { required: true, message: "Vui lòng chọn thể loại" },
+                  ]}
+                >
+                  <Select placeholder="Chọn thể loại">
+                    {genre.map((item) => (
+                      <Option key={item.id} value={item.id}>
+                        {item.ten_the_loai}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Mô tả"
+                  name="mo_ta"
+                  rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+                >
+                  <Input.TextArea rows={5} placeholder="Nhập mô tả phim" />
+                </Form.Item>
+              </Col>
+
+              <Col span={12}>
+                <Form.Item
+                  label="Quốc gia"
+                  name="quoc_gia"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập quốc gia" },
+                  ]}
+                >
+                  <Input placeholder="VD: Việt Nam, Mỹ..." />
+                </Form.Item>
+
+                <Form.Item
+                  label="Ảnh poster"
+                  name="anh_poster"
+                  valuePropName="fileList"
+                  getValueFromEvent={normFile}
+                >
+                  <Upload
+                    name="anh_poster"
+                    listType="picture"
+                    beforeUpload={(file) => {
+                      const isValid = [
+                        "image/jpeg",
+                        "image/png",
+                        "image/gif",
+                      ].includes(file.type);
+                      if (!isValid) message.error("Chỉ hỗ trợ JPG/PNG/GIF");
+                      return isValid || Upload.LIST_IGNORE;
+                    }}
+                    maxCount={1}
+                  >
+                    <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+                  </Upload>
+                </Form.Item>
+
+                <Form.Item
+                  label="Ngày công chiếu"
+                  name="ngay_cong_chieu"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn ngày công chiếu",
+                    },
+                  ]}
+                >
+                  <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+                </Form.Item>
+                <Form.Item
+                  label="Ngày kết thúc"
+                  name="ngay_ket_thuc"
+                  rules={[
+                    { required: true, message: "Vui lòng chọn ngày kết thúc" },
+                  ]}
+                >
+                  <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+                </Form.Item>
+
+                <Form.Item
+                  label="Độ tuổi giới hạn"
+                  name="do_tuoi_gioi_han"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập độ tuổi giới hạn",
+                    },
+                  ]}
+                >
+                  <Input placeholder="VD: 13+, 18+" />
+                </Form.Item>
+                <Form.Item
+                  label="Loại Suất Chiếu"
+                  name="loai_suat_chieu"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn loại suất chiếu",
+                    },
+                  ]}
+                >
+                  <Select placeholder="Chọn loại suất chiếu">
+                    <Option value="Suất Chiếu Thường">Suất Chiếu Thường</Option>
+                    <Option value="Suất Chiếu Sớm">Suất Chiếu Sớm</Option>
+                    <Option value="Suất Chiếu Đặc Biệt">
+                      Suất Chiếu Đặc Biệt
+                    </Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
+                  label="Tình trạng phim"
+                  name="trang_thai_phim"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn tình trạng phim",
+                    },
+                  ]}
+                >
+                  <Select placeholder="Chọn tình trạng">
+                    <Option value="Sắp Chiếu">Sắp Chiếu</Option>
+                    <Option value="Đang Chiếu">Đang Chiếu</Option>
+                    <Option value="Đã Chiếu">Đã Chiếu</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Divider />
+
+            <Form.Item style={{ textAlign: "right" }}>
+              <Button type="primary" htmlType="submit">
+                Thêm mới phim
+              </Button>
             </Form.Item>
-
-            <Form.Item
-              label="Mô tả"
-              name="mo_ta"
-              rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
-            >
-              <Input.TextArea rows={3} placeholder="Nhập mô tả phim" />
-            </Form.Item>
-
-            <Form.Item
-              label="Thời lượng (phút)"
-              name="thoi_luong"
-              rules={[
-                { required: true, message: "Vui lòng nhập thời lượng" },
-                { type: "number", min: 1, message: "Thời lượng phải > 0" },
-              ]}
-            >
-              <InputNumber style={{ width: "100%" }} placeholder="VD: 120" />
-            </Form.Item>
-
-            <Form.Item
-              label="Trailer (URL)"
-              name="trailer"
-              rules={[
-                { required: true, message: "Vui lòng nhập link trailer" },
-                { type: "url", message: "Phải là URL hợp lệ" },
-              ]}
-            >
-              <Input placeholder="https://youtube.com/..." />
-            </Form.Item>
-
-            <Form.Item
-              label="Ngôn ngữ"
-              name="ngon_ngu"
-              rules={[{ required: true, message: "Vui lòng nhập ngôn ngữ" }]}
-            >
-              <Input placeholder="VD: Tiếng Việt, English..." />
-            </Form.Item>
-
-            <Form.Item
-              label="Thể loại"
-              name="the_loai_id"
-              rules={[{ required: true, message: "Vui lòng chọn thể loại" }]}
-            >
-              <Select placeholder="Chọn thể loại">
-                {genre.map((item) => (
-                  <Option key={item.id} value={item.id}>
-                    {item.ten_the_loai}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label="Quốc gia"
-              name="quoc_gia"
-              rules={[{ required: true, message: "Vui lòng nhập quốc gia" }]}
-            >
-              <Input placeholder="VD: Việt Nam, Mỹ..." />
-            </Form.Item>
-
-            <Form.Item
-              label="Ảnh poster"
-              name="anh_poster"
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-            >
-              <Upload
-                name="anh_poster"
-                listType="picture"
-                beforeUpload={(file) => {
-                  const isValid =
-                    ["image/jpeg", "image/png", "image/gif"].includes(file.type);
-                  if (!isValid) message.error("Chỉ hỗ trợ JPG/PNG/GIF");
-                  return isValid || Upload.LIST_IGNORE;
-                }}
-                maxCount={1}
-              >
-                <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
-              </Upload>
-            </Form.Item>
-
-            <Form.Item
-              label="Ngày công chiếu"
-              name="ngay_cong_chieu"
-              rules={[{ required: true, message: "Vui lòng chọn ngày công chiếu" }]}
-            >
-              <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
-            </Form.Item>
-
-            <Form.Item
-              label="Độ tuổi giới hạn"
-              name="do_tuoi_gioi_han"
-              rules={[{ required: true, message: "Vui lòng nhập độ tuổi giới hạn" }]}
-            >
-              <Input placeholder="VD: 13+, 18+" />
-            </Form.Item>
-
-            <Form.Item
-              label="Tình trạng phim"
-              name="tinh_trang"
-              rules={[{ required: true, message: "Vui lòng chọn tình trạng phim" }]}
-            >
-              <Select placeholder="Chọn tình trạng">
-                <Option value="Sắp Chiếu">Sắp Chiếu</Option>
-                <Option value="Đang Chiếu">Đang Chiếu</Option>
-                <Option value="Đã Chiếu">Đã Chiếu</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Trạng thái hệ thống"
-              name="trang_thai"
-              rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
-            >
-              <Select placeholder="Chọn trạng thái">
-                <Option value={1}>Hiển thị</Option>
-                <Option value={0}>Ẩn</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Divider />
-
-        <Form.Item style={{ textAlign: "right" }}>
-          <Button type="primary" htmlType="submit">
-             Thêm mới phim
-          </Button>
-        </Form.Item>
-        </div>
-      </Form>
-    </Card>
+          </div>
+        </Form>
+      </Card>
     </div>
   );
 };

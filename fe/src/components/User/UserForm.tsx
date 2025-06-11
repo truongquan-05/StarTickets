@@ -12,19 +12,22 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      name: "",
+      ten: "",
       email: "",
       password: "",
-      phone: "",
+      confirmPassword: "",
+      so_dien_thoai: "",
       avatar: "",
-      role: "user",
+      vai_tro: "user",
       isActive: true,
       ...initialData,
     });
   }, [initialData, form]);
 
   const handleFinish = (values: any) => {
-    onSubmit(values);
+    // Loại bỏ confirmPassword trước khi gửi lên
+    const { confirmPassword, ...data } = values;
+    onSubmit(data);
   };
 
   return (
@@ -32,11 +35,10 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
       form={form}
       layout="vertical"
       onFinish={handleFinish}
-      initialValues={{ isActive: true }}
     >
       <Form.Item
         label="Tên"
-        name="name"
+        name="ten"
         rules={[{ required: true, message: "Vui lòng nhập tên người dùng" }]}
       >
         <Input placeholder="Nhập tên" />
@@ -57,47 +59,37 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
       >
         <Input.Password placeholder="Nhập mật khẩu" />
       </Form.Item>
+
       <Form.Item
         label="Nhập lại mật khẩu"
         name="confirmPassword"
         dependencies={["password"]}
         rules={[
-        { required: true, message: "Vui lòng nhập lại mật khẩu" },
-        ({ getFieldValue }) => ({
-        validator(_, value) {
-        if (!value || getFieldValue("password") === value) {
-          return Promise.resolve();
-        }
-        return Promise.reject(
-          new Error("Mật khẩu nhập lại không khớp")
-        );
-      },
-    }),
-  ]}
->
-  <Input.Password placeholder="Nhập lại mật khẩu" />
-</Form.Item>
+          { required: true, message: "Vui lòng nhập lại mật khẩu" },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue("password") === value) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error("Mật khẩu nhập lại không khớp"));
+            },
+          }),
+        ]}
+      >
+        <Input.Password placeholder="Nhập lại mật khẩu" />
+      </Form.Item>
 
       <Form.Item
         label="Số điện thoại"
-        name="phone"
+        name="so_dien_thoai"
         rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
       >
         <Input placeholder="Nhập số điện thoại" />
       </Form.Item>
-
-      <Form.Item
-        label="Ảnh đại diện"
-        name="avatar"
-        rules={[{ required: true, message: "Vui lòng nhập URL ảnh đại diện" }]}
-      >
-        <Input placeholder="Nhập URL ảnh" />
-      </Form.Item>
-
-      <Form.Item label="Vai trò" name="role">
+      <Form.Item label="Vai trò" name="vai_tro_id">
         <Select>
-          <Select.Option value="user">User</Select.Option>
-          <Select.Option value="admin">Admin</Select.Option>
+          <Select.Option value="1">1</Select.Option>
+          <Select.Option value="2">2</Select.Option>
         </Select>
       </Form.Item>
 

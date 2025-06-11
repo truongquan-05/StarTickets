@@ -11,7 +11,7 @@ export interface User {
   phone: string;
   avatar: string; 
   role: "admin" | "user";
-  isActive: boolean;
+  trang_thai: boolean;
 }
 export interface Food {
   id: number;

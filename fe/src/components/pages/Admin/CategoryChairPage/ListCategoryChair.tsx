@@ -2,20 +2,20 @@ import { useEffect, useState } from "react";
 
 import {
   Button,
-  message,
-  Popconfirm,
-  Space,
+  // message,
+  // Popconfirm,
+  // Space,
   Table,
   Card,
   Form,
   Input,
   Modal,
 } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+// import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { ICategoryChair } from "../interface/categoryChair";
 import {
   useListCategoryChair,
-  useDeleteCategoryChair,
+  // useDeleteCategoryChair,
   useCreateCategoryChairs,
   useUpdateCategoryChair,
 } from "../../../hook/hungHook";
@@ -25,17 +25,19 @@ const ListCategoryChair = () => {
   const { data } = useListCategoryChair({ resource: "loai_ghe" });
   const dataSource = data?.data || [];
   const [isModalOpen, setModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<ICategoryChair | undefined>(
+  // const [editingItem, setEditingItem] = useState<ICategoryChair | undefined>(
+    
+  const [editingItem] = useState<ICategoryChair | undefined>(
     undefined
   );
-  const { mutate: deleteCategoryChair } = useDeleteCategoryChair({
+  // const { mutate: deleteCategoryChair } = useDeleteCategoryChair({
 
-      resource: "loai_ghe",
-    });
-  const createOrUpdateOpenModal = (record: ICategoryChair | undefined) => {
-      setModalOpen(true);
-      setEditingItem(record);
-    };
+  //     resource: "loai_ghe",
+  //   });
+  // const createOrUpdateOpenModal = (record: ICategoryChair | undefined) => {
+  //     setModalOpen(true);
+  //     setEditingItem(record);
+  //   };
   const { mutate: createCategoryChair } = useCreateCategoryChairs({ resource: "loai_ghe" });
   const { mutate: updateCategoryChair } = useUpdateCategoryChair({ resource: "loai_ghe" });
   const onCreateOrUpdate = (values: ICategoryChair) => {
@@ -66,50 +68,51 @@ const ListCategoryChair = () => {
       title: "Tên thể loại",
       dataIndex: "ten_loai_ghe",
       key: "name",
-      width: "60%",
-    },
-    {
-      title: "Thao tác",
-      key: "action",
       align: "center" as const,
-      render: (_: any, record: any) => (
-        <Space size="middle">
-          <Button
-            type="default"
-            shape="circle"
-            icon={<EditOutlined />}
-            title="Sửa"
-            onClick={() => createOrUpdateOpenModal(record)}
-          />
-          <Popconfirm
-            title="Bạn có chắc chắn muốn xoá thể loại này?"
-            okText="Xoá"
-            cancelText="Huỷ"
-            onConfirm={() => {
-              deleteCategoryChair(record.id);
-              message.success("Đã xoá thể loại: " + record.ten_loai_ghe);
-            }}
-          >
-            <Button
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-              title="Xoá"
-            />
-          </Popconfirm>
-        </Space>
-      ),
+      // width: "60%",
     },
+    // {
+    //   title: "Thao tác",
+    //   key: "action",
+    //   align: "center" as const,
+    //   render: (_: any, record: any) => (
+    //     <Space size="middle">
+    //       <Button
+    //         type="default"
+    //         shape="circle"
+    //         icon={<EditOutlined />}
+    //         title="Sửa"
+    //         onClick={() => createOrUpdateOpenModal(record)}
+    //       />
+    //       <Popconfirm
+    //         title="Bạn có chắc chắn muốn xoá thể loại này?"
+    //         okText="Xoá"
+    //         cancelText="Huỷ"
+    //         onConfirm={() => {
+    //           deleteCategoryChair(record.id);
+    //           message.success("Đã xoá thể loại: " + record.ten_loai_ghe);
+    //         }}
+    //       >
+    //         <Button
+    //           danger
+    //           shape="circle"
+    //           icon={<DeleteOutlined />}
+    //           title="Xoá"
+    //         />
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
   ];
   return (
     <Card title="Danh sách thể loại ghế" style={{ margin: "20px" }}>
       <div className="btn-category-chair">
-        <Button
+        {/* <Button
           className="add-category-chair"
           onClick={() => createOrUpdateOpenModal(undefined)}
         >
           Thêm mới
-        </Button>
+        </Button> */}
       </div>
       <Table
         dataSource={dataSource}
