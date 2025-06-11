@@ -66,7 +66,8 @@ const PhanHoiNguoiDung = () => {
     );
 
   return (
-    <div style={{ padding: "24px", backgroundColor: "#fff", borderRadius: 8 }}>
+    
+    <div style={{ padding: "24px", backgroundColor: "#fff", borderRadius: 8, height: "83vh", overflowY: "auto" }}>
       <Typography.Title level={3}>Phản hồi người dùng</Typography.Title>
 
       {feedbackData.length === 0 ? (
