@@ -148,6 +148,13 @@
       "isBooked": true
     }
   ],
+  "rap":[
+    {
+      "id":1,
+      "ten_rap":"StarTicket Hà Nội",
+      "dia_chi":"Hà Nội"
+    }
+  ],
   "phong_chieu":[
     {
       "id":1,
