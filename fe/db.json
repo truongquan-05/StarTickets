@@ -148,6 +148,18 @@
       "isBooked": true
     }
   ],
+  "phong_chieu":[
+    {
+      "id":1,
+      "rap_id":1,
+      "ten_phong":"Phòng 1",
+      "loai_so_do":8,
+      "hang_thuong":3,
+      "hang_vip":3,
+      "hang_doi":2,
+      "trang_thai":true
+    }
+  ],
   "ghe":
   [
   {"id":1,"phong_id":1,"loai_ghe_id":1,"so_ghe":"A1","hang":"A","cot":"1","trang_thai":true},
