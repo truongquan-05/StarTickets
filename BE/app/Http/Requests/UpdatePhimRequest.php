@@ -37,11 +37,11 @@ class UpdatePhimRequest extends FormRequest
             'trailer' => 'nullable|url',
             'ngon_ngu' => 'nullable|string|max:50',
             'quoc_gia' => 'nullable|string|max:50',
-            'anh_poster' => 'nullable|string|max:255',
-            'ngay_cong_chieu' => 'required|date',
+            // 'anh_poster' => 'nullable|string|max:255',
+            // 'ngay_cong_chieu' => 'required|date',
             'tinh_trang' => 'nullable|string|max:50',
             'do_tuoi_gioi_han' => 'nullable|string|max:10',
-            'trang_thai' => 'required|boolean',
+            // 'trang_thai' => 'required|boolean',
             
         ];
     }

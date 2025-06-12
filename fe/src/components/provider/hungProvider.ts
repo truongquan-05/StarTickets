@@ -14,6 +14,7 @@ export type Props = {
   resource: string;
   id?: number | string;
   values?: any;
+  phong_id?: number;
 };
 export const getListMovies = async ({resource = "phim"} : Props) => {
   const {data} = await axiosClient.get(resource);
@@ -75,3 +76,82 @@ export const getUpdateCategoryChair  = async ({resource = "loai_ghe", id, values
   const {data} = await axiosClient.put(`${resource}/${id}`,values);
   return data
 }
+export const getListVaiTro = async ({resource = "vai_tro"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getDeleteVaiTro  = async ({resource = "vai_tro" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getCreateVaiTro = async ({resource = "vai_tro" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdateVaiTro = async ({resource = "vai_tro", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
+export const getListPhanHoiNguoiDung = async ({resource = "phan_hoi"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data.data;
+}
+
+export const getDeletePhanHoiNguoiDung  = async ({resource = "phan_hoi" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getCreatePhanHoiNguoiDung = async ({resource = "phan_hoi" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdatePhanHoiNguoiDung= async ({resource = "phan_hoi", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+export const getListPhongChieu = async ({ resource = "phong_chieu" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+export const getCreatePhongChieu = async ({resource = "phong_chieu" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdatePhongChieu= async ({resource = "phong_chieu", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
+export const getListCinemas = async ({ resource = "rap" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+
+export const getListGhe = async ({
+  resource = "ghe",
+  phong_id,
+  per_page = 1000,  // mặc định lấy 1000 ghế
+}: {
+  resource?: string;
+  phong_id?: number;
+  per_page?: number;
+}) => {
+  const params: Record<string, any> = {};
+  if (phong_id) params.phong_id = phong_id;
+  if (per_page) params.per_page = per_page;
+
+  const { data } = await axiosClient.get(resource, { params });
+  return data.data;
+};

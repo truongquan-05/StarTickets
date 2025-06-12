@@ -12,9 +12,17 @@ import FoodList from '../pages/Food/List';
 import FoodAdd from '../pages/Food/Add';
 import FoodEdit from '../pages/Food/Edit';
 import UserList from '../pages/NguoiDung/List';
-import UserEdit from '../pages/NguoiDung/Edit';
-import UserAdd from '../pages/NguoiDung/Add';
 import GenresManager from '../GenresManager';
+import DashboardUser from '../pages/User/Dashboard';
+import LichChieu from '../pages/Admin/LichChieu/LichChieu';
+import VaiTro from '../pages/NguoiDung/VaiTro';
+import PhanHoiNguoiDung from '../pages/Admin/CommentPage/PhanHoiNguoiDung';
+import ListPhongChieu from '../pages/Admin/PhongChieu/ListPhongChieu';
+import AddPhongChieu from '../pages/Admin/PhongChieu/AddPhongChieu';
+import VouchersList from '../pages/Voucher/List';
+
+
+
 
 
 
@@ -25,7 +33,7 @@ const Routermain = () => {
       path: '/',
       element: <User />,
       children: [
-        { path: '/', element: <User /> },
+        { path: '/', element: <DashboardUser /> },
       ],
     },
     {
@@ -36,20 +44,25 @@ const Routermain = () => {
         { path: 'movies/list', element: <List /> },
         { path: 'movies/add', element: <AddMoviesPage /> },
         { path: 'category_chair/list', element: <ListCategoryChair /> },
+        { path: 'lichchieu/list', element: <LichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
+        { path: 'room/list', element: <ListPhongChieu /> },
+        { path: 'room/add', element: <AddPhongChieu /> },
+
+        { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
+
 
 
         { path: 'users', element: <UserList/> },
-        { path: 'users/add', element: <UserAdd/> },
-        { path: 'users/edit/:id', element: <UserEdit/> },
+        { path: 'vaitro', element: <VaiTro/> },
 
         { path: 'genre', element: <GenresManager/> },
         
         { path: 'food', element: <FoodList /> },
         { path: 'food/add', element: <FoodAdd /> },
         { path: 'food/edit/:id', element: <FoodEdit /> },
-
+        { path: 'vouchers/list', element: <VouchersList /> },
       ],
     },
   ]);

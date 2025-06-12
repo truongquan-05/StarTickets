@@ -11,8 +11,8 @@ const GenresManager = () => {
 
   // Fetch genres
   const fetchGenres = async () => {
-    const res = await axios.get("http://localhost:3000/genres");
-    const allGenres = res.data;
+    const res = await axios.get("http://127.0.0.1:8000/api/the_loai");
+    const allGenres = res.data.data;
     const filtered = showDeleted
       ? allGenres.filter((g: any) => g.isDeleted)
       : allGenres.filter((g: any) => !g.isDeleted);
@@ -30,11 +30,11 @@ const GenresManager = () => {
     }
 
     if (editingId !== null) {
-      await axios.put(`http://localhost:3000/genres/${editingId}`, { name });
+      await axios.put(`http://127.0.0.1:8000/api/the_loai/${editingId}`, { ten_the_loai:name });
       message.success("Cập nhật thành công!");
     } else {
-      await axios.post("http://localhost:3000/genres", {
-        name,
+      await axios.post("http://127.0.0.1:8000/api/the_loai", {
+        ten_the_loai : name,
         isDeleted: false,
       });
       message.success("Thêm thể loại thành công!");
@@ -47,26 +47,44 @@ const GenresManager = () => {
 
   const handleEdit = (genre: any) => {
     setEditingId(genre.id);
-    setName(genre.name);
+    setName(genre.ten_the_loai);
   };
 
   const handleDelete = async (id: number) => {
-    await axios.patch(`http://localhost:3000/genres/${id}`, { isDeleted: true });
+  try {
+    await axios.delete(`http://127.0.0.1:8000/api/the_loai/soft-delete/${id}`);
     message.success("Xóa mềm thành công!");
     fetchGenres();
-  };
+  } catch (err: any) {
+    console.error("Lỗi xóa mềm:", err.response?.data || err.message);
+    message.error("Xóa mềm thất bại!");
+  }
+};
+
 
   const handleRestore = async (id: number) => {
-    await axios.patch(`http://localhost:3000/genres/${id}`, { isDeleted: false });
+  try {
+    await axios.post(`http://127.0.0.1:8000/api/the_loai/restore/${id}`);
     message.success("Khôi phục thành công!");
     fetchGenres();
-  };
+  } catch (err: any) {
+    console.error("Lỗi khôi phục:", err.response?.data || err.message);
+    message.error("Khôi phục thất bại!");
+  }
+};
+
 
   const handlePermanentDelete = async (id: number) => {
-    await axios.delete(`http://localhost:3000/genres/${id}`);
-    message.success("Đã xóa thành công!");
+  try {
+    await axios.delete(`http://127.0.0.1:8000/api/the_loai/delete/${id}`);
+    message.success("Đã xóa vĩnh viễn!");
     fetchGenres();
-  };
+  } catch (err: any) {
+    console.error("Lỗi xóa vĩnh viễn:", err.response?.data || err.message);
+    message.error("Xóa thất bại!");
+  }
+};
+
 
   const columns = [
     {
@@ -76,7 +94,7 @@ const GenresManager = () => {
     },
     {
       title: "Tên thể loại",
-      dataIndex: "name",
+      dataIndex: "ten_the_loai",
       key: "name",
     },
     {

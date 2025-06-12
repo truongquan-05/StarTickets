@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getCreateCategoryChair, getCreateMovies, getDeleteCategoryChair, getDeleteMovies, getListCategoryChair, getListMovies, getUpdateCategoryChair, getUpdateMovies } from "../provider/hungProvider";
+import {  getCreateCategoryChair, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListCinemas, getListGhe, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -111,3 +111,139 @@ export const useUpdateCategoryChair = ({ resource = "loai_ghe" }) => {
     },
   });
 };
+export const useListVaiTro = ({resource = "vai_tro"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListVaiTro({resource})
+  })
+}
+
+export const useDeleteVaiTro = ({resource = "vai_tro"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeleteVaiTro({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+export const useCreateVaiTro = ({resource = "vai_tro"} : Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreateVaiTro({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdateVaiTro = ({ resource = "vai_tro" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateVaiTro({ resource, id, values }),
+    onSuccess: () => {
+      message.success("Cập nhật thành công");
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
+  });
+};
+
+export const useListPhanHoiNguoiDung = ({resource = "phan_hoi"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListPhanHoiNguoiDung({resource})
+  })
+}
+
+export const useDeletePhanHoiNguoiDung = ({resource = "phan_hoi"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeletePhanHoiNguoiDung({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+export const useCreatePhanHoiNguoiDung = ({resource = "phan_hoi"} : Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreatePhanHoiNguoiDung({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdatePhanHoiNguoiDung = ({ resource = "phan_hoi" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdatePhanHoiNguoiDung({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
+  });
+};
+
+export const useCreatePhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreatePhongChieu({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdatePhongChieu = ({ resource = "phong_chieu" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdatePhongChieu({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
+  });
+};
+
+export const useListCinemas = ({ resource = 'rap' }: Props) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: async () => {
+      const res = await getListCinemas({ resource });
+      return res.data || res; 
+    },
+  });
+};
+
+export const useListGhe = ({ resource = 'ghe', phong_id }: Props) => {
+  return useQuery({
+    queryKey: [resource, phong_id], // refetch khi phong_id thay đổi
+    queryFn: () => getListGhe({ resource, phong_id }),
+    enabled: !!phong_id, // chỉ gọi khi có phong_id
+  });
+};
+
+

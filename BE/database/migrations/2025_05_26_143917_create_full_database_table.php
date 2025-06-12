@@ -40,7 +40,7 @@ return new class extends Migration {
             $table->id();
             $table->string('ten_the_loai', 100);
             $table->timestamps();
-             $table->softDeletes();
+            $table->softDeletes();
         });
 
         Schema::create('phim', function (Blueprint $table) {
@@ -53,9 +53,10 @@ return new class extends Migration {
             $table->string('quoc_gia', 100);
             $table->string('anh_poster', 255)->nullable();
             $table->date('ngay_cong_chieu');
-            $table->string('tinh_trang', 20);
+            $table->date('ngay_ket_thuc')->nullable();
+            $table->string('trang_thai_phim', 100);
             $table->string('do_tuoi_gioi_han', 50);
-            $table->boolean('trang_thai')->default(true);
+            $table->string('loai_suat_chieu', 50);
             $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
@@ -82,10 +83,11 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('rap_id')->constrained('rap')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ten_phong', 100);
-            $table->integer('loai_so_do');
+            $table->string('loai_so_do', 10); // Ví dụ: 8x8, 12x12
             $table->integer('hang_thuong');
             $table->integer('hang_doi');
             $table->integer('hang_vip');
+            $table->boolean('trang_thai')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -103,15 +105,17 @@ return new class extends Migration {
             $table->string('so_ghe', 10);
             $table->char('hang', 1);
             $table->unsignedTinyInteger('cot');
-            $table->boolean('trang_thai')->default(true);
+            $table->boolean('trang_thai')->default(true); // true: còn sử dụng, false: đã hỏng
             $table->timestamps();
         });
+
 
         Schema::create('lich_chieu', function (Blueprint $table) {
             $table->id();
             $table->foreignId('phim_id')->constrained('phim')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->dateTime('thoi_gian_chieu');
+            $table->dateTime('gio_chieu');
+            $table->dateTime('gio_ket_thuc');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -145,7 +149,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('so_ghe', 10);
+            $table->foreignId('ghe_id')->constrained('ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('trang_thai', ['trong', 'da_dat', 'dang_dat']);
 
             $table->timestamps();
@@ -172,6 +176,7 @@ return new class extends Migration {
         Schema::create('do_an', function (Blueprint $table) {
             $table->id();
             $table->string('ten_do_an', 100);
+            $table->string('image', 150);
             $table->text('mo_ta')->nullable();
             $table->decimal('gia', 10, 2);
             $table->integer('so_luong_ton');
@@ -189,13 +194,18 @@ return new class extends Migration {
 
         Schema::create('ma_giam_gia', function (Blueprint $table) {
             $table->id();
-            $table->string('ma', 50)->unique();
-            $table->integer('phan_tram_giam');
-            $table->json('dieu_kien');
-            $table->date('han_su_dung');
-            $table->date('ngay_bat_dau');
-            $table->integer('so_lan_su_dung');
-            $table->boolean('trang_thai')->default(false);
+            $table->string('ma', 50)->unique()->comment('Mã giảm giá, ví dụ: SUMMER2025');
+            $table->string('image', 150);
+            $table->enum('loai_giam_gia', ['PERCENTAGE', 'FIXED', 'FREE_TICKET'])->default('PERCENTAGE')->comment('Loại giảm giá: phần trăm, cố định, tặng vé');
+            $table->decimal('gia_tri_giam', 10, 2)->comment('Giá trị giảm: % cho PERCENTAGE, số tiền cho FIXED, số vé cho FREE_TICKET');
+            $table->decimal('giam_toi_da', 10, 2)->nullable()->comment('Số tiền giảm tối đa, áp dụng cho PERCENTAGE');
+            $table->decimal('gia_tri_don_hang_toi_thieu', 10, 2)->nullable()->comment('Giá trị đơn hàng tối thiểu để áp dụng');
+            $table->json('dieu_kien')->nullable()->comment('Điều kiện áp dụng: movie_id, theater_id, user_type, showtime');
+            $table->date('ngay_bat_dau')->comment('Ngày bắt đầu hiệu lực');
+            $table->date('han_su_dung')->comment('Ngày hết hạn');
+            $table->integer('so_lan_su_dung')->nullable()->comment('Số lần sử dụng tối đa, NULL nếu không giới hạn');
+            $table->integer('so_lan_da_su_dung')->default(0)->comment('Số lần đã sử dụng');
+            $table->enum('trang_thai', ['PENDING', 'ACTIVE', 'EXPIRED'])->default('PENDING')->comment('Trạng thái: chưa bắt đầu, đang hoạt động, hết hạn');
             $table->timestamps();
         });
 
@@ -241,7 +251,7 @@ return new class extends Migration {
             $table->string('email', 100);
             $table->string('so_dien_thoai', 15);
             $table->text('noi_dung');
-              $table->boolean('trang_thai')->default(false);
+            $table->boolean('trang_thai')->default(false);
             $table->timestamps();
         });
 

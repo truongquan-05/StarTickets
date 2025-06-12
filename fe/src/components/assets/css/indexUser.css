@@ -1,3 +1,7 @@
+.main-layout{
+  min-height: 100vh;
+}
+
 .header-cinestar {
   padding: 0 150px;
   background-color: #0c0b1f;

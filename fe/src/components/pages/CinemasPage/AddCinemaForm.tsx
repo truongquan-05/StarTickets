@@ -1,6 +1,5 @@
 // src/components/AddCinemaForm.tsx
 
-import React from "react";
 import { Button, Form, Input } from "antd";
 import { useCreateCinema } from "../../hook/thinhHook";
 
@@ -11,7 +10,7 @@ export interface CinemasForm {
 
 const AddCinemasPage = () =>{
   const [form] = Form.useForm<CinemasForm>();
-  const { mutate: createMutate } = useCreateCinema({ resource: "cinemas" });
+  const { mutate: createMutate } = useCreateCinema({ resource: "rap" });
 
   const onFinish = (values: CinemasForm) => {
     createMutate(values);
@@ -25,7 +24,7 @@ const AddCinemasPage = () =>{
       <Form<CinemasForm> form={form} onFinish={onFinish} layout="vertical">
         <Form.Item
           label="Name"
-          name="name"
+          name="ten_rap"
           rules={[{ required: true, message: "Please enter cinema name" }]}
         >
           <Input />
@@ -33,7 +32,7 @@ const AddCinemasPage = () =>{
 
         <Form.Item
           label="Address"
-          name="address"
+          name="dia_chi"
           rules={[{ required: true, message: "Please enter address" }]}
         >
           <Input />

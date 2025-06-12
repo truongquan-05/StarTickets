@@ -12,4 +12,8 @@ class LoaiGhe extends Model
         'ten_loai_ghe',
     ];
 
+    public function ghes()
+    {
+        return $this->hasMany(Ghe::class, 'loai_ghe_id');
+    }
 }

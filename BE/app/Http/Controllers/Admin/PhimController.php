@@ -39,7 +39,7 @@ class PhimController extends Controller
         }
 
         $phim = Phim::create($data);
-$phim->load('theLoai'); // Load thêm tên thể loại
+        $phim->load('theLoai'); // Load thêm tên thể loại
         return response()->json([
             'message' => 'Thêm phim thành công',
             'data' => $phim
@@ -89,26 +89,25 @@ $phim->load('theLoai'); // Load thêm tên thể loại
         return response()->json(['message' => 'Xóa phim thành công']);
     }
     // Xóa mềm phim
-public function softDelete($id)
-{
-    $phim = Phim::findOrFail($id);
-    $phim->delete(); 
+    public function softDelete($id)
+    {
+        $phim = Phim::findOrFail($id);
+        $phim->delete();
 
-    return response()->json(['message' => 'Phim đã được xóa mềm']);
-}
-
-// Khôi phục phim đã xóa mềm
-
-public function restore($id)
-{
-    $phim = Phim::withTrashed()->findOrFail($id);
-
-    if ($phim->trashed()) {
-        $phim->restore();
-        return response()->json(['message' => 'Phim đã được khôi phục']);
+        return response()->json(['message' => 'Phim đã được xóa mềm']);
     }
 
-    return response()->json(['message' => 'Phim chưa bị xóa hoặc không tồn tại'], 404);
-}
-  
+    // Khôi phục phim đã xóa mềm
+
+    public function restore($id)
+    {
+        $phim = Phim::withTrashed()->findOrFail($id);
+
+        if ($phim->trashed()) {
+            $phim->restore();
+            return response()->json(['message' => 'Phim đã được khôi phục']);
+        }
+
+        return response()->json(['message' => 'Phim chưa bị xóa hoặc không tồn tại'], 404);
+    }
 }

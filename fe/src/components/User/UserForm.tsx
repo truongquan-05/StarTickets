@@ -25,7 +25,9 @@ const UserForm = ({ initialData = {}, onSubmit, isEdit = false }: Props) => {
   }, [initialData, form]);
 
   const handleFinish = (values: any) => {
-    onSubmit(values);
+    // Loại bỏ confirmPassword trước khi gửi lên
+    const { confirmPassword, ...data } = values;
+    onSubmit(data);
   };
 
   return (
@@ -33,7 +35,6 @@ const UserForm = ({ initialData = {}, onSubmit, isEdit = false }: Props) => {
       form={form}
       layout="vertical"
       onFinish={handleFinish}
-      initialValues={{ isActive: true }}
     >
       <Form.Item
         label="Tên"
@@ -58,6 +59,7 @@ const UserForm = ({ initialData = {}, onSubmit, isEdit = false }: Props) => {
       >
         <Input.Password placeholder="Nhập mật khẩu" disabled={isEdit}  />
       </Form.Item>
+
       <Form.Item
         label="Nhập lại mật khẩu"
         name="confirmPassword"
