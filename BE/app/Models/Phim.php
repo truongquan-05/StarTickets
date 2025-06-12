@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Phim extends Model
 {
-      use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'phim';
     protected $fillable = [
         'ten_phim',
@@ -17,12 +18,12 @@ class Phim extends Model
         'quoc_gia',
         'anh_poster',
         'ngay_cong_chieu',
-        'tinh_trang',
+        'ngay_ket_thuc',
         'do_tuoi_gioi_han',
-        'trang_thai',
+        'trang_thai_phim',
         'the_loai_id'
     ];
-    
+
     // protected $dates = ['deleted_at', 'ngay_cong_chieu'];
     public function theLoai()
     {

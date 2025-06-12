@@ -19,11 +19,6 @@ class PhongChieu extends Model
         return $this->belongsTo(Rap::class, 'rap_id');
     }
 
-    public function maTranGhe()
-    {
-        return $this->belongsTo(MaTranGhe::class, 'ma_tran_ghe_id');
-    }
-
     public function ghes()
     {
         return $this->hasMany(Ghe::class, 'phong_id');

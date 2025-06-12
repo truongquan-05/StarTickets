@@ -32,9 +32,9 @@ class StorePhimRequest extends FormRequest
             'ngay_cong_chieu' => 'required|date',
             'tinh_trang' => 'nullable|string|max:50',
             'do_tuoi_gioi_han' => 'nullable|string|max:80',
-            'trang_thai' => 'required|boolean',
+            'trang_thai_phim' => 'required|string|max:100',
+            'loai_suat_chieu' => 'required|string|max:100',
             'the_loai_id' => 'required|exists:the_loai,id',//thêm dòng này nhé
-           
         ];
     }
 }

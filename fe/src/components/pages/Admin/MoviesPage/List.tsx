@@ -29,6 +29,7 @@ import {
 } from "../../../hook/hungHook";
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const { Option } = Select;
 const { Text, Paragraph } = Typography;
@@ -130,7 +131,6 @@ const List = () => {
             setAnhPosterPreview(undefined);
             setFilePoster(null);
             setEditingItem(undefined);
-            message.success("Cập nhật phim thành công");
           },
         }
       );
@@ -204,6 +204,14 @@ const List = () => {
                 : "Chưa cập nhật"}
             </Text>
           </div>
+          <div>
+            <Text>
+              <b>Ngày kết thúc:</b>{" "}
+              {record.ngay_ket_thuc
+                ? moment(record.ngay_ket_thuc).format("DD/MM/YYYY")
+                : "Chưa cập nhật"}
+            </Text>
+          </div>
           <div style={{ marginTop: 4 }}>
             <a href={record.trailer} target="_blank" rel="noreferrer">
               Xem Trailer
@@ -211,11 +219,28 @@ const List = () => {
           </div>
         </div>
       ),
+      
+    },
+    {
+      title: "Loại Suất Chiếu",
+      dataIndex: "loai_suat_chieu",
+      key: "loai_suat_chieu",
+      width: 100,
+    },
+    
+    {
+      title: "Giới hạn tuổi",
+      dataIndex: "do_tuoi_gioi_han",
+      key: "do_tuoi_gioi_han",
+      width: 100,
+      sorter: (a: IMovies, b: IMovies) =>
+        a.do_tuoi_gioi_han - b.do_tuoi_gioi_han,
+      render: (age: number) => (age > 0 ? `${age}+` : "Tất cả"),
     },
     {
       title: "Tình trạng",
-      dataIndex: "tinh_trang",
-      key: "tinh_trang",
+      dataIndex: "trang_thai_phim",
+      key: "trang_thai_phim",
       width: 110,
       filters: [
         { text: "Sắp chiếu", value: "Sắp chiếu" },
@@ -237,32 +262,6 @@ const List = () => {
           }}
         >
           {text}
-        </Text>
-      ),
-    },
-    {
-      title: "Giới hạn tuổi",
-      dataIndex: "do_tuoi_gioi_han",
-      key: "do_tuoi_gioi_han",
-      width: 100,
-      sorter: (a: IMovies, b: IMovies) =>
-        a.do_tuoi_gioi_han - b.do_tuoi_gioi_han,
-      render: (age: number) => (age > 0 ? `${age}+` : "Tất cả"),
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "trang_thai",
-      key: "trang_thai",
-      width: 100,
-      filters: [
-        { text: "Hiển thị", value: 1 },
-        { text: "Ẩn", value: 0 },
-      ],
-      onFilter: (value: number, record: IMovies) =>
-        record.trang_thai === value,
-      render: (status: number) => (
-        <Text type={status === 1 ? "success" : "secondary"}>
-          {status === 1 ? "Hiển thị" : "Ẩn"}
         </Text>
       ),
     },
@@ -306,9 +305,10 @@ const List = () => {
         type="primary"
         icon={<ExportOutlined />}
         style={{ marginBottom: 12 }}
-        onClick={() => createOrUpdateOpenModal(undefined)}
       >
+        <Link to={`/admin/movies/add`}>
         Thêm phim mới
+        </Link>
       </Button>
       <Table
         columns={columns}
@@ -436,32 +436,6 @@ const List = () => {
                     {g.ten_the_loai}
                   </Option>
                 ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="Ngày công chiếu" name="ngay_cong_chieu">
-              <DatePicker style={{ width: "100%" }} format="DD/MM/YYYY" />
-            </Form.Item>
-
-            <Form.Item
-              label="Giới hạn tuổi"
-              name="do_tuoi_gioi_han"
-              rules={[
-                {
-                  type: "number",
-                  min: 0,
-                  max: 21,
-                  message: "Giới hạn tuổi từ 0 đến 21",
-                },
-              ]}
-            >
-              <InputNumber style={{ width: "100%" }} />
-            </Form.Item>
-
-            <Form.Item label="Trạng thái" name="trang_thai" valuePropName="checked">
-              <Select>
-                <Option value={1}>Hiển thị</Option>
-                <Option value={0}>Ẩn</Option>
               </Select>
             </Form.Item>
           </Space>

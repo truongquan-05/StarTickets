@@ -56,7 +56,6 @@ return new class extends Migration {
             $table->date('ngay_ket_thuc')->nullable();
             $table->string('trang_thai_phim', 100);
             $table->string('do_tuoi_gioi_han', 50);
-            $table->string('loai_suat_chieu', 50);
             $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
@@ -79,26 +78,15 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('ma_tran_ghe', function (Blueprint $table) {
-            $table->id();
-            $table->string('ten', 100)->comment('Tên mẫu sơ đồ ghế');
-            $table->text('mo_ta')->nullable()->comment('Mô tả mẫu sơ đồ ghế');
-            $table->json('ma_tran')->comment('Cấu trúc ma trận ghế dưới dạng JSON');
-            $table->string('kich_thuoc', 10)->comment('Kích thước ma trận (VD: 12x12)');
-            $table->enum('trang_thai', ['nhap', 'xuat_ban'])->default('nhap')->comment('Trạng thái: nháp hoặc xuất bản');
-            $table->timestamps();
-        });
-
         Schema::create('phong_chieu', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rap_id')->constrained('rap')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ten_phong', 100);
-            $table->integer('loai_so_do');
+            $table->string('loai_so_do', 10); // Ví dụ: 8x8, 12x12
             $table->integer('hang_thuong');
             $table->integer('hang_doi');
             $table->integer('hang_vip');
-            $table->foreignId('ma_tran_ghe_id')->nullable()->constrained('ma_tran_ghe')->onUpdate('cascade')->onDelete('set null');
-            $table->enum('trang_thai', ['nhap', 'xuat_ban'])->default('nhap')->comment('Trạng thái: nháp hoặc xuất bản');
+            $table->boolean('trang_thai')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -116,7 +104,7 @@ return new class extends Migration {
             $table->string('so_ghe', 10);
             $table->char('hang', 1);
             $table->unsignedTinyInteger('cot');
-            $table->boolean('trang_thai')->default(true);
+            $table->boolean('trang_thai')->default(true); // true: còn sử dụng, false: đã hỏng
             $table->timestamps();
         });
 
@@ -159,8 +147,7 @@ return new class extends Migration {
         Schema::create('check_ghes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('so_ghe', 10);
+            $table->foreignId('ghe_id')->constrained('ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('trang_thai', ['trong', 'da_dat', 'dang_dat']);
 
             $table->timestamps();
