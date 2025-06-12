@@ -17,6 +17,7 @@ export interface Food {
   id: number;
   ten_do_an: string;
   mo_ta: string;
+  hinh_anh: string;
   gia: number;
   so_luong_ton: number;
 }

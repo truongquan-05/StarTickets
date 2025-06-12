@@ -15,6 +15,16 @@ const FoodTable: React.FC<Props> = ({ foods, onEdit, onDelete }) => {
       title: '#',
       dataIndex: 'id',
     },
+      {
+    title: 'Hình ảnh',
+    dataIndex: 'hinh_anh',
+    render: (url?: string) =>
+      url ? (
+        <img src={url} alt="Hình ảnh món ăn" style={{ width: 80, height: 80, objectFit: 'cover' }} />
+      ) : (
+        'Không có ảnh'
+      ),
+  },
     {
       title: 'Tên đồ ăn',
       dataIndex: 'ten_do_an',

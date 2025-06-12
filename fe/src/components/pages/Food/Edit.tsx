@@ -37,10 +37,26 @@ const FoodEdit = () => {
       <Form.Item name="ten_do_an" label="Tên món ăn" rules={[{ required: true, message: "Không được để trống" }]}>
         <Input />
       </Form.Item>
+      <Form.Item
+          name="hinh_anh"
+          label="URL hình ảnh"
+          rules={[{ required: true, message: "Vui lòng nhập URL hình ảnh" }]}
+>
+       <Input />
+    </Form.Item>
+    {form.getFieldValue("hinh_anh") && (
+  <Form.Item label="Xem trước ảnh">
+    <img
+      src={form.getFieldValue("hinh_anh")}
+      alt="Xem trước"
+      style={{ width: 120, height: 120, objectFit: "cover" }}
+    />
+  </Form.Item>
+)}
 
       <Form.Item name="mo_ta" label="Mô tả" rules={[{ required: true, message: "Không được để trống" }]}>
         <Input.TextArea rows={3} />
-      </Form.Item>
+      </Form.Item> 
 
       <Form.Item
         name="gia"
@@ -67,6 +83,7 @@ const FoodEdit = () => {
       <Form.Item>
         <Button type="primary" htmlType="submit">Cập nhật</Button>
       </Form.Item>
+
     </Form>
   );
 };
