@@ -107,11 +107,14 @@ Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']);
 Route::post('/lich_chieu/{id}/restore', [LichChieuController::class, 'restore'])->name('lich_chieu.restore'); //Khôi phục
 Route::delete('/lich_chieu/{id}/force-delete', [LichChieuController::class, 'forceDelete'])->name('lich_chieu.force-delete'); //Xóa vinh viễn
 
-//home
+
+
+
+//trang chu
 Route::prefix('client')->group(function () {
     Route::get('/home', [HomeController::class, 'index']);
-    Route::get('/phim/dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
-Route::get('/phim/sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
+    Route::get('/phim-chieu-hom-nay', [HomeController::class, 'getAllPhimchieuhomnay']);
+    Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimsapchieu']);
 });
 
 
