@@ -11,6 +11,7 @@ import {
   TableOutlined,
   GiftOutlined,
   CommentOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -128,12 +129,14 @@ const SideBar: React.FC<SideBarProps> = ({
       <Menu.SubMenu key="cinemas" icon={<BankOutlined />} title="Quản Lý Rạp">
         <Menu.Item key="/admin/cinemas/list">
           <span style={{ marginLeft: 8 }}>•</span>{" "}
-          <Link to="/admin/cinemas/list">List</Link>
+          <Link to="/admin/cinemas/list">Danh Sách Rạp</Link>
         </Menu.Item>
         <Menu.Item key="/admin/cinemas/add">
           <span style={{ marginLeft: 8 }}>•</span>{" "}
-          <Link to="/admin/cinemas/add">Add</Link>
+          <Link to="/admin/cinemas/add">Thêm Mới rạp</Link>
         </Menu.Item>
+      </Menu.SubMenu>
+      <Menu.SubMenu key="phongchieu" icon={<AppstoreOutlined />} title="Quản Lý Phòng Chiếu">
         <Menu.Item key="/admin/room/list">
           <span style={{ marginLeft: 8 }}>•</span>{" "}
           <Link to="/admin/room/list">Danh Sách Phòng Chiếu</Link>
