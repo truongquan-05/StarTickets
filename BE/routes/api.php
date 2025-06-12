@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Controllers\Admin\MaGiamGiaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
 use App\Http\Controllers\Admin\RapController;
+use App\Http\Controllers\Admin\LichChieuController;
+use App\Http\Controllers\Admin\DoAnController;
 use App\Http\Controllers\Admin\PhimController;
-use App\Http\Controllers\Admin\TheLoaiController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
-use App\Http\Controllers\Admin\PhongChieuController;
+use App\Http\Controllers\Admin\TheLoaiController;
+use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
-use App\Http\Controllers\Admin\DoAnController;
+use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 
 
@@ -98,8 +99,12 @@ Route::prefix('ma_giam_gia')->group(function () {
     Route::put('/{id}', [MaGiamGiaController::class, 'update']);    // Cập nhật
 });
 
-
-
+//API lịch chiếu
+//Xóa mềm dùng api api lich_chieu 
+Route::apiResource('lich_chieu', LichChieuController::class);
+Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']); //Check thời gian hợp lệ
+Route::post('/lich_chieu/{id}/restore', [LichChieuController::class, 'restore'])->name('lich_chieu.restore'); //Khôi phục
+Route::delete('/lich_chieu/{id}/force-delete', [LichChieuController::class, 'forceDelete'])->name('lich_chieu.force-delete'); //Xóa vinh viễn
 
 
 // http://127.0.0.1:8000/api/....
