@@ -14,6 +14,7 @@ export type Props = {
   resource: string;
   id?: number | string;
   values?: any;
+  phong_id?: number;
 };
 export const getListMovies = async ({resource = "phim"} : Props) => {
   const {data} = await axiosClient.get(resource);
@@ -118,3 +119,39 @@ export const getUpdatePhanHoiNguoiDung= async ({resource = "phan_hoi", id, value
   const {data} = await axiosClient.put(`${resource}/${id}`,values);
   return data
 }
+export const getListPhongChieu = async ({ resource = "phong_chieu" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+export const getCreatePhongChieu = async ({resource = "phong_chieu" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdatePhongChieu= async ({resource = "phong_chieu", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
+export const getListCinemas = async ({ resource = "rap" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+
+export const getListGhe = async ({
+  resource = "ghe",
+  phong_id,
+  per_page = 1000,  // mặc định lấy 1000 ghế
+}: {
+  resource?: string;
+  phong_id?: number;
+  per_page?: number;
+}) => {
+  const params: Record<string, any> = {};
+  if (phong_id) params.phong_id = phong_id;
+  if (per_page) params.per_page = per_page;
+
+  const { data } = await axiosClient.get(resource, { params });
+  return data.data;
+};

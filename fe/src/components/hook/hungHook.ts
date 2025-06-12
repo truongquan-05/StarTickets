@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getCreateCategoryChair, getCreateMovies, getCreatePhanHoiNguoiDung, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdateVaiTro } from "../provider/hungProvider";
+import {  getCreateCategoryChair, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListCinemas, getListGhe, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -199,3 +199,51 @@ export const useUpdatePhanHoiNguoiDung = ({ resource = "phan_hoi" }) => {
     },
   });
 };
+
+export const useCreatePhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreatePhongChieu({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdatePhongChieu = ({ resource = "phong_chieu" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdatePhongChieu({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
+  });
+};
+
+export const useListCinemas = ({ resource = 'rap' }: Props) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: async () => {
+      const res = await getListCinemas({ resource });
+      return res.data || res; 
+    },
+  });
+};
+
+export const useListGhe = ({ resource = 'ghe', phong_id }: Props) => {
+  return useQuery({
+    queryKey: [resource, phong_id], // refetch khi phong_id thay đổi
+    queryFn: () => getListGhe({ resource, phong_id }),
+    enabled: !!phong_id, // chỉ gọi khi có phong_id
+  });
+};
+
+

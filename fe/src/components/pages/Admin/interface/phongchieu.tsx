@@ -6,4 +6,5 @@ loai_so_do:number
 hang_thuong:number
 hang_vip:number
 hang_doi:number
+trang_thai:string
 }
