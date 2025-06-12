@@ -45,7 +45,7 @@ class PhongChieuController extends Controller
     }
 
     public function store(Request $request)
-    {
+    {   
         $request->validate([
             'rap_id' => 'required|exists:rap,id',
             'ten_phong' => 'required|string|max:100',

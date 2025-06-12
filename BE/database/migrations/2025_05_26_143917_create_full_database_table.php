@@ -53,9 +53,9 @@ return new class extends Migration {
             $table->string('quoc_gia', 100);
             $table->string('anh_poster', 255)->nullable();
             $table->date('ngay_cong_chieu');
-            $table->date('ngay_ket_thuc')->nullable();
-            $table->string('trang_thai_phim', 100);
+            $table->string('tinh_trang', 20);
             $table->string('do_tuoi_gioi_han', 50);
+            $table->string('loai_suat_chieu', 50);
             $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();

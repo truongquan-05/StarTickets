@@ -29,4 +29,9 @@ class Phim extends Model
     {
         return $this->belongsTo(TheLoai::class, 'the_loai_id');
     }
+    public function lichChieu()
+{
+    return $this->hasMany(LichChieu::class, 'phim_id');
+}
+
 }
