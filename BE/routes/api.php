@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
+use App\Http\Controllers\Client\HomeController;
 
 
 
@@ -100,11 +101,18 @@ Route::prefix('ma_giam_gia')->group(function () {
 });
 
 //API lịch chiếu
-//Xóa mềm dùng api api lich_chieu 
+//Xóa mềm dùng api api lich_chieu
 Route::apiResource('lich_chieu', LichChieuController::class);
 Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']); //Check thời gian hợp lệ
 Route::post('/lich_chieu/{id}/restore', [LichChieuController::class, 'restore'])->name('lich_chieu.restore'); //Khôi phục
 Route::delete('/lich_chieu/{id}/force-delete', [LichChieuController::class, 'forceDelete'])->name('lich_chieu.force-delete'); //Xóa vinh viễn
+
+//trang chu
+Route::prefix('client')->group(function () {
+    Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/phim-chieu-hom-nay', [HomeController::class, 'getAllPhimchieuhomnay']);
+    Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimsapchieu']);
+});
 
 
 // http://127.0.0.1:8000/api/....
