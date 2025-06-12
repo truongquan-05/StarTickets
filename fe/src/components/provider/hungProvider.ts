@@ -155,3 +155,18 @@ export const getListGhe = async ({
   const { data } = await axiosClient.get(resource, { params });
   return data.data;
 };
+
+export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getListLichChieu = async ({ resource = "lich_chieu" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+export const getCreateLichChieu = async ({resource = "lich_chieu" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
