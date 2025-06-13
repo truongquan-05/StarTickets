@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { getUsers, deleteUser } from "../../provider/duProvider";
 import { User } from "../../types/Uses";
 import { Link } from "react-router-dom";
-import {Table, Button,Popconfirm,Space,Avatar,message,Tag,Card,Typography,
+import {Table, Button,Popconfirm,Space,Avatar,message,Tag,Card,
 } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
-const { Title } = Typography;
 
 const ListUser = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -91,24 +90,12 @@ const ListUser = () => {
   ];
 
   return (
-    <Card style={{ margin: "24px" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 16,
-        }}
-      >
-        <Title level={3} style={{ margin: 0 }}>
-           Danh sách người dùng
-        </Title>
+    <Card title="Danh sách người dùng" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
         <Link to="/users/add">
           <Button type="primary" icon={<PlusOutlined />}>
             Thêm người dùng
           </Button>
         </Link>
-      </div>
 
       <Table
         rowKey="id"

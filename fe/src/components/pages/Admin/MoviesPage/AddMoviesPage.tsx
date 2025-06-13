@@ -65,10 +65,7 @@ const AddMoviesPage = () => {
 
   return (
     <div className="container my-4">
-      <Card style={{ margin: "20px", padding: "20px" }}>
-        <Title level={3} style={{ marginBottom: 20 }}>
-          Thêm Mới Phim
-        </Title>
+      <Card title="Thêm mới phim" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
         <Form
           form={form}
           layout="vertical"

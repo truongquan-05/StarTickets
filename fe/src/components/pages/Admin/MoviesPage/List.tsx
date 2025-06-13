@@ -291,10 +291,7 @@ const List = () => {
 
   return (
     <>
-    <Card style={{ margin: "15px" }}>
-      <Typography.Title level={3} style={{ marginBottom: 16 }}>
-        Danh sách phim
-      </Typography.Title>
+    <Card title="Danh sách phim" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
       <Button
         type="primary"
         icon={<ExportOutlined />}
