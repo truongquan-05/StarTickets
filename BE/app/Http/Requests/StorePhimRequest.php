@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
+
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -28,13 +29,19 @@ class StorePhimRequest extends FormRequest
             'trailer' => 'nullable|url',
             'ngon_ngu' => 'nullable|string|max:50',
             'quoc_gia' => 'nullable|string|max:50',
-           'anh_poster' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048', // Giới hạn kích thước file ảnh poster
-            'ngay_cong_chieu' => 'required|date',
-            'tinh_trang' => 'nullable|string|max:50',
+            'anh_poster' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048', // Giới hạn kích thước file ảnh poster
+            'ngay_cong_chieu' => 'required|date|after_or_equal:today',
+            'ngay_ket_thuc' => 'required|date|after_or_equal:ngay_cong_chieu',
             'do_tuoi_gioi_han' => 'nullable|string|max:80',
             'trang_thai_phim' => 'required|string|max:100',
-            'loai_suat_chieu' => 'required|string|max:100',
-            'the_loai_id' => 'required|exists:the_loai,id',//thêm dòng này nhé
+            'the_loai_id' => 'required|exists:the_loai,id', //thêm dòng này nhé
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'ngay_cong_chieu.after_or_equal' => 'Ngày công chiếu phải là hôm nay hoặc sau hôm nay.',
         ];
     }
 }

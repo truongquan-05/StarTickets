@@ -52,6 +52,8 @@ const AddMoviesPage = () => {
         formData.append(key, value[0].originFileObj);
       } else if (key === "ngay_cong_chieu") {
         formData.append(key, (value as any).format("YYYY-MM-DD"));
+      } else if (key === "ngay_ket_thuc") {
+        formData.append(key, (value as any).format("YYYY-MM-DD"));
       } else {
         formData.append(key, String(value));
       }
@@ -215,24 +217,6 @@ const AddMoviesPage = () => {
                 >
                   <Input placeholder="VD: 13+, 18+" />
                 </Form.Item>
-                <Form.Item
-                  label="Loại Suất Chiếu"
-                  name="loai_suat_chieu"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng chọn loại suất chiếu",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Chọn loại suất chiếu">
-                    <Option value="Suất Chiếu Thường">Suất Chiếu Thường</Option>
-                    <Option value="Suất Chiếu Sớm">Suất Chiếu Sớm</Option>
-                    <Option value="Suất Chiếu Đặc Biệt">
-                      Suất Chiếu Đặc Biệt
-                    </Option>
-                  </Select>
-                </Form.Item>
 
                 <Form.Item
                   label="Tình trạng phim"
@@ -245,9 +229,8 @@ const AddMoviesPage = () => {
                   ]}
                 >
                   <Select placeholder="Chọn tình trạng">
-                    <Option value="Sắp Chiếu">Sắp Chiếu</Option>
-                    <Option value="Đang Chiếu">Đang Chiếu</Option>
-                    <Option value="Đã Chiếu">Đã Chiếu</Option>
+                    <Option value="Nháp">Nháp</Option>
+                    <Option value="Xuất bản">Xuất bản</Option>
                   </Select>
                 </Form.Item>
               </Col>

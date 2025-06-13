@@ -221,12 +221,6 @@ const List = () => {
       ),
       
     },
-    {
-      title: "Loại Suất Chiếu",
-      dataIndex: "loai_suat_chieu",
-      key: "loai_suat_chieu",
-      width: 100,
-    },
     
     {
       title: "Giới hạn tuổi",
