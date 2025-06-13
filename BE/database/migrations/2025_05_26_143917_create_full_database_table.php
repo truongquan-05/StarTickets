@@ -63,8 +63,6 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-
-
         Schema::create('chuyen_ngu', function (Blueprint $table) {
             $table->id();
             $table->string('the_loai', 100);
