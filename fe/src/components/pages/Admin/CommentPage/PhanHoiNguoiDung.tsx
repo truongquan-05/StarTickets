@@ -67,8 +67,7 @@ const PhanHoiNguoiDung = () => {
 
   return (
     
-    <div style={{ padding: "24px", backgroundColor: "#fff", borderRadius: 8, height: "83vh", overflowY: "auto" }}>
-      <Typography.Title level={3}>Phản hồi người dùng</Typography.Title>
+    <Card title="Phản hồi người dùng" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
 
       {feedbackData.length === 0 ? (
         <Typography.Text type="secondary">
@@ -157,7 +156,7 @@ const PhanHoiNguoiDung = () => {
           </>
         )}
       </Modal>
-    </div>
+    </Card>
   );
 };
 
