@@ -65,7 +65,15 @@ const ListCategoryChair = () => {
     // },
   ];
   return (
-    <Card title="Danh sách thể loại ghế" style={{ margin: "20px" }}>
+    <Card title="Thêm mới phim" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+      <div className="btn-category-chair">
+        {/* <Button
+          className="add-category-chair"
+          onClick={() => createOrUpdateOpenModal(undefined)}
+        >
+          Thêm mới
+        </Button> */}
+      </div>
       <Table
         dataSource={dataSource}
         columns={columns}

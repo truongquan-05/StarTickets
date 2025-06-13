@@ -12,6 +12,23 @@ import {
   GiftOutlined,
   CommentOutlined,
   AppstoreOutlined,
+  UnorderedListOutlined,
+  PlusCircleOutlined,
+  OrderedListOutlined,
+  WindowsOutlined,
+  CalendarOutlined,
+  InsertRowAboveOutlined,
+  TeamOutlined,
+  IdcardOutlined,
+  CoffeeOutlined,
+  VideoCameraAddOutlined,
+  MailOutlined,
+  MessageOutlined,
+  EditOutlined,
+  StarOutlined,
+  SolutionOutlined,
+  ShoppingOutlined,
+  GoldOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -36,7 +53,6 @@ const SideBar: React.FC<SideBarProps> = ({
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(250);
 
-  // Tự động tính chiều rộng sidebar theo màn hình
   const calculateSidebarWidth = () => {
     const width = window.innerWidth;
     if (width < 576) return 200;
@@ -75,39 +91,40 @@ const SideBar: React.FC<SideBarProps> = ({
         icon={<VideoCameraOutlined />}
         title="Quản Lý Phim"
       >
-        <Menu.Item key="/admin/movies/list">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/movies/list" icon={<UnorderedListOutlined />}>
           <Link to="/admin/movies/list">Danh Sách Phim</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/movies/add">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/movies/add" icon={<PlusCircleOutlined />}>
           <Link to="/admin/movies/add">Add</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/genre">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/genre" icon={<WindowsOutlined />}>
           <Link to="/admin/genre">Thể loại phim</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/lichchieu/list">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/lichchieu/list" icon={<CalendarOutlined />}>
           <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
         </Menu.Item>
       </Menu.SubMenu>
-
-      <Menu.Item key="//admin/category_chair/list" icon={<TableOutlined />}>
+      <Menu.SubMenu
+        key="chair"
+        icon={<AppstoreOutlined/>}
+        title="Quản Lý Ghế"
+      >
+      <Menu.Item key="/admin/category_chair/list" icon={<GoldOutlined/>}>
         <Link to="/admin/category_chair/list">Loại Ghế</Link>
       </Menu.Item>
-
+      <Menu.Item key="/admin/category_chair/list" icon={<InsertRowAboveOutlined />}>
+        <Link to="/admin/category_chair/list">Ghế</Link>
+      </Menu.Item>
+      </Menu.SubMenu>
       <Menu.SubMenu
         key="users"
         icon={<UserOutlined />}
         title="Quản Lý Tài Khoản"
       >
-        <Menu.Item key="/admin/users">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/users" icon={<TeamOutlined />}>
           <Link to="/admin/users">Tài Khoản</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/vaitro">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/vaitro" icon={<IdcardOutlined />}>
           <Link to="/admin/vaitro">Vai Trò</Link>
         </Menu.Item>
       </Menu.SubMenu>
@@ -116,47 +133,46 @@ const SideBar: React.FC<SideBarProps> = ({
         icon={<GiftOutlined />}
         title="Dịch vụ và ưu đãi"
       >
-        <Menu.Item key="/admin/food">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/food" icon={<CoffeeOutlined />}>
           <Link to="/admin/food">Quản lý đồ ăn</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/vouchers/list">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/vouchers/list" icon={<TagsOutlined />}>
           <Link to="/admin/vouchers/list">Quản lý vouchers</Link>
         </Menu.Item>
       </Menu.SubMenu>
 
       <Menu.SubMenu key="cinemas" icon={<BankOutlined />} title="Quản Lý Rạp">
-        <Menu.Item key="/admin/cinemas/list">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/cinemas/list" icon={<UnorderedListOutlined />}>
           <Link to="/admin/cinemas/list">Danh Sách Rạp</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/cinemas/add">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/cinemas/add" icon={<PlusCircleOutlined />}>
           <Link to="/admin/cinemas/add">Thêm Mới rạp</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      <Menu.SubMenu key="phongchieu" icon={<AppstoreOutlined />} title="Quản Lý Phòng Chiếu">
-        <Menu.Item key="/admin/room/list">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+      <Menu.SubMenu key="phongchieu" icon={<VideoCameraAddOutlined />} title="Quản Lý Phòng Chiếu">
+        <Menu.Item key="/admin/room/list" icon={<UnorderedListOutlined />}>
           <Link to="/admin/room/list">Danh Sách Phòng Chiếu</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/room/add">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="/admin/room/add" icon={<PlusCircleOutlined />}>
           <Link to="/admin/room/add">Thêm mới Phòng Chiếu</Link>
         </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
         key="comment"
-        icon={<CommentOutlined />}
+        icon={<MailOutlined />}
         title="Quản Lý Phản Hồi"
       >
-        <Menu.Item key="">
-          <span style={{ marginLeft: 8 }}>•</span>{" "}
+        <Menu.Item key="" icon={<CommentOutlined />}>
           <Link to="/admin/comment/phanhoinguoidung">Phản Hồi Người Dùng</Link>
         </Menu.Item>
+        <Menu.Item key="" icon={<StarOutlined />}>
+          <Link to="/admin/comment/phanhoinguoidung">Quản lý đánh giá</Link>
+        </Menu.Item>
+        <Menu.Item key="" icon={<EditOutlined />}>
+          <Link to="/admin/comment/phanhoinguoidung">Quản lý bình luận</Link>
+        </Menu.Item>
       </Menu.SubMenu>
-      <Menu.Item key="/admin/bookings" icon={<TagsOutlined />}>
+      <Menu.Item key="/admin/bookings" icon={<ShoppingOutlined />}>
         <Link to="/admin/bookings">Bookings</Link>
       </Menu.Item>
 
@@ -166,7 +182,6 @@ const SideBar: React.FC<SideBarProps> = ({
     </Menu>
   );
 
-  // Giao diện mobile dùng Drawer
   if (isMobile) {
     return (
       <Drawer
@@ -198,7 +213,6 @@ const SideBar: React.FC<SideBarProps> = ({
     );
   }
 
-  // Giao diện desktop
   return (
     <Sider
       collapsible
@@ -211,28 +225,46 @@ const SideBar: React.FC<SideBarProps> = ({
       style={{ minHeight: "100vh" }}
     >
       <div
-        style={{
-          padding: 16,
-          textAlign: "center",
-          background: "rgba(255, 255, 255, 0.05)",
-          cursor: "pointer",
-          userSelect: "none",
-        }}
-        onClick={() => onCollapse(!collapsed)}
-        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-      >
-        <img
-          src={logoStar}
-          alt="Logo"
-          style={{
-            width: collapsed ? 40 : 160,
-            height: collapsed ? 40 : 50,
-            objectFit: "contain",
-            transition: "width 0.3s",
-            margin: "0 auto",
-          }}
-        />
-      </div>
+  style={{
+    padding: 16,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: collapsed ? "center" : "flex-start", // căn giữa khi collapsed
+    background: "rgba(255, 255, 255, 0.05)",
+    cursor: "pointer",
+    userSelect: "none",
+  }}
+  onClick={() => onCollapse(!collapsed)}
+  title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+>
+  <img
+    src={logoStar}
+    alt="Logo"
+    style={{
+      width: 50, // logo to hơn
+      height: 50,
+      objectFit: "contain",
+      transition: "all 0.3s ease",
+      marginRight: collapsed ? 0 : 10, // có khoảng cách khi mở
+    }}
+  />
+  {!collapsed && (
+    <h2
+      style={{
+        color: "#fff",
+        fontSize: 22, // to hơn chút
+        margin: 0,
+        fontFamily: "'Poppins', sans-serif", // font đổi sang Poppins
+        fontWeight: 600,
+        transition: "opacity 0.3s ease",
+        whiteSpace: "nowrap",
+      }}
+    >
+      StarTicket
+    </h2>
+  )}
+</div>
+
       {menuContent}
     </Sider>
   );

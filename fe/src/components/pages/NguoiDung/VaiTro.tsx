@@ -90,7 +90,7 @@ const VaiTro = () => {
     },
   ];
   return (
-    <Card title="Danh sách Vai Trò" style={{ margin: '20px' }}>
+    <Card title="Danh sách vai trò" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
       <div className='btn-category-chair'><Button className="add-category-chair" onClick={()=>createOrUpdateOpenModal(undefined)}>Thêm mới</Button></div>
       <Table
         dataSource={dataSource}
