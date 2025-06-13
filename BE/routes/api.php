@@ -4,17 +4,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
 use App\Http\Controllers\Admin\RapController;
-use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\DoAnController;
 use App\Http\Controllers\Admin\PhimController;
+use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\TheLoaiController;
+use App\Http\Controllers\Admin\ChuyenNguController;
+use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
-use App\Http\Controllers\Client\HomeController;
 
 
 // Route::get('/user', function (Request $request) {
@@ -117,6 +118,6 @@ Route::prefix('client')->group(function () {
     Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimsapchieu']);
 });
 
-
+Route::apiResource('chuyen_ngu',ChuyenNguController::class);
 
 // http://127.0.0.1:8000/api/....

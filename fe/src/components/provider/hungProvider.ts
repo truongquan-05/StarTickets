@@ -155,3 +155,9 @@ export const getListGhe = async ({
   const { data } = await axiosClient.get(resource, { params });
   return data.data;
 };
+
+
+export const getListChuyenNgu = async ({ resource = "chuyen_ngu" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};

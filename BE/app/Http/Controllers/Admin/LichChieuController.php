@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\CheckGhe;
 use Carbon\Carbon;
+use App\Models\Phim;
+use App\Models\CheckGhe;
 use App\Models\LichChieu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,7 +17,7 @@ class LichChieuController extends Controller
      */
     public function index()
     {
-        $lichChieus = LichChieu::with(['phim', 'phong_chieu'])
+        $lichChieus = LichChieu::with(['phim', 'phong_chieu','chuyenngu'])
             ->orderBy('id', 'desc')
             ->paginate(10);
         return response()->json($lichChieus);
@@ -29,16 +30,52 @@ class LichChieuController extends Controller
 
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), [
+        // $validate = Validator::make($request->all(), [
+        //     'phim_id' => 'required|exists:phim,id',
+        //     'phong_id' => 'required|exists:phong_chieu,id',
+        //     'gio_chieu' => 'required',
+        //     'gio_ket_thuc' => 'required|after:gio_chieu',
+        // ]);
+        $phim = Phim::find($request->phim_id);
+
+        if (!$phim) {
+            return response()->json(['message' => 'Phim không tồn tại'], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
             'phim_id' => 'required|exists:phim,id',
             'phong_id' => 'required|exists:phong_chieu,id',
-            'gio_chieu' => 'required',
-            'gio_ket_thuc' => 'required|after:gio_chieu',
+            'gio_chieu' => 'required|date',
+            'gio_ket_thuc' => 'required|date|after:gio_chieu',
         ]);
-        if ($validate->fails()) {
+
+        $validator->after(function ($validator) use ($phim, $request) {
+            $gioChieu = Carbon::parse($request->gio_chieu);
+            $gioKetThuc = Carbon::parse($request->gio_ket_thuc);
+            $ngayCongChieu = Carbon::parse($phim->ngay_cong_chieu)->startOfDay();
+
+            // 1. Kiểm tra giờ chiếu không được trước ngày công chiếu
+            if ($gioChieu->lt($ngayCongChieu)) {
+                $validator->errors()->add('gio_chieu', 'Giờ chiếu không được trước ngày công chiếu của phim.');
+            }
+
+            // 2. Kiểm tra giờ chiếu không được sau ngày kết thúc (nếu có)
+            if (!empty($phim->ngay_ket_thuc)) {
+                $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->endOfDay();
+                if ($gioChieu->gt($ngayKetThucPhim)) {
+                    $validator->errors()->add('gio_chieu', 'Giờ chiếu không được sau ngày kết thúc của phim.');
+                }
+            }
+
+            // 3. Kiểm tra gio_chieu và gio_ket_thuc phải cùng ngày
+            if ($gioChieu->toDateString() !== $gioKetThuc->toDateString()) {
+                $validator->errors()->add('error', 'Ngày không hợp lệ.');
+            }
+        });
+        if ($validator->fails()) {
             return response()->json([
                 'message' => 'Dữ liệu không hợp lệ',
-                'errors' => $validate->errors()
+                'errors' => $validator->errors()
             ], 422);
         }
         $data = LichChieu::create($request->all());
@@ -116,7 +153,7 @@ class LichChieuController extends Controller
 
     public function show($id)
     {
-        $lichChieu = LichChieu::with(['phim', 'phong_chieu'])->find($id);
+        $lichChieu = LichChieu::with(['phim', 'phong_chieu','chuyenngu'])->find($id);
         if (!$lichChieu) {
             return response()->json([
                 'message' => 'Lịch chiếu không tồn tại',

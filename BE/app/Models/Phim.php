@@ -21,6 +21,7 @@ class Phim extends Model
         'ngay_ket_thuc',
         'do_tuoi_gioi_han',
         'trang_thai_phim',
+        'chuyen_ngu',
         'the_loai_id'
     ];
 

@@ -14,7 +14,7 @@ import {
   Upload,
 } from "antd";
 import { useEffect, useState } from "react";
-import { getGenreList } from "../../../provider/hungProvider";
+import { getGenreList, getListChuyenNgu } from "../../../provider/hungProvider";
 import { useCreateMovies } from "../../../hook/hungHook";
 import { UploadOutlined } from "@ant-design/icons";
 
@@ -27,12 +27,18 @@ const AddMoviesPage = () => {
   const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>(
     []
   );
+  const [chuyen_ngus, value] = useState<{ id: number; the_loai: string }[]>([]);
 
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const data = await getGenreList({ resource: "the_loai" });
         setGenre(data.data || []);
+
+        const chuyenNguData = await getListChuyenNgu({
+          resource: "chuyen_ngu",
+        });
+        value(chuyenNguData.data || []);
       } catch (error) {
         console.error("Lỗi khi tải danh sách thể loại:", error);
       }
@@ -231,6 +237,22 @@ const AddMoviesPage = () => {
                   <Select placeholder="Chọn tình trạng">
                     <Option value="Nháp">Nháp</Option>
                     <Option value="Xuất bản">Xuất bản</Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
+                  label="Phiên bản phim"
+                  name="chuyen_ngu" // ✅ KHÔNG có []
+                  rules={[
+                    { required: true, message: "Vui lòng chọn phiên bản phim" },
+                  ]}
+                >
+                  <Select mode="multiple" placeholder="Chọn phiên bản phim">
+                    {chuyen_ngus.map((item) => (
+                      <Select.Option key={item.id} value={item.id}>
+                        {item.the_loai}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Col>
