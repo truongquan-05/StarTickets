@@ -22,7 +22,8 @@ class Phim extends Model
         'do_tuoi_gioi_han',
         'trang_thai_phim',
         'chuyen_ngu',
-        'the_loai_id'
+        'the_loai_id',
+        'loai_suat_chieu',
     ];
 
     // protected $dates = ['deleted_at', 'ngay_cong_chieu'];
@@ -31,7 +32,8 @@ class Phim extends Model
         return $this->belongsTo(TheLoai::class, 'the_loai_id');
     }
 
-    public function lichChieu(){
-        return $this->hasMany(LichChieu::class,'phim_id');
+    public function lichChieu()
+    {
+        return $this->hasMany(LichChieu::class, 'phim_id');
     }
 }

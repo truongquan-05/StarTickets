@@ -35,6 +35,7 @@ class StorePhimRequest extends FormRequest
             'do_tuoi_gioi_han' => 'nullable|string|max:80',
             'trang_thai_phim' => 'required|string|max:100',
             'the_loai_id' => 'required|exists:the_loai,id', //thêm dòng này nhé
+            'loai_suat_chieu'=> 'nullable|string|max:50',
         ];
     }
 

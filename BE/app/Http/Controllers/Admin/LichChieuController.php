@@ -42,30 +42,33 @@ class LichChieuController extends Controller
             'gio_chieu' => 'required|date',
             'gio_ket_thuc' => 'required|date|after:gio_chieu',
         ]);
-
         $validator->after(function ($validator) use ($phim, $request) {
             $gioChieu = Carbon::parse($request->gio_chieu);
             $gioKetThuc = Carbon::parse($request->gio_ket_thuc);
-            $ngayCongChieu = Carbon::parse($phim->ngay_cong_chieu)->startOfDay();
 
-            // 1. Kiểm tra giờ chiếu không được trước ngày công chiếu
-            if ($gioChieu->lt($ngayCongChieu)) {
-                $validator->errors()->add('gio_chieu', 'Giờ chiếu không được trước ngày công chiếu của phim.');
+            $ngayChieu = $gioChieu->toDateString(); // chỉ lấy phần ngày
+            $ngayKetThuc = $gioKetThuc->toDateString(); // chỉ lấy phần ngày
+            $ngayCongChieu = Carbon::parse($phim->ngay_cong_chieu)->toDateString();
+
+            // 1. Ngày chiếu không được trước ngày công chiếu (nếu không phải "Sớm")
+            if ($ngayChieu < $ngayCongChieu && $phim->loai_suat_chieu != "Sớm") {
+                $validator->errors()->add('gio_chieu', 'Ngày chiếu không được trước ngày công chiếu.');
             }
 
-            // 2. Kiểm tra giờ chiếu không được sau ngày kết thúc (nếu có)
+            // 2. Ngày chiếu không được sau ngày kết thúc (nếu có)
             if (!empty($phim->ngay_ket_thuc)) {
-                $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->endOfDay();
-                if ($gioChieu->gt($ngayKetThucPhim)) {
-                    $validator->errors()->add('gio_chieu', 'Giờ chiếu không được sau ngày kết thúc của phim.');
+                $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->toDateString();
+                if ($ngayChieu > $ngayKetThucPhim) {
+                    $validator->errors()->add('gio_chieu', 'Ngày chiếu không được sau ngày kết thúc của phim.');
                 }
             }
 
-            // 3. Kiểm tra gio_chieu và gio_ket_thuc phải cùng ngày
-            if ($gioChieu->toDateString() !== $gioKetThuc->toDateString()) {
-                $validator->errors()->add('error', 'Ngày không hợp lệ.');
+            // 3. Ngày bắt đầu và kết thúc phải giống nhau
+            if ($ngayChieu !== $ngayKetThuc) {
+                $validator->errors()->add('error', 'Suất chiếu phải bắt đầu và kết thúc trong cùng một ngày.');
             }
         });
+
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Dữ liệu không hợp lệ',
@@ -160,6 +163,53 @@ class LichChieuController extends Controller
     public function update(Request $request, $id)
     {
         $ve = CheckGhe::where('lich_chieu_id', $id)->get();
+        $phim = Phim::find($request->phim_id);
+
+        if (!$phim) {
+            return response()->json(['message' => 'Phim không tồn tại'], 422);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'phim_id' => 'required|exists:phim,id',
+            'phong_id' => 'required|exists:phong_chieu,id',
+            'gio_chieu' => 'required|date',
+            'gio_ket_thuc' => 'required|date|after:gio_chieu',
+        ]);
+        $validator->after(function ($validator) use ($phim, $request) {
+            $gioChieu = Carbon::parse($request->gio_chieu);
+            $gioKetThuc = Carbon::parse($request->gio_ket_thuc);
+
+            $ngayChieu = $gioChieu->toDateString(); // chỉ lấy phần ngày
+            $ngayKetThuc = $gioKetThuc->toDateString(); // chỉ lấy phần ngày
+            $ngayCongChieu = Carbon::parse($phim->ngay_cong_chieu)->toDateString();
+
+            // 1. Ngày chiếu không được trước ngày công chiếu (nếu không phải "Sớm")
+            if ($ngayChieu < $ngayCongChieu && $phim->loai_suat_chieu != "Sớm") {
+                $validator->errors()->add('gio_chieu', 'Ngày chiếu không được trước ngày công chiếu.');
+            }
+
+            // 2. Ngày chiếu không được sau ngày kết thúc (nếu có)
+            if (!empty($phim->ngay_ket_thuc)) {
+                $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->toDateString();
+                if ($ngayChieu > $ngayKetThucPhim) {
+                    $validator->errors()->add('gio_chieu', 'Ngày chiếu không được sau ngày kết thúc của phim.');
+                }
+            }
+
+            // 3. Ngày bắt đầu và kết thúc phải giống nhau
+            if ($ngayChieu !== $ngayKetThuc) {
+                $validator->errors()->add('error', 'Suất chiếu phải bắt đầu và kết thúc trong cùng một ngày.');
+            }
+        });
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
 
         foreach ($ve as $item) {
             if ($item['trang_thai'] == 'da_dat') {

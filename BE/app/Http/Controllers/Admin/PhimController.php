@@ -64,7 +64,7 @@ class PhimController extends Controller
 
         return response()->json([
             'message' => 'Thêm phim thành công',
-            'data' => $phim
+            'data' => $data
         ], 201);
     }
 
