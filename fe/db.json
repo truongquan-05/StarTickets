@@ -126,14 +126,7 @@
       "id": "SEy4a-u"
     }
   ],
-  "showtimes": [
-    {
-      "id": "1",
-      "movieId": 1,
-      "cinemaId": 1,
-      "datetime": "2025-05-12T19:00:00"
-    }
-  ],
+ 
   "seats": [
     {
       "id": "1",
@@ -245,6 +238,18 @@
       "han_su_dung": "2025-06-12",
       "ngay_bat_dau": "2025-06-11",
       "so_lan_su_dung": 20
+    }
+  ],
+  "lich_chieu": [
+    {
+      "id": 1,
+      "phim_id": 1,
+      "phong_id": 1,
+      "gio_chieu": "2025-06-12 10:05:31",
+      "gio_ket_thuc": "2025-06-12 17:10:00",
+      "created_at": null,
+      "updated_at": null,
+      "deleted_at": null
     }
   ]
 }

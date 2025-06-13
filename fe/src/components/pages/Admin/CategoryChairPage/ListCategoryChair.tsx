@@ -30,14 +30,6 @@ const ListCategoryChair = () => {
   const [editingItem] = useState<ICategoryChair | undefined>(
     undefined
   );
-  // const { mutate: deleteCategoryChair } = useDeleteCategoryChair({
-
-  //     resource: "loai_ghe",
-  //   });
-  // const createOrUpdateOpenModal = (record: ICategoryChair | undefined) => {
-  //     setModalOpen(true);
-  //     setEditingItem(record);
-  //   };
   const { mutate: createCategoryChair } = useCreateCategoryChairs({ resource: "loai_ghe" });
   const { mutate: updateCategoryChair } = useUpdateCategoryChair({ resource: "loai_ghe" });
   const onCreateOrUpdate = (values: ICategoryChair) => {
@@ -69,39 +61,7 @@ const ListCategoryChair = () => {
       dataIndex: "ten_loai_ghe",
       key: "name",
       align: "center" as const,
-      // width: "60%",
     },
-    // {
-    //   title: "Thao tác",
-    //   key: "action",
-    //   align: "center" as const,
-    //   render: (_: any, record: any) => (
-    //     <Space size="middle">
-    //       <Button
-    //         type="default"
-    //         shape="circle"
-    //         icon={<EditOutlined />}
-    //         title="Sửa"
-    //         onClick={() => createOrUpdateOpenModal(record)}
-    //       />
-    //       <Popconfirm
-    //         title="Bạn có chắc chắn muốn xoá thể loại này?"
-    //         okText="Xoá"
-    //         cancelText="Huỷ"
-    //         onConfirm={() => {
-    //           deleteCategoryChair(record.id);
-    //           message.success("Đã xoá thể loại: " + record.ten_loai_ghe);
-    //         }}
-    //       >
-    //         <Button
-    //           danger
-    //           shape="circle"
-    //           icon={<DeleteOutlined />}
-    //           title="Xoá"
-    //         />
-    //       </Popconfirm>
-    //     </Space>
-    //   ),
     // },
   ];
   return (

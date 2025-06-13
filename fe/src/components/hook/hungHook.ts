@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getCreateCategoryChair, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListCinemas, getListGhe, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import {  getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -245,5 +245,35 @@ export const useListGhe = ({ resource = 'ghe', phong_id }: Props) => {
     enabled: !!phong_id, // chỉ gọi khi có phong_id
   });
 };
+
+export const useListLichChieu = ({resource = "lich_chieu"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListLichChieu({resource})
+  })
+}
+
+export const useDeleteLichChieu = ({resource = "lich_chieu"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeleteLichChieu({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+export const useCreateLichChieu = ({resource = "phan_hoi"} : Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreateLichChieu({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
 
 
