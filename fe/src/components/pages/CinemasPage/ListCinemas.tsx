@@ -12,6 +12,7 @@ import {
   Modal,
   Form,
   Input,
+  Card,
 } from "antd";
 
 import { useState } from "react";
@@ -64,6 +65,42 @@ const ListCinemas = () => {
     deleteMutate(id);
   };
 
+  const getColumnSearchProps = (dataIndex: string) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => confirm()}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => confirm()}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters()}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Reset
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <EditOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+    ),
+    onFilter: (value: string, record: any) =>
+      record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+  });
+
   const columns = [
     {
       title: "ID",
@@ -75,19 +112,21 @@ const ListCinemas = () => {
       title: "Name",
       dataIndex: "ten_rap",
       key: "name",
-      width: "40%",
+      width: "35%",
+      ...getColumnSearchProps('ten_rap'),
     },
     {
       title: "Address",
       dataIndex: "dia_chi",
       key: "address",
       width: "35%",
+      ...getColumnSearchProps('dia_chi'),
     },
     {
       title: "Action",
       key: "action",
       align: "center" as const,
-      width: "15%",
+      width: "20%",
       render: (_: any, record: ICinemas) => (
         <Space>
           <Button
@@ -100,7 +139,7 @@ const ListCinemas = () => {
             title="Are you sure to delete this cinema?"
             okText="Yes"
             cancelText="No"
-            onConfirm={() => onDelete(record.id, record.name)}
+            onConfirm={() => onDelete(record.id)}
           >
             <Button title="Delete" danger icon={<DeleteOutlined />} />
           </Popconfirm>
@@ -110,78 +149,55 @@ const ListCinemas = () => {
   ];
 
   return (
-    <div className="page-body">
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-sm-12">
-            <div className="card card-table">
-              <div className="card-body">
-                <div className="title-header option-title d-sm-flex d-block">
-                  <h5>Cinemas List</h5>
-                </div>
+    <Card title="Danh sách rạp" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+      <Table
+        rowKey="id"
+        dataSource={dataSource}
+        columns={columns}
+        loading={isLoading}
+        bordered
+        pagination={{ pageSize: 5 }}
+        locale={{ emptyText: "No cinemas found." }}
+      />
 
-                <div className="table-container">
-                  <div className="table-responsive">
-                    <Table
-                      rowKey="id"
-                      dataSource={dataSource}
-                      columns={columns}
-                      loading={isLoading}
-                      bordered
-                      pagination={{ pageSize: 5 }}
-                      locale={{ emptyText: "No cinemas found." }}
-                    />
-                  </div>
-                </div>
+      <Modal
+        title={`Edit Cinema (ID: ${editingItem?.id ?? ""})`}
+        open={isModalOpen}
+        onCancel={closeModal}
+        footer={null}
+        destroyOnClose
+      >
+        <Form
+          form={editForm}
+          layout="vertical"
+          onFinish={onUpdate}
+          initialValues={editingItem ?? undefined}
+        >
+          <Form.Item
+            label="Name"
+            name="ten_rap"
+            rules={[{ required: true, message: "Please enter cinema name" }]}
+          >
+            <Input />
+          </Form.Item>
 
-                {/* Modal chỉnh sửa */}
-                <Modal
-                  title={`Edit Cinema (ID: ${editingItem?.id ?? ""})`}
-                  open={isModalOpen}
-                  onCancel={closeModal}
-                  footer={null}
-                  destroyOnClose
-                >
-                  <Form
-                    form={editForm}
-                    layout="vertical"
-                    onFinish={onUpdate}
-                    initialValues={editingItem ?? undefined}
-                  >
-                    <Form.Item
-                      label="Name"
-                      name="ten_rap"
-                      rules={[
-                        { required: true, message: "Please enter cinema name" },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
+          <Form.Item
+            label="Address"
+            name="dia_chi"
+            rules={[{ required: true, message: "Please enter address" }]}
+          >
+            <Input />
+          </Form.Item>
 
-                    <Form.Item
-                      label="Address"
-                      name="dia_chi"
-                      rules={[
-                        { required: true, message: "Please enter address" },
-                      ]}
-                    >
-                      <Input />
-                    </Form.Item>
-
-                    <Space>
-                      <Button type="primary" htmlType="submit">
-                        Update
-                      </Button>
-                      <Button onClick={closeModal}>Cancel</Button>
-                    </Space>
-                  </Form>
-                </Modal>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          <Space>
+            <Button type="primary" htmlType="submit">
+              Update
+            </Button>
+            <Button onClick={closeModal}>Cancel</Button>
+          </Space>
+        </Form>
+      </Modal>
+    </Card>
   );
 };
 
