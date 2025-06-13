@@ -10,11 +10,13 @@ import {
   Input,
   InputNumber,
   Modal,
+  Upload,
 } from "antd";
 import {
   DeleteOutlined,
   EyeFilled,
   PlusOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Food } from "../../types/Uses";
@@ -24,6 +26,7 @@ import {
   useUpdateFood,
   useDeleteFood,
 } from "../../hook/duHook";
+import type { RcFile } from "antd/es/upload/interface";
 
 const { Title } = Typography;
 
@@ -38,14 +41,22 @@ const FoodList = () => {
   const [form] = Form.useForm();
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Food | undefined>(undefined);
+  const [fileList, setFileList] = useState<any[]>([]);
 
   const openModal = (record?: Food) => {
     setModalOpen(true);
     setEditingItem(record);
     if (record) {
       form.setFieldsValue(record);
+      setFileList(record.hinh_anh ? [{
+        uid: "-1",
+        name: "image.png",
+        status: "done",
+        url: record.hinh_anh,
+      }] : []);
     } else {
       form.resetFields();
+      setFileList([]);
     }
   };
 
@@ -62,6 +73,10 @@ const FoodList = () => {
   };
 
   const onFinish = (values: Food) => {
+    if (fileList.length > 0 && fileList[0].url) {
+      values.hinh_anh = fileList[0].url;
+    }
+
     if (editingItem) {
       updateFood(
         { id: editingItem.id, values },
@@ -83,11 +98,44 @@ const FoodList = () => {
           refetch();
           setModalOpen(false);
           form.resetFields();
+          setFileList([]);
         },
         onError: () => {
           message.error("Thêm món ăn thất bại");
         },
       });
+    }
+  };
+
+  const customUpload = async (options: any) => {
+    const { file, onSuccess, onError } = options;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.url) {
+        setFileList([
+          {
+            uid: file.uid,
+            name: file.name,
+            status: "done",
+            url: data.url,
+          },
+        ]);
+        onSuccess("Ok");
+      } else {
+        throw new Error("Upload failed");
+      }
+    } catch (err) {
+      message.error("Tải ảnh lên thất bại");
+      onError?.(err);
     }
   };
   useEffect(() => {
@@ -96,10 +144,9 @@ const FoodList = () => {
   }
 }, [isModalOpen, editingItem]);
 
-
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
-     {
+    {
       title: "Hình ảnh",
       dataIndex: "hinh_anh",
       key: "hinh_anh",
@@ -140,13 +187,7 @@ const FoodList = () => {
 
   return (
     <Card style={{ margin: "15px" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
         <Title level={3} style={{ margin: 0 }}>
           Danh sách món ăn
         </Title>
@@ -187,12 +228,23 @@ const FoodList = () => {
           >
             <Input.TextArea />
           </Form.Item>
-          <Form.Item
-            label="Hình ảnh (URL)"
-            name="hinh_anh"
-            rules={[{ required: true, message: "Vui lòng nhập link hình ảnh!" }]}
-          >
-            <Input />
+          <Form.Item label="Hình ảnh">
+            <Upload
+              customRequest={customUpload}
+              listType="picture"
+              fileList={fileList}
+              onRemove={() => setFileList([])}
+              beforeUpload={(file: RcFile) => {
+                const isImage = ["image/jpeg", "image/png", "image/gif"].includes(file.type);
+                if (!isImage) {
+                  message.error("Chỉ hỗ trợ JPG/PNG/GIF");
+                }
+                return isImage || Upload.LIST_IGNORE;
+              }}
+              maxCount={1}
+            >
+              <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+            </Upload>
           </Form.Item>
           <Form.Item
             label="Giá (VND)"
