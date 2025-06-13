@@ -170,3 +170,7 @@ export const getCreateLichChieu = async ({resource = "lich_chieu" , values} : Pr
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
+export const getListChuyenNgu = async ({ resource = "chuyen_ngu" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
