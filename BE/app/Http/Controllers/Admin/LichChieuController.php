@@ -17,7 +17,7 @@ class LichChieuController extends Controller
      */
     public function index()
     {
-        $lichChieus = LichChieu::with(['phim', 'phong_chieu','chuyenngu'])
+        $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu'])
             ->orderBy('id', 'desc')
             ->paginate(10);
         return response()->json($lichChieus);
@@ -30,12 +30,6 @@ class LichChieuController extends Controller
 
     public function store(Request $request)
     {
-        // $validate = Validator::make($request->all(), [
-        //     'phim_id' => 'required|exists:phim,id',
-        //     'phong_id' => 'required|exists:phong_chieu,id',
-        //     'gio_chieu' => 'required',
-        //     'gio_ket_thuc' => 'required|after:gio_chieu',
-        // ]);
         $phim = Phim::find($request->phim_id);
 
         if (!$phim) {
@@ -153,7 +147,7 @@ class LichChieuController extends Controller
 
     public function show($id)
     {
-        $lichChieu = LichChieu::with(['phim', 'phong_chieu','chuyenngu'])->find($id);
+        $lichChieu = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu'])->find($id);
         if (!$lichChieu) {
             return response()->json([
                 'message' => 'Lịch chiếu không tồn tại',
@@ -167,7 +161,6 @@ class LichChieuController extends Controller
     {
         $ve = CheckGhe::where('lich_chieu_id', $id)->get();
 
-        //KHÔNG CHO UPDATE NẾU CÓ VÉ ĐÃ ĐƯỢC ĐẶT
         foreach ($ve as $item) {
             if ($item['trang_thai'] == 'da_dat') {
                 return response()->json([
@@ -176,7 +169,6 @@ class LichChieuController extends Controller
             }
         }
 
-        //KHÔNG CHO UPDATE NẾU CÓ NGƯỜI ĐANG ĐẶT 
         foreach ($ve as $item) {
             if ($item['trang_thai'] == 'dang_dat') {
                 return response()->json([
