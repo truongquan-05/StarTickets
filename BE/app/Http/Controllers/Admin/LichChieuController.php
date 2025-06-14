@@ -8,6 +8,7 @@ use App\Models\CheckGhe;
 use App\Models\LichChieu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ChuyenNgu;
 use Illuminate\Support\Facades\Validator;
 
 class LichChieuController extends Controller
@@ -303,5 +304,35 @@ class LichChieuController extends Controller
         return response()->json([
             'message' => 'Xóa vĩnh viễn thành công',
         ]);
+    }
+
+
+    public function ChuyenNguIndex($id)
+    {
+        $chuyenNgu = ChuyenNgu::all();
+        $chuyenNguPhim = Phim::select('chuyen_ngu')->where('id', $id)->first();
+
+        if ($chuyenNguPhim && $chuyenNguPhim->chuyen_ngu) {
+            $chuyen_ngu_array = json_decode($chuyenNguPhim->chuyen_ngu, true);
+        } else {
+            $chuyen_ngu_array = [];
+        }
+
+        $selectedIds = array_column($chuyen_ngu_array, 'id');
+
+        // Lọc ra các chuyển ngữ trùng ID
+        $chuyenNguDaChon = $chuyenNgu->filter(function ($item) use ($selectedIds) {
+            return in_array($item->id, $selectedIds);
+        });
+        $chuyenNguDaChonArray = $chuyenNguDaChon->values()->all();
+
+
+        return response()->json(
+            [
+                'message' => 'Danh sách chuyên ngữ',
+                'data' => $chuyenNguDaChonArray,
+
+            ]
+        );
     }
 }

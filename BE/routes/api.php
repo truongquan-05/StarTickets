@@ -107,7 +107,7 @@ Route::apiResource('lich_chieu', LichChieuController::class);
 Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']); //Check thời gian hợp lệ
 Route::post('/lich_chieu/{id}/restore', [LichChieuController::class, 'restore'])->name('lich_chieu.restore'); //Khôi phục
 Route::delete('/lich_chieu/{id}/force-delete', [LichChieuController::class, 'forceDelete'])->name('lich_chieu.force-delete'); //Xóa vinh viễn
-
+Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenNguIndex']); //Id của phim
 
 
 
@@ -118,6 +118,6 @@ Route::prefix('client')->group(function () {
     Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimsapchieu']);
 });
 
-Route::apiResource('chuyen_ngu',ChuyenNguController::class);
+Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 
 // http://127.0.0.1:8000/api/....
