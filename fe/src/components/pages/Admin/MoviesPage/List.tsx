@@ -18,6 +18,7 @@ import {
   Table,
   Typography,
   Card,
+  Tag,
 } from "antd";
 import { useEffect, useState } from "react";
 import { IMovies, MoviesForm } from "../interface/movies";
@@ -45,9 +46,13 @@ const List = () => {
   const [editingItem, setEditingItem] = useState<IMovies | undefined>(
     undefined
   );
-  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>([]);
+  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>(
+    []
+  );
   const [filePoster, setFilePoster] = useState<File | null>(null);
-  const [anhPosterPreview, setAnhPosterPreview] = useState<string | undefined>();
+  const [anhPosterPreview, setAnhPosterPreview] = useState<
+    string | undefined
+  >();
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -81,6 +86,7 @@ const List = () => {
 
   const createOrUpdateOpenModal = (record: IMovies | undefined) => {
     setEditingItem(record);
+
     setModalOpen(true);
   };
 
@@ -156,12 +162,12 @@ const List = () => {
       title: "Poster",
       dataIndex: "anh_poster",
       key: "anh_poster",
-      width: 120,
+      width: 210,
       render: (text: string) => (
         <Image
           src={`${BASE_URL}/storage/${text}`}
-          width={100}
-          height={140}
+          width={220}
+          height={280}
           style={{ objectFit: "cover", borderRadius: 4 }}
           fallback="https://via.placeholder.com/100x140?text=No+Image"
           preview={false}
@@ -172,7 +178,7 @@ const List = () => {
       title: "Thông tin phim",
       dataIndex: "ten_phim",
       key: "info",
-      width: 400,
+      width: 380,
       render: (_: any, record: IMovies) => (
         <div>
           <Text strong style={{ fontSize: 16 }}>
@@ -212,6 +218,44 @@ const List = () => {
                 : "Chưa cập nhật"}
             </Text>
           </div>
+
+          <div>
+            <Text>
+              <b>Chuyên ngữ:</b>{" "}
+              {(() => {
+                try {
+                  const chuyenNguArray = JSON.parse(
+                    typeof record.chuyen_ngu === "string"
+                      ? record.chuyen_ngu
+                      : JSON.stringify(record.chuyen_ngu || [])
+                  );
+                  return Array.isArray(chuyenNguArray) &&
+                    chuyenNguArray.length > 0 ? (
+                    chuyenNguArray.map((item: any, index: number) => (
+                      <Tag
+                        key={index}
+                        color="rgb(118 175 87)"
+                        style={{
+                          color: "white",
+                          fontWeight: "bold",
+                          padding: "4px 12px",
+                          borderRadius: "6px",
+                          marginRight: "6px",
+                        }}
+                      >
+                        {item.the_loai}
+                      </Tag>
+                    ))
+                  ) : (
+                    <span>Không có dữ liệu</span>
+                  );
+                } catch (e) {
+                  return <span>Không có dữ liệu</span>;
+                }
+              })()}
+            </Text>
+          </div>
+
           <div style={{ marginTop: 4 }}>
             <a href={record.trailer} target="_blank" rel="noreferrer">
               Xem Trailer
@@ -219,15 +263,8 @@ const List = () => {
           </div>
         </div>
       ),
-      
     },
-    {
-      title: "Loại Suất Chiếu",
-      dataIndex: "loai_suat_chieu",
-      key: "loai_suat_chieu",
-      width: 100,
-    },
-    
+
     {
       title: "Giới hạn tuổi",
       dataIndex: "do_tuoi_gioi_han",
@@ -247,8 +284,7 @@ const List = () => {
         { text: "Đang chiếu", value: "Đang chiếu" },
         { text: "Đã chiếu", value: "Đã chiếu" },
       ],
-      onFilter: (value: string, record: IMovies) =>
-        record.tinh_trang === value,
+      onFilter: (value: string, record: IMovies) => record.tinh_trang === value,
       render: (text: string) => (
         <Text
           style={{
@@ -268,7 +304,7 @@ const List = () => {
     {
       title: "Hành động",
       key: "action",
-      width: 130,
+      width: 120,
       fixed: "right",
       render: (_: any, record: IMovies) => (
         <Space>
@@ -286,7 +322,12 @@ const List = () => {
             okText="Xóa"
             cancelText="Hủy"
           >
-            <Button type="default" danger icon={<DeleteOutlined />} size="small">
+            <Button
+              type="default"
+              danger
+              icon={<DeleteOutlined />}
+              size="small"
+            >
               Xóa
             </Button>
           </Popconfirm>
@@ -297,27 +338,25 @@ const List = () => {
 
   return (
     <>
-    <Card style={{ margin: "15px" }}>
-      <Typography.Title level={3} style={{ marginBottom: 16 }}>
-        Danh sách phim
-      </Typography.Title>
-      <Button
-        type="primary"
-        icon={<ExportOutlined />}
-        style={{ marginBottom: 12 }}
-      >
-        <Link to={`/admin/movies/add`}>
-        Thêm phim mới
-        </Link>
-      </Button>
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        rowKey="id"
-        scroll={{ x: 1200 }}
-        pagination={{ pageSize: 6 }}
-      />
-</Card>
+      <Card style={{ margin: "15px" }}>
+        <Typography.Title level={3} style={{ marginBottom: 16 }}>
+          Danh sách phim
+        </Typography.Title>
+        <Button
+          type="primary"
+          icon={<ExportOutlined />}
+          style={{ marginBottom: 12 }}
+        >
+          <Link to={`/admin/movies/add`}>Thêm phim mới</Link>
+        </Button>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          rowKey="id"
+          scroll={{ x: 1200 }}
+          pagination={{ pageSize: 6 }}
+        />
+      </Card>
       <Modal
         open={isModalOpen}
         title={editingItem ? "Sửa phim" : "Thêm phim mới"}
@@ -374,7 +413,11 @@ const List = () => {
             </Form.Item>
 
             <Form.Item label="Poster" name="anh_poster">
-              <input type="file" accept="image/*" onChange={onAnhPosterChange} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={onAnhPosterChange}
+              />
               {anhPosterPreview && (
                 <Image
                   src={anhPosterPreview}

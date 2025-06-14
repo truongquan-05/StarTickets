@@ -2,7 +2,7 @@
 import { useRoutes } from 'react-router-dom';
 import Admin from '../Layouts/AdminLayout/Admin';
 import User from '../Layouts/UserLayout/User';
-import ListCategoryChair from '../pages/Admin/CategoryChairPage/ListCategoryChair';
+import ListCategoryChair from '../pages/Admin/Chair/ListCategoryChair';
 import AddMoviesPage from '../pages/Admin/MoviesPage/AddMoviesPage';
 import List from '../pages/Admin/MoviesPage/List';
 import DashboardAdmin from '../pages/Admin/DashboardAdmin';
@@ -20,6 +20,8 @@ import PhanHoiNguoiDung from '../pages/Admin/CommentPage/PhanHoiNguoiDung';
 import ListPhongChieu from '../pages/Admin/PhongChieu/ListPhongChieu';
 import AddPhongChieu from '../pages/Admin/PhongChieu/AddPhongChieu';
 import VouchersList from '../pages/Voucher/List';
+import Chair from '../pages/Admin/Chair/Chair';
+import AddLichChieu from '../pages/Admin/LichChieu/AddLichChieu';
 
 
 
@@ -44,7 +46,9 @@ const Routermain = () => {
         { path: 'movies/list', element: <List /> },
         { path: 'movies/add', element: <AddMoviesPage /> },
         { path: 'category_chair/list', element: <ListCategoryChair /> },
+        { path: 'chair/list', element: <Chair /> },
         { path: 'lichchieu/list', element: <LichChieu /> },
+        { path: 'lichchieu/add', element: <AddLichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
         { path: 'room/list', element: <ListPhongChieu /> },

@@ -74,7 +74,8 @@ const HeaderAdmin = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-      }}
+        height: '70px',
+        boxShadow: '5px'}}
     >
       <Button
         type="text"

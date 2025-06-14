@@ -48,7 +48,7 @@ class PhanHoiKhachHangController extends Controller
        $phanHoi=PhanHoiKhachHang::create($data);
        return response()->json([
         'message'=>'gui phan hoi thanh cong',
-        // 'data'=>$request->all()
+        'data'=>$phanHoi
        ]);
     }
 
