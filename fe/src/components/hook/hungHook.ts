@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import {  getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListPhongChieu, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -186,6 +186,8 @@ export const useCreatePhanHoiNguoiDung = ({resource = "phan_hoi"} : Props) => {
   })
 }
 
+
+
 export const useUpdatePhanHoiNguoiDung = ({ resource = "phan_hoi" }) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -199,13 +201,17 @@ export const useUpdatePhanHoiNguoiDung = ({ resource = "phan_hoi" }) => {
     },
   });
 };
-
+export const useListPhongChieu = ({resource = "phong_chieu"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListPhongChieu({resource})
+  })
+}
 export const useCreatePhongChieu = ({resource = "phong_chieu"} : Props) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn : (values : any) => getCreatePhongChieu({resource,values}),
     onSuccess: () => {
-      message.success("Thêm thành công");
       queryClient.invalidateQueries({queryKey:[resource]});
     },
     onError : () => {
@@ -245,6 +251,12 @@ export const useListGhe = ({ resource = 'ghe', phong_id }: Props) => {
     enabled: !!phong_id, // chỉ gọi khi có phong_id
   });
 };
+export const useListChair = ({resource = "ghe"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListChair({resource})
+  })
+}
 
 export const useListLichChieu = ({resource = "lich_chieu"}) => {
   return useQuery({
@@ -262,7 +274,7 @@ export const useDeleteLichChieu = ({resource = "lich_chieu"} : Props) => {
     }
   })
 }
-export const useCreateLichChieu = ({resource = "phan_hoi"} : Props) => {
+export const useCreateLichChieu = ({resource = "lich_chieu"} : Props) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn : (values : any) => getCreateLichChieu({resource,values}),
@@ -273,6 +285,13 @@ export const useCreateLichChieu = ({resource = "phan_hoi"} : Props) => {
     onError : () => {
       message.error("Thêm thất bại");
     }
+  })
+}
+
+export const useListChuyenNgu = ({resource = "chuyen_ngu"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListChuyenNgu({resource})
   })
 }
 

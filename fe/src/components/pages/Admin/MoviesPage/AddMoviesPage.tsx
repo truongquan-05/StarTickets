@@ -201,9 +201,9 @@ const AddMoviesPage = () => {
                 <Form.Item
                   label="Ngày kết thúc"
                   name="ngay_ket_thuc"
-                  rules={[
-                    { required: true, message: "Vui lòng chọn ngày kết thúc" },
-                  ]}
+                  // rules={[
+                  //   { required: true, message: "Vui lòng chọn ngày kết thúc" },
+                  // ]}
                 >
                   <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
                 </Form.Item>

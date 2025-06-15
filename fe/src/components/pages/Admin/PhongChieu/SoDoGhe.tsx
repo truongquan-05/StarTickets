@@ -3,7 +3,7 @@ import { IGhe } from "../interface/ghe";
 
 interface SoDoGheProps {
   phongId: number | null;
-  loaiSoDo: number | undefined;
+  loaiSoDo: string | number | undefined; // sửa kiểu tại đây nếu từ cha truyền về dạng "8x8"
   danhSachGhe: IGhe[];
   isLoadingGhe: boolean;
   isErrorGhe: boolean;
@@ -30,7 +30,11 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
 
   if (!phongId) return null;
 
-  const numCols = Number(loaiSoDo) || 0;
+  // ✅ Xử lý loaiSoDo kiểu "8x8" → 8
+  const numCols = loaiSoDo
+    ? parseInt(String(loaiSoDo).split("x")[0], 10)
+    : 0;
+
   if (numCols <= 0) return null;
 
   const numRows = numCols;
@@ -74,8 +78,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
             colIndex += 1;
             continue;
           }
+
           const isDoi = ghe.loai_ghe_id === 3;
           const span = isDoi ? 2 : 1;
+
           if (isDoi && colIndex + 1 > numCols) {
             cols.push(
               <div

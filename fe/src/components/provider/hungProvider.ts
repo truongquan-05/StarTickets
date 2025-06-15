@@ -138,6 +138,10 @@ export const getListCinemas = async ({ resource = "rap" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
 };
+export const getListChair = async ({ resource = "rap" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
 
 export const getListGhe = async ({
   resource = "ghe",

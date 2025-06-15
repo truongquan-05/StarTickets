@@ -103,6 +103,9 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/lichchieu/list" icon={<CalendarOutlined />}>
           <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/lichchieu/add" icon={<CalendarOutlined />}>
+          <Link to="/admin/lichchieu/add">Thêm Lịch Chiếu</Link>
+        </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
         key="chair"
@@ -112,8 +115,8 @@ const SideBar: React.FC<SideBarProps> = ({
       <Menu.Item key="/admin/category_chair/list" icon={<GoldOutlined/>}>
         <Link to="/admin/category_chair/list">Loại Ghế</Link>
       </Menu.Item>
-      <Menu.Item key="/admin/category_chair/list" icon={<InsertRowAboveOutlined />}>
-        <Link to="/admin/category_chair/list">Ghế</Link>
+      <Menu.Item key="/admin/chair/list" icon={<InsertRowAboveOutlined />}>
+        <Link to="/admin/chair/list">Ghế</Link>
       </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
