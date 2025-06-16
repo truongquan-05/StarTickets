@@ -5,9 +5,10 @@ import { useEffect } from "react";
 type Props = {
   initialData?: Partial<User>;
   onSubmit: (user: Omit<User, "id">) => void;
+  isEdit?: boolean;
 };
 
-const UserForm = ({ initialData = {}, onSubmit }: Props) => {
+const UserForm = ({ initialData = {}, onSubmit, isEdit = false }: Props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -15,10 +16,9 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
       ten: "",
       email: "",
       password: "",
-      confirmPassword: "",
       so_dien_thoai: "",
-      avatar: "",
-      vai_tro: "user",
+      anh_dai_dien: "",
+      vai_tro_id: "",
       isActive: true,
       ...initialData,
     });
@@ -49,7 +49,7 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
         name="email"
         rules={[{ required: true, message: "Vui lòng nhập email" }]}
       >
-        <Input placeholder="Nhập email" />
+        <Input placeholder="Nhập email" disabled={isEdit} />
       </Form.Item>
 
       <Form.Item
@@ -57,7 +57,7 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
         name="password"
         rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
       >
-        <Input.Password placeholder="Nhập mật khẩu" />
+        <Input.Password placeholder="Nhập mật khẩu" disabled={isEdit}  />
       </Form.Item>
 
       <Form.Item
@@ -65,19 +65,21 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
         name="confirmPassword"
         dependencies={["password"]}
         rules={[
-          { required: true, message: "Vui lòng nhập lại mật khẩu" },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue("password") === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error("Mật khẩu nhập lại không khớp"));
-            },
-          }),
-        ]}
-      >
-        <Input.Password placeholder="Nhập lại mật khẩu" />
-      </Form.Item>
+        { required: true, message: "Vui lòng nhập lại mật khẩu" },
+        ({ getFieldValue }) => ({
+        validator(_, value) {
+        if (!value || getFieldValue("password") === value) {
+          return Promise.resolve();
+        }
+        return Promise.reject(
+          new Error("Mật khẩu nhập lại không khớp")
+        );
+      },
+    }),
+  ]}
+>
+  <Input.Password placeholder="Nhập lại mật khẩu" disabled={isEdit}/>
+</Form.Item>
 
       <Form.Item
         label="Số điện thoại"
@@ -86,10 +88,19 @@ const UserForm = ({ initialData = {}, onSubmit }: Props) => {
       >
         <Input placeholder="Nhập số điện thoại" />
       </Form.Item>
+
+      <Form.Item
+        label="Ảnh đại diện"
+        name="anh_dai_dien"
+        rules={[{ required: true, message: "Vui lòng nhập URL ảnh đại diện" }]}
+      >
+        <Input placeholder="Nhập URL ảnh" />
+      </Form.Item>
+
       <Form.Item label="Vai trò" name="vai_tro_id">
         <Select>
-          <Select.Option value="1">1</Select.Option>
-          <Select.Option value="2">2</Select.Option>
+          <Select.Option value={1}>User</Select.Option>
+          <Select.Option value={2}>Admin</Select.Option>
         </Select>
       </Form.Item>
 

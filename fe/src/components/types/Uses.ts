@@ -5,18 +5,19 @@ export interface Genre {
 }
 export interface User {
   id: number;
-  name: string;
+  ten: string;
   email: string;
   password: string;
-  phone: string;
-  avatar: string; 
-  role: "admin" | "user";
-  trang_thai: boolean;
+  so_dien_thoai: string;
+  anh_dai_dien: string; 
+  vai_tro_id: "admin" | "user";
+  isActive: boolean;
 }
 export interface Food {
   id: number;
   ten_do_an: string;
   mo_ta: string;
+  hinh_anh: string;
   gia: number;
   so_luong_ton: number;
 }
