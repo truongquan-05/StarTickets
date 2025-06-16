@@ -114,7 +114,7 @@ const FoodList = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api", {
+      const res = await fetch("/poster", {
         method: "POST",
         body: formData,
       });
