@@ -13,6 +13,7 @@ import {
   useCreateLichChieu,
   useListMovies,
   useListPhongChieu,
+  useListChuyenNgu,
 } from "../../../hook/hungHook";
 
 const { Option } = Select;
@@ -22,12 +23,19 @@ const AddLichChieu = () => {
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
 
+  const [thoiLuongPhim, setThoiLuongPhim] = useState<number>(0);
+  const [gioKetThucTinh, setGioKetThucTinh] = useState<string>("");
+
   const { data: phimListRaw, isLoading: phimLoading } = useListMovies({
     resource: "phim",
   });
   const { data: phongListRaw, isLoading: phongLoading } = useListPhongChieu({
     resource: "phong_chieu",
   });
+  const { data: chuyenNguListRaw, isLoading: chuyenNguLoading } =
+    useListChuyenNgu({
+      resource: "chuyen_ngu",
+    });
 
   const phimList = Array.isArray(phimListRaw)
     ? phimListRaw
@@ -35,45 +43,58 @@ const AddLichChieu = () => {
   const phongList = Array.isArray(phongListRaw)
     ? phongListRaw
     : phongListRaw?.data || [];
+  const chuyenNguList = Array.isArray(chuyenNguListRaw)
+    ? chuyenNguListRaw
+    : chuyenNguListRaw?.data || [];
 
   const { mutate: createLichChieu } = useCreateLichChieu({
     resource: "lich_chieu",
   });
 
-  const onFinish = (values: any) => {
-  if (!values.gio_chieu || !values.gio_ket_thuc) {
-    message.error("Vui lòng chọn đầy đủ giờ chiếu và giờ kết thúc");
-    return;
-  }
-
-  // So sánh trực tiếp timestamp, không dùng isSameOrBefore
-  if ((values.gio_ket_thuc as Dayjs).valueOf() <= (values.gio_chieu as Dayjs).valueOf()) {
-    message.error("Giờ kết thúc phải lớn hơn giờ chiếu");
-    return;
-  }
-
-  setSubmitting(true);
-
-  const payload = {
-    ...values,
-    gio_chieu: (values.gio_chieu as Dayjs).format("YYYY-MM-DD HH:mm:ss"),
-    gio_ket_thuc: (values.gio_ket_thuc as Dayjs).format("YYYY-MM-DD HH:mm:ss"),
+  const handleChangePhim = (phimId: number) => {
+    const phim = phimList.find((p: any) => p.id === phimId);
+    if (phim && phim.thoi_luong) {
+      setThoiLuongPhim(phim.thoi_luong);
+    } else {
+      setThoiLuongPhim(0);
+      setGioKetThucTinh("");
+    }
   };
-  console.log(payload);
 
-  createLichChieu(payload, {
-    onSuccess: () => {
-      message.success("Thêm lịch chiếu thành công");
-      form.resetFields();
-      setSubmitting(false);
-    },
-    onError: () => {
-      message.error("Thêm lịch chiếu thất bại");
-      setSubmitting(false);
-    },
-  });
-};
+  const handleChangeGioChieu = (value: Dayjs | null) => {
+    if (value && thoiLuongPhim > 0) {
+      const ketThuc = value.add(thoiLuongPhim, "minute");
+      setGioKetThucTinh(ketThuc.format("YYYY-MM-DD HH:mm:ss"));
+    } else {
+      setGioKetThucTinh("");
+    }
+  };
 
+  const onFinish = (values: any) => {
+    setSubmitting(true);
+
+    if (values.gio_chieu && (values.gio_chieu as Dayjs).format) {
+      values.gio_chieu = (values.gio_chieu as Dayjs).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+    }
+
+    values.gio_ket_thuc = gioKetThucTinh;
+
+    createLichChieu(values, {
+      onSuccess: () => {
+        message.success("Thêm lịch chiếu thành công");
+        form.resetFields();
+        setGioKetThucTinh("");
+        setThoiLuongPhim(0);
+        setSubmitting(false);
+      },
+      onError: () => {
+        message.error("Thêm lịch chiếu thất bại");
+        setSubmitting(false);
+      },
+    });
+  };
 
   return (
     <Card style={{ maxWidth: 600, margin: "0 auto" }}>
@@ -95,6 +116,7 @@ const AddLichChieu = () => {
                 .includes(input.toLowerCase())
             }
             disabled={phimLoading}
+            onChange={handleChangePhim}
           >
             {phimList.map((phim: any) => (
               <Option key={phim.id} value={phim.id}>
@@ -130,30 +152,101 @@ const AddLichChieu = () => {
         </Form.Item>
 
         <Form.Item
-          name="gio_chieu"
-          label="Giờ chiếu"
-          rules={[{ required: true, message: "Vui lòng chọn giờ chiếu" }]}
+          name="chuyen_ngu_id"
+          label="Chuyển Ngữ"
+          rules={[{ required: true, message: "Vui lòng chọn chuyển ngữ" }]}
         >
-          <DatePicker
-            showTime
-            format="YYYY-MM-DD HH:mm:ss"
-            disabledDate={(current) => current && current < dayjs().startOf("day")}
-            style={{ width: "100%" }}
-          />
+          <Select
+            placeholder="Chọn chuyển ngữ"
+            loading={chuyenNguLoading}
+            showSearch
+            optionFilterProp="children"
+            filterOption={(input, option) =>
+              (option?.children as unknown as string)
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
+            disabled={chuyenNguLoading}
+          >
+            {chuyenNguList.map((cn: any) => (
+              <Option key={cn.id} value={cn.id}>
+                {cn.the_loai}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
-          name="gio_ket_thuc"
-          label="Giờ kết thúc"
-          rules={[{ required: true, message: "Vui lòng chọn giờ kết thúc" }]}
+          name="gio_chieu"
+          label="Giờ chiếu"
+          rules={[
+            { required: true, message: "Vui lòng chọn giờ chiếu" },
+            {
+              validator: (_, value) => {
+                if (!value) return Promise.resolve(); // required xử lý rồi
+                if (value.isBefore(dayjs())) {
+                  return Promise.reject(
+                    "Không được chọn thời gian trong quá khứ"
+                  );
+                }
+                return Promise.resolve();
+              },
+            },
+          ]}
         >
           <DatePicker
-            showTime
+            showTime={{ format: "HH:mm:ss" }}
             format="YYYY-MM-DD HH:mm:ss"
-            disabledDate={(current) => current && current < dayjs().startOf("day")}
             style={{ width: "100%" }}
+            disabledDate={(current) =>
+              current && current < dayjs().startOf("day")
+            }
+            disabledTime={(current) => {
+              if (!current) return {};
+              const now = dayjs();
+              if (current.isSame(now, "day")) {
+                return {
+                  disabledHours: () =>
+                    Array.from({ length: 24 }, (_, i) =>
+                      i < now.hour() ? i : -1
+                    ).filter((i) => i !== -1),
+                  disabledMinutes: (selectedHour) =>
+                    selectedHour === now.hour()
+                      ? Array.from({ length: 60 }, (_, i) =>
+                          i < now.minute() ? i : -1
+                        ).filter((i) => i !== -1)
+                      : [],
+                  disabledSeconds: (selectedHour, selectedMinute) =>
+                    selectedHour === now.hour() &&
+                    selectedMinute === now.minute()
+                      ? Array.from({ length: 60 }, (_, i) =>
+                          i < now.second() ? i : -1
+                        ).filter((i) => i !== -1)
+                      : [],
+                };
+              }
+              return {};
+            }}
+            onChange={handleChangeGioChieu}
           />
         </Form.Item>
+
+        {gioKetThucTinh && (
+          <Form.Item label="Giờ kết thúc (tự động tính)">
+            <input
+              type="text"
+              readOnly
+              value={gioKetThucTinh}
+              style={{
+                width: "100%",
+                padding: "8px",
+                backgroundColor: "#f5f5f5",
+                border: "1px solid #d9d9d9",
+                borderRadius: 4,
+              }}
+            />
+          </Form.Item>
+        )}
 
         <Form.Item>
           <Button

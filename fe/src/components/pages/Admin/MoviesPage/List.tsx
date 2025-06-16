@@ -187,8 +187,9 @@ const List = () => {
           <Paragraph
             ellipsis={{ rows: 3 }}
             style={{ marginBottom: 4, marginTop: 4 }}
+            strong
           >
-            {record.mo_ta}
+            Loại Suất Chiếu: {record.loai_suat_chieu}
           </Paragraph>
           <div>
             <Text>

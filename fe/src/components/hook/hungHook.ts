@@ -208,10 +208,13 @@ export const useListPhongChieu = ({resource = "phong_chieu"}) => {
   })
 }
 export const useCreatePhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn : (values : any) => getCreatePhongChieu({resource,values}),
     onSuccess: () => {
+      navigate("/admin/room/list")
+      message.success("Tạo phòng chiếu thành công")
       queryClient.invalidateQueries({queryKey:[resource]});
     },
     onError : () => {

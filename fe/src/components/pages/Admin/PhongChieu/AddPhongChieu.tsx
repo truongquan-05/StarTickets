@@ -75,7 +75,6 @@ const AddPhongChieu = () => {
 
   createMutate(formData, {
     onSuccess: () => {
-      message.success("Thêm phòng chiếu thành công!");
       form.resetFields();
     },
     onError: (error: any) => {

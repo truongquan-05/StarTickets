@@ -167,9 +167,10 @@ export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props
 }
 
 export const getListLichChieu = async ({ resource = "lich_chieu" }: Props) => {
-  const { data } = await axiosClient.get(resource);
-  return data;
+  const res = await axiosClient.get(resource);
+  return res.data.data;  // nếu backend bọc trong data.data
 };
+
 export const getCreateLichChieu = async ({resource = "lich_chieu" , values} : Props) => {
   const {data} = await  axiosClient.post(resource,values);
   return data;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Table, Button, Modal } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -10,9 +10,9 @@ import {
 import { useListGhe } from "../../../hook/hungHook";
 import SoDoGhe from "./SoDoGhe";
 
-interface IRap{
-  id:number;
-  ten_rap:string
+interface IRap {
+  id: number;
+  ten_rap: string;
 }
 
 const ListPhongChieu = () => {
@@ -127,6 +127,15 @@ const ListPhongChieu = () => {
     },
   ];
 
+  // ✅ Tính toán chiều rộng modal theo số ghế mỗi hàng
+  const modalWidth = useMemo(() => {
+    if (!selectedPhong?.loai_so_do) return 400;
+    const [soCotStr] = selectedPhong.loai_so_do.split("x");
+    const soCot = parseInt(soCotStr || "8");
+    const width = soCot * 44 + 64; // mỗi ghế 44px (bao gồm margin/padding)
+    return Math.min(width, 700); // giới hạn max 700
+  }, [selectedPhong]);
+
   return (
     <>
       <Table
@@ -144,8 +153,16 @@ const ListPhongChieu = () => {
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
-        width={Math.min(60 * Number(selectedPhong?.loai_so_do || 10), 900)}
-        bodyStyle={{ display: "flex", justifyContent: "center" }} 
+        width={1000} // hoặc Math.max(modalWidth, 1000) nếu muốn theo số ghế
+        bodyStyle={{
+          display: "flex",
+          justifyContent: "center",
+          padding: 16,
+          overflow: "visible", // ✅ bỏ thanh cuộn
+        }}
+        style={{
+          top: 50, // ✅ Modal hiển thị cố định gần giữa
+        }}
       >
         <SoDoGhe
           phongId={selectedPhong?.id || null}
