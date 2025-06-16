@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { DatePicker, Table } from "antd";
+import { Button, DatePicker, message, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -8,17 +8,20 @@ import { ILichChieu } from "../interface/lichchieu";
 import { IPhongChieu } from "../interface/phongchieu";
 import { IMovies } from "../interface/movies";
 
-import { useListCinemas, useListLichChieu } from "../../../hook/hungHook";
+import { useDeleteLichChieu, useListCinemas, useListLichChieu } from "../../../hook/hungHook";
 import {
   getListMovies,
   getListPhongChieu,
   getListChuyenNgu,
 } from "../../../provider/hungProvider";
 import { IChuyenNgu } from "../interface/chuyenngu";
+import { DeleteOutlined } from "@ant-design/icons";
 
 const LichChieu = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
-
+   const { mutate: deleteCategoryChair } = useDeleteLichChieu({
+        resource: "lich_chieu",
+      });
   // Lấy lịch chiếu
   const { data: lichChieuResponse, isLoading, isError } = useListLichChieu({
     resource: "lich_chieu",
@@ -141,6 +144,31 @@ const LichChieu = () => {
       key: "gio_ket_thuc",
       render: (value?: string) =>
         value ? new Date(value).toLocaleString() : "Không rõ",
+    },
+    {
+      title: "Thao tác",
+      key: "action",
+      align: "center" as const,
+      render: (_: any, record: any) => (
+        <Space size="middle">
+          <Popconfirm
+            title="Bạn có chắc chắn muốn xoá thể loại này?"
+            okText="Xoá"
+            cancelText="Huỷ"
+            onConfirm={() => {
+              deleteCategoryChair(record.id);
+              message.success("Xóa thành công")
+            }}
+          >
+            <Button
+              danger
+              shape="circle"
+              icon={<DeleteOutlined />}
+              title="Xoá"
+            />
+          </Popconfirm>
+        </Space>
+      ),
     },
   ];
 
