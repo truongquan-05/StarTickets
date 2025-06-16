@@ -13,7 +13,6 @@ import FoodAdd from '../pages/Food/Add';
 import FoodEdit from '../pages/Food/Edit';
 import UserList from '../pages/NguoiDung/List';
 import GenresManager from '../GenresManager';
-import DashboardUser from '../pages/User/Dashboard';
 import LichChieu from '../pages/Admin/LichChieu/LichChieu';
 import VaiTro from '../pages/NguoiDung/VaiTro';
 import PhanHoiNguoiDung from '../pages/Admin/CommentPage/PhanHoiNguoiDung';
@@ -35,7 +34,8 @@ const Routermain = () => {
       path: '/',
       element: <User />,
       children: [
-        { path: '/', element: <DashboardUser /> },
+        { path: '/', element: <Home /> },
+        
       ],
     },
     {
