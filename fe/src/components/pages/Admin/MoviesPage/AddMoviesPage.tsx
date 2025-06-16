@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { getGenreList, getListChuyenNgu } from "../../../provider/hungProvider";
 import { useCreateMovies } from "../../../hook/hungHook";
 import { UploadOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -71,7 +72,11 @@ const AddMoviesPage = () => {
 
   return (
     <div className="container my-4">
-      <Card title="Thêm mới phim" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+      <Card
+        title="Thêm mới phim"
+        bordered={true}
+        style={{ margin: 10, boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
+      >
         <Form
           form={form}
           layout="vertical"
@@ -143,6 +148,22 @@ const AddMoviesPage = () => {
                   </Select>
                 </Form.Item>
                 <Form.Item
+                  label="Loại suất chiếu"
+                  name={"loai_suat_chieu"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn loại suất chiếu",
+                    },
+                  ]}
+                >
+                  <Select placeholder="Chọn loại suất chiếu">
+                    <Option value="Thường">Suất Chiếu Thường</Option>
+                    <Option value="Đặc biệt">Suất Chiếu Đặc Biệt</Option>
+                    <Option value="Sớm">Suất Chiếu Sớm</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item
                   label="Mô tả"
                   name="mo_ta"
                   rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
@@ -194,18 +215,66 @@ const AddMoviesPage = () => {
                       required: true,
                       message: "Vui lòng chọn ngày công chiếu",
                     },
+                    {
+                      validator: (_, value) => {
+                        if (!value) return Promise.resolve();
+                        const today = moment().startOf("day");
+                        if (value.isBefore(today)) {
+                          return Promise.reject(
+                            "Chỉ được chọn ngày hiện tại hoặc tương lai"
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
                   ]}
                 >
-                  <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="YYYY-MM-DD"
+                    disabledDate={(current) =>
+                      current && current < moment().startOf("day")
+                    }
+                  />
                 </Form.Item>
+
                 <Form.Item
                   label="Ngày kết thúc"
                   name="ngay_ket_thuc"
-                  // rules={[
-                  //   { required: true, message: "Vui lòng chọn ngày kết thúc" },
-                  // ]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn ngày kết thúc",
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value) return Promise.resolve();
+                        const today = moment().startOf("day");
+                        if (value.isBefore(today)) {
+                          return Promise.reject(
+                            "Chỉ được chọn ngày hiện tại hoặc tương lai"
+                          );
+                        }
+
+                        const startDate = getFieldValue("ngay_cong_chieu");
+                        if (startDate && value.isSame(startDate, "day")) {
+                          return Promise.reject(
+                            "Ngày kết thúc phải khác ngày công chiếu"
+                          );
+                        }
+
+                        return Promise.resolve();
+                      },
+                    }),
+                  ]}
                 >
-                  <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="YYYY-MM-DD"
+                    disabledDate={(current) =>
+                      current && current < moment().startOf("day")
+                    }
+                  />
                 </Form.Item>
 
                 <Form.Item

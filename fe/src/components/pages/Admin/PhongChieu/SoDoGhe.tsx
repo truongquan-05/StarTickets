@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IGhe } from "../interface/ghe";
 
 interface SoDoGheProps {
   phongId: number | null;
-  loaiSoDo: string | number | undefined; // sửa kiểu tại đây nếu từ cha truyền về dạng "8x8"
+  loaiSoDo: string | number | undefined;
   danhSachGhe: IGhe[];
   isLoadingGhe: boolean;
   isErrorGhe: boolean;
@@ -16,25 +16,59 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
   isLoadingGhe,
   isErrorGhe,
 }) => {
+  const [localDanhSachGhe, setLocalDanhSachGhe] = useState<IGhe[]>([]);
+
+  useEffect(() => {
+    setLocalDanhSachGhe(danhSachGhe);
+  }, [danhSachGhe]);
+
+  // Click 1 lần: đổi loại ghế giữa 1 và 2
+ const handleClick = (soGhe: string) => {
+  setLocalDanhSachGhe((prev) =>
+    prev.map((ghe) => {
+      if (ghe.so_ghe === soGhe) {
+        if (!ghe.trang_thai) {
+          // Ghế đã tắt thì không đổi loại ghế nữa
+          return ghe;
+        }
+        if (ghe.loai_ghe_id === 1) return { ...ghe, loai_ghe_id: 2 };
+        if (ghe.loai_ghe_id === 2) return { ...ghe, loai_ghe_id: 1 };
+      }
+      return ghe;
+    })
+  );
+};
+
+  const handleDoubleClick = (soGhe: string) => {
+    setLocalDanhSachGhe((prev) =>
+      prev.map((ghe) => {
+        if (ghe.so_ghe === soGhe) {
+          if (ghe.trang_thai) {
+            const confirm = window.confirm(
+              `Ghế ${soGhe} đang bật, bạn có chắc chắn tắt ghế này không?`
+            );
+            if (!confirm) return ghe;
+            return { ...ghe, trang_thai: false };
+          } else {
+            return { ...ghe, trang_thai: true };
+          }
+        }
+        return ghe;
+      })
+    );
+  };
+
   if (isLoadingGhe) {
     return <div style={{ textAlign: "center", padding: 20 }}>Đang tải ghế...</div>;
   }
 
   if (isErrorGhe) {
-    return (
-      <div style={{ color: "red", textAlign: "center" }}>
-        Lỗi tải danh sách ghế
-      </div>
-    );
+    return <div style={{ color: "red", textAlign: "center" }}>Lỗi tải danh sách ghế</div>;
   }
 
   if (!phongId) return null;
 
-  // ✅ Xử lý loaiSoDo kiểu "8x8" → 8
-  const numCols = loaiSoDo
-    ? parseInt(String(loaiSoDo).split("x")[0], 10)
-    : 0;
-
+  const numCols = loaiSoDo ? parseInt(String(loaiSoDo).split("x")[0], 10) : 0;
   if (numCols <= 0) return null;
 
   const numRows = numCols;
@@ -44,14 +78,13 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     <div style={{ userSelect: "none", display: "inline-block" }}>
       {rows.map((_, rowIndex) => {
         const hang = String.fromCharCode(65 + rowIndex);
-
         const cols = [];
         let colIndex = 1;
 
         while (colIndex <= numCols) {
           const soGheCurrent = `${hang}${colIndex}`;
 
-          const ghe = danhSachGhe.find((g: IGhe) => {
+          const ghe = localDanhSachGhe.find((g: IGhe) => {
             if (!g.so_ghe) return false;
 
             if (g.loai_ghe_id === 3) {
@@ -124,9 +157,9 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           cols.push(
             <div
               key={`${hang}-${colIndex}`}
-              title={`${ghe.so_ghe} - ${
-                ghe.trang_thai ? "Còn ghế" : "Đã đặt"
-              }`}
+              onClick={() => handleClick(soGheCurrent)}
+              onDoubleClick={() => handleDoubleClick(soGheCurrent)}
+              title={`${ghe.so_ghe} - ${ghe.trang_thai ? "Còn ghế" : "Đã đặt"}`}
               style={{
                 width: span * 40 + (span - 1) * 6,
                 height: 40,

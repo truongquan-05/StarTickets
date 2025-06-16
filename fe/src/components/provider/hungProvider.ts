@@ -15,6 +15,7 @@ export type Props = {
   id?: number | string;
   values?: any;
   phong_id?: number;
+  phimId?: number;
 };
 export const getListMovies = async ({resource = "phim"} : Props) => {
   const {data} = await axiosClient.get(resource);
@@ -167,14 +168,20 @@ export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props
 }
 
 export const getListLichChieu = async ({ resource = "lich_chieu" }: Props) => {
-  const { data } = await axiosClient.get(resource);
+  const res = await axiosClient.get(resource);
+  return res.data.data;  // nếu backend bọc trong data.data
+};
+export const checkLichChieu = async ({ resource = "lich_chieu/check", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values);
   return data;
 };
+
 export const getCreateLichChieu = async ({resource = "lich_chieu" , values} : Props) => {
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
-export const getListChuyenNgu = async ({ resource = "chuyen_ngu" }: Props) => {
-  const { data } = await axiosClient.get(resource);
+export const getListChuyenNgu = async ({ phimId, resource = "chuyen_ngu" }: Props) => {
+  const url = phimId ? `/lich_chieus/chuyen_ngu/${phimId}` : `/${resource}`;
+  const { data } = await axiosClient.get(url);
   return data;
 };

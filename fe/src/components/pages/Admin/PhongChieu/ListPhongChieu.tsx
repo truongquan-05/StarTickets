@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Table, Button, Modal } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -10,9 +10,9 @@ import {
 import { useListGhe } from "../../../hook/hungHook";
 import SoDoGhe from "./SoDoGhe";
 
-interface IRap{
-  id:number;
-  ten_rap:string
+interface IRap {
+  id: number;
+  ten_rap: string;
 }
 
 const ListPhongChieu = () => {
@@ -127,6 +127,8 @@ const ListPhongChieu = () => {
     },
   ];
 
+  // ✅ Tính toán chiều rộng modal theo số ghế mỗi hàng
+
   return (
     <>
       <Table
@@ -144,8 +146,15 @@ const ListPhongChieu = () => {
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
-        width={Math.min(60 * Number(selectedPhong?.loai_so_do || 10), 900)}
-        bodyStyle={{ display: "flex", justifyContent: "center" }} 
+        width={1000}
+        bodyStyle={{
+          display: "flex",
+          flexDirection: "column", // xếp dọc: sơ đồ ghế trên, chú thích dưới
+          alignItems: "center",
+          padding: 16,
+          overflow: "visible",
+        }}
+        style={{ top: 50 }}
       >
         <SoDoGhe
           phongId={selectedPhong?.id || null}
@@ -154,6 +163,71 @@ const ListPhongChieu = () => {
           isLoadingGhe={isLoadingGhe}
           isErrorGhe={isErrorGhe}
         />
+
+        {/* Phần chú thích dàn hàng ngang */}
+        <div
+          style={{
+            marginTop: 24,
+            width: "100%",
+            maxWidth: 700,
+            display: "flex",
+            justifyContent: "center",
+            gap: 40,
+            fontWeight: 600,
+            fontSize: 14,
+            padding: 12,
+            borderRadius: 6,
+            flexWrap: "wrap", // nếu màn nhỏ thì xuống dòng
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                backgroundColor: "black",
+                borderRadius: 4,
+              }}
+            ></div>
+            <span>Ghế thường</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                backgroundColor: "red",
+                borderRadius: 4,
+              }}
+            ></div>
+            <span>Ghế VIP</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                backgroundColor: "blue",
+                borderRadius: 4,
+              }}
+            ></div>
+            <span>Ghế đôi</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span>
+              <strong>Click:</strong> Đổi loại ghế
+            </span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span>
+              <strong>Double click:</strong> Ẩn ghế
+            </span>
+          </div>
+        </div>
       </Modal>
     </>
   );
