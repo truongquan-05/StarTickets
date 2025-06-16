@@ -21,69 +21,38 @@ const AddPhongChieu = () => {
   });
   const { data: raps = [], isLoading } = useListCinemas({ resource: "rap" });
 
-  // Validator cho loại sơ đồ (phải là dạng "8x8" và tổng hàng đúng)
-  const validateTotalSeats = (_: any, value: string) => {
-    if (!value || typeof value !== "string" || !/^\d+x\d+$/.test(value)) {
-      return Promise.reject(
-        new Error("Loại sơ đồ phải theo định dạng SốHàngxSốCột (vd: 8x8)")
-      );
-    }
-
-    const [rowsStr] = value.split("x");
-    const rows = parseInt(rowsStr, 10);
-    const hangThuong = form.getFieldValue("hang_thuong") || 0;
-    const hangVip = form.getFieldValue("hang_vip") || 0;
-    const hangDoi = form.getFieldValue("hang_doi") || 0;
-    const total = hangThuong + hangVip + hangDoi;
-
-    if (rows !== total) {
-      return Promise.reject(
-        new Error(
-          `Tổng hàng thường + VIP + đôi (${total}) phải bằng số hàng trong sơ đồ (${rows})`
-        )
-      );
-    }
-
-    return Promise.resolve();
-  };
-
   const onSeatsChange = () => {
     form.validateFields(["loai_so_do"]);
   };
 
   const onCreate = (values: Record<string, any>) => {
-  const { loai_so_do, hang_thuong, hang_vip, hang_doi } = values;
-  const [rowsStr] = loai_so_do.split("x");
-  const rows = parseInt(rowsStr, 10);
-  const total = hang_thuong + hang_vip + hang_doi;
+    const { loai_so_do, hang_thuong, hang_vip, hang_doi } = values;
+    const [rowsStr, colsStr] = loai_so_do.split("x");
+    const rows = parseInt(rowsStr, 10);
+    const cols = parseInt(colsStr, 10);
+    const total = hang_thuong + hang_vip + hang_doi;
 
-  if (rows !== total) {
-    message.error("Tổng hàng không khớp với số hàng trong sơ đồ.");
-    return;
-  }
-
-  const formData = new FormData();
-
-  Object.entries(values).forEach(([key, value]) => {
-    if (key === "trang_thai") {
-      // ✅ Chuyển boolean true/false thành chuỗi "1"/"0"
-      formData.append(key, value ? "1" : "0");
-    } else {
-      formData.append(key, value);
+    if (rows !== cols || rows !== total) {
+      message.error("Dữ liệu không hợp lệ: Sơ đồ phải hình vuông và tổng hàng phải khớp số hàng.");
+      return;
     }
-  });
 
-  createMutate(formData, {
-    onSuccess: () => {
-      form.resetFields();
-    },
-    onError: (error: any) => {
-      message.error("Thêm phòng chiếu thất bại!");
-      console.error("Lỗi khi tạo phòng chiếu:", error);
-    },
-  });
-};
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, key === "trang_thai" ? (value ? "1" : "0") : value);
+    });
 
+    createMutate(formData, {
+      onSuccess: () => {
+        message.success("Thêm phòng chiếu thành công!");
+        form.resetFields();
+      },
+      onError: (error: any) => {
+        message.error("Thêm phòng chiếu thất bại!");
+        console.error("Lỗi khi tạo phòng chiếu:", error);
+      },
+    });
+  };
 
   return (
     <div>
@@ -128,12 +97,38 @@ const AddPhongChieu = () => {
             label="Loại sơ đồ (vd: 8x8)"
             name="loai_so_do"
             rules={[
-              { required: true, message: "Vui lòng nhập loại sơ đồ" },
               {
-                pattern: /^\d+x\d+$/,
-                message: "Định dạng phải là SốHàngxSốCột (vd: 8x8)",
+                validator: (_, value) => {
+                  if (!/^\d+x\d+$/.test(value)) {
+                    return Promise.reject(
+                      "Định dạng phải là SốHàngxSốCột (vd: 8x8)"
+                    );
+                  }
+
+                  const [rowsStr, colsStr] = value.split("x");
+                  const rows = parseInt(rowsStr, 10);
+                  const cols = parseInt(colsStr, 10);
+
+                  if (rows !== cols) {
+                    return Promise.reject(
+                      "Sơ đồ phải là hình vuông (số hàng = số cột)"
+                    );
+                  }
+
+                  const hangThuong = form.getFieldValue("hang_thuong") || 0;
+                  const hangVip = form.getFieldValue("hang_vip") || 0;
+                  const hangDoi = form.getFieldValue("hang_doi") || 0;
+                  const total = hangThuong + hangVip + hangDoi;
+
+                  if (rows !== total) {
+                    return Promise.reject(
+                      `Tổng hàng (${total}) phải bằng số hàng trong sơ đồ (${rows})`
+                    );
+                  }
+
+                  return Promise.resolve();
+                },
               },
-              { validator: validateTotalSeats },
             ]}
           >
             <Input placeholder="Nhập loại sơ đồ (vd: 8x8)" />

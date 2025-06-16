@@ -128,13 +128,7 @@ const ListPhongChieu = () => {
   ];
 
   // ✅ Tính toán chiều rộng modal theo số ghế mỗi hàng
-  const modalWidth = useMemo(() => {
-    if (!selectedPhong?.loai_so_do) return 400;
-    const [soCotStr] = selectedPhong.loai_so_do.split("x");
-    const soCot = parseInt(soCotStr || "8");
-    const width = soCot * 44 + 64; // mỗi ghế 44px (bao gồm margin/padding)
-    return Math.min(width, 700); // giới hạn max 700
-  }, [selectedPhong]);
+  
 
   return (
     <>

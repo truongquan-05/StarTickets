@@ -3,6 +3,7 @@ import {  UserOutlined } from "@ant-design/icons";
 import logo from "../../../assets/logo for a movie ticket booking website.png";
 import flag from "../../../assets/cờ.jpg"
 import { Button, Input, Space } from "antd";
+import { Link } from "react-router-dom";
 
 
 const HeaderUser = () => {
@@ -12,7 +13,7 @@ const HeaderUser = () => {
       {/* PHẦN TRÊN */}
       <div className="header-top">
         <div className="header-left">
-          <img src={logo} alt="Cinestar" className="logo" />
+          <Link to=""><img src={logo} alt="Cinestar" className="logo" /></Link>
         </div>
 
         <div className="header-actions">
@@ -42,7 +43,7 @@ const HeaderUser = () => {
         <a href="#" className="khuyen_mai">🎁 Khuyến mãi</a>
         <a href="#">🏢 Thuê sự kiện</a>
         <a href="#">🎮 Tất cả các giải trí</a>
-        <a href="#">ℹ️ Giới thiệu</a>
+        <a href="/news">ℹ️ Giới thiệu</a>
       </div>
     </header>
   );

@@ -22,6 +22,7 @@ import VouchersList from '../pages/Voucher/List';
 import Chair from '../pages/Admin/Chair/Chair';
 import AddLichChieu from '../pages/Admin/LichChieu/AddLichChieu';
 import Home from '../pages/Users/Home';
+import News from '../pages/Users/News';
 
 
 
@@ -36,7 +37,7 @@ const Routermain = () => {
       element: <User />,
       children: [
         { path: '/', element: <Home /> },
-        
+        { path: 'news', element: <News /> },
       ],
     },
     {
