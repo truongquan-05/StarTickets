@@ -128,7 +128,6 @@ const ListPhongChieu = () => {
   ];
 
   // ✅ Tính toán chiều rộng modal theo số ghế mỗi hàng
-  
 
   return (
     <>
@@ -147,16 +146,15 @@ const ListPhongChieu = () => {
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
-        width={1000} // hoặc Math.max(modalWidth, 1000) nếu muốn theo số ghế
+        width={1000}
         bodyStyle={{
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column", // xếp dọc: sơ đồ ghế trên, chú thích dưới
+          alignItems: "center",
           padding: 16,
-          overflow: "visible", // ✅ bỏ thanh cuộn
+          overflow: "visible",
         }}
-        style={{
-          top: 50, // ✅ Modal hiển thị cố định gần giữa
-        }}
+        style={{ top: 50 }}
       >
         <SoDoGhe
           phongId={selectedPhong?.id || null}
@@ -165,6 +163,71 @@ const ListPhongChieu = () => {
           isLoadingGhe={isLoadingGhe}
           isErrorGhe={isErrorGhe}
         />
+
+        {/* Phần chú thích dàn hàng ngang */}
+        <div
+          style={{
+            marginTop: 24,
+            width: "100%",
+            maxWidth: 700,
+            display: "flex",
+            justifyContent: "center",
+            gap: 40,
+            fontWeight: 600,
+            fontSize: 14,
+            padding: 12,
+            borderRadius: 6,
+            flexWrap: "wrap", // nếu màn nhỏ thì xuống dòng
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                backgroundColor: "black",
+                borderRadius: 4,
+              }}
+            ></div>
+            <span>Ghế thường</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                backgroundColor: "red",
+                borderRadius: 4,
+              }}
+            ></div>
+            <span>Ghế VIP</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div
+              style={{
+                width: 20,
+                height: 20,
+                backgroundColor: "blue",
+                borderRadius: 4,
+              }}
+            ></div>
+            <span>Ghế đôi</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span>
+              <strong>Click:</strong> Đổi loại ghế
+            </span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span>
+              <strong>Double click:</strong> Ẩn ghế
+            </span>
+          </div>
+        </div>
       </Modal>
     </>
   );
