@@ -21,6 +21,7 @@ import AddPhongChieu from '../pages/Admin/PhongChieu/AddPhongChieu';
 import VouchersList from '../pages/Voucher/List';
 import Chair from '../pages/Admin/Chair/Chair';
 import AddLichChieu from '../pages/Admin/LichChieu/AddLichChieu';
+import Home from '../pages/Users/Home';
 
 
 
