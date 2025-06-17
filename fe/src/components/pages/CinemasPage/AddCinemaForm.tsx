@@ -28,7 +28,12 @@ const AddCinemasPage = () => {
     <Card
       title="Thêm mới rạp"
       bordered={true}
-      style={{ margin: "10px", boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+      style={{
+        margin: "10px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        background: "#fff",
+        height: "95%",
+      }}
     >
       <Form<CinemasForm> form={form} onFinish={onFinish} layout="vertical">
         <Form.Item

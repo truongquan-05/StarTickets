@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListPhongChieu, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import { getMovieDetail, checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListPhongChieu, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,13 @@ export const useListMovies = ({ resource = "phim" } : Props) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getListMovies({ resource }),
+  });
+};
+export const useMovieDetail = (id?: string | number) => {
+  return useQuery({
+    queryKey: ['phim', id],
+    queryFn: () => getMovieDetail({ resource: "phim", id }),
+    enabled: !!id,
   });
 };
 export const useDeleteMovies = ({resource = "phim"} : Props) => {
@@ -213,7 +220,7 @@ export const useCreatePhongChieu = ({resource = "phong_chieu"} : Props) => {
   return useMutation({
     mutationFn : (values : any) => getCreatePhongChieu({resource,values}),
     onSuccess: () => {
-      navigate("/admin/room/list")
+      navigate("/admin/room/list/chuaxuat")
       message.success("Tạo phòng chiếu thành công")
       queryClient.invalidateQueries({queryKey:[resource]});
     },
@@ -286,8 +293,11 @@ export const useCreateLichChieu = ({resource = "lich_chieu"} : Props) => {
       navigate("/admin/lichchieu/list")
       queryClient.invalidateQueries({queryKey:[resource]});
     },
-    onError : () => {
-      message.error("Thêm thất bại");
+    onError : (error:any) => {
+      if (error.response?.status === 422) {
+        const validationErrors = error.response.data.errors;
+        message.error(validationErrors.gio_chieu)
+      } 
     }
   })
 }

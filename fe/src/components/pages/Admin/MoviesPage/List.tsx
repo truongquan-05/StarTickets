@@ -31,6 +31,8 @@ import {
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
 const { Text, Paragraph } = Typography;
@@ -182,7 +184,9 @@ const List = () => {
       render: (_: any, record: IMovies) => (
         <div>
           <Text strong style={{ fontSize: 16 }}>
-            {record.ten_phim}
+            <Link to={`/admin/movies/detail/${record.id}`}>
+              {record.ten_phim}
+            </Link>
           </Text>
           <Paragraph
             ellipsis={{ rows: 3 }}
@@ -235,13 +239,12 @@ const List = () => {
                     chuyenNguArray.map((item: any, index: number) => (
                       <Tag
                         key={index}
-                        color="rgb(118 175 87)"
+                        color="geekblue"
                         style={{
-                          color: "white",
-                          fontWeight: "bold",
+                          fontWeight: 600,
                           padding: "4px 12px",
-                          borderRadius: "6px",
-                          marginRight: "6px",
+                          borderRadius: 6,
+                          marginBottom: 4,
                         }}
                       >
                         {item.the_loai}
@@ -396,10 +399,18 @@ const List = () => {
               name="mo_ta"
               rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
             >
-              <Input.TextArea
-                rows={4}
+              <ReactQuill
+                theme="snow"
+                style={{ height: "300px", marginBottom: "50px" }}
                 placeholder="Nhập mô tả phim"
-                maxLength={500}
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["clean"],
+                  ],
+                }}
               />
             </Form.Item>
 

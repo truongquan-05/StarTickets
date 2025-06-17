@@ -64,10 +64,6 @@ class LichChieuController extends Controller
                 }
             }
 
-            // 3. Ngày bắt đầu và kết thúc phải giống nhau
-            if ($ngayChieu !== $ngayKetThuc) {
-                $validator->errors()->add('error', 'Suất chiếu phải bắt đầu và kết thúc trong cùng một ngày.');
-            }
         });
 
         if ($validator->fails()) {
