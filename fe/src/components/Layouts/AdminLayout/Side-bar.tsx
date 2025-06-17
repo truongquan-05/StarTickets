@@ -156,6 +156,9 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/room/list" icon={<UnorderedListOutlined />}>
           <Link to="/admin/room/list">Danh Sách Phòng Chiếu</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/room/list/chuaxuat" icon={<UnorderedListOutlined />}>
+          <Link to="/admin/room/list/chuaxuat">Phòng Chiếu Chưa Xuất</Link>
+        </Menu.Item>
         <Menu.Item key="/admin/room/add" icon={<PlusCircleOutlined />}>
           <Link to="/admin/room/add">Thêm mới Phòng Chiếu</Link>
         </Menu.Item>

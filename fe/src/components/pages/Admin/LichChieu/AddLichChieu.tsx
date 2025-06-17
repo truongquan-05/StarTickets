@@ -63,7 +63,6 @@ const AddLichChieu = () => {
     const phim = phimList.find((p: any) => p.id === phimId);
     if (phim && phim.thoi_luong) {
       setThoiLuongPhim(phim.thoi_luong);
-      // Nếu giờ chiếu đã chọn thì cập nhật lại giờ kết thúc
       const gioChieuField = form.getFieldValue("gio_chieu");
       if (gioChieuField && gioChieuField.isValid && typeof gioChieuField.add === 'function') {
         const ketThuc = gioChieuField.add(phim.thoi_luong, "minute");
@@ -76,7 +75,9 @@ const AddLichChieu = () => {
       setGioKetThucTinh("");
     }
   };
-
+  const test = () => {
+    alert("Hello")
+  }
   const handleChangeGioChieu = (value: Dayjs | null) => {
     if (value && thoiLuongPhim > 0) {
       const ketThuc = value.add(thoiLuongPhim, "minute");
