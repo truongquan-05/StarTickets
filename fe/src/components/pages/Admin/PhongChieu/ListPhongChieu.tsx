@@ -27,7 +27,9 @@ const ListPhongChieu = () => {
   } = useQuery({
     queryKey: ["phong_chieu"],
     queryFn: () =>
-      getListPhongChieu({ resource: "phong_chieu" }).then((res) => res.data),
+      getListPhongChieu({ resource: "phong_chieu" }).then(
+        (res) => (Array.isArray(res.data) ? res.data : []) 
+      ),
   });
   const filteredPhongChieuData = useMemo(() => {
   return phongChieuData.filter((phong:IPhongChieu) => phong.trang_thai === 1 || phong.trang_thai === "1");
