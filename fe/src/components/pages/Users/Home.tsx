@@ -1,6 +1,13 @@
-import React from "react";
-import { Carousel, Row, Col, Button, Typography, Input } from "antd";
+
+import {  Button, Typography, Input } from "antd";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "./Home.css";
+import { Link } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -9,6 +16,7 @@ const Home = () => {
     {
       title: "Thanh Gươm Diệt Quỷ",
       date: "31.12.2025",
+      slug: "thanh-guom-diet-quy",
       image: "https://media.lottecinemavn.com/Media/MovieFile/MovieImg/202401/11379_103_100001.jpg",
     },
     {
@@ -26,11 +34,27 @@ const Home = () => {
       date: "10.10.2025",
       image: "https://cdn.galaxycine.vn/media/2025/4/28/tham-tu-kien-2_1745832748529.jpg",
     },
+    {
+      title: "Thám tử kiên",
+      date: "10.10.2025",
+      image: "https://cdn.galaxycine.vn/media/2025/4/28/tham-tu-kien-2_1745832748529.jpg",
+    },
+    {
+      title: "Thám tử kiên",
+      date: "10.10.2025",
+      image: "https://cdn.galaxycine.vn/media/2025/4/28/tham-tu-kien-2_1745832748529.jpg",
+    },
+    {
+      title: "Thám tử kiên",
+      date: "10.10.2025",
+      image: "https://cdn.galaxycine.vn/media/2025/4/28/tham-tu-kien-2_1745832748529.jpg",
+    },
   ];
 
   const upcomingMovies = [
     {
       title: "Đào phở piano",
+      slug: "dao-pho",
       image: "https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_9_e81a0cb05d.jpg",
     },
     {
@@ -45,107 +69,150 @@ const Home = () => {
       title: "Làm giàu ma",
       image: "https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_hay_1_1656a985dc.jpg",
     },
+     {
+      title: "Làm giàu ma",
+      image: "https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_hay_1_1656a985dc.jpg",
+    },
+     {
+      title: "Làm giàu ma",
+      image: "https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_hay_1_1656a985dc.jpg",
+    },
+     {
+      title: "Làm giàu ma",
+      image: "https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_hay_1_1656a985dc.jpg",
+    },
+    {
+      title: "Thám tử kiên",
+      image: "https://cdn.galaxycine.vn/media/2025/4/28/tham-tu-kien-2_1745832748529.jpg",
+    },
   ];
 
   return (
     <div className="home-wrapper">
-      {/* Banner */}
-      <Carousel autoplay>
-        <div>
+      {/* Banner bằng Swiper */}
+      <Swiper
+        modules={[Navigation, Autoplay]}
+        navigation
+        autoplay={{ delay: 3000 }}
+        className="banner-swiper"
+      >
+        <SwiperSlide>
           <img
             src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
             alt="banner"
             className="banner-img"
           />
-        </div>
-        <div>
+        </SwiperSlide>
+        <SwiperSlide>
           <img
             src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
             alt="banner"
             className="banner-img"
           />
-        </div>
-      </Carousel>
-      
+        </SwiperSlide>
+        <SwiperSlide>
+          <img
+            src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
+            alt="banner"
+            className="banner-img"
+          />
+        </SwiperSlide>
+        <SwiperSlide>
+          <img
+            src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
+            alt="banner"
+            className="banner-img"
+          />
+        </SwiperSlide>
+      </Swiper>
 
       {/* Phim đang chiếu */}
       <div className="section">
         <Title level={3}>Phim đang chiếu</Title>
-        <Row gutter={24}>
+        <Swiper spaceBetween={24} slidesPerView={5} navigation modules={[Navigation]}>
           {currentMovies.map((movie, i) => (
-            <Col span={6} key={i}>
-              <div className="movie-card">
-                <img src={movie.image} alt={movie.title} />
-                <h4>{movie.title}</h4>
-                <p>Ngày chiếu: {movie.date}</p>
-                <Button type="primary">Mua vé</Button>
-              </div>
-            </Col>
+           <SwiperSlide key={i}>
+  <div className="movie-card">
+    <Link to={`/phim/${movie.slug}`}>
+      <img src={movie.image} alt={movie.title} />
+    </Link>
+    <h4>{movie.title}</h4>
+    <p>Ngày chiếu: {movie.date}</p>
+    <Link to={`/phim/${movie.slug}`}>
+      <Button type="primary">Mua vé</Button>
+    </Link>
+  </div>
+</SwiperSlide>
+
           ))}
-        </Row>
+        </Swiper>
       </div>
 
       {/* Phim sắp chiếu */}
       <div className="section">
         <Title level={3}>Phim sắp chiếu</Title>
-        <Row gutter={24}>
+        <Swiper spaceBetween={24} slidesPerView={5} navigation modules={[Navigation]}>
           {upcomingMovies.map((movie, i) => (
-            <Col span={6} key={i}>
-              <div className="movie-card">
-                <img src={movie.image} alt={movie.title} />
-                <h4>{movie.title}</h4>
-                <Button type="primary">Xem chi tiết</Button>
-              </div>
-            </Col>
+            <SwiperSlide key={i}>
+  <div className="movie-card">
+    <Link to={`/phim/${movie.slug}`}>
+      <img src={movie.image} alt={movie.title} />
+    </Link>
+    <h4>{movie.title}</h4>
+    <Link to={`/phim/${movie.slug}`}>
+      <Button type="primary">Xem chi tiết</Button>
+    </Link>
+  </div>
+</SwiperSlide>
+
           ))}
-        </Row>
+        </Swiper>
       </div>
+
       {/* Phim nổi bật */}
-<div className="featured-movie">
-  <img
-    src="https://static.zenmarket.jp/images/common-landing-pages/ropevl21.tr4"
-    alt="phim nổi bật"
-    className="featured-img"
-  />
-  <div className="featured-overlay">
-    <div className="featured-content">
-      <Title level={2}>Phim Nổi Bật: Thanh Gươm Diệt Quỷ</Title>
-      <p>Trải nghiệm hành trình tiêu diệt quỷ chưa từng có trên màn ảnh rộng.</p>
-      <Button type="primary" size="large">Đặt vé ngay</Button>
-    </div>
-  </div>
-</div>
+      <div className="featured-movie">
+        <img
+          src="https://static.zenmarket.jp/images/common-landing-pages/ropevl21.tr4"
+          alt="phim nổi bật"
+          className="featured-img"
+        />
+        <div className="featured-overlay">
+          <div className="featured-content">
+            <Title level={2}>Phim Nổi Bật: Thanh Gươm Diệt Quỷ</Title>
+            <p>Trải nghiệm hành trình tiêu diệt quỷ chưa từng có trên màn ảnh rộng.</p>
+            <Button type="primary" size="large">Đặt vé ngay</Button>
+          </div>
+        </div>
+      </div>
 
-{/* Thông tin liên hệ */}
-<div className="contact-section">
-  <div className="contact-left">
-    <p>Liên hệ với chúng tôi</p>
-    <div className="social-icon">
-      <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="facebook" />
-      <span>FACEBOOK</span>
-    </div>
-    <div className="social-icon">
-      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="instagram" />
-      <span>INSTAGRAM</span>
-    </div>
-  </div>
+      {/* Thông tin liên hệ */}
+      <div className="contact-section">
+        <div className="contact-left">
+          <p>Liên hệ với chúng tôi</p>
+          <div className="social-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="facebook" />
+            <span>FACEBOOK</span>
+          </div>
+          <div className="social-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="instagram" />
+            <span>INSTAGRAM</span>
+          </div>
+        </div>
 
-  <div className="contact-right">
-    <Title level={5}>Thông tin liên hệ</Title>
-    <p>📧 cskh@movigo.com</p>
-    <p>📞 1900.0085</p>
-    <p>📍 135 Hai Bà Trưng, Thành phố Hồ Chí Minh</p>
+        <div className="contact-right">
+          <Title level={5}>Thông tin liên hệ</Title>
+          <p>📧 cskh@movigo.com</p>
+          <p>📞 1900.0085</p>
+          <p>📍 135 Hai Bà Trưng, Thành phố Hồ Chí Minh</p>
 
-    <Input placeholder="Họ và tên ..." style={{ marginBottom: 12 }} />
-    <Input placeholder="Email ..." style={{ marginBottom: 12 }} />
-    <Input.TextArea placeholder="Thông tin liên hệ" rows={3} style={{ marginBottom: 12 }} />
-    <Button type="primary" style={{ backgroundColor: "yellow", color: "black" }}>
-      GỬI NGAY
-    </Button>
-  </div>
-</div>
-
-   
+          <Input placeholder="Họ và tên ..." style={{ marginBottom: 12 }} />
+          <Input placeholder="Email ..." style={{ marginBottom: 12 }} />
+          <Input.TextArea placeholder="Thông tin liên hệ" rows={3} style={{ marginBottom: 12 }} />
+          <Button type="primary" style={{ backgroundColor: "yellow", color: "black" }}>
+            GỬI NGAY
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

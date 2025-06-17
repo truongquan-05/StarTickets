@@ -20,6 +20,7 @@ import ListPhongChieu from '../pages/Admin/PhongChieu/ListPhongChieu';
 import AddPhongChieu from '../pages/Admin/PhongChieu/AddPhongChieu';
 import VouchersList from '../pages/Voucher/List';
 import Home from '../pages/Users/Home';
+import MovieDetail from '../pages/Users/MovieDetail';
 
 
 
@@ -34,6 +35,8 @@ const Routermain = () => {
       element: <User />,
       children: [
         { path: '/', element: <Home /> },
+        { path: '/phim/:slug', element: <MovieDetail /> },
+        
         
       ],
     },
