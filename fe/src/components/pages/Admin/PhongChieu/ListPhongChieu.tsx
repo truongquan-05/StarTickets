@@ -27,8 +27,8 @@ const ListPhongChieu = () => {
   } = useQuery({
     queryKey: ["phong_chieu"],
     queryFn: () =>
-      getListPhongChieu({ resource: "phong_chieu" }).then(
-        (res) => (Array.isArray(res.data) ? res.data : []) // ✅ luôn trả về mảng
+      getListPhongChieu({ resource: "phong_chieu" }).then((res) =>
+        Array.isArray(res.data) ? res.data : res.data?.data || []
       ),
   });
   const filteredPhongChieuData = useMemo(() => {

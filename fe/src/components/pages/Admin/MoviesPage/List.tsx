@@ -183,39 +183,36 @@ const List = () => {
       width: 380,
       render: (_: any, record: IMovies) => (
         <div>
-          <Text strong style={{ fontSize: 16 }}>
-            <Link to={`/admin/movies/detail/${record.id}`}>
-              {record.ten_phim}
-            </Link>
-          </Text>
-          <Paragraph
-            ellipsis={{ rows: 3 }}
-            style={{ marginBottom: 4, marginTop: 4 }}
-            strong
-          >
-            Loại Suất Chiếu: {record.loai_suat_chieu}
-          </Paragraph>
-          <div>
-            <Text>
-              <b>Quốc gia:</b> {record.quoc_gia} | <b>Ngôn ngữ:</b>{" "}
-              {record.ngon_ngu}
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <Text strong style={{ fontSize: 16 }}>
+              <Link to={`/admin/movies/detail/${record.id}`}>
+                🎬 {record.ten_phim}
+              </Link>
             </Text>
-          </div>
-          <div>
+
             <Text>
-              <b>Thể loại:</b> {getGenreName(record.the_loai_id)} |{" "}
+              <b>Loại suất chiếu:</b> {record.loai_suat_chieu}
+            </Text>
+
+            <Text>
+              <b>Quốc gia:</b> {record.quoc_gia}
+            </Text>
+
+            <Text>
+              <b>Thể loại:</b> {getGenreName(record.the_loai_id)}
+            </Text>
+
+            <Text>
               <b>Thời lượng:</b> {record.thoi_luong} phút
             </Text>
-          </div>
-          <div>
+
             <Text>
               <b>Ngày chiếu:</b>{" "}
               {record.ngay_cong_chieu
                 ? moment(record.ngay_cong_chieu).format("DD/MM/YYYY")
                 : "Chưa cập nhật"}
             </Text>
-          </div>
-          <div>
+
             <Text>
               <b>Ngày kết thúc:</b>{" "}
               {record.ngay_ket_thuc
