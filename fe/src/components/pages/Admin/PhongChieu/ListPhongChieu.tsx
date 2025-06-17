@@ -27,7 +27,9 @@ const ListPhongChieu = () => {
   } = useQuery({
     queryKey: ["phong_chieu"],
     queryFn: () =>
-      getListPhongChieu({ resource: "phong_chieu" }).then((res) => res.data),
+      getListPhongChieu({ resource: "phong_chieu" }).then(
+        (res) => (Array.isArray(res.data) ? res.data : []) // ✅ luôn trả về mảng
+      ),
   });
 
   // Lấy danh sách rạp
