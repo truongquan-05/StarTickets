@@ -6,5 +6,5 @@ loai_so_do:string
 hang_thuong:number
 hang_vip:number
 hang_doi:number
-trang_thai:boolean
+trang_thai:number|string
 }

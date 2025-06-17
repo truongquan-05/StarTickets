@@ -29,8 +29,9 @@ const ListPhongChieu = () => {
     queryFn: () =>
       getListPhongChieu({ resource: "phong_chieu" }).then((res) => res.data),
   });
-
-  // Lấy danh sách rạp
+  const filteredPhongChieuData = useMemo(() => {
+  return phongChieuData.filter((phong:IPhongChieu) => phong.trang_thai === 1 || phong.trang_thai === "1");
+}, [phongChieuData]);
   const {
     data: rapData = [],
     isLoading: isLoadingRap,
@@ -115,9 +116,23 @@ const ListPhongChieu = () => {
       key: "hang_doi",
       align: "center",
     },
+   {
+      title: "Trạng Thái",
+      dataIndex: "trang_thai",
+      key: "trang_thai",
+      align: "center",
+      render: (value: string) => {
+        const isActive = value === "1"; // hoặc Number(value) === 1
+        return (
+          <span style={{ color: isActive ? "green" : "red" }}>
+            {isActive ? "Hoạt động" : "Ngừng hoạt động"}
+          </span>
+        );
+      },
+    },
     {
-      title: "Action",
-      key: "action",
+      title: "Chi Tiết",
+      key: "chi_tiet",
       align: "center",
       render: (_text, record) => (
         <Button type="primary" onClick={() => openModal(record)}>
@@ -127,12 +142,10 @@ const ListPhongChieu = () => {
     },
   ];
 
-  // ✅ Tính toán chiều rộng modal theo số ghế mỗi hàng
-
   return (
     <>
       <Table
-        dataSource={phongChieuData}
+        dataSource={filteredPhongChieuData}
         columns={columns}
         rowKey={(record) => record.id}
         pagination={{ pageSize: 10 }}
@@ -162,72 +175,8 @@ const ListPhongChieu = () => {
           danhSachGhe={danhSachGhe}
           isLoadingGhe={isLoadingGhe}
           isErrorGhe={isErrorGhe}
+          trangThaiPhong={1}
         />
-
-        {/* Phần chú thích dàn hàng ngang */}
-        <div
-          style={{
-            marginTop: 24,
-            width: "100%",
-            maxWidth: 700,
-            display: "flex",
-            justifyContent: "center",
-            gap: 40,
-            fontWeight: 600,
-            fontSize: 14,
-            padding: 12,
-            borderRadius: 6,
-            flexWrap: "wrap", // nếu màn nhỏ thì xuống dòng
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 20,
-                height: 20,
-                backgroundColor: "black",
-                borderRadius: 4,
-              }}
-            ></div>
-            <span>Ghế thường</span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 20,
-                height: 20,
-                backgroundColor: "red",
-                borderRadius: 4,
-              }}
-            ></div>
-            <span>Ghế VIP</span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 20,
-                height: 20,
-                backgroundColor: "blue",
-                borderRadius: 4,
-              }}
-            ></div>
-            <span>Ghế đôi</span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span>
-              <strong>Click:</strong> Đổi loại ghế
-            </span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span>
-              <strong>Double click:</strong> Ẩn ghế
-            </span>
-          </div>
-        </div>
       </Modal>
     </>
   );
