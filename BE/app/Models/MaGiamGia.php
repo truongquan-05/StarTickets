@@ -10,21 +10,18 @@ class MaGiamGia extends Model
 
     protected $fillable = [
         'ma',
-        'loai_giam_gia',
-        'gia_tri_giam',
+        'image',
         'giam_toi_da',
         'gia_tri_don_hang_toi_thieu',
-        'dieu_kien',
+        'phan_tram_giam',
         'ngay_bat_dau',
-        'han_su_dung',
+        'ngay_ket_thuc',
         'so_lan_su_dung',
         'so_lan_da_su_dung',
         'trang_thai',
     ];
-
     protected $casts = [
-        'dieu_kien' => 'array',
-        'ngay_bat_dau' => 'date',
-        'han_su_dung' => 'date',
+        'ngay_bat_dau' => 'datetime',
+        'ngay_ket_thuc' => 'datetime',
     ];
 }

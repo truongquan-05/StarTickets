@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void
@@ -57,17 +56,10 @@ return new class extends Migration {
             $table->date('ngay_ket_thuc')->nullable();
             $table->string('trang_thai_phim', 100);
             $table->string('do_tuoi_gioi_han', 50);
-            $table->enum('loai_suat_chieu', ['Thường', 'Đặc biệt', 'Sớm']);
-            $table->json('chuyen_ngu')->nullable();
+            $table->string('loai_suat_chieu', 50);
             $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
-        });
-
-        Schema::create('chuyen_ngu', function (Blueprint $table) {
-            $table->id();
-            $table->string('the_loai', 100);
-            $table->timestamps();
         });
 
         Schema::create('danh_gia', function (Blueprint $table) {
@@ -122,7 +114,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('phim_id')->constrained('phim')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('chuyen_ngu_id')->constrained('chuyen_ngu');
             $table->dateTime('gio_chieu');
             $table->dateTime('gio_ket_thuc');
             $table->timestamps();
@@ -157,6 +148,7 @@ return new class extends Migration {
         Schema::create('check_ghes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('ghe_id')->constrained('ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('trang_thai', ['trong', 'da_dat', 'dang_dat']);
 
@@ -203,15 +195,15 @@ return new class extends Migration {
         Schema::create('ma_giam_gia', function (Blueprint $table) {
             $table->id();
             $table->string('ma', 50)->unique()->comment('Mã giảm giá, ví dụ: SUMMER2025');
-            $table->string('image', 150);
-            $table->decimal('phan_tram_giam', 10, 2)->comment('Giá trị giảm: % cho PERCENTAGE, số tiền cho FIXED, số vé cho FREE_TICKET');
-            $table->decimal('giam_toi_da', 10, 2);
-            $table->decimal('gia_tri_don_hang_toi_thieu', 10, 2);
-            $table->date('ngay_bat_dau');
-            $table->date('ngay_ket_thuc');
+            $table->string('image', 150)->nullable()->comment('Hình ảnh đại diện cho mã giảm giá');
+            $table->decimal('giam_toi_da', 10, 2)->nullable()->comment('Số tiền giảm tối đa, áp dụng cho PERCENTAGE');
+            $table->decimal('gia_tri_don_hang_toi_thieu', 10, 2)->nullable()->comment('Giá trị đơn hàng tối thiểu để áp dụng');
+            $table->float('phan_tram_giam')->nullable()->comment('Phần trăm giảm giá, áp dụng cho PERCENTAGE');
+            $table->date('ngay_bat_dau')->comment('Ngày bắt đầu hiệu lực');
+            $table->date('ngay_ket_thuc')->comment('Ngày hết hạn');
             $table->integer('so_lan_su_dung')->nullable()->comment('Số lần sử dụng tối đa, NULL nếu không giới hạn');
             $table->integer('so_lan_da_su_dung')->default(0)->comment('Số lần đã sử dụng');
-            $table->enum('trang_thai', ['Kích hoạt', 'Chưa kích hoạt'])->default('Chưa kích hoạt');
+            $table->enum('trang_thai', ['CHƯA KÍCH HOẠT', 'KÍCH HOẠT', 'HẾT HẠN'])->default('KÍCH HOẠT')->comment('Trạng thái: chưa bắt đầu, đang hoạt động, hết hạn');
             $table->timestamps();
         });
 
