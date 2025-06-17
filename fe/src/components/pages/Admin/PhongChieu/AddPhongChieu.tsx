@@ -26,7 +26,7 @@ const AddPhongChieu = () => {
   };
 
   const onCreate = (values: Record<string, any>) => {
-    const { loai_so_do, hang_thuong, hang_vip, hang_doi } = values;
+    const { loai_so_do, hang_thuong, hang_vip, hang_doi, trang_thai } = values;
     const [rowsStr, colsStr] = loai_so_do.split("x");
     const rows = parseInt(rowsStr, 10);
     const cols = parseInt(colsStr, 10);
@@ -38,8 +38,16 @@ const AddPhongChieu = () => {
     }
 
     const formData = new FormData();
+
     Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, key === "trang_thai" ? (value ? "1" : "0") : value);
+      if (key === "trang_thai") {
+        // Convert boolean or string to "1"/"0"
+        const isTrue = value === true || value === "true" || value === 1 || value === "1";
+        formData.append(key, isTrue ? "1" : "0");
+      } else {
+        formData.append(key, value);
+      }
+         console.log("Giá trị gửi đi:", values.trang_thai);
     });
 
     createMutate(formData, {
@@ -100,9 +108,7 @@ const AddPhongChieu = () => {
               {
                 validator: (_, value) => {
                   if (!/^\d+x\d+$/.test(value)) {
-                    return Promise.reject(
-                      "Định dạng phải là SốHàngxSốCột (vd: 8x8)"
-                    );
+                    return Promise.reject("Định dạng phải là SốHàngxSốCột (vd: 8x8)");
                   }
 
                   const [rowsStr, colsStr] = value.split("x");
@@ -110,9 +116,7 @@ const AddPhongChieu = () => {
                   const cols = parseInt(colsStr, 10);
 
                   if (rows !== cols) {
-                    return Promise.reject(
-                      "Sơ đồ phải là hình vuông (số hàng = số cột)"
-                    );
+                    return Promise.reject("Sơ đồ phải là hình vuông (số hàng = số cột)");
                   }
 
                   const hangThuong = form.getFieldValue("hang_thuong") || 0;
@@ -121,9 +125,7 @@ const AddPhongChieu = () => {
                   const total = hangThuong + hangVip + hangDoi;
 
                   if (rows !== total) {
-                    return Promise.reject(
-                      `Tổng hàng (${total}) phải bằng số hàng trong sơ đồ (${rows})`
-                    );
+                    return Promise.reject(`Tổng hàng (${total}) phải bằng số hàng trong sơ đồ (${rows})`);
                   }
 
                   return Promise.resolve();
@@ -142,11 +144,7 @@ const AddPhongChieu = () => {
               { type: "number", min: 0, message: "Phải là số không âm" },
             ]}
           >
-            <InputNumber
-              min={0}
-              style={{ width: "100%" }}
-              onChange={onSeatsChange}
-            />
+            <InputNumber min={0} style={{ width: "100%" }} onChange={onSeatsChange} />
           </Form.Item>
 
           <Form.Item
@@ -157,11 +155,7 @@ const AddPhongChieu = () => {
               { type: "number", min: 0, message: "Phải là số không âm" },
             ]}
           >
-            <InputNumber
-              min={0}
-              style={{ width: "100%" }}
-              onChange={onSeatsChange}
-            />
+            <InputNumber min={0} style={{ width: "100%" }} onChange={onSeatsChange} />
           </Form.Item>
 
           <Form.Item
@@ -172,11 +166,7 @@ const AddPhongChieu = () => {
               { type: "number", min: 0, message: "Phải là số không âm" },
             ]}
           >
-            <InputNumber
-              min={0}
-              style={{ width: "100%" }}
-              onChange={onSeatsChange}
-            />
+            <InputNumber min={0} style={{ width: "100%" }} onChange={onSeatsChange} />
           </Form.Item>
 
           <Form.Item

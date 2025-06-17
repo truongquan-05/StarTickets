@@ -23,6 +23,7 @@ import Chair from '../pages/Admin/Chair/Chair';
 import AddLichChieu from '../pages/Admin/LichChieu/AddLichChieu';
 import Home from '../pages/Users/Home';
 import News from '../pages/Users/News';
+import PhongChieuChuaXuat from '../pages/Admin/PhongChieu/PhongChieuChuaXuat';
 
 
 
@@ -54,6 +55,7 @@ const Routermain = () => {
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
         { path: 'room/list', element: <ListPhongChieu /> },
+        { path: 'room/list/chuaxuat', element: <PhongChieuChuaXuat /> },
         { path: 'room/add', element: <AddPhongChieu /> },
 
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
