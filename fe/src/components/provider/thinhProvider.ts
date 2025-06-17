@@ -47,30 +47,27 @@ export const getUpdateCinemas = async ({ resource = "rap", id, values }: Props) 
   return data;
 };
 
-
-// Lấy danh sách voucher
+// Voucher APIs...
 export const getListVouchers = async ({ resource = "voucher" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
 };
 
-// Xóa voucher (soft delete)
-export const getDeleteVouchers = async ({ resource = "voucher", id }: Props) => {
+export const getDeleteVoucher = async ({ resource = "voucher", id }: Props) => {
   if (!id) return;
-  const { data } = await axiosClient.patch(`${resource}/${id}/soft-delete`);
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
   return data;
 };
 
-// Tạo voucher mới
-export const getCreateVouchers = async ({ resource = "voucher", values }: Props) => {
+export const getCreateVoucher = async ({ resource = "voucher", values }: Props) => {
   const { id, ...rest } = values || {};
   const { data } = await axiosClient.post(resource, rest);
   return data;
 };
 
-// Cập nhật voucher
-export const getUpdateVouchers = async ({ resource = "voucher", id, values }: Props) => {
+export const getUpdateVoucher = async ({ resource = "voucher", id, values }: Props) => {
   if (!id) return;
   const { data } = await axiosClient.put(`${resource}/${id}`, values);
   return data;
 };
+
