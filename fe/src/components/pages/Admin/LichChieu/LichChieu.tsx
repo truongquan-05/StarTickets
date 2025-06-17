@@ -8,7 +8,11 @@ import { ILichChieu } from "../interface/lichchieu";
 import { IPhongChieu } from "../interface/phongchieu";
 import { IMovies } from "../interface/movies";
 
-import { useDeleteLichChieu, useListCinemas, useListLichChieu } from "../../../hook/hungHook";
+import {
+  useDeleteLichChieu,
+  useListCinemas,
+  useListLichChieu,
+} from "../../../hook/hungHook";
 import {
   getListMovies,
   getListPhongChieu,
@@ -19,11 +23,15 @@ import { DeleteOutlined } from "@ant-design/icons";
 
 const LichChieu = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
-   const { mutate: deleteCategoryChair } = useDeleteLichChieu({
-        resource: "lich_chieu",
-      });
+  const { mutate: deleteCategoryChair } = useDeleteLichChieu({
+    resource: "lich_chieu",
+  });
   // Lấy lịch chiếu
-  const { data: lichChieuResponse, isLoading, isError } = useListLichChieu({
+  const {
+    data: lichChieuResponse,
+    isLoading,
+    isError,
+  } = useListLichChieu({
     resource: "lich_chieu",
   });
   const lichChieu: ILichChieu[] = Array.isArray(lichChieuResponse)
@@ -67,7 +75,6 @@ const LichChieu = () => {
     const phim = phimList.find((p) => p.id === phim_id);
     return phim ? phim.ten_phim : "Không rõ";
   };
-  
 
   // Hàm lấy tên phòng theo id
   const getTenPhong = (phong_id?: number) => {
@@ -157,7 +164,7 @@ const LichChieu = () => {
             cancelText="Huỷ"
             onConfirm={() => {
               deleteCategoryChair(record.id);
-              message.success("Xóa thành công")
+              message.success("Xóa thành công");
             }}
           >
             <Button
@@ -176,7 +183,15 @@ const LichChieu = () => {
   if (isError) return <div>Đã xảy ra lỗi khi tải dữ liệu!</div>;
 
   return (
-    <div>
+    <div
+      style={{
+        padding: "20px 20px 0px 20px",
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        height:"100%",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
       <h2>Danh sách lịch chiếu</h2>
       <div style={{ marginBottom: 16 }}>
         <span>Chọn ngày:&nbsp;</span>
@@ -184,7 +199,9 @@ const LichChieu = () => {
           value={selectedDate}
           onChange={(date) => setSelectedDate(date || dayjs())}
           format="YYYY-MM-DD"
-          disabledDate={(current) => current && current < dayjs().startOf("day")}
+          disabledDate={(current) =>
+            current && current < dayjs().startOf("day")
+          }
         />
       </div>
 

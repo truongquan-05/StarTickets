@@ -30,11 +30,13 @@ const GenresManager = () => {
     }
 
     if (editingId !== null) {
-      await axios.put(`http://127.0.0.1:8000/api/the_loai/${editingId}`, { ten_the_loai:name });
+      await axios.put(`http://127.0.0.1:8000/api/the_loai/${editingId}`, {
+        ten_the_loai: name,
+      });
       message.success("Cập nhật thành công!");
     } else {
       await axios.post("http://127.0.0.1:8000/api/the_loai", {
-        ten_the_loai : name,
+        ten_the_loai: name,
         isDeleted: false,
       });
       message.success("Thêm thể loại thành công!");
@@ -51,40 +53,39 @@ const GenresManager = () => {
   };
 
   const handleDelete = async (id: number) => {
-  try {
-    await axios.delete(`http://127.0.0.1:8000/api/the_loai/soft-delete/${id}`);
-    message.success("Xóa mềm thành công!");
-    fetchGenres();
-  } catch (err: any) {
-    console.error("Lỗi xóa mềm:", err.response?.data || err.message);
-    message.error("Xóa mềm thất bại!");
-  }
-};
-
+    try {
+      await axios.delete(
+        `http://127.0.0.1:8000/api/the_loai/soft-delete/${id}`
+      );
+      message.success("Xóa mềm thành công!");
+      fetchGenres();
+    } catch (err: any) {
+      console.error("Lỗi xóa mềm:", err.response?.data || err.message);
+      message.error("Xóa mềm thất bại!");
+    }
+  };
 
   const handleRestore = async (id: number) => {
-  try {
-    await axios.post(`http://127.0.0.1:8000/api/the_loai/restore/${id}`);
-    message.success("Khôi phục thành công!");
-    fetchGenres();
-  } catch (err: any) {
-    console.error("Lỗi khôi phục:", err.response?.data || err.message);
-    message.error("Khôi phục thất bại!");
-  }
-};
-
+    try {
+      await axios.post(`http://127.0.0.1:8000/api/the_loai/restore/${id}`);
+      message.success("Khôi phục thành công!");
+      fetchGenres();
+    } catch (err: any) {
+      console.error("Lỗi khôi phục:", err.response?.data || err.message);
+      message.error("Khôi phục thất bại!");
+    }
+  };
 
   const handlePermanentDelete = async (id: number) => {
-  try {
-    await axios.delete(`http://127.0.0.1:8000/api/the_loai/delete/${id}`);
-    message.success("Đã xóa vĩnh viễn!");
-    fetchGenres();
-  } catch (err: any) {
-    console.error("Lỗi xóa vĩnh viễn:", err.response?.data || err.message);
-    message.error("Xóa thất bại!");
-  }
-};
-
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/the_loai/delete/${id}`);
+      message.success("Đã xóa vĩnh viễn!");
+      fetchGenres();
+    } catch (err: any) {
+      console.error("Lỗi xóa vĩnh viễn:", err.response?.data || err.message);
+      message.error("Xóa thất bại!");
+    }
+  };
 
   const columns = [
     {
@@ -140,7 +141,9 @@ const GenresManager = () => {
   ];
 
   return (
-    <div style={{ padding: 24 }}>
+    <div
+      style={{ padding: 24, background: "#fff", height:"95%", marginTop: 20 }}
+    >
       <h2>{editingId !== null ? "Sửa thể loại" : "Thêm thể loại"}</h2>
       <Space>
         <Input
@@ -152,7 +155,12 @@ const GenresManager = () => {
           {editingId !== null ? "Cập nhật" : "Thêm mới"}
         </Button>
         {editingId !== null && (
-          <Button onClick={() => { setEditingId(null); setName(""); }}>
+          <Button
+            onClick={() => {
+              setEditingId(null);
+              setName("");
+            }}
+          >
             Hủy
           </Button>
         )}
@@ -164,8 +172,8 @@ const GenresManager = () => {
             type="checkbox"
             checked={showDeleted}
             onChange={(e) => setShowDeleted(e.target.checked)}
-          />
-          {" "}Hiển thị thể loại đã xóa
+          />{" "}
+          Hiển thị thể loại đã xóa
         </label>
       </Space>
 

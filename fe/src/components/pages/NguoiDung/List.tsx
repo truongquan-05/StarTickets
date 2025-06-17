@@ -167,14 +167,14 @@ const UserList = () => {
             }
             onClick={() => handleToggleStatus(record)}
           />
-          <Popconfirm
+          {/* <Popconfirm
             title="Bạn có chắc chắn muốn xoá người dùng này?"
             onConfirm={() => handleDelete(record.id)}
             okText="Xác nhận"
             cancelText="Huỷ"
           >
             <Button danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+          </Popconfirm> */}
           <Button
             type="primary"
             icon={<EyeFilled />}
@@ -186,7 +186,7 @@ const UserList = () => {
   ];
 
   return (
-    <Card style={{ margin: "10px" }}>
+    <Card style={{ margin: "10px", background: "#fff", height: "100%" }}>
       <div
         style={{
           display: "flex",
