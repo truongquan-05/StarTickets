@@ -10,7 +10,6 @@ import {
   message,
   Row,
   Select,
-  Typography,
   Upload,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -22,7 +21,6 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
-const { Title } = Typography;
 
 const AddMoviesPage = () => {
   const [form] = Form.useForm();

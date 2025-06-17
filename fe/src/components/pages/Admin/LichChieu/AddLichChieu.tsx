@@ -170,9 +170,13 @@ const AddLichChieu = () => {
                 loading={phimLoading}
                 showSearch
                 optionFilterProp="label"
-                filterOption={(input, option) =>
-                  option?.label?.toLowerCase().includes(input.toLowerCase())
-                }
+                filterOption={(input, option) => {
+                  const label = option?.label;
+                  if (typeof label === "string") {
+                    return label.toLowerCase().includes(input.toLowerCase());
+                  }
+                  return false;
+                }}
                 options={phimList.map((phim: any) => ({
                   label: phim.ten_phim,
                   value: phim.id,
