@@ -39,24 +39,29 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
   );
 };
 
-  const handleDoubleClick = (soGhe: string) => {
-    setLocalDanhSachGhe((prev) =>
-      prev.map((ghe) => {
-        if (ghe.so_ghe === soGhe) {
-          if (ghe.trang_thai) {
-            const confirm = window.confirm(
-              `Ghế ${soGhe} đang bật, bạn có chắc chắn tắt ghế này không?`
-            );
-            if (!confirm) return ghe;
-            return { ...ghe, trang_thai: false };
-          } else {
-            return { ...ghe, trang_thai: true };
-          }
-        }
-        return ghe;
-      })
+const handleDoubleClick = (soGhe: string) => {
+  const gheTarget = localDanhSachGhe.find((ghe) => ghe.so_ghe === soGhe);
+  if (!gheTarget) return;
+
+  // Nếu ghế đang bật, hỏi xác nhận trước khi tắt
+  if (gheTarget.trang_thai) {
+    const confirmed = window.confirm(
+      `Ghế ${soGhe} đang bật, bạn có chắc chắn tắt ghế này không?`
     );
-  };
+    if (!confirmed) return;
+  }
+
+  // Cập nhật trạng thái ghế
+  setLocalDanhSachGhe((prev) =>
+    prev.map((ghe) =>
+      ghe.so_ghe === soGhe
+        ? { ...ghe, trang_thai: !ghe.trang_thai }
+        : ghe
+    )
+  );
+};
+
+
 
   if (isLoadingGhe) {
     return <div style={{ textAlign: "center", padding: 20 }}>Đang tải ghế...</div>;
