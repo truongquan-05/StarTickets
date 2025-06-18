@@ -241,7 +241,7 @@ const PhongChieuChuaXuat = () => {
         style={{ marginBottom: 16 }}
         onClick={() => navigate("/admin/room/trashed/list")}
       >
-        Hiển thị phòng đã xóa mềm
+        Hiển thị phòng đã xóa 
       </Button>
       <Table
         dataSource={phongChieuChuaXuatData}

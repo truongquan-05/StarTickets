@@ -31,6 +31,8 @@ import {
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
 const { Text, Paragraph } = Typography;
@@ -394,6 +396,19 @@ const List = () => {
               name="mo_ta"
               rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
             >
+              <ReactQuill
+                theme="snow"
+                style={{ height: "300px", marginBottom: "50px" }}
+                placeholder="Nhập mô tả phim"
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["clean"],
+                  ],
+                }}
+              />
             </Form.Item>
 
             <Form.Item

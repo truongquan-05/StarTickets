@@ -132,7 +132,7 @@ const PhongChieuXoaMem = () => {
 
   return (
     <div style={{ padding: 16 }}>
-      <h2 style={{ marginBottom: 16 }}>Danh sách phòng chiếu đã xoá mềm</h2>
+      <h2 style={{ marginBottom: 16 }}>Danh sách phòng chiếu đã xoá </h2>
       <Table
         dataSource={phongChieuData}
         columns={columns}

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TinTucController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
@@ -122,4 +123,11 @@ Route::prefix('client')->group(function () {
 
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 
+//Tin Tức
+Route::apiResource('tin_tuc', TinTucController::class);
+Route::prefix('tin_tuc')->group(function () {
+    Route::get('/trashed/list', [TinTucController::class, 'trashed']); // lấy danh sách xóa mềm
+    Route::post('/{id}/restore', [TinTucController::class, 'restore']); // khôi phục tin tức
+    Route::delete('/{id}/force', [TinTucController::class, 'forceDelete']); //xóa cứng tin tức
+});
 // http://127.0.0.1:8000/api/....
