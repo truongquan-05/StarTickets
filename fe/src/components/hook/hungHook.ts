@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListPhongChieu, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import {  checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -213,7 +213,7 @@ export const useCreatePhongChieu = ({resource = "phong_chieu"} : Props) => {
   return useMutation({
     mutationFn : (values : any) => getCreatePhongChieu({resource,values}),
     onSuccess: () => {
-      navigate("/admin/room/list")
+      navigate("/admin/room/list/chuaxuat")
       message.success("Tạo phòng chiếu thành công")
       queryClient.invalidateQueries({queryKey:[resource]});
     },
@@ -233,6 +233,47 @@ export const useUpdatePhongChieu = ({ resource = "phong_chieu" }) => {
     },
     onError: () => {
       message.error("Cập nhật thất bại");
+    },
+  });
+};
+export const useDeletePhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeletePhongChieu({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+
+export const useDestroyPhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDestroyPhongChieu({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+
+export const useListTrashPhongChieu = ({resource = "phong_chieu"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListTrashPhongChieu({resource})
+  })
+}
+export const useRestorePhongChieu = ({ resource = "phong_chieu" }: Props) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string | number) => getRestorePhongChieu({ resource, id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [resource] });
+      navigate("/admin/phongchieu/list"); // chỉnh đường dẫn theo cấu trúc bạn dùng
+    },
+    onError: () => {
+      // Bạn có thể thêm message.error ở đây nếu muốn
     },
   });
 };
@@ -287,7 +328,6 @@ export const useCreateLichChieu = ({resource = "lich_chieu"} : Props) => {
       queryClient.invalidateQueries({queryKey:[resource]});
     },
     onError : () => {
-      message.error("Thêm thất bại");
     }
   })
 }
@@ -306,4 +346,10 @@ export const useCheckLichChieu = ({ resource = "lich_chieu/check" }: Props) => {
   });
 };
 
-
+export const useMovieDetail = (id?: string | number) => {
+  return useQuery({
+    queryKey: ['phim', id],
+    queryFn: () => getMovieDetail({ resource: "phim", id }),
+    enabled: !!id,
+  });
+};

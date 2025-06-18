@@ -23,6 +23,12 @@ import Chair from '../pages/Admin/Chair/Chair';
 import AddLichChieu from '../pages/Admin/LichChieu/AddLichChieu';
 import Home from '../pages/Users/Home';
 import News from '../pages/Users/News';
+import PhongChieuChuaXuat from '../pages/Admin/PhongChieu/PhongChieuChuaXuat';
+import LichChieuCu from '../pages/Admin/LichChieu/LichChieuCu';
+import PhongChieuXoaMem from '../pages/Admin/PhongChieu/PhongChieuXoaMem';
+import MovieDetail from '../pages/Admin/MoviesPage/ChiTietPhim';
+import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
 
 
 
@@ -38,6 +44,8 @@ const Routermain = () => {
       children: [
         { path: '/', element: <Home /> },
         { path: 'news', element: <News /> },
+        { path: 'login', element: <Login /> },
+        { path: 'register', element: <Register /> },
       ],
     },
     {
@@ -46,14 +54,18 @@ const Routermain = () => {
       children: [
         { path: '', element: <DashboardAdmin /> },
         { path: 'movies/list', element: <List /> },
+         { path: 'movies/detail/:id', element: <MovieDetail /> },
         { path: 'movies/add', element: <AddMoviesPage /> },
         { path: 'category_chair/list', element: <ListCategoryChair /> },
         { path: 'chair/list', element: <Chair /> },
         { path: 'lichchieu/list', element: <LichChieu /> },
+        { path: 'lichchieucu/list', element: <LichChieuCu /> },
         { path: 'lichchieu/add', element: <AddLichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
         { path: 'room/list', element: <ListPhongChieu /> },
+        { path: 'room/list/chuaxuat', element: <PhongChieuChuaXuat /> },
+        { path: 'room/trashed/list', element: <PhongChieuXoaMem /> },
         { path: 'room/add', element: <AddPhongChieu /> },
 
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },

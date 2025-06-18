@@ -1,0 +1,71 @@
+.register-background {
+  background: url('https://cinestar.com.vn/assets/images/bg-regis.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px;
+
+  /* Chỉ làm mờ background, không ảnh hưởng form bên trên */
+  position: relative;
+  z-index: 0;
+}
+
+.register-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.6); /* lớp phủ mờ trắng tạo nền nhạt */
+  z-index: 1;
+}
+
+.register-container {
+  position: relative; /* để trên lớp phủ */
+  z-index: 10;
+  width: 100%;
+  max-width: 1200px; /* giống login */
+}
+
+.register-box {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgb(149 157 165 / 20%);
+}
+
+.register-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: #333;
+}
+
+.register-form .ant-input,
+.register-form .ant-input-password {
+  border-radius: 5px;
+}
+
+.register-form .ant-btn-primary {
+  font-weight: 600;
+  border: none;
+}
+
+.register-form .ant-btn-primary:hover,
+.register-form .ant-btn-primary:focus {
+  background-color: #1890ffcc;
+  border-color: #1890ffcc;
+}
+
+.register-footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #555;
+}
+
+.register-footer a {
+  color: #1890ff;
+  text-decoration: none;
+}
+
+.register-footer a:hover {
+  text-decoration: underline;
+}

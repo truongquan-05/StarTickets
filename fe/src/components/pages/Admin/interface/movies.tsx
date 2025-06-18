@@ -14,6 +14,7 @@ export interface IMovies {
   do_tuoi_gioi_han: number;
   trang_thai: boolean;
   the_loai_id: number;
+  the_loai?: undefined;
   chuyen_ngu?: IChuyenNgu[];
 }
 interface IChuyenNgu {

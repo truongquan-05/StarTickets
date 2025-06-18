@@ -10,6 +10,7 @@ use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\TheLoaiController;
+use App\Http\Controllers\Client\SearchController;
 use App\Http\Controllers\Admin\ChuyenNguController;
 use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
@@ -114,8 +115,9 @@ Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenN
 //trang chu
 Route::prefix('client')->group(function () {
     Route::get('/home', [HomeController::class, 'index']);
-    Route::get('/phim-chieu-hom-nay', [HomeController::class, 'getAllPhimchieuhomnay']);
-    Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimsapchieu']);
+    Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
+    Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
+    Route::get('/search', [SearchController::class, 'search']);
 });
 
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
