@@ -11,6 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $user = auth('sanctum')->user();
         $now = Carbon::now();
         $today = $now->toDateString();
         $timeNow = $now->toTimeString();
@@ -42,6 +43,7 @@ class HomeController extends Controller
             'phim_dang_chieu' => $phimDangChieu,
             'phim_sap_chieu' => $phimSapChieu,
             'phim_dac_biet' => $phimDacBiet,
+            'login'=>$user
         ]);
     }
 

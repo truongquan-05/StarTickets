@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Button,
-  DatePicker,
-  message,
-  Popconfirm,
-  Space,
-  Table,
-} from "antd";
+import { Button, DatePicker, message, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -36,7 +29,11 @@ const LichChieuCu = () => {
     resource: "lich_chieu",
   });
 
-  const { data: lichChieuResponse, isLoading, isError } = useListLichChieu({
+  const {
+    data: lichChieuResponse,
+    isLoading,
+    isError,
+  } = useListLichChieu({
     resource: "lich_chieu",
   });
   const lichChieu: ILichChieu[] = Array.isArray(lichChieuResponse)
@@ -186,9 +183,24 @@ const LichChieuCu = () => {
   if (isError) return <div>Đã xảy ra lỗi khi tải dữ liệu!</div>;
 
   return (
-    <div>
+    <div
+      style={{
+        padding: "20px 20px 0px 20px",
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        height: "100%",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
       <h2>Danh sách lịch chiếu đã qua</h2>
-      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
+      <div
+        style={{
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
         <span>Chọn ngày:&nbsp;</span>
         <DatePicker
           value={selectedDate}
@@ -211,6 +223,5 @@ const LichChieuCu = () => {
     </div>
   );
 };
-
 
 export default LichChieuCu;
