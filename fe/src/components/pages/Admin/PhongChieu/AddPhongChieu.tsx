@@ -47,12 +47,10 @@ const AddPhongChieu = () => {
       } else {
         formData.append(key, value);
       }
-         console.log("Giá trị gửi đi:", values.trang_thai);
     });
 
     createMutate(formData, {
       onSuccess: () => {
-        message.success("Thêm phòng chiếu thành công!");
         form.resetFields();
       },
       onError: (error: any) => {

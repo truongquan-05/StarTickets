@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Table, Button, Modal } from "antd";
+import { Table, Button, Modal, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IPhongChieu } from "../interface/phongchieu";
 import {
@@ -21,27 +21,35 @@ const ListPhongChieu = () => {
 
   // Lấy danh sách phòng chiếu
   const {
-    data: phongChieuData = [],
+    data: phongChieuDataRaw,
     isLoading: isLoadingPhong,
     isError: isErrorPhong,
+    error: errorPhong,
   } = useQuery({
     queryKey: ["phong_chieu"],
-    queryFn: () =>
-      getListPhongChieu({ resource: "phong_chieu" }).then(
-        (res) => (Array.isArray(res.data) ? res.data : []) 
-      ),
+    queryFn: () => getListPhongChieu({ resource: "phong_chieu" }).then((res) => res.data),
   });
+
+  const phongChieuData = Array.isArray(phongChieuDataRaw) ? phongChieuDataRaw : [];
+
   const filteredPhongChieuData = useMemo(() => {
-  return phongChieuData.filter((phong:IPhongChieu) => phong.trang_thai === 1 || phong.trang_thai === "1");
-}, [phongChieuData]);
+    return phongChieuData.filter(
+      (phong: IPhongChieu) => phong.trang_thai === 1 || phong.trang_thai === "1"
+    );
+  }, [phongChieuData]);
+
+  // Lấy danh sách rạp
   const {
-    data: rapData = [],
+    data: rapDataRaw,
     isLoading: isLoadingRap,
     isError: isErrorRap,
+    error: errorRap,
   } = useQuery({
     queryKey: ["rap"],
     queryFn: () => getListCinemas({ resource: "rap" }).then((res) => res.data),
   });
+
+  const rapData = Array.isArray(rapDataRaw) ? rapDataRaw : [];
 
   // Dùng hook lấy danh sách ghế theo phòng
   const {
@@ -118,13 +126,13 @@ const ListPhongChieu = () => {
       key: "hang_doi",
       align: "center",
     },
-   {
+    {
       title: "Trạng Thái",
       dataIndex: "trang_thai",
       key: "trang_thai",
       align: "center",
       render: (value: string) => {
-        const isActive = value === "1"; // hoặc Number(value) === 1
+        const isActive = value === "1" ;
         return (
           <span style={{ color: isActive ? "green" : "red" }}>
             {isActive ? "Hoạt động" : "Ngừng hoạt động"}
@@ -164,7 +172,7 @@ const ListPhongChieu = () => {
         width={1000}
         bodyStyle={{
           display: "flex",
-          flexDirection: "column", // xếp dọc: sơ đồ ghế trên, chú thích dưới
+          flexDirection: "column",
           alignItems: "center",
           padding: 16,
           overflow: "visible",

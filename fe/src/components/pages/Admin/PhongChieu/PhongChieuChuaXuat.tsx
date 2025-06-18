@@ -1,14 +1,16 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Table, Button, Modal, message } from "antd";
+import { Table, Button, Modal, message, Space, Popconfirm } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IPhongChieu } from "../interface/phongchieu";
 import {
   getListCinemas,
   getListPhongChieu,
 } from "../../../provider/hungProvider";
-import { useListGhe, useUpdatePhongChieu } from "../../../hook/hungHook";
+import { useDeletePhongChieu, useListGhe, useUpdatePhongChieu } from "../../../hook/hungHook";
 import SoDoGhe from "./SoDoGhe";
+import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 interface IRap {
   id: number;
@@ -19,25 +21,31 @@ const PhongChieuChuaXuat = () => {
   const [open, setOpen] = useState(false);
   const [selectedPhong, setSelectedPhong] = useState<IPhongChieu | null>(null);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [phongToConfirm, setPhongToConfirm] = useState<IPhongChieu | null>(
-    null
-  );
+  const [phongToConfirm, setPhongToConfirm] = useState<IPhongChieu | null>(null);
 
-  // Sử dụng hook update trạng thái phòng chiếu
   const updatePhongChieuMutation = useUpdatePhongChieu({
+    resource: "phong_chieu",
+  });
+  const {mutate : deletePhongChieu} = useDeletePhongChieu({
     resource: "phong_chieu",
   });
 
   // Lấy danh sách phòng chiếu
   const {
-    data: phongChieuData = [],
+    data: phongChieuDataRaw,
     isLoading: isLoadingPhong,
     isError: isErrorPhong,
+    error: errorPhong,
   } = useQuery({
     queryKey: ["phong_chieu"],
     queryFn: () =>
       getListPhongChieu({ resource: "phong_chieu" }).then((res) => res.data),
   });
+
+  // Đảm bảo phongChieuData luôn là mảng
+  const phongChieuData = Array.isArray(phongChieuDataRaw) ? phongChieuDataRaw : [];
+
+  // Lọc các phòng chưa xuất
   const phongChieuChuaXuatData = useMemo(() => {
     return phongChieuData.filter(
       (phong: IPhongChieu) => phong.trang_thai !== "1" && phong.trang_thai !== 1
@@ -46,16 +54,23 @@ const PhongChieuChuaXuat = () => {
 
   // Lấy danh sách rạp
   const {
-    data: rapData = [],
+    data: rapDataRaw,
     isLoading: isLoadingRap,
     isError: isErrorRap,
+    error: errorRap,
   } = useQuery({
     queryKey: ["rap"],
     queryFn: () => getListCinemas({ resource: "rap" }).then((res) => res.data),
   });
 
-  const rapMap = new Map<number, string>();
-  rapData.forEach((r: IRap) => rapMap.set(r.id, r.ten_rap));
+  const rapData = Array.isArray(rapDataRaw) ? rapDataRaw : [];
+
+  // Map rạp id => tên rạp
+  const rapMap = useMemo(() => {
+    const map = new Map<number, string>();
+    rapData.forEach((r: IRap) => map.set(r.id, r.ten_rap));
+    return map;
+  }, [rapData]);
 
   // Lấy danh sách ghế phòng được chọn
   const {
@@ -67,24 +82,24 @@ const PhongChieuChuaXuat = () => {
     phong_id: selectedPhong?.id,
   });
 
-  // Xử lý bấm chữ "Chưa Xuất"
+  // Bấm "Chưa Xuất" sẽ hiện modal xác nhận
   const onClickChuaXuat = (phong: IPhongChieu) => {
     setPhongToConfirm(phong);
     setConfirmModalOpen(true);
   };
 
-  // Người dùng xác nhận bật hoạt động phòng chiếu
+  // Xác nhận bật trạng thái phòng chiếu
   const onConfirm = () => {
     if (!phongToConfirm) return;
 
     updatePhongChieuMutation.mutate(
       {
-      id: phongToConfirm.id,
-      values: {
-        ...phongToConfirm,     
-        trang_thai: 1,         
+        id: phongToConfirm.id,
+        values: {
+          ...phongToConfirm,
+          trang_thai: 1,
+        },
       },
-    },
       {
         onSuccess: () => {
           message.success("Phòng chiếu đã được kích hoạt!");
@@ -99,7 +114,7 @@ const PhongChieuChuaXuat = () => {
       }
     );
   };
-
+  const navigate = useNavigate();
   const onCancelConfirm = () => {
     setConfirmModalOpen(false);
     setPhongToConfirm(null);
@@ -187,24 +202,47 @@ const PhongChieuChuaXuat = () => {
       key: "action",
       align: "center",
       render: (_text, record) => (
-        <Button
+        <Space>
+        <Button icon={<EyeOutlined/>}
           type="primary"
           onClick={() => {
             if (record.trang_thai === "0" || record.trang_thai === 0) {
               setSelectedPhong(record);
               setOpen(true);
-            } else {
             }
           }}
         >
           Xem chi tiết ghế
         </Button>
+        <Popconfirm
+            title="Bạn có chắc chắn muốn xoá phòng chiếu này?"
+            okText="Xoá"
+            cancelText="Huỷ"
+            onConfirm={() => {
+              deletePhongChieu(record.id);
+              message.success("Xóa mềm thành công");
+            }}
+          >
+            <Button
+              danger
+              shape="circle"
+              icon={<DeleteOutlined />}
+              title="Xoá"
+            />
+          </Popconfirm>
+        </Space>
       ),
     },
   ];
 
   return (
     <>
+    <Button
+        style={{ marginBottom: 16 }}
+        onClick={() => navigate("/admin/room/trashed/list")}
+      >
+        Hiển thị phòng đã xóa mềm
+      </Button>
       <Table
         dataSource={phongChieuChuaXuatData}
         columns={columns}
@@ -243,7 +281,7 @@ const PhongChieuChuaXuat = () => {
           alignItems: "center",
           padding: 16,
           overflow: "visible",
-          maxWidth: 1000, 
+          maxWidth: 1000,
         }}
         style={{ top: 50 }}
       >
