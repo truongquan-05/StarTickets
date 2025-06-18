@@ -26,9 +26,11 @@ const HeaderUser = () => {
           <div className="header-search">
           <Input.Search type="text" placeholder="Tìm phim, rạp" />
           </div>
-          <div className="header-login" >
+          <div className="header-login">
             <UserOutlined />
-            <span>Đăng nhập</span>
+            <Link to="/login">
+              <span className="login-text">Đăng nhập</span>
+            </Link>
           </div>
           <div className="header-lang">
           <img src={flag} alt="Cinestar" className="logo" />

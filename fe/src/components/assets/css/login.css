@@ -1,0 +1,90 @@
+.header-login-span {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.header-login-span:hover {
+  color: gold; /* hoặc yellow */
+}
+
+.login-text {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.header-login:hover .login-text {
+  color: gold;
+}
+
+/* Container tổng với position relative để chứa lớp nền */
+.login-background {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px;
+  overflow: hidden;
+}
+
+/* Lớp nền ảnh nền, có filter làm nhạt màu */
+.login-background::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('https://cinestar.com.vn/assets/images/bg-regis.jpg') no-repeat center center fixed;
+  background-size: cover;
+  filter: brightness(0.7) saturate(0.8);
+  z-index: 0;
+}
+
+/* Container form nằm trên lớp nền */
+.login-container {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Box chứa form */
+.login-box {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgb(149 157 165 / 20%);
+}
+
+/* Style label trong form */
+.login-form .ant-form-item-label > label {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Nút Google */
+.btn-google {
+  background-color: #de4b39;
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-google:hover,
+.btn-google:focus {
+  background-color: #c43d2d;
+  color: white;
+}
+
+/* Nút Facebook */
+.btn-facebook {
+  background-color: #3b5998;
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-facebook:hover,
+.btn-facebook:focus {
+  background-color: #2d4373;
+  color: white;
+}

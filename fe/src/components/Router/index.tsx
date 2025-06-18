@@ -27,6 +27,8 @@ import PhongChieuChuaXuat from '../pages/Admin/PhongChieu/PhongChieuChuaXuat';
 import LichChieuCu from '../pages/Admin/LichChieu/LichChieuCu';
 import PhongChieuXoaMem from '../pages/Admin/PhongChieu/PhongChieuXoaMem';
 import MovieDetail from '../pages/Admin/MoviesPage/ChiTietPhim';
+import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
 
 
 
@@ -42,6 +44,8 @@ const Routermain = () => {
       children: [
         { path: '/', element: <Home /> },
         { path: 'news', element: <News /> },
+        { path: 'login', element: <Login /> },
+        { path: 'register', element: <Register /> },
       ],
     },
     {
