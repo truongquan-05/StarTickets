@@ -28,9 +28,9 @@ import {
 } from "../../../provider/hungProvider";
 import { DeleteOutlined } from "@ant-design/icons";
 
-const LichChieu = () => {
+const LichChieuCu = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
-  const [boLoc, setBoLoc] = useState<boolean>(false);
+  const [boLoc, setBoLoc] = useState<boolean>(false); // Mặc định không lọc theo ngày
 
   const { mutate: deleteCategoryChair } = useDeleteLichChieu({
     resource: "lich_chieu",
@@ -71,38 +71,43 @@ const LichChieu = () => {
   const rapListData = Array.isArray(rapList) ? rapList : [];
 
   const getTenPhim = (phim_id?: number) => {
+    if (phim_id == null) return "Không rõ";
     const phim = phimList.find((p) => p.id === phim_id);
     return phim ? phim.ten_phim : "Không rõ";
   };
 
   const getTenPhong = (phong_id?: number) => {
+    if (phong_id == null) return "Không rõ";
     const phong = phongList.find((p) => p.id === phong_id);
     return phong ? phong.ten_phong : "Không rõ";
   };
 
   const getTenChuyenNgu = (id?: number) => {
+    if (id == null) return "Không rõ";
     const cn = chuyenNguList.find((x) => x.id === id);
     return cn ? cn.the_loai : "Không rõ";
   };
 
   const getTenRapTheoPhongId = (phong_id?: number) => {
+    if (phong_id == null) return "Không rõ";
     const phong = phongList.find((p) => p.id === phong_id);
-    const rap = rapListData.find((r) => r.id === phong?.rap_id);
+    if (!phong) return "Không rõ";
+    const rap = rapListData.find((r) => r.id === phong.rap_id);
     return rap ? rap.ten_rap : "Không rõ";
   };
 
   const now = dayjs();
-
   const filteredLichChieu = lichChieu.filter((item) => {
     if (!item.gio_chieu) return false;
     const gioChieuDate = dayjs(item.gio_chieu);
     if (!gioChieuDate.isValid()) return false;
 
-    const isFutureOrNow = gioChieuDate.isSame(now) || gioChieuDate.isAfter(now);
+    const isPast = gioChieuDate.isBefore(now);
+    if (!isPast) return false;
 
     return boLoc
-      ? gioChieuDate.isSame(selectedDate, "day") && isFutureOrNow
-      : isFutureOrNow;
+      ? gioChieuDate.isSame(selectedDate, "day") // lọc theo ngày
+      : true; // không lọc, hiển thị tất cả lịch đã qua
   });
 
   const columns: ColumnsType<ILichChieu> = [
@@ -181,27 +186,18 @@ const LichChieu = () => {
   if (isError) return <div>Đã xảy ra lỗi khi tải dữ liệu!</div>;
 
   return (
-    <div
-      style={{
-        padding: "20px 20px 0px 20px",
-        backgroundColor: "#fff",
-        borderRadius: 8,
-        height:"100%",
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <h2>Danh sách lịch chiếu còn sắp tới</h2>
+    <div>
+      <h2>Danh sách lịch chiếu đã qua</h2>
       <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
         <span>Chọn ngày:&nbsp;</span>
         <DatePicker
           value={selectedDate}
           onChange={(date) => setSelectedDate(date || dayjs())}
           format="YYYY-MM-DD"
-          disabledDate={(current) => current && current < dayjs().startOf("day")}
           disabled={!boLoc}
         />
         <Button onClick={() => setBoLoc(!boLoc)}>
-          {boLoc ? "Hiển thị tất cả lịch chiếu còn lại" : "Lọc theo ngày"}
+          {boLoc ? "Hiển thị tất cả lịch chiếu đã qua" : "Lọc theo ngày"}
         </Button>
       </div>
 
@@ -216,4 +212,5 @@ const LichChieu = () => {
   );
 };
 
-export default LichChieu;
+
+export default LichChieuCu;

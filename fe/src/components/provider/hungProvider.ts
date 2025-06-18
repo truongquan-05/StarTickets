@@ -141,6 +141,27 @@ export const getUpdatePhongChieu= async ({resource = "phong_chieu", id, values} 
   return data
 }
 
+//xóa mềm phòng chiếu
+export const getDeletePhongChieu  = async ({resource = "phong_chieu" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+//xóa cứng vĩnh viễn
+export const getDestroyPhongChieu  = async ({resource = "phong_chieu" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}/delete`)
+  return data;
+}
+export const getListTrashPhongChieu = async ({ resource = "phong_chieu" }: Props) => {
+  const { data } = await axiosClient.get(`${resource}/trashed/list`);
+  return data;
+};
+export const getRestorePhongChieu = async ({ resource = "phong_chieu", id }: Props) => {
+  const { data } = await axiosClient.post(`${resource}/restore/${id}`);
+  return data;
+};
+
 export const getListCinemas = async ({ resource = "rap" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
