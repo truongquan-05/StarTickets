@@ -39,42 +39,31 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     );
   };
 
-const handleDoubleClick = (soGhe: string) => {
-  const gheTarget = localDanhSachGhe.find((ghe) => ghe.so_ghe === soGhe);
-  if (!gheTarget) return;
-
-  // Nếu ghế đang bật, hỏi xác nhận trước khi tắt
-  if (gheTarget.trang_thai) {
-    const confirmed = window.confirm(
-      `Ghế ${soGhe} đang bật, bạn có chắc chắn tắt ghế này không?`
+  const handleDoubleClick = (soGhe: string) => {
+    setLocalDanhSachGhe((prev) =>
+      prev.map((ghe) => {
+        if (ghe.so_ghe === soGhe) {
+          if (ghe.trang_thai) {
+            const confirm = window.confirm(
+              `Ghế ${soGhe} đang bật, bạn có chắc chắn tắt ghế này không?`
+            );
+            if (!confirm) return ghe;
+            return { ...ghe, trang_thai: false };
+          } else {
+            return { ...ghe, trang_thai: true };
+          }
+        }
+        return ghe;
+      })
     );
-    if (!confirmed) return;
-  }
-
-  // Cập nhật trạng thái ghế
-  setLocalDanhSachGhe((prev) =>
-    prev.map((ghe) =>
-      ghe.so_ghe === soGhe
-        ? { ...ghe, trang_thai: !ghe.trang_thai }
-        : ghe
-    )
-  );
-};
-
-
+  };
 
   if (isLoadingGhe) {
-    return (
-      <div style={{ textAlign: "center", padding: 20 }}>Đang tải ghế...</div>
-    );
+    return <div style={{ textAlign: "center", padding: 20 }}>Đang tải ghế...</div>;
   }
 
   if (isErrorGhe) {
-    return (
-      <div style={{ color: "red", textAlign: "center" }}>
-        Lỗi tải danh sách ghế
-      </div>
-    );
+    return <div style={{ color: "red", textAlign: "center" }}>Lỗi tải danh sách ghế</div>;
   }
 
   if (!phongId) return null;
@@ -226,10 +215,7 @@ const handleDoubleClick = (soGhe: string) => {
           }
 
           return (
-            <div
-              key={`row-${hang}`}
-              style={{ display: "flex", marginBottom: 8 }}
-            >
+            <div key={`row-${hang}`} style={{ display: "flex", marginBottom: 8 }}>
               {cols}
             </div>
           );
@@ -256,36 +242,15 @@ const handleDoubleClick = (soGhe: string) => {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <div
-            style={{
-              width: 20,
-              height: 20,
-              backgroundColor: "black",
-              borderRadius: 4,
-            }}
-          />
+          <div style={{ width: 20, height: 20, backgroundColor: "black", borderRadius: 4 }} />
           <span>Ghế thường</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <div
-            style={{
-              width: 20,
-              height: 20,
-              backgroundColor: "red",
-              borderRadius: 4,
-            }}
-          />
+          <div style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 4 }} />
           <span>Ghế VIP</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <div
-            style={{
-              width: 20,
-              height: 20,
-              backgroundColor: "blue",
-              borderRadius: 4,
-            }}
-          />
+          <div style={{ width: 20, height: 20, backgroundColor: "blue", borderRadius: 4 }} />
           <span>Ghế đôi</span>
         </div>
         {trangThaiPhong === 0 && (

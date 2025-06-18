@@ -24,8 +24,9 @@ import AddLichChieu from '../pages/Admin/LichChieu/AddLichChieu';
 import Home from '../pages/Users/Home';
 import News from '../pages/Users/News';
 import PhongChieuChuaXuat from '../pages/Admin/PhongChieu/PhongChieuChuaXuat';
+import LichChieuCu from '../pages/Admin/LichChieu/LichChieuCu';
+import PhongChieuXoaMem from '../pages/Admin/PhongChieu/PhongChieuXoaMem';
 import MovieDetail from '../pages/Admin/MoviesPage/ChiTietPhim';
-
 
 
 
@@ -54,11 +55,13 @@ const Routermain = () => {
         { path: 'category_chair/list', element: <ListCategoryChair /> },
         { path: 'chair/list', element: <Chair /> },
         { path: 'lichchieu/list', element: <LichChieu /> },
+        { path: 'lichchieucu/list', element: <LichChieuCu /> },
         { path: 'lichchieu/add', element: <AddLichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
         { path: 'room/list', element: <ListPhongChieu /> },
         { path: 'room/list/chuaxuat', element: <PhongChieuChuaXuat /> },
+        { path: 'room/trashed/list', element: <PhongChieuXoaMem /> },
         { path: 'room/add', element: <AddPhongChieu /> },
 
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },

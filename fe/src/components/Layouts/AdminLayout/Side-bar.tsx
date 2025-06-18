@@ -8,11 +8,13 @@ import {
   FileTextOutlined,
   BarChartOutlined,
   UserOutlined,
+  TableOutlined,
   GiftOutlined,
   CommentOutlined,
   AppstoreOutlined,
   UnorderedListOutlined,
   PlusCircleOutlined,
+  OrderedListOutlined,
   WindowsOutlined,
   CalendarOutlined,
   InsertRowAboveOutlined,
@@ -21,14 +23,15 @@ import {
   CoffeeOutlined,
   VideoCameraAddOutlined,
   MailOutlined,
+  MessageOutlined,
   EditOutlined,
   StarOutlined,
+  SolutionOutlined,
   ShoppingOutlined,
   GoldOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
-import "../App.css";
 const { Sider } = Layout;
 
 interface SideBarProps {
@@ -100,17 +103,24 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/lichchieu/list" icon={<CalendarOutlined />}>
           <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/lichchieucu/list" icon={<CalendarOutlined />}>
+          <Link to="/admin/lichchieucu/list">Lịch Chiếu phim cũ</Link>
+        </Menu.Item>
         <Menu.Item key="/admin/lichchieu/add" icon={<CalendarOutlined />}>
           <Link to="/admin/lichchieu/add">Thêm Lịch Chiếu</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      <Menu.SubMenu key="chair" icon={<AppstoreOutlined />} title="Quản Lý Ghế">
-        <Menu.Item key="/admin/category_chair/list" icon={<GoldOutlined />}>
-          <Link to="/admin/category_chair/list">Loại Ghế</Link>
-        </Menu.Item>
-        <Menu.Item key="/admin/chair/list" icon={<InsertRowAboveOutlined />}>
-          <Link to="/admin/chair/list">Ghế</Link>
-        </Menu.Item>
+      <Menu.SubMenu
+        key="chair"
+        icon={<AppstoreOutlined/>}
+        title="Quản Lý Ghế"
+      >
+      <Menu.Item key="/admin/category_chair/list" icon={<GoldOutlined/>}>
+        <Link to="/admin/category_chair/list">Loại Ghế</Link>
+      </Menu.Item>
+      <Menu.Item key="/admin/chair/list" icon={<InsertRowAboveOutlined />}>
+        <Link to="/admin/chair/list">Ghế</Link>
+      </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
         key="users"
@@ -145,18 +155,11 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/cinemas/add">Thêm Mới rạp</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      <Menu.SubMenu
-        key="phongchieu"
-        icon={<VideoCameraAddOutlined />}
-        title="Quản Lý Phòng Chiếu"
-      >
+      <Menu.SubMenu key="phongchieu" icon={<VideoCameraAddOutlined />} title="Quản Lý Phòng Chiếu">
         <Menu.Item key="/admin/room/list" icon={<UnorderedListOutlined />}>
           <Link to="/admin/room/list">Danh Sách Phòng Chiếu</Link>
         </Menu.Item>
-        <Menu.Item
-          key="/admin/room/list/chuaxuat"
-          icon={<UnorderedListOutlined />}
-        >
+        <Menu.Item key="/admin/room/list/chuaxuat" icon={<UnorderedListOutlined />}>
           <Link to="/admin/room/list/chuaxuat">Phòng Chiếu Chưa Xuất</Link>
         </Menu.Item>
         <Menu.Item key="/admin/room/add" icon={<PlusCircleOutlined />}>
@@ -221,7 +224,6 @@ const SideBar: React.FC<SideBarProps> = ({
 
   return (
     <Sider
-      className="custom-sidebar-scroll"
       collapsible
       collapsed={collapsed}
       onCollapse={onCollapse}
@@ -229,56 +231,48 @@ const SideBar: React.FC<SideBarProps> = ({
       width={sidebarWidth}
       collapsedWidth={80}
       breakpoint="lg"
-      style={{
-        height: "100vh",
-        position: "fixed",
-        overflowY: "auto",
-        left: 0,
-        top: 0,
-        bottom: 0,
-        zIndex: 999, // thấp hơn header
-      }}
+      style={{ minHeight: "100vh" }}
     >
       <div
-        style={{
-          padding: 16,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: collapsed ? "center" : "flex-start", // căn giữa khi collapsed
-          background: "rgba(255, 255, 255, 0.05)",
-          cursor: "pointer",
-          userSelect: "none",
-        }}
-        onClick={() => onCollapse(!collapsed)}
-        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-      >
-        <img
-          src={logoStar}
-          alt="Logo"
-          style={{
-            width: 50, // logo to hơn
-            height: 50,
-            objectFit: "contain",
-            transition: "all 0.3s ease",
-            marginRight: collapsed ? 0 : 10, // có khoảng cách khi mở
-          }}
-        />
-        {!collapsed && (
-          <h2
-            style={{
-              color: "#fff",
-              fontSize: 22, // to hơn chút
-              margin: 0,
-              fontFamily: "'Poppins', sans-serif", // font đổi sang Poppins
-              fontWeight: 600,
-              transition: "opacity 0.3s ease",
-              whiteSpace: "nowrap",
-            }}
-          >
-            StarTicket
-          </h2>
-        )}
-      </div>
+  style={{
+    padding: 16,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: collapsed ? "center" : "flex-start", // căn giữa khi collapsed
+    background: "rgba(255, 255, 255, 0.05)",
+    cursor: "pointer",
+    userSelect: "none",
+  }}
+  onClick={() => onCollapse(!collapsed)}
+  title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+>
+  <img
+    src={logoStar}
+    alt="Logo"
+    style={{
+      width: 50, // logo to hơn
+      height: 50,
+      objectFit: "contain",
+      transition: "all 0.3s ease",
+      marginRight: collapsed ? 0 : 10, // có khoảng cách khi mở
+    }}
+  />
+  {!collapsed && (
+    <h2
+      style={{
+        color: "#fff",
+        fontSize: 22, // to hơn chút
+        margin: 0,
+        fontFamily: "'Poppins', sans-serif", // font đổi sang Poppins
+        fontWeight: 600,
+        transition: "opacity 0.3s ease",
+        whiteSpace: "nowrap",
+      }}
+    >
+      StarTicket
+    </h2>
+  )}
+</div>
 
       {menuContent}
     </Sider>
