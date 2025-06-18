@@ -12,6 +12,7 @@ export interface User {
   anh_dai_dien: string; 
   vai_tro_id: "admin" | "user";
   isActive: boolean;
+  trang_thai: boolean;
 }
 export interface Food {
   id: number;

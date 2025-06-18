@@ -19,7 +19,7 @@ class PhanHoiKhachHangController extends Controller
         return response()->json([
             'message'=>'khong co phan hoi nao',
             'data'=>[]
-        ],404);
+        ],200);
        }
        return response()->json([
         'message'=>'phan hoi khach hang',

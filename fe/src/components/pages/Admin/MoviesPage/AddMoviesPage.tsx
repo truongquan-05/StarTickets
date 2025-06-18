@@ -10,7 +10,6 @@ import {
   message,
   Row,
   Select,
-  Typography,
   Upload,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -18,9 +17,10 @@ import { getGenreList, getListChuyenNgu } from "../../../provider/hungProvider";
 import { useCreateMovies } from "../../../hook/hungHook";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
-const { Title } = Typography;
 
 const AddMoviesPage = () => {
   const [form] = Form.useForm();
@@ -168,7 +168,19 @@ const AddMoviesPage = () => {
                   name="mo_ta"
                   rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
                 >
-                  <Input.TextArea rows={5} placeholder="Nhập mô tả phim" />
+                  <ReactQuill
+                    theme="snow"
+                    style={{ height: "300px", marginBottom: "50px" }} // tăng chiều cao
+                    modules={{
+                      toolbar: [
+                        [{ header: [1, 2, false] }],
+                        ["bold", "italic", "underline"],
+                        [{ list: "ordered" }, { list: "bullet" }],
+                        ["link"],
+                        ["clean"],
+                      ],
+                    }}
+                  />
                 </Form.Item>
               </Col>
 
@@ -321,16 +333,15 @@ const AddMoviesPage = () => {
                     ))}
                   </Select>
                 </Form.Item>
+                <Form.Item style={{ textAlign: "right" }}>
+                  <Button type="primary" htmlType="submit">
+                    Thêm mới phim
+                  </Button>
+                </Form.Item>
               </Col>
             </Row>
 
             <Divider />
-
-            <Form.Item style={{ textAlign: "right" }}>
-              <Button type="primary" htmlType="submit">
-                Thêm mới phim
-              </Button>
-            </Form.Item>
           </div>
         </Form>
       </Card>

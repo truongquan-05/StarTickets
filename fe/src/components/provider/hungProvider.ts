@@ -21,6 +21,12 @@ export const getListMovies = async ({resource = "phim"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data
 }
+export const getMovieDetail = async ({ id, resource = "phim" }: Props) => {
+  if (!id) throw new Error("Thiếu ID phim");
+  const { data } = await axiosClient.get(`${resource}/${id}`);
+  return data;
+};
+
 
 export const getDeleteMovies = async ({resource = "phim" , id} : Props) => {
   if(!id) return;

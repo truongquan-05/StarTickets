@@ -67,7 +67,8 @@ const PhanHoiNguoiDung = () => {
 
   return (
     
-    <Card title="Phản hồi người dùng" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+    <Card title="Phản hồi người dùng" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' , background: "#fff",
+        height: "95%", }}>
 
       {feedbackData.length === 0 ? (
         <Typography.Text type="secondary">

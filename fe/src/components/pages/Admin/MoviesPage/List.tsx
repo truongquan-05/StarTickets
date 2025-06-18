@@ -31,6 +31,8 @@ import {
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
 const { Text, Paragraph } = Typography;
@@ -181,37 +183,36 @@ const List = () => {
       width: 380,
       render: (_: any, record: IMovies) => (
         <div>
-          <Text strong style={{ fontSize: 16 }}>
-            {record.ten_phim}
-          </Text>
-          <Paragraph
-            ellipsis={{ rows: 3 }}
-            style={{ marginBottom: 4, marginTop: 4 }}
-            strong
-          >
-            Loại Suất Chiếu: {record.loai_suat_chieu}
-          </Paragraph>
-          <div>
-            <Text>
-              <b>Quốc gia:</b> {record.quoc_gia} | <b>Ngôn ngữ:</b>{" "}
-              {record.ngon_ngu}
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <Text strong style={{ fontSize: 16 }}>
+              <Link to={`/admin/movies/detail/${record.id}`}>
+                🎬 {record.ten_phim}
+              </Link>
             </Text>
-          </div>
-          <div>
+
             <Text>
-              <b>Thể loại:</b> {getGenreName(record.the_loai_id)} |{" "}
+              <b>Loại suất chiếu:</b> {record.loai_suat_chieu}
+            </Text>
+
+            <Text>
+              <b>Quốc gia:</b> {record.quoc_gia}
+            </Text>
+
+            <Text>
+              <b>Thể loại:</b> {getGenreName(record.the_loai_id)}
+            </Text>
+
+            <Text>
               <b>Thời lượng:</b> {record.thoi_luong} phút
             </Text>
-          </div>
-          <div>
+
             <Text>
               <b>Ngày chiếu:</b>{" "}
               {record.ngay_cong_chieu
                 ? moment(record.ngay_cong_chieu).format("DD/MM/YYYY")
                 : "Chưa cập nhật"}
             </Text>
-          </div>
-          <div>
+
             <Text>
               <b>Ngày kết thúc:</b>{" "}
               {record.ngay_ket_thuc
@@ -235,13 +236,12 @@ const List = () => {
                     chuyenNguArray.map((item: any, index: number) => (
                       <Tag
                         key={index}
-                        color="rgb(118 175 87)"
+                        color="geekblue"
                         style={{
-                          color: "white",
-                          fontWeight: "bold",
+                          fontWeight: 600,
                           padding: "4px 12px",
-                          borderRadius: "6px",
-                          marginRight: "6px",
+                          borderRadius: 6,
+                          marginBottom: 4,
                         }}
                       >
                         {item.the_loai}
@@ -396,10 +396,18 @@ const List = () => {
               name="mo_ta"
               rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
             >
-              <Input.TextArea
-                rows={4}
+              <ReactQuill
+                theme="snow"
+                style={{ height: "300px", marginBottom: "50px" }}
                 placeholder="Nhập mô tả phim"
-                maxLength={500}
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["clean"],
+                  ],
+                }}
               />
             </Form.Item>
 

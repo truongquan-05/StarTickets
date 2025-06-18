@@ -53,27 +53,23 @@ class LichChieuController extends Controller
 
             // 1. Ngày chiếu không được trước ngày công chiếu (nếu không phải "Sớm")
             if ($ngayChieu < $ngayCongChieu && $phim->loai_suat_chieu != "Sớm") {
-                $validator->errors()->add('gio_chieu', 'Ngày chiếu không được trước ngày công chiếu.');
+                $validator->errors()->add('err', 'Ngày chiếu không được trước ngày công chiếu.');
             }
 
             // 2. Ngày chiếu không được sau ngày kết thúc (nếu có)
             if (!empty($phim->ngay_ket_thuc)) {
                 $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->toDateString();
                 if ($ngayChieu > $ngayKetThucPhim) {
-                    $validator->errors()->add('gio_chieu', 'Ngày chiếu không được sau ngày kết thúc của phim.');
+                    $validator->errors()->add('err', 'Ngày chiếu không được sau ngày kết thúc của phim.');
                 }
             }
 
-            // 3. Ngày bắt đầu và kết thúc phải giống nhau
-            if ($ngayChieu !== $ngayKetThuc) {
-                $validator->errors()->add('error', 'Suất chiếu phải bắt đầu và kết thúc trong cùng một ngày.');
-            }
+
         });
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Dữ liệu không hợp lệ',
-                'errors' => $validator->errors()
+                'message' => $validator->errors()
             ], 422);
         }
         $data = LichChieu::create($request->all());

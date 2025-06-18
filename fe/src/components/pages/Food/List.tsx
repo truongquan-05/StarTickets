@@ -186,7 +186,7 @@ const FoodList = () => {
   ];
 
   return (
-    <Card style={{ margin: "15px" }}>
+    <Card style={{ margin: "15px" ,background: "#fff", height: "95%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
         <Title level={3} style={{ margin: 0 }}>
           Danh sách món ăn
