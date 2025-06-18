@@ -105,7 +105,7 @@ const ListCategoryChair = () => {
     },
   ];
   return (
-    <Card title="Danh sách thể loại ghế" style={{ margin: "20px" }}>
+    <Card title="Danh sách thể loại ghế" style={{ margin: "20px", height:"95%" }}>
       <div className="btn-category-chair">
         <Button
           className="add-category-chair"

@@ -7,6 +7,8 @@ import {
   message,
   Card,
   Typography,
+  Col,
+  Row,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -154,156 +156,180 @@ const AddLichChieu = () => {
   };
 
   return (
-    <Card style={{ maxWidth: 600, margin: "0 auto" }}>
-      <Title level={3}>Thêm lịch chiếu mới</Title>
+     <Card
+      style={{
+        maxWidth: 1500,
+        margin: "0 auto",
+        padding: "5%",
+        height: "100%",
+        borderRadius: 10,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+      }}
+    >
+      <Title level={3} style={{ textAlign: "center", marginBottom: 32 }}>
+        Thêm lịch chiếu mới
+      </Title>
+
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item
-          name="phim_id"
-          label="Phim"
-          rules={[{ required: true, message: "Vui lòng chọn phim" }]}
-        >
-          <Select
-            placeholder="Chọn phim"
-            loading={phimLoading}
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.children as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            disabled={phimLoading}
-            onChange={handleChangePhim}
-          >
-            {phimList.map((phim: any) => (
-              <Option key={phim.id} value={phim.id}>
-                {phim.ten_phim}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+        <Row gutter={24}>
+          <Col xs={24} sm={12}>
+            <Form.Item
+              name="phim_id"
+              label="Phim"
+              rules={[{ required: true, message: "Vui lòng chọn phim" }]}
+            >
+              <Select
+                placeholder="Chọn phim"
+                loading={phimLoading}
+                showSearch
+                optionFilterProp="label"
+                filterOption={(input, option) => {
+                  const label = option?.label;
+                  if (typeof label === "string") {
+                    return label.toLowerCase().includes(input.toLowerCase());
+                  }
+                  return false;
+                }}
+                options={phimList.map((phim: any) => ({
+                  label: phim.ten_phim,
+                  value: phim.id,
+                }))}
+                onChange={handleChangePhim}
+                disabled={phimLoading}
+              />
+            </Form.Item>
+          </Col>
 
-        <Form.Item
-          name="phong_id"
-          label="Phòng chiếu"
-          rules={[{ required: true, message: "Vui lòng chọn phòng chiếu" }]}
-        >
-          <Select
-            placeholder="Chọn phòng chiếu"
-            loading={phongLoading}
-            showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.children as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            disabled={phongLoading}
-          >
-            {phongList.map((phong: any) => (
-              <Option key={phong.id} value={phong.id}>
-                {phong.ten_phong}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          name="chuyen_ngu_id"
-          label="Chuyển Ngữ"
-          rules={[{ required: true, message: "Vui lòng chọn chuyển ngữ" }]}
-        >
-          <Select
-            placeholder="Chọn chuyển ngữ"
-            loading={chuyenNguLoading}
-            showSearch
-            optionFilterProp="children"
-            disabled={!selectedPhimId || chuyenNguLoading}
-            filterOption={(input, option) =>
-              (option?.children as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-          >
-            {chuyenNguList.map((cn: any) => (
-              <Option key={cn.id} value={cn.id}>
-                {cn.the_loai}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          name="gio_chieu"
-          label="Giờ chiếu"
-          rules={[
-            { required: true, message: "Vui lòng chọn giờ chiếu" },
-            {
-              validator: (_, value) => {
-                if (!value) return Promise.resolve();
-                if (value.isBefore(dayjs())) {
-                  return Promise.reject(
-                    new Error("Không được chọn thời gian trong quá khứ")
-                  );
+          <Col xs={24} sm={12}>
+            <Form.Item
+              name="phong_id"
+              label="Phòng chiếu"
+              rules={[{ required: true, message: "Vui lòng chọn phòng chiếu" }]}
+            >
+              <Select
+                placeholder="Chọn phòng chiếu"
+                loading={phongLoading}
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
                 }
-                return Promise.resolve();
-              },
-            },
-          ]}
-        >
-          <DatePicker
-            showTime={{ format: "HH:mm:ss" }}
-            format="YYYY-MM-DD HH:mm:ss"
-            style={{ width: "100%" }}
-            disabledDate={(current) =>
-              current && current < dayjs().startOf("day")
-            }
-            disabledTime={(current) => {
-              if (!current) return {};
-              const now = dayjs();
-              if (current.isSame(now, "day")) {
-                return {
-                  disabledHours: () =>
-                    Array.from({ length: 24 }, (_, i) =>
-                      i < now.hour() ? i : -1
-                    ).filter((i) => i !== -1),
-                  disabledMinutes: (selectedHour) =>
-                    selectedHour === now.hour()
-                      ? Array.from({ length: 60 }, (_, i) =>
-                          i < now.minute() ? i : -1
-                        ).filter((i) => i !== -1)
-                      : [],
-                  disabledSeconds: (selectedHour, selectedMinute) =>
-                    selectedHour === now.hour() &&
-                    selectedMinute === now.minute()
-                      ? Array.from({ length: 60 }, (_, i) =>
-                          i < now.second() ? i : -1
-                        ).filter((i) => i !== -1)
-                      : [],
-                };
-              }
-              return {};
-            }}
-            onChange={handleChangeGioChieu}
-          />
-        </Form.Item>
+                disabled={phongLoading}
+              >
+                {phongList.map((phong: any) => (
+                  <Option key={phong.id} value={phong.id}>
+                    {phong.ten_phong}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
 
-        {gioKetThucTinh && (
-          <Form.Item label="Giờ kết thúc (tự động tính)">
-            <input
-              type="text"
-              readOnly
-              value={gioKetThucTinh}
-              style={{
-                width: "100%",
-                padding: "8px",
-                backgroundColor: "#f5f5f5",
-                border: "1px solid #d9d9d9",
-                borderRadius: 4,
-              }}
-            />
-          </Form.Item>
-        )}
+          <Col xs={24} sm={12}>
+            <Form.Item
+              name="chuyen_ngu_id"
+              label="Chuyển Ngữ"
+              rules={[{ required: true, message: "Vui lòng chọn chuyển ngữ" }]}
+            >
+              <Select
+                placeholder="Chọn chuyển ngữ"
+                loading={chuyenNguLoading}
+                showSearch
+                optionFilterProp="children"
+                disabled={!selectedPhimId || chuyenNguLoading}
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              >
+                {chuyenNguList.map((cn: any) => (
+                  <Option key={cn.id} value={cn.id}>
+                    {cn.the_loai}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col xs={24} sm={12}>
+            <Form.Item
+              name="gio_chieu"
+              label="Giờ chiếu"
+              rules={[
+                { required: true, message: "Vui lòng chọn giờ chiếu" },
+                {
+                  validator: (_, value) => {
+                    if (!value) return Promise.resolve();
+                    if (value.isBefore(dayjs())) {
+                      return Promise.reject(
+                        new Error("Không được chọn thời gian trong quá khứ")
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
+            >
+              <DatePicker
+                showTime={{ format: "HH:mm:ss" }}
+                format="YYYY-MM-DD HH:mm:ss"
+                style={{ width: "100%" }}
+                disabledDate={(current) =>
+                  current && current < dayjs().startOf("day")
+                }
+                disabledTime={(current) => {
+                  if (!current) return {};
+                  const now = dayjs();
+                  if (current.isSame(now, "day")) {
+                    return {
+                      disabledHours: () =>
+                        Array.from({ length: 24 }, (_, i) =>
+                          i < now.hour() ? i : -1
+                        ).filter((i) => i !== -1),
+                      disabledMinutes: (selectedHour) =>
+                        selectedHour === now.hour()
+                          ? Array.from({ length: 60 }, (_, i) =>
+                              i < now.minute() ? i : -1
+                            ).filter((i) => i !== -1)
+                          : [],
+                      disabledSeconds: (selectedHour, selectedMinute) =>
+                        selectedHour === now.hour() &&
+                        selectedMinute === now.minute()
+                          ? Array.from({ length: 60 }, (_, i) =>
+                              i < now.second() ? i : -1
+                            ).filter((i) => i !== -1)
+                          : [],
+                    };
+                  }
+                  return {};
+                }}
+                onChange={handleChangeGioChieu}
+              />
+            </Form.Item>
+          </Col>
+
+          {gioKetThucTinh && (
+            <Col span={24}>
+              <Form.Item label="Giờ kết thúc (tự động tính)">
+                <input
+                  type="text"
+                  readOnly
+                  value={gioKetThucTinh}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    backgroundColor: "#f5f5f5",
+                    border: "1px solid #d9d9d9",
+                    borderRadius: 4,
+                  }}
+                />
+              </Form.Item>
+            </Col>
+          )}
+        </Row>
 
         <Form.Item>
           <Button
@@ -312,6 +338,7 @@ const AddLichChieu = () => {
             block
             loading={submitting}
             disabled={submitting}
+            style={{ marginTop: 24 }}
           >
             Thêm lịch chiếu
           </Button>

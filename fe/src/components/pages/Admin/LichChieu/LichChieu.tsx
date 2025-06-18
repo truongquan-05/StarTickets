@@ -181,7 +181,15 @@ const LichChieu = () => {
   if (isError) return <div>Đã xảy ra lỗi khi tải dữ liệu!</div>;
 
   return (
-    <div>
+    <div
+      style={{
+        padding: "20px 20px 0px 20px",
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        height:"100%",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
       <h2>Danh sách lịch chiếu còn sắp tới</h2>
       <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
         <span>Chọn ngày:&nbsp;</span>

@@ -20,7 +20,7 @@ const { Title, Paragraph, Text } = Typography;
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useMovieDetail(id);
-   const BASE_URL = "http://127.0.0.1:8000/api";
+   const BASE_URL = "http://127.0.0.1:8000";
 
   if (isLoading) {
     return (

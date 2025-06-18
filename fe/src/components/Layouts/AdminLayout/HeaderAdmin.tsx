@@ -8,7 +8,7 @@ import {
   ScanOutlined,
   MoonOutlined,
   SunOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 import {
   Layout,
   Button,
@@ -18,8 +18,8 @@ import {
   Dropdown,
   theme as antdTheme,
   Menu,
-} from 'antd';
-import { useState } from 'react';
+} from "antd";
+import { useState } from "react";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -48,20 +48,20 @@ const HeaderAdmin = ({
   const toggleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
-    document.body.setAttribute('data-theme', newMode ? 'dark' : 'light');
+    document.body.setAttribute("data-theme", newMode ? "dark" : "light");
   };
 
   const user = {
-    name: 'Nguyễn Văn A',
-    role: 'Quản trị viên',
-    avatar: '',
+    name: "Nguyễn Văn A",
+    role: "Quản trị viên",
+    avatar: "",
   };
-
+  const sidebarWidth = 250;
   const accountMenu = (
     <Menu
       items={[
-        { key: '1', label: 'Thông tin cá nhân' },
-        { key: '2', label: 'Đăng xuất' },
+        { key: "1", label: "Thông tin cá nhân" },
+        { key: "2", label: "Đăng xuất" },
       ]}
     />
   );
@@ -69,13 +69,19 @@ const HeaderAdmin = ({
   return (
     <Header
       style={{
-        padding: '0 16px',
+        position: "fixed",
+        left: collapsed ? 80 : sidebarWidth,
+        right: 0,
+        top: 0,
+        height: 70,
+        zIndex: 1000,
+        padding: "0 16px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
         background: token.colorBgContainer,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '70px',
-        boxShadow: '5px'}}
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
     >
       <Button
         type="text"
@@ -84,10 +90,12 @@ const HeaderAdmin = ({
         style={{ fontSize: 20 }}
       />
       <Space size="middle">
-        <Button type="text" icon={<ScanOutlined />} style={{ fontSize: 20 }}/>
+        <Button type="text" icon={<ScanOutlined />} style={{ fontSize: 20 }} />
         <Button
           type="text"
-          icon={isFullScreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+          icon={
+            isFullScreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />
+          }
           onClick={toggleFullScreen}
           style={{ fontSize: 20 }}
         />
@@ -102,7 +110,7 @@ const HeaderAdmin = ({
             <Avatar
               icon={<UserOutlined />}
               src={user.avatar}
-              style={{ backgroundColor: '#87d068' }}
+              style={{ backgroundColor: "#87d068" }}
             />
             <div style={{ lineHeight: 1 }}>
               <Text strong>Xin chào: {user.name}</Text>

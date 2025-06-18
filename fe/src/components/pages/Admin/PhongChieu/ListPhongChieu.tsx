@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Table, Button, Modal, message } from "antd";
+import { Table, Button, Modal, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IPhongChieu } from "../interface/phongchieu";
 import {
@@ -21,35 +21,32 @@ const ListPhongChieu = () => {
 
   // Lấy danh sách phòng chiếu
   const {
-    data: phongChieuDataRaw,
+    data: phongChieuData = [],
     isLoading: isLoadingPhong,
     isError: isErrorPhong,
-    error: errorPhong,
   } = useQuery({
     queryKey: ["phong_chieu"],
-    queryFn: () => getListPhongChieu({ resource: "phong_chieu" }).then((res) => res.data),
+    queryFn: () =>
+      getListPhongChieu({ resource: "phong_chieu" }).then((res) =>
+        Array.isArray(res.data) ? res.data : res.data?.data || []
+      ),
   });
-
-  const phongChieuData = Array.isArray(phongChieuDataRaw) ? phongChieuDataRaw : [];
-
   const filteredPhongChieuData = useMemo(() => {
     return phongChieuData.filter(
       (phong: IPhongChieu) => phong.trang_thai === 1 || phong.trang_thai === "1"
     );
   }, [phongChieuData]);
-
-  // Lấy danh sách rạp
   const {
-    data: rapDataRaw,
+    data: rapData = [],
     isLoading: isLoadingRap,
     isError: isErrorRap,
-    error: errorRap,
   } = useQuery({
     queryKey: ["rap"],
-    queryFn: () => getListCinemas({ resource: "rap" }).then((res) => res.data),
+    queryFn: () =>
+      getListCinemas({ resource: "rap" }).then((res) =>
+        Array.isArray(res.data) ? res.data : []
+      ),
   });
-
-  const rapData = Array.isArray(rapDataRaw) ? rapDataRaw : [];
 
   // Dùng hook lấy danh sách ghế theo phòng
   const {
@@ -132,7 +129,7 @@ const ListPhongChieu = () => {
       key: "trang_thai",
       align: "center",
       render: (value: string) => {
-        const isActive = value === "1" ;
+        const isActive = value === "1"; // hoặc Number(value) === 1
         return (
           <span style={{ color: isActive ? "green" : "red" }}>
             {isActive ? "Hoạt động" : "Ngừng hoạt động"}
@@ -153,7 +150,13 @@ const ListPhongChieu = () => {
   ];
 
   return (
-    <>
+    <Card
+      style={{
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        background: "#fff",
+        height: "95%",
+      }}
+    >
       <Table
         dataSource={filteredPhongChieuData}
         columns={columns}
@@ -188,7 +191,7 @@ const ListPhongChieu = () => {
           trangThaiPhong={1}
         />
       </Modal>
-    </>
+    </Card>
   );
 };
 
