@@ -81,9 +81,7 @@ const AddLichChieu = () => {
       setGioKetThucTinh("");
     }
   };
-  // const test = () => {
-  //   alert("Hello")
-  // }
+
   const handleChangeGioChieu = (value: Dayjs | null) => {
     if (value && thoiLuongPhim > 0) {
       const ketThuc = value.add(thoiLuongPhim, "minute");
