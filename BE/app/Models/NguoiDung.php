@@ -10,7 +10,6 @@ use Illuminate\Notifications\Notifiable;
 
 class NguoiDung extends Model
 {
-  /** @use HasFactory<\Database\Factories\NguoiDungFactory> */
   use HasFactory;
   use HasApiTokens, Notifiable;
   protected $table = 'nguoi_dung';
@@ -24,6 +23,10 @@ class NguoiDung extends Model
     'email_da_xac_thuc',
     'trang_thai',
     'vai_tro_id',
+  ];
+  protected $hidden = [
+    'password',
+    'access_token',
   ];
   public function vaitro()
   {
