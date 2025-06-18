@@ -100,6 +100,9 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/lichchieu/list" icon={<CalendarOutlined />}>
           <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/lichchieucu/list" icon={<CalendarOutlined />}>
+          <Link to="/admin/lichchieucu/list">Lịch Chiếu Cũ</Link>
+        </Menu.Item>
         <Menu.Item key="/admin/lichchieu/add" icon={<CalendarOutlined />}>
           <Link to="/admin/lichchieu/add">Thêm Lịch Chiếu</Link>
         </Menu.Item>

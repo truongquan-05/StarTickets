@@ -6,9 +6,9 @@ import {
   DatePicker,
   message,
   Card,
-  Row,
-  Col,
   Typography,
+  Col,
+  Row,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -81,9 +81,6 @@ const AddLichChieu = () => {
       setGioKetThucTinh("");
     }
   };
-  // const test = () => {
-  //   alert("Hello")
-  // }
   const handleChangeGioChieu = (value: Dayjs | null) => {
     if (value && thoiLuongPhim > 0) {
       const ketThuc = value.add(thoiLuongPhim, "minute");
@@ -130,8 +127,24 @@ const AddLichChieu = () => {
           setSelectedPhimId(null);
           setSubmitting(false);
         },
-        onError: () => {
-          // message.error("Thêm lịch chiếu thất bại");
+        onError: (error: any) => {
+          if (
+            error.response &&
+            error.response.status === 422 &&
+            error.response.data.errors
+          ) {
+            const apiErrors = error.response.data.errors;
+
+            const allErrors = Object.values(apiErrors)
+              .map((messages) =>
+                Array.isArray(messages) ? messages.join("\n") : messages
+              )
+              .join("\n");
+
+            message.error(allErrors, 5);
+          } else {
+            message.error("Thêm lịch chiếu thất bại");
+          }
           setSubmitting(false);
         },
       });
@@ -143,7 +156,7 @@ const AddLichChieu = () => {
   };
 
   return (
-    <Card
+     <Card
       style={{
         maxWidth: 1500,
         margin: "0 auto",
