@@ -114,12 +114,13 @@ Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenN
 
 
 //trang chu
-Route::prefix('client')->group(function () {
+
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
     Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
-    Route::get('/search', [SearchController::class, 'search']);
-});
+    Route::get('/search', [HomeController::class, 'search']);
+    Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
+
 
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 
