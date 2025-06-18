@@ -26,6 +26,7 @@ import News from '../pages/Users/News';
 import PhongChieuChuaXuat from '../pages/Admin/PhongChieu/PhongChieuChuaXuat';
 import LichChieuCu from '../pages/Admin/LichChieu/LichChieuCu';
 import PhongChieuXoaMem from '../pages/Admin/PhongChieu/PhongChieuXoaMem';
+import MovieDetail from '../pages/Admin/MoviesPage/ChiTietPhim';
 
 
 
@@ -49,6 +50,7 @@ const Routermain = () => {
       children: [
         { path: '', element: <DashboardAdmin /> },
         { path: 'movies/list', element: <List /> },
+         { path: 'movies/detail/:id', element: <MovieDetail /> },
         { path: 'movies/add', element: <AddMoviesPage /> },
         { path: 'category_chair/list', element: <ListCategoryChair /> },
         { path: 'chair/list', element: <Chair /> },
