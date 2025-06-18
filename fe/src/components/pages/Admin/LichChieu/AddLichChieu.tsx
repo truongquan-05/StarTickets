@@ -135,15 +135,16 @@ const AddLichChieu = () => {
           ) {
             const apiErrors = error.response.data.errors;
 
-            const allErrors = Object.values(apiErrors)
-              .map((messages) =>
-                Array.isArray(messages) ? messages.join("\n") : messages
-              )
-              .join("\n");
-
-            message.error(allErrors, 5);
+            Object.entries(apiErrors).forEach(([field, messages]) => {
+              if (Array.isArray(messages)) {
+                messages.forEach((msg) => {
+                  message.error(`${field}: ${msg}`);
+                });
+              } else {
+                message.error(`${field}: ${messages}`);
+              }
+            });
           } else {
-            message.error("Thêm lịch chiếu thất bại");
           }
           setSubmitting(false);
         },
@@ -156,7 +157,7 @@ const AddLichChieu = () => {
   };
 
   return (
-     <Card
+    <Card
       style={{
         maxWidth: 1500,
         margin: "0 auto",

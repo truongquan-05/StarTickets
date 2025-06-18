@@ -3,6 +3,7 @@ import {  checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateM
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 export const useListMovies = ({ resource = "phim" } : Props) => {
   return useQuery({
@@ -327,7 +328,14 @@ export const useCreateLichChieu = ({resource = "lich_chieu"} : Props) => {
       navigate("/admin/lichchieu/list")
       queryClient.invalidateQueries({queryKey:[resource]});
     },
-    onError : () => {
+    onError : (error : AxiosError) => {
+      const errMsg =
+        (error.response?.data as any)?.message?.err ||
+        "Đã có lỗi xảy ra, vui lòng thử lại";
+      message.error(errMsg);
+
+      // Nếu bạn muốn ném tiếp lỗi ra cho component cũng xử lý, thêm:
+      throw error;
     }
   })
 }

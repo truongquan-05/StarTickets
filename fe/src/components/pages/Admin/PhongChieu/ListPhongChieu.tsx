@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Table, Button, Modal, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -26,29 +26,45 @@ const ListPhongChieu = () => {
     isError: isErrorPhong,
   } = useQuery({
     queryKey: ["phong_chieu"],
-    queryFn: () =>
-      getListPhongChieu({ resource: "phong_chieu" }).then((res) =>
-        Array.isArray(res.data) ? res.data : res.data?.data || []
-      ),
+    queryFn: async () => {
+      try {
+        const res = await getListPhongChieu({ resource: "phong_chieu" });
+        if (Array.isArray(res?.data)) return res.data;
+        if (Array.isArray(res?.data?.data)) return res.data.data;
+        return []; // fallback an toàn
+      } catch (error) {
+        console.error("Lỗi khi fetch phong_chieu:", error);
+        return [];
+      }
+    },
   });
+
+  // Bảo vệ khi phongChieuData không phải mảng
   const filteredPhongChieuData = useMemo(() => {
+    if (!Array.isArray(phongChieuData)) return [];
     return phongChieuData.filter(
       (phong: IPhongChieu) => phong.trang_thai === 1 || phong.trang_thai === "1"
     );
   }, [phongChieuData]);
+
   const {
     data: rapData = [],
     isLoading: isLoadingRap,
     isError: isErrorRap,
   } = useQuery({
     queryKey: ["rap"],
-    queryFn: () =>
-      getListCinemas({ resource: "rap" }).then((res) =>
-        Array.isArray(res.data) ? res.data : []
-      ),
+    queryFn: async () => {
+      try {
+        const res = await getListCinemas({ resource: "rap" });
+        if (Array.isArray(res?.data)) return res.data;
+        return [];
+      } catch (error) {
+        console.error("Lỗi khi fetch rap:", error);
+        return [];
+      }
+    },
   });
 
-  // Dùng hook lấy danh sách ghế theo phòng
   const {
     data: danhSachGhe = [],
     isLoading: isLoadingGhe,
@@ -129,7 +145,7 @@ const ListPhongChieu = () => {
       key: "trang_thai",
       align: "center",
       render: (value: string) => {
-        const isActive = value === "1"; // hoặc Number(value) === 1
+        const isActive = value === "1";
         return (
           <span style={{ color: isActive ? "green" : "red" }}>
             {isActive ? "Hoạt động" : "Ngừng hoạt động"}
