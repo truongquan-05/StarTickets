@@ -57,31 +57,18 @@ export const getDeleteVoucher = async ({ resource = "ma_giam_gia", id }: Props) 
   return data;
 };
 
+
 export const getCreateVoucher = async ({ resource = "ma_giam_gia", values }: Props) => {
-  const { data } = await axiosClient.post(resource, values, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  // Loại bỏ id nếu có
+  const { id, ...rest } = values || {};
+  const { data } = await axiosClient.post(resource, rest);
   return data;
 };
 
+
+// Cập nhật rạp chiếu
 export const getUpdateVoucher = async ({ resource = "ma_giam_gia", id, values }: Props) => {
   if (!id) return;
-  
-  // Nếu values là FormData thì thêm _method=PUT
-  if (values instanceof FormData) {
-    values.append("_method", "PUT");
-    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return data;
-  }
-
-  // Nếu không phải FormData thì dùng PUT bình thường
   const { data } = await axiosClient.put(`${resource}/${id}`, values);
   return data;
 };
-

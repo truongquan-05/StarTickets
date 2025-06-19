@@ -3,7 +3,6 @@ import {
   Form,
   Input,
   Button,
-  Upload,
   message,
   Card,
   Space,
@@ -11,12 +10,10 @@ import {
   DatePicker,
   Select,
 } from "antd";
-import type { UploadFile } from "antd/es/upload/interface";
 import { useNavigate } from "react-router-dom";
-import { useCreateVoucher } from "../../hook/thinhHook"; // Đúng 2 dấu chéo
+import { useCreateVoucher } from "../../hook/thinhHook";
 
 const { Option } = Select;
-const BASE_URL = "http://127.0.0.1:8000";
 
 const AddVoucher = () => {
   const [form] = Form.useForm();
@@ -24,26 +21,17 @@ const AddVoucher = () => {
   const { mutate: createMutate } = useCreateVoucher({ resource: "ma_giam_gia" });
 
   const onFinish = (values: any) => {
-    console.log("Form values:", values); // Debug giá trị form
+    // Chuyển ngày thành chuỗi YYYY-MM-DD
+    const payload = {
+      ...values,
+      ngay_bat_dau: values.ngay_bat_dau?.format("YYYY-MM-DD"),
+      ngay_ket_thuc: values.ngay_ket_thuc?.format("YYYY-MM-DD"),
+    };
 
-    const formData = new FormData();
-    formData.append("ma", values.ma);
-    formData.append("phan_tram_giam", String(values.phan_tram_giam));
-    formData.append("giam_toi_da", String(values.giam_toi_da));
-    formData.append("gia_tri_don_hang_toi_thieu", String(values.gia_tri_don_hang_toi_thieu));
-    formData.append("ngay_bat_dau", values.ngay_bat_dau.format("YYYY-MM-DD"));
-    formData.append("ngay_ket_thuc", values.ngay_ket_thuc.format("YYYY-MM-DD"));
-    formData.append("so_lan_su_dung", String(values.so_lan_su_dung));
-    formData.append("trang_thai", values.trang_thai);
-
-    if (values.image && values.image.length > 0 && values.image[0].originFileObj) {
-      formData.append("image", values.image[0].originFileObj);
-    }
-
-    createMutate(formData, {
+    createMutate(payload, {
       onSuccess: () => {
         message.success("Thêm voucher thành công");
-        navigate("/admin/vouchers/list"); // Route đúng đã sửa
+        navigate("/admin/vouchers/list");
       },
       onError: (error) => {
         console.error("Thêm voucher lỗi:", error);
@@ -64,6 +52,7 @@ const AddVoucher = () => {
           gia_tri_don_hang_toi_thieu: 0,
           so_lan_su_dung: 1,
           trang_thai: "CHƯA KÍCH HOẠT",
+          image: "",
         }}
       >
         <Form.Item
@@ -77,17 +66,9 @@ const AddVoucher = () => {
         <Form.Item
           label="Hình ảnh"
           name="image"
-          valuePropName="fileList"
-          getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+          rules={[{ required: true, message: "Vui lòng nhập đường dẫn ảnh!" }]}
         >
-          <Upload
-            listType="picture"
-            beforeUpload={() => false}
-            maxCount={1}
-            accept="image/*"
-          >
-            <Button>Chọn ảnh</Button>
-          </Upload>
+          <Input placeholder="Nhập URL hoặc chuỗi ảnh base64" />
         </Form.Item>
 
         <Form.Item
@@ -98,7 +79,7 @@ const AddVoucher = () => {
             { type: "number", min: 0, max: 100, message: "0-100%" },
           ]}
         >
-          <InputNumber min={0} max={100} style={{ width: '100%' }} />
+          <InputNumber min={0} max={100} style={{ width: "100%" }} />
         </Form.Item>
 
         <Form.Item
@@ -106,7 +87,7 @@ const AddVoucher = () => {
           name="giam_toi_da"
           rules={[{ required: true, message: "Vui lòng nhập giảm tối đa!" }]}
         >
-          <InputNumber min={0} style={{ width: '100%' }} />
+          <InputNumber min={0} style={{ width: "100%" }} />
         </Form.Item>
 
         <Form.Item
@@ -114,7 +95,7 @@ const AddVoucher = () => {
           name="gia_tri_don_hang_toi_thieu"
           rules={[{ required: true, message: "Vui lòng nhập giá trị tối thiểu!" }]}
         >
-          <InputNumber min={0} style={{ width: '100%' }} />
+          <InputNumber min={0} style={{ width: "100%" }} />
         </Form.Item>
 
         <Form.Item
@@ -122,7 +103,7 @@ const AddVoucher = () => {
           name="ngay_bat_dau"
           rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
         >
-          <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+          <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
         </Form.Item>
 
         <Form.Item
@@ -130,7 +111,7 @@ const AddVoucher = () => {
           name="ngay_ket_thuc"
           rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc!" }]}
         >
-          <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+          <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
         </Form.Item>
 
         <Form.Item
@@ -138,7 +119,7 @@ const AddVoucher = () => {
           name="so_lan_su_dung"
           rules={[{ required: true, message: "Vui lòng nhập số lần sử dụng!" }]}
         >
-          <InputNumber min={0} style={{ width: '100%' }} />
+          <InputNumber min={0} style={{ width: "100%" }} />
         </Form.Item>
 
         <Form.Item

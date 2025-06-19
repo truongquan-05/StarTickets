@@ -97,7 +97,7 @@ export const useCreateVoucher = ({ resource = "ma_giam_gia" }: Props) => {
     onSuccess: () => {
       message.success("Thêm voucher thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
-      navigate("/admin/vouchers"); // Cập nhật đúng đường dẫn của voucher
+      navigate("/admin/vouchers/list"); // Cập nhật đúng đường dẫn của voucher
     },
     onError: () => {
       message.error("Thêm voucher thất bại");
@@ -112,10 +112,8 @@ export const useUpdateVoucher = ({ resource = "ma_giam_gia" }: Props) => {
       getUpdateVoucher({ resource, id, values }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [resource] });
-      message.success("Cập nhật voucher thành công");
     },
     onError: () => {
-      message.error("Cập nhật voucher thất bại");
     },
   });
 };
