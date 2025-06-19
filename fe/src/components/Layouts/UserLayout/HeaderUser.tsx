@@ -44,8 +44,8 @@ const HeaderUser = () => {
         <a href="#">📅 Lịch chiếu</a>  
         <a href="#" className="khuyen_mai">🎁 Khuyến mãi</a>
         <a href="#">🏢 Thuê sự kiện</a>
-        <a href="#">🎮 Tất cả các giải trí</a>
-        <a href="/news">ℹ️ Giới thiệu</a>
+        <a href="/news">📰 Tin tức</a>
+        <a href="/about">ℹ️ Giới thiệu</a>
       </div>
     </header>
   );

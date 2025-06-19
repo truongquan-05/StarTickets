@@ -25,6 +25,7 @@ import {
   StarOutlined,
   ShoppingOutlined,
   GoldOutlined,
+  PaperClipOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -137,6 +138,9 @@ const SideBar: React.FC<SideBarProps> = ({
         </Menu.Item>
         <Menu.Item key="/admin/vouchers/list" icon={<TagsOutlined />}>
           <Link to="/admin/vouchers/list">Quản lý vouchers</Link>
+        </Menu.Item>
+        <Menu.Item key="/admin/news" icon={<PaperClipOutlined />}>
+          <Link to="/admin/news">Quản lý Tin Tức</Link>
         </Menu.Item>
       </Menu.SubMenu>
 
