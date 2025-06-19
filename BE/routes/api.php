@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DanhGiaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,4 +48,10 @@ Route::prefix('admin')->group(function () {
     Route::delete('do-an/{id}', [DoAnController::class, 'delete']);
     Route::delete('do-an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
     Route::post('do-an/restore/{id}', [DoAnController::class, 'restore']);
+
+    // Đánh giá phim
+    Route::get('danh-gia', [DanhGiaController::class, 'index']);
+    Route::get('danh-gia/{id}', [DanhGiaController::class, 'show']);
+    Route::delete('danh-gia/{id}', [DanhGiaController::class, 'delete']);
 });
+
