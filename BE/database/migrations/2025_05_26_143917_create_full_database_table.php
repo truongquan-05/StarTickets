@@ -106,6 +106,7 @@ return new class extends Migration {
             $table->char('hang', 1);
             $table->unsignedTinyInteger('cot');
             $table->boolean('trang_thai')->default(true); // true: còn sử dụng, false: đã hỏng
+            $table->softDeletes();
             $table->timestamps();
         });
 
@@ -220,7 +221,7 @@ return new class extends Migration {
             $table->id();
             $table->string('tieu_de', 255);
             $table->text('noi_dung');
-            $table->string('hinh_anh', 255);
+            $table->string('hinh_anh', 255)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

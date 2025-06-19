@@ -6,7 +6,11 @@ use App\Http\Controllers\Admin\GheController;
 use App\Http\Controllers\Admin\RapController;
 use App\Http\Controllers\Admin\DoAnController;
 use App\Http\Controllers\Admin\PhimController;
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Contracts\Auth\Authenticatable;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\TheLoaiController;
@@ -17,6 +21,7 @@ use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
+
 
 
 // Route::get('/user', function (Request $request) {
@@ -87,7 +92,7 @@ Route::apiResource('rap', RapController::class);
 // Các route tùy chỉnh cho soft delete
 Route::prefix('rap')->group(function () {
     Route::get('/trashed/list', [RapController::class, 'trashed']);   // Danh sách đã xóa mềm
-    Route::patch('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
+    Route::post('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
     Route::post('/{id}/restore', [RapController::class, 'restore']);  // Khôi phục
     Route::delete('/{id}/force', [RapController::class, 'destroy']);  // Xóa vĩnh viễn
 });
@@ -113,13 +118,34 @@ Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenN
 
 
 //trang chu
-Route::prefix('client')->group(function () {
+
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
     Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
-    Route::get('/search', [SearchController::class, 'search']);
-});
+    Route::get('/search', [HomeController::class, 'search']);
+    Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
+
+
 
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
+
+//Tin Tức
+Route::apiResource('tin_tuc', TinTucController::class);
+Route::prefix('tin_tuc')->group(function () {
+    Route::get('/trashed/list', [TinTucController::class, 'trashed']); // lấy danh sách xóa mềm
+    Route::post('/{id}/restore', [TinTucController::class, 'restore']); // khôi phục tin tức
+    Route::delete('/{id}/force', [TinTucController::class, 'forceDelete']); //xóa cứng tin tức
+});
+
+
+
+Route::prefix('auth/google')->group(function () {
+    Route::get('redirect', [LoginController::class, 'redirect']); //Dùng cái này
+    Route::get('callback', [LoginController::class, 'callback']);
+});
+Route::post('login', [LoginController::class, 'login']);
+Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
+
+
 
 // http://127.0.0.1:8000/api/....

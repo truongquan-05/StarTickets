@@ -35,8 +35,7 @@ const PhongChieuXoaMem = () => {
 
   const { data: rapDataRaw } = useQuery({
     queryKey: ["rap"],
-    queryFn: () =>
-      getListCinemas({ resource: "rap" }).then((res) => res.data),
+    queryFn: () => getListCinemas({ resource: "rap" }).then((res) => res.data),
   });
 
   const rapData = Array.isArray(rapDataRaw) ? rapDataRaw : [];
@@ -131,8 +130,16 @@ const PhongChieuXoaMem = () => {
   ];
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2 style={{ marginBottom: 16 }}>Danh sách phòng chiếu đã xoá mềm</h2>
+    <div
+      style={{
+        padding: 16,
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        height: "100%",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <h2 style={{ marginBottom: 16 }}>Danh sách phòng chiếu đã xoá </h2>
       <Table
         dataSource={phongChieuData}
         columns={columns}

@@ -130,7 +130,7 @@ class RapController extends Controller
 
     public function destroy($id)
     {
-        $rap = Rap::onlyTrashed()->find($id);
+        $rap = Rap::onlyTrashed()->with('phongChieus.ghes')->find($id);
 
         if (!$rap) {
             return response()->json([
@@ -139,17 +139,23 @@ class RapController extends Controller
             ], 404);
         }
 
+        foreach ($rap->phongChieus as $phong) {
+            $phong->ghes()->forceDelete();
+            $phong->forceDelete();
+        }
+
         $rap->forceDelete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Xóa vĩnh viễn rạp thành công',
+            'message' => 'Xóa vĩnh viễn rạp và các phòng, ghế thành công',
         ], 200);
     }
 
+
     public function softDelete($id)
     {
-        $rap = Rap::find($id);
+        $rap = Rap::with('phongChieus.ghes')->find($id);
 
         if (!$rap) {
             return response()->json([
@@ -158,17 +164,26 @@ class RapController extends Controller
             ], 404);
         }
 
-        $rap->delete();
+        foreach ($rap->phongChieus as $phong) {
+            $phong->ghes()->delete();  // Xóa mềm ghế
+            $phong->delete();         // Xóa mềm phòng
+        }
+
+        $rap->delete(); // Xóa mềm rạp
 
         return response()->json([
             'success' => true,
-            'message' => 'Xóa mềm rạp thành công'
+            'message' => 'Xóa mềm rạp và các phòng, ghế liên quan thành công'
         ], 200);
     }
 
+
+
     public function restore($id)
     {
-        $rap = Rap::onlyTrashed()->find($id);
+        $rap = Rap::onlyTrashed()->with(['phongChieus' => function ($query) {
+            $query->withTrashed()->with('ghes');
+        }])->find($id);
 
         if (!$rap) {
             return response()->json([
@@ -179,12 +194,18 @@ class RapController extends Controller
 
         $rap->restore();
 
+        foreach ($rap->phongChieus as $phong) {
+            $phong->restore();
+            $phong->ghes()->withTrashed()->restore();
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Khôi phục rạp thành công',
+            'message' => 'Khôi phục rạp và các phòng, ghế thành công',
             'data' => $rap
         ], 200);
     }
+
 
     public function trashed(Request $request)
     {
