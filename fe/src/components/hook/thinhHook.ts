@@ -68,12 +68,14 @@ export const useUpdateCinema = ({ resource = "rap" }: Props) => {
   });
 };
 
-export const useListVouchers = ({ resource = "voucher" }: Props) => useQuery({
-  queryKey: [resource],
-  queryFn: () => getListVouchers({ resource }),
-});
+export const useListVouchers = ({ resource = "ma_giam_gia" }: Props) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getListVouchers({ resource }),
+  });
+};
 
-export const useDeleteVoucher = ({ resource = "voucher" }: Props) => {
+export const useDeleteVoucher = ({ resource = "ma_giam_gia" }: Props) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id?: string | number) => getDeleteVoucher({ resource, id }),
@@ -81,31 +83,39 @@ export const useDeleteVoucher = ({ resource = "voucher" }: Props) => {
       queryClient.invalidateQueries({ queryKey: [resource] });
       message.success("Xóa voucher thành công");
     },
-    onError: () => message.error("Xóa voucher thất bại"),
+    onError: () => {
+      message.error("Xóa voucher thất bại");
+    },
   });
 };
 
-export const useCreateVoucher = ({ resource = "voucher" }: Props) => {
+export const useCreateVoucher = ({ resource = "ma_giam_gia" }: Props) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   return useMutation({
     mutationFn: (values: any) => getCreateVoucher({ resource, values }),
     onSuccess: () => {
       message.success("Thêm voucher thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
+      navigate("/admin/vouchers"); // Cập nhật đúng đường dẫn của voucher
     },
-    onError: () => message.error("Thêm voucher thất bại"),
+    onError: () => {
+      message.error("Thêm voucher thất bại");
+    },
   });
 };
 
-export const useUpdateVoucher = ({ resource = "voucher" }: Props) => {
+export const useUpdateVoucher = ({ resource = "ma_giam_gia" }: Props) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, values }: { id: number | string; values: any }) =>
       getUpdateVoucher({ resource, id, values }),
     onSuccess: () => {
-      message.success("Cập nhật voucher thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
+      message.success("Cập nhật voucher thành công");
     },
-    onError: () => message.error("Cập nhật voucher thất bại"),
+    onError: () => {
+      message.error("Cập nhật voucher thất bại");
+    },
   });
-};  
+};

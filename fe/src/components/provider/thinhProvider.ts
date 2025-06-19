@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// Lấy token từ localStorage
+
 const token = localStorage.getItem("token");
 
-// Tạo axios client với baseURL và header Authorization
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
@@ -11,9 +10,8 @@ const axiosClient = axios.create({
   },
 });
 
-// Kiểu Props dùng chung
 export type Props = {
-  resource?: string; // cho phép tùy chỉnh resource, mặc định là "cinemas"
+  resource: string; 
   id?: number | string;
   values?: any;
 };
@@ -48,25 +46,41 @@ export const getUpdateCinemas = async ({ resource = "rap", id, values }: Props) 
 };
 
 // Voucher APIs...
-export const getListVouchers = async ({ resource = "voucher" }: Props) => {
+export const getListVouchers = async ({ resource = "ma_giam_gia" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
 };
 
-export const getDeleteVoucher = async ({ resource = "voucher", id }: Props) => {
+export const getDeleteVoucher = async ({ resource = "ma_giam_gia", id }: Props) => {
   if (!id) return;
   const { data } = await axiosClient.delete(`${resource}/${id}`);
   return data;
 };
 
-export const getCreateVoucher = async ({ resource = "voucher", values }: Props) => {
-  const { id, ...rest } = values || {};
-  const { data } = await axiosClient.post(resource, rest);
+export const getCreateVoucher = async ({ resource = "ma_giam_gia", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return data;
 };
 
-export const getUpdateVoucher = async ({ resource = "voucher", id, values }: Props) => {
+export const getUpdateVoucher = async ({ resource = "ma_giam_gia", id, values }: Props) => {
   if (!id) return;
+  
+  // Nếu values là FormData thì thêm _method=PUT
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  }
+
+  // Nếu không phải FormData thì dùng PUT bình thường
   const { data } = await axiosClient.put(`${resource}/${id}`, values);
   return data;
 };
