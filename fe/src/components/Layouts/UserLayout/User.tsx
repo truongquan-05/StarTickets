@@ -1,26 +1,22 @@
-import React, { useState } from 'react';
-import HeaderUser from './HeaderUser';
-import { Outlet } from 'react-router-dom';
-import Layout, { Content } from 'antd/es/layout/layout';
-import SideBar from './Side-bar';
-import '../../assets/css/indexAdmin.css';
+import { Layout } from 'antd'
+import { Outlet } from 'react-router-dom'
+import { Content } from 'antd/es/layout/layout'
+import HeaderUser from './HeaderUser'
+import FooterUser from './FooterUser'
+import '../../assets/css/indexUser.css'
 
-const User: React.FC = () => {
-  const [selectedMenu, setSelectedMenu] = useState("");
+const User = () => {
   return (
     <Layout className="main-layout">
       <HeaderUser/>
-      <Layout>
-        <SideBar setSelectedMenu={setSelectedMenu}  />
-        <Layout style={{ padding: '16px' }}>
-          <h2 className='title-page'>{selectedMenu}</h2>
-          <Content className="content">
+        <Layout>
+          <Content>
             <Outlet />
           </Content>
         </Layout>
-      </Layout>
+        <FooterUser/>
     </Layout>
-  );
-};
+  )
+}
 
-export default User;
+export default User

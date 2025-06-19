@@ -121,4 +121,6 @@ class LoaiGheController extends Controller
 
         ]);
     }
+
+
 }

@@ -1,9 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+
+use App\Models\VaiTro;
 use App\Models\NguoiDung;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+
+
+
 
 class NguoiDungController extends Controller
 {
@@ -12,54 +19,134 @@ class NguoiDungController extends Controller
      */
     public function index()
     {
-        //
+        $data = NguoiDung::with('vaitro')->get();
+        if ($data->isEmpty()) {
+            return response()->json([
+                'message' => 'Không có dữ liệu',
+                'data' => []
+            ])->setStatusCode(404);
+        }
+        return response()->json([
+            'message' => 'Danh sách người dùng',
+            'data' => $data
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validatedData = Validator::make($request->all(), [
+            'ten' => 'required|string|max:255',
+            'email' => 'required|email|unique:nguoi_dung,email|max:255',
+            'so_dien_thoai' => 'required|string|max:10|unique:nguoi_dung',
+            'password' => 'required|string|min:8',
+            'google_id',
+            'anh_dai_dien',
+            'email_da_xac_thuc',
+            'vai_tro_id' => 'required|exists:vai_tro,id',
+
+        ]);
+        if ($validatedData->fails()) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validatedData->errors()
+            ]);
+        }
+        $data = $request->all();
+
+         if ($request->hasFile('anh_dai_dien')) {
+            $file = $request->file('anh_dai_dien');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('uploads', $fileName);
+            $data['anh_dai_dien'] = $fileName;
+        }
+
+
+        $data['password'] = bcrypt($data['password']); // Mã hóa mật khẩu
+        $data['trang_thai'] = 1; // Mặc định trạng thái là 1 (hoạt động)
+        $nguoiDung = NguoiDung::create($data);
+
+        return response()->json([
+            'message' => 'Thành công',
+            'data' => NguoiDung::with('vaitro')->find($nguoiDung->id)
+        ]);
     }
+
+
 
     /**
      * Display the specified resource.
      */
-    public function show(NguoiDung $nguoiDung)
+    public function show($id)
     {
-        //
+        $nguoiDung = NguoiDung::with('vaitro')->find($id);
+        if (!$nguoiDung) {
+            return response()->json([
+                'message' => 'Người dùng không tồn tại',
+            ])->setStatusCode(404);
+        }
+        return response()->json([
+            'message' => 'Thông tin người dùng',
+            'data' => $nguoiDung
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(NguoiDung $nguoiDung)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, NguoiDung $nguoiDung)
+    public function update(Request $request, string $id)
     {
-        //
+        $nguoiDung = NguoiDung::find($id);
+        if (!$nguoiDung) {
+            return response()->json([
+                'message' => 'Người dùng không tồn tại',
+            ], 404);
+        }
+
+        $validatedData = Validator::make($request->all(), [
+            'ten' => 'required|string|max:255',
+            'email' => 'required|email|unique:nguoi_dung,email,' . $id . '|max:255',
+            'so_dien_thoai' => 'required|string|max:10|unique:nguoi_dung,so_dien_thoai,' . $id,
+            'vai_tro_id' => 'required|exists:vai_tro,id',
+        ]);
+
+        if ($validatedData->fails()) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ',
+                'errors' => $validatedData->errors()
+            ]);
+        }
+
+        $nguoiDung->update($request->all());
+
+        return response()->json([
+            'message' => 'Cập nhật thành công',
+            'data' => NguoiDung::with('vaitro')->find($nguoiDung->id)
+        ]);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(NguoiDung $nguoiDung)
+    public function destroy(string $id)
     {
-        //
+        $nguoiDung = NguoiDung::find($id);
+        if (!$nguoiDung) {
+            return response()->json([
+                'message' => 'Người dùng không tồn tại',
+            ], 404);
+        }
+
+        // Xóa người dùng
+        $nguoiDung->delete();
+
+        return response()->json([
+            'message' => 'Xóa người dùng thành công',
+        ]);
     }
 }
+
+
+
+

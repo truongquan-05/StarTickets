@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
+
 use App\Models\Phim;
+use App\Models\ChuyenNgu;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePhimRequest;
-use App\Http\Requests\UpdatePhimRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdatePhimRequest;
 
 class PhimController extends Controller
 {
@@ -24,27 +26,49 @@ class PhimController extends Controller
         }
 
         $perPage = $request->get('per_page', 10);
-        $phims = $query->paginate($perPage);
+        $phims = $query->orderBy('id', 'desc')->paginate($perPage);
 
         return response()->json($phims);
     }
 
-    // Thêm phim mới
     public function store(StorePhimRequest $request)
     {
         $data = $request->validated();
+
+        // Kiểm tra và chuyển thành mảng object
+        $chuyenNguInput = $request->input('chuyen_ngu');
+
+        // Nếu lỡ nhận là chuỗi "1,2" thì tách thủ công
+        if (is_string($chuyenNguInput)) {
+            $chuyenNguInput = explode(',', $chuyenNguInput);
+        }
+
+        $data['chuyen_ngu'] = collect($chuyenNguInput)
+            ->map(function ($id) {
+                $chuyenNgu = ChuyenNgu::find($id);
+                return $chuyenNgu ? [
+                    'id' => $chuyenNgu->id,
+                    'the_loai' => $chuyenNgu->the_loai,
+                ] : null;
+            })
+            ->filter() // loại bỏ phần null nếu có id không tồn tại
+            ->values()
+            ->toJson();
 
         if ($request->hasFile('anh_poster')) {
             $data['anh_poster'] = $request->file('anh_poster')->store('posters', 'public');
         }
 
         $phim = Phim::create($data);
-$phim->load('theLoai'); // Load thêm tên thể loại
+        $phim->load('theLoai');
+
         return response()->json([
             'message' => 'Thêm phim thành công',
             'data' => $phim
         ], 201);
     }
+
+
 
     // Chi tiết phim theo ID
     public function show($id)
@@ -89,26 +113,25 @@ $phim->load('theLoai'); // Load thêm tên thể loại
         return response()->json(['message' => 'Xóa phim thành công']);
     }
     // Xóa mềm phim
-public function softDelete($id)
-{
-    $phim = Phim::findOrFail($id);
-    $phim->delete(); 
+    public function softDelete($id)
+    {
+        $phim = Phim::findOrFail($id);
+        $phim->delete();
 
-    return response()->json(['message' => 'Phim đã được xóa mềm']);
-}
-
-// Khôi phục phim đã xóa mềm
-
-public function restore($id)
-{
-    $phim = Phim::withTrashed()->findOrFail($id);
-
-    if ($phim->trashed()) {
-        $phim->restore();
-        return response()->json(['message' => 'Phim đã được khôi phục']);
+        return response()->json(['message' => 'Phim đã được xóa mềm']);
     }
 
-    return response()->json(['message' => 'Phim chưa bị xóa hoặc không tồn tại'], 404);
-}
-  
+    // Khôi phục phim đã xóa mềm
+
+    public function restore($id)
+    {
+        $phim = Phim::withTrashed()->findOrFail($id);
+
+        if ($phim->trashed()) {
+            $phim->restore();
+            return response()->json(['message' => 'Phim đã được khôi phục']);
+        }
+
+        return response()->json(['message' => 'Phim chưa bị xóa hoặc không tồn tại'], 404);
+    }
 }
