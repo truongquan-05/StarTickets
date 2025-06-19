@@ -229,8 +229,26 @@ export const getCreateNews = async ({resource = "tin_tuc" , values} : Props) => 
   return data;
 }
 
-export const getUpdateNews  = async ({resource = "tin_tuc", id, values} : Props) => {
-  if(!id) return;
-  const {data} = await axiosClient.put(`${resource}/${id}`,values);
-  return data
-}
+export const getUpdateNews= async ({ resource = "tin_tuc", id, values }: Props) => {
+  if (!id) return;
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  }
+
+  // Nếu không có file, thì dùng PUT bình thường
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  return data;
+};
+
+export const getDetailTinTuc = async ({ id, resource = "tin_tuc" }: Props) => {
+  if (!id) return;
+
+  const { data } = await axiosClient.get(`${resource}/${id}`);
+  return data.data;
+};

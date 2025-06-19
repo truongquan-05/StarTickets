@@ -23,27 +23,49 @@ import {
   useDeleteNews,
   useListNews,
   useUpdateNews,
+  useCreateNews,
 } from "../../../hook/hungHook";
+import { Link } from "react-router-dom";
 
-const BASE_URL = "http://127.0.0.1:8000"; // Sửa theo domain bạn chạy backend
+const BASE_URL = "http://127.0.0.1:8000";
 
 const ListNews = () => {
   const [editForm] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<INews | null>(null);
+  const [previewImage, setPreviewImage] = useState<UploadFile[]>([]);
 
   const { data, isLoading } = useListNews({ resource: "tin_tuc" });
   const dataSource = data?.data ?? [];
 
   const { mutate: deleteMutate } = useDeleteNews({ resource: "tin_tuc" });
   const { mutate: updateMutate } = useUpdateNews({ resource: "tin_tuc" });
+  const { mutate: createMutate } = useCreateNews({ resource: "tin_tuc" });
 
-  const openEditModal = (record: INews) => {
+  const openEditModal = (record: INews | null) => {
     setEditingItem(record);
-    editForm.setFieldsValue({
-      ...record,
-      hinh_anh: undefined, // reset file để tránh lỗi không đồng bộ Upload
-    });
+    if (record) {
+      const initialFileList: UploadFile[] = record.hinh_anh
+        ? [
+            {
+              uid: "-1",
+              name: "image.jpg",
+              status: "done",
+              url: `${BASE_URL}${record.hinh_anh}`,
+            },
+          ]
+        : [];
+      editForm.setFieldsValue({
+        tieu_de: record.tieu_de,
+        noi_dung: record.noi_dung,
+        hinh_anh: initialFileList,
+      });
+      setPreviewImage(initialFileList);
+    } else {
+      // Thêm mới
+      editForm.resetFields();
+      setPreviewImage([]);
+    }
     setIsModalOpen(true);
   };
 
@@ -51,32 +73,42 @@ const ListNews = () => {
     setIsModalOpen(false);
     setEditingItem(null);
     editForm.resetFields();
+    setPreviewImage([]);
   };
 
   const onUpdate = (values: any) => {
-    if (!editingItem) return;
-
     const formData = new FormData();
     formData.append("tieu_de", values.tieu_de);
     formData.append("noi_dung", values.noi_dung);
 
-    const fileList = values.hinh_anh?.fileList;
-    if (fileList && fileList.length > 0) {
-      formData.append("hinh_anh", fileList[0].originFileObj);
+    if (values.hinh_anh && values.hinh_anh.length > 0 && values.hinh_anh[0].originFileObj) {
+      formData.append("hinh_anh", values.hinh_anh[0].originFileObj);
     }
 
-    updateMutate(
-      { id: editingItem.id, values: formData },
-      {
+    if (editingItem) {
+      updateMutate(
+        { id: editingItem.id, values: formData },
+        {
+          onSuccess: () => {
+            message.success("Cập nhật tin tức thành công");
+            closeModal();
+          },
+          onError: () => {
+            message.error("Cập nhật thất bại");
+          },
+        }
+      );
+    } else {
+      createMutate(formData, {
         onSuccess: () => {
-          message.success("Cập nhật tin tức thành công");
+          message.success("Thêm mới tin tức thành công");
           closeModal();
         },
         onError: () => {
-          message.error("Cập nhật thất bại");
+          message.error("Thêm mới thất bại");
         },
-      }
-    );
+      });
+    }
   };
 
   const onDelete = (id: number) => {
@@ -89,9 +121,11 @@ const ListNews = () => {
         <Input
           placeholder={`Tìm kiếm ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => confirm()}
-          style={{ marginBottom: 8, display: 'block' }}
+          style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
@@ -108,7 +142,7 @@ const ListNews = () => {
             size="small"
             style={{ width: 90 }}
           >
-            Đặt lại
+            Xoá
           </Button>
         </Space>
       </div>
@@ -185,7 +219,22 @@ const ListNews = () => {
 
   return (
     <Card
-      title="Danh sách tin tức"
+      title={
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span>Danh sách tin tức</span>
+          <Button
+            type="primary"
+          >
+           <Link to={"/admin/news/add"}>Thêm mới</Link> 
+          </Button>
+        </div>
+      }
       bordered={true}
       style={{
         margin: 10,
@@ -205,18 +254,13 @@ const ListNews = () => {
       />
 
       <Modal
-        title={`Chỉnh sửa tin tức (ID: ${editingItem?.id ?? ""})`}
+        title={editingItem ? `Chỉnh sửa tin tức (ID: ${editingItem.id})` : "Thêm mới tin tức"}
         open={isModalOpen}
         onCancel={closeModal}
         footer={null}
         destroyOnClose
       >
-        <Form
-          form={editForm}
-          layout="vertical"
-          onFinish={onUpdate}
-          initialValues={editingItem ?? undefined}
-        >
+        <Form form={editForm} layout="vertical" onFinish={onUpdate}>
           <Form.Item
             label="Tiêu đề"
             name="tieu_de"
@@ -233,11 +277,18 @@ const ListNews = () => {
             <Input.TextArea rows={4} />
           </Form.Item>
 
-          <Form.Item label="Hình ảnh" name="hinh_anh">
+          <Form.Item
+            label="Hình ảnh"
+            name="hinh_anh"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+          >
             <Upload
+              listType="picture"
+              accept="image/*"
               beforeUpload={() => false}
               maxCount={1}
-              accept="image/*"
+              defaultFileList={previewImage}
             >
               <Button>Chọn ảnh</Button>
             </Upload>
@@ -245,7 +296,7 @@ const ListNews = () => {
 
           <Space>
             <Button type="primary" htmlType="submit">
-              Cập nhật
+              {editingItem ? "Cập nhật" : "Thêm mới"}
             </Button>
             <Button onClick={closeModal}>Huỷ</Button>
           </Space>

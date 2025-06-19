@@ -31,6 +31,9 @@ import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
 import GioiThieu from '../pages/Users/GioiThieu';
 import ListNews from '../pages/Admin/News/ListNews';
+import AddNews from '../pages/Admin/News/AddNews';
+import NewsUser from '../pages/Users/TinTuc/NewsUser';
+import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
 
 
 
@@ -46,6 +49,8 @@ const Routermain = () => {
       children: [
         { path: '/', element: <Home /> },
         { path: 'about', element: <GioiThieu /> },
+        { path: 'news', element: <NewsUser /> },
+        { path: 'news/:id', element: <NewsDetail /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
       ],
@@ -84,6 +89,7 @@ const Routermain = () => {
         { path: 'food/edit/:id', element: <FoodEdit /> },
         { path: 'vouchers/list', element: <VouchersList /> },
         { path: 'news', element: <ListNews /> },
+        { path: 'news/add', element: <AddNews /> }
       ],
     },
   ]);

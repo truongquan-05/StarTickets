@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Table, Button, Modal, message, Space, Popconfirm } from "antd";
+import { Table, Button, Modal, message, Space, Popconfirm, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IPhongChieu } from "../interface/phongchieu";
 import {
@@ -236,7 +236,14 @@ const PhongChieuChuaXuat = () => {
   ];
 
   return (
-    <>
+    <Card
+     style={{
+        padding: "20px 20px 0px 20px",
+        backgroundColor: "#fff",
+        borderRadius: 8,
+        height:"100%",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}>
     <Button
         style={{ marginBottom: 16 }}
         onClick={() => navigate("/admin/room/trashed/list")}
@@ -294,7 +301,7 @@ const PhongChieuChuaXuat = () => {
           trangThaiPhong={0}
         />
       </Modal>
-    </>
+    </Card>
   );
 };
 
