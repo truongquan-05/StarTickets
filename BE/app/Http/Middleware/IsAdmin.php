@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -6,9 +7,10 @@ use Illuminate\Http\Request;
 
 class IsAdmin
 {
+
 public function handle(Request $request, Closure $next)
 {
-    $user = auth()->user();
+    $user = $request->user() ;
     // Kiểm tra người dùng đã đăng nhập và có quyền admin  
     if (!$user) {
         return response()->json(['message' => 'Bạn chưa đăng nhập'], 401);
@@ -19,3 +21,4 @@ public function handle(Request $request, Closure $next)
     return response()->json(['message' => 'Bạn không có quyền truy cập'], 403);
 }
 }
+
