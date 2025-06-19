@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 class PhongChieuController extends Controller
 {
+    // Lấy danh sách phòng chiếu
     public function index(Request $request)
     {
         $search = $request->query('search');
@@ -35,6 +36,7 @@ class PhongChieuController extends Controller
 
         return response()->json([
             'data' => $phongChieus->items(),
+            'message' => 'Danh sách phòng chiếu',
             'meta' => [
                 'current_page' => $phongChieus->currentPage(),
                 'per_page' => $phongChieus->perPage(),
@@ -44,8 +46,9 @@ class PhongChieuController extends Controller
         ], 200);
     }
 
+    // Tạo phòng chiếu mới
     public function store(Request $request)
-    {   
+    {
         $request->validate([
             'rap_id' => 'required|exists:rap,id',
             'ten_phong' => 'required|string|max:100',
@@ -86,6 +89,7 @@ class PhongChieuController extends Controller
         return response()->json($phongChieu->load('ghes', 'rap'), 201);
     }
 
+    // Lấy chi tiết phòng chiếu
     public function show(PhongChieu $phongChieu)
     {
         if ($phongChieu->trashed()) {
@@ -94,6 +98,7 @@ class PhongChieuController extends Controller
         return response()->json($phongChieu->load('ghes', 'rap'), 200);
     }
 
+    // Cập nhật phòng chiếu
     public function update(Request $request, PhongChieu $phongChieu)
     {
         if ($phongChieu->trashed()) {
@@ -163,23 +168,55 @@ class PhongChieuController extends Controller
         return response()->json($phongChieu->load('ghes', 'rap'), 200);
     }
 
+    // Xóa mềm phòng chiếu
     public function destroy(PhongChieu $phongChieu)
     {
         if ($phongChieu->trashed()) {
             return response()->json(['message' => 'Phòng chiếu đã bị xóa'], 400);
         }
+
+        // Soft delete ghế trước
+        $phongChieu->ghes()->delete();
+        // Sau đó xóa mềm phòng chiếu
         $phongChieu->delete();
-        return response()->json(['message' => 'Phòng chiếu đã được xóa mềm'], 200);
+        return response()->json(['message' => 'Phòng chiếu và ghế đã được xóa mềm'], 200);
     }
+    // Khôi phục phòng chiếu đã xóa mềm
     public function restore($id)
     {
-        $phongChieu = PhongChieu::onlyTrashed()->findOrFail($id);
+        $phongChieu = PhongChieu::onlyTrashed()->with(['ghes' => function ($query) {
+            $query->withTrashed(); // Bao gồm cả ghế đã xóa mềm
+        }])->findOrFail($id);
+
         $phongChieu->restore();
 
+        // Khôi phục tất cả ghế đã xóa mềm
+        $phongChieu->ghes->each(function ($ghe) {
+            $ghe->restore();
+        });
+
         return response()->json([
-            'message' => 'Phòng chiếu đã được khôi phục',
+            'message' => 'Phòng chiếu và ghế đã được khôi phục',
             'data' => $phongChieu->load('ghes', 'rap')
         ], 200);
+    }
+
+    // Xóa vĩnh viễn phòng chiếu
+    public function forceDelete($id)
+    {
+        $phongChieu = PhongChieu::withTrashed()->with('ghes')->find($id);
+
+        if (!$phongChieu || !$phongChieu->trashed()) {
+            return response()->json(['message' => 'Phòng chiếu chưa bị xóa mềm'], 400);
+        }
+
+        // Xóa vĩnh viễn ghế
+        $phongChieu->ghes()->forceDelete();
+
+        // Xóa vĩnh viễn phòng chiếu
+        $phongChieu->forceDelete();
+
+        return response()->json(['message' => 'Phòng chiếu và ghế đã được xóa vĩnh viễn'], 200);
     }
 
     // Lây danh sách phòng chiếu đã xóa mềm
@@ -209,25 +246,7 @@ class PhongChieuController extends Controller
 
         return response()->json($result, 200);
     }
-
-
-
-    public function forceDelete($id)
-    {
-        $phongChieu = PhongChieu::withTrashed()->find($id);
-
-        if (!$phongChieu->trashed()) {
-            return response()->json(['message' => 'Phòng chiếu chưa bị xóa mềm'], 400);
-        }
-
-        $phongChieu->ghes()->forceDelete(); // Xóa vĩnh viễn ghế
-        $phongChieu->forceDelete(); // Xóa vĩnh viễn phòng chiếu
-
-        return response()->json(['message' => 'Phòng chiếu đã được xóa vĩnh viễn'], 200);
-    }
-
-
-
+    // Tạo ghế tự động dựa trên sơ đồ
     private function createSeats($phongChieu, $rows, $cols, $hangThuong, $hangVip, $hangDoi)
     {
         $currentRow = 0;

@@ -15,27 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(ChuyenNguSeeder::class);
+        // $this->call(ChuyenNguSeeder::class);
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
-        LoaiGhe::create([
-            'id' => 1,
-            'ten_loai_ghe' => 'Thường'
-        ]);
+        // LoaiGhe::create([
+        //     'id' => 1,
+        //     'ten_loai_ghe' => 'Thường'
+        // ]);
 
-        LoaiGhe::create([
-            'id' => 2,
-            'ten_loai_ghe' => 'VIP'
-        ]);
+        // LoaiGhe::create([
+        //     'id' => 2,
+        //     'ten_loai_ghe' => 'VIP'
+        // ]);
 
-        LoaiGhe::create([
-            'id' => 3,
-            'ten_loai_ghe' => 'Đôi'
-        ]);
+        // LoaiGhe::create([
+        //     'id' => 3,
+        //     'ten_loai_ghe' => 'Đôi'
+        // ]);
     }
 }

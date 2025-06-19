@@ -92,7 +92,7 @@ Route::apiResource('rap', RapController::class);
 // Các route tùy chỉnh cho soft delete
 Route::prefix('rap')->group(function () {
     Route::get('/trashed/list', [RapController::class, 'trashed']);   // Danh sách đã xóa mềm
-    Route::patch('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
+    Route::post('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
     Route::post('/{id}/restore', [RapController::class, 'restore']);  // Khôi phục
     Route::delete('/{id}/force', [RapController::class, 'destroy']);  // Xóa vĩnh viễn
 });
