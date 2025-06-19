@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import {  checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -359,5 +359,52 @@ export const useMovieDetail = (id?: string | number) => {
     queryKey: ['phim', id],
     queryFn: () => getMovieDetail({ resource: "phim", id }),
     enabled: !!id,
+  });
+};
+
+export const useListNews = ({resource = "tin_tuc"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListNews({resource})
+  })
+}
+
+export const useDeleteNews = ({resource = "tin_tuc"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeleteNews({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+export const useCreateNews = ({resource = "tin_tuc"} : Props) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn : (values : any) => getCreateNews({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+      navigate('/admin/news')
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdateNews = ({ resource = "tin_tuc" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateVaiTro({ resource, id, values }),
+    onSuccess: () => {
+      message.success("Cập nhật thành công");
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
   });
 };

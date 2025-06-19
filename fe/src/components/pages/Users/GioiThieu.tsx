@@ -4,7 +4,7 @@ import "../../assets/css/news.css";
 import Banner from "../../../assets/Screenshot 2025-06-16 112804.png";
 import Map from "../../../assets/Screenshot 2025-06-16 114450.png";
 
-const News = () => (
+const GioiThieu = () => (
   <div className="news-wrapper">
     <div className="news-hero">
       <Image
@@ -61,4 +61,4 @@ const News = () => (
   </div>
 );
 
-export default News;
+export default GioiThieu;

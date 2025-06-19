@@ -212,3 +212,25 @@ export const getListChuyenNgu = async ({ phimId, resource = "chuyen_ngu" }: Prop
   const { data } = await axiosClient.get(url);
   return data;
 };
+
+export const getListNews = async ({resource = "tin_tuc"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getDeleteNews  = async ({resource = "tin_tuc" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getCreateNews = async ({resource = "tin_tuc" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdateNews  = async ({resource = "tin_tuc", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
