@@ -41,7 +41,7 @@ const AddNews = () => {
   };
 
   return (
-    <Card title="Thêm mới tin tức" style={{ maxWidth: 700, margin: "20px auto" }}>
+    <Card title="Thêm mới tin tức" style={{ maxWidth: "100%", margin: "20px auto" }}>
       <Form
         form={form}
         layout="vertical"
