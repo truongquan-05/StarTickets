@@ -34,7 +34,7 @@ import ListNews from '../pages/Admin/News/ListNews';
 import AddNews from '../pages/Admin/News/AddNews';
 import NewsUser from '../pages/Users/TinTuc/NewsUser';
 import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
-import AddVoucher from '../pages/Voucher/Add';
+import GoogleCallback from '../pages/auth/GoogleCallback';
 
 
 
@@ -54,6 +54,7 @@ const Routermain = () => {
         { path: 'news/:id', element: <NewsDetail /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
+        { path: 'auth/google/callback', element: <GoogleCallback /> },
       ],
     },
     {

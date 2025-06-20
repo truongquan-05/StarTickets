@@ -1,0 +1,156 @@
+.header-cinestar {
+  padding: 0 5%;
+  background-color: #0c0b1f;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* --- PHẦN TRÊN --- */
+.header-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  gap: 12px;
+}
+
+.header-left img {
+  width: 75px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Action buttons (Đặt vé, Bắp nước) */
+.header-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-ticket {
+  background-color: #eff600;
+  color: #000;
+  font-weight: bold;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-popcorn {
+  background-color: #8200d8;
+  color: #fff;
+  font-weight: bold;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Thông tin tài khoản */
+.header-account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 4px 12px;
+  width: 250px;
+}
+
+.header-search input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 6px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.header-search .ant-input-search-button {
+  border: none;
+}
+
+.header-login {
+  font-size: 16px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.header-login .login-text:hover {
+  color: #fdd835;
+}
+
+.header-lang img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* --- PHẦN MENU --- */
+.header-menu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.header-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.header-menu a:hover {
+  color: #fdd835;
+}
+
+.header-menu .khuyen_mai {
+  margin-left: auto;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions,
+  .header-account {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .header-search {
+    width: 100%;
+  }
+
+  .header-menu {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-menu .khuyen_mai {
+    margin-left: 0;
+  }
+}
