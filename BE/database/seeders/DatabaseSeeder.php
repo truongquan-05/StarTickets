@@ -29,8 +29,8 @@ class DatabaseSeeder extends Seeder
         VaiTroSeeder::class,
         TheLoaiSeeder::class,
         NguoiDungSeeder::class,
-        PhimSeeder::class,
-        DanhGiaSeeder::class,
+        // PhimSeeder::class,
+        // DanhGiaSeeder::class,
     ]);
 
 
