@@ -1,9 +1,8 @@
 import axios from "axios";
 
-// Lấy token từ localStorage
+
 const token = localStorage.getItem("token");
 
-// Tạo axios client với baseURL và header Authorization
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
@@ -11,9 +10,8 @@ const axiosClient = axios.create({
   },
 });
 
-// Kiểu Props dùng chung
 export type Props = {
-  resource?: string; // cho phép tùy chỉnh resource, mặc định là "cinemas"
+  resource: string; 
   id?: number | string;
   values?: any;
 };
@@ -47,29 +45,29 @@ export const getUpdateCinemas = async ({ resource = "rap", id, values }: Props) 
   return data;
 };
 
-
-// Lấy danh sách voucher
-export const getListVouchers = async ({ resource = "voucher" }: Props) => {
+// Voucher APIs...
+export const getListVouchers = async ({ resource = "ma_giam_gia" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
 };
 
-// Xóa voucher (soft delete)
-export const getDeleteVouchers = async ({ resource = "voucher", id }: Props) => {
+export const getDeleteVoucher = async ({ resource = "ma_giam_gia", id }: Props) => {
   if (!id) return;
-  const { data } = await axiosClient.patch(`${resource}/${id}/soft-delete`);
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
   return data;
 };
 
-// Tạo voucher mới
-export const getCreateVouchers = async ({ resource = "voucher", values }: Props) => {
+
+export const getCreateVoucher = async ({ resource = "ma_giam_gia", values }: Props) => {
+  // Loại bỏ id nếu có
   const { id, ...rest } = values || {};
   const { data } = await axiosClient.post(resource, rest);
   return data;
 };
 
-// Cập nhật voucher
-export const getUpdateVouchers = async ({ resource = "voucher", id, values }: Props) => {
+
+// Cập nhật rạp chiếu
+export const getUpdateVoucher = async ({ resource = "ma_giam_gia", id, values }: Props) => {
   if (!id) return;
   const { data } = await axiosClient.put(`${resource}/${id}`, values);
   return data;

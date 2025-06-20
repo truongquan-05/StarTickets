@@ -1,4 +1,4 @@
-// thinhHook.ts
+// thinhHook.ts (Updated for Vouchers)
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -7,10 +7,15 @@ import {
   getCreateCinemas,
   getUpdateCinemas,
   getDeleteCinemas,
+  getListVouchers,
+  getCreateVoucher,
+  getUpdateVoucher,
+  getDeleteVoucher,
 } from "../provider/thinhProvider";
 
 import type { Props } from "../provider/thinhProvider";
 
+// Cinema Hooks...
 export const useListCinemas = ({ resource = "rap" }: Props) => {
   return useQuery({
     queryKey: [resource],
@@ -63,20 +68,17 @@ export const useUpdateCinema = ({ resource = "rap" }: Props) => {
   });
 };
 
-
-
-
-export const useListVouchers = ({ resource = "voucher" }: Props) => {
+export const useListVouchers = ({ resource = "ma_giam_gia" }: Props) => {
   return useQuery({
     queryKey: [resource],
-    queryFn: () => getListCinemas({ resource }), // Dùng chung API getList
+    queryFn: () => getListVouchers({ resource }),
   });
 };
 
-export const useDeleteVoucher = ({ resource = "voucher" }: Props) => {
+export const useDeleteVoucher = ({ resource = "ma_giam_gia" }: Props) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id?: string | number) => getDeleteCinemas({ resource, id }), // Dùng chung API delete
+    mutationFn: (id?: string | number) => getDeleteVoucher({ resource, id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [resource] });
       message.success("Xóa voucher thành công");
@@ -87,15 +89,15 @@ export const useDeleteVoucher = ({ resource = "voucher" }: Props) => {
   });
 };
 
-export const useCreateVoucher = ({ resource = "voucher" }: Props) => {
+export const useCreateVoucher = ({ resource = "ma_giam_gia" }: Props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (values: any) => getCreateCinemas({ resource, values }), // Dùng chung API create
+    mutationFn: (values: any) => getCreateVoucher({ resource, values }),
     onSuccess: () => {
       message.success("Thêm voucher thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
-      navigate("/admin/vouchers/list"); // Điều hướng về trang voucher list
+      navigate("/admin/vouchers/list"); // Cập nhật đúng đường dẫn của voucher
     },
     onError: () => {
       message.error("Thêm voucher thất bại");
@@ -103,17 +105,15 @@ export const useCreateVoucher = ({ resource = "voucher" }: Props) => {
   });
 };
 
-export const useUpdateVoucher = ({ resource = "voucher" }: Props) => {
+export const useUpdateVoucher = ({ resource = "ma_giam_gia" }: Props) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, values }: { id: number | string; values: any }) =>
-      getUpdateCinemas({ resource, id, values }), // Dùng chung API update
+      getUpdateVoucher({ resource, id, values }),
     onSuccess: () => {
-      message.success("Cập nhật voucher thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
     },
     onError: () => {
-      message.error("Cập nhật voucher thất bại");
     },
   });
 };
