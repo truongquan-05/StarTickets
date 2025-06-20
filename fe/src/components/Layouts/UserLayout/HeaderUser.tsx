@@ -48,15 +48,10 @@ const HeaderUser = () => {
           <Link to="">
             <img src={logo} alt="Cinestar" className="logo" />
           </Link>
-          <Link to="/">
-            <img src={logo} alt="Cinestar" className="logo" />
-          </Link>
         </div>
 
         <div className="header-actions">
           <Space>
-            <Button className="btn-ticket">🎫 ĐẶT VÉ NGAY</Button>
-            <Button className="btn-popcorn">🍿 ĐẶT BẮP NƯỚC</Button>
             <Button className="btn-ticket">🎫 ĐẶT VÉ NGAY</Button>
             <Button className="btn-popcorn">🍿 ĐẶT BẮP NƯỚC</Button>
           </Space>
