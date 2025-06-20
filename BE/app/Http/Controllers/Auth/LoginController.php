@@ -30,7 +30,7 @@ class LoginController extends Controller
     /**
      * Xử lý callback từ Google sau khi người dùng đăng nhập
      */
-    public function callback(): JsonResponse
+    public function callback()
     {
         try {
             /** @var \Laravel\Socialite\Two\AbstractProvider $provider */
@@ -52,13 +52,10 @@ class LoginController extends Controller
                 ]
             );
 
-            // Tạo token API (nếu dùng Sanctum)
-            $token = $user->createToken('google-api')->plainTextToken;
 
-            return response()->json([
-                'access_token' => $token,
-                'user' => $user,
-            ]);
+            // Tạo token API (Sanctum)
+            $token = $user->createToken('google-api')->plainTextToken;
+            return redirect()->away("http://127.0.0.1/oauth-success?token={$token}");
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Đăng nhập thất bại',
@@ -96,7 +93,7 @@ class LoginController extends Controller
         return response()->json([
             'access_token' => $token,
             'user' => $user,
-            
+
         ]);
     }
 }
