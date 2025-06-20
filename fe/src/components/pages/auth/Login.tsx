@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Button, Checkbox, Typography, Row, Col, Divider } from 'antd';
 import { GoogleOutlined, FacebookOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useGoogleAuth } from './GoogleAuth';
 
 const { Title, Text, Link } = Typography;
 
@@ -9,7 +10,7 @@ const Login = () => {
   //   console.log('Login form values:', values);
   //   // TODO: xử lý đăng nhập
   // };
-
+  const { loginWithGoogle } = useGoogleAuth();
   return (
     <div className="login-background">
       <Row
@@ -103,7 +104,7 @@ const Login = () => {
                 size="large"
                 className="btn-google"
                 block
-                onClick={() => alert('Đăng nhập Google')}
+                onClick={loginWithGoogle}
               >
                 Đăng nhập với Google
               </Button>
