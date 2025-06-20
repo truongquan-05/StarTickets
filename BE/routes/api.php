@@ -21,8 +21,8 @@ use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
-
-
+use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
+use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 
 // Route::get('/user', function (Request $request) {
 //     return 'Quan';
@@ -147,5 +147,19 @@ Route::post('login', [LoginController::class, 'login']);
 Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
 
 
+// đánh giá của người dùng (client)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']); // Lấy tất cả đánh giá của user
+    Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']); // Thêm đánh giá mới
+    Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']); // Sửa đánh giá
+    Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
+});
+
+// qli đánh giá cho admin
+Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/danh-gia', [AdminDanhGiaController::class, 'index']); // Lấy danh sách đánh giá
+    Route::get('/danh-gia/{id}', [AdminDanhGiaController::class, 'show']); // Xem chi tiết đánh giá
+    Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']); // Xóa đánh giá
+});
 
 // http://127.0.0.1:8000/api/....

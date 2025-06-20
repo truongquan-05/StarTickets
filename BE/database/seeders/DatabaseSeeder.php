@@ -23,19 +23,16 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // LoaiGhe::create([
-        //     'id' => 1,
-        //     'ten_loai_ghe' => 'Thường'
-        // ]);
+       
 
-        // LoaiGhe::create([
-        //     'id' => 2,
-        //     'ten_loai_ghe' => 'VIP'
-        // ]);
+         $this->call([
+        VaiTroSeeder::class,
+        TheLoaiSeeder::class,
+        NguoiDungSeeder::class,
+        PhimSeeder::class,
+        DanhGiaSeeder::class,
+    ]);
 
-        // LoaiGhe::create([
-        //     'id' => 3,
-        //     'ten_loai_ghe' => 'Đôi'
-        // ]);
+
     }
 }

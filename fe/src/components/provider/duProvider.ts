@@ -95,6 +95,12 @@ export const getMovieDetail = async (id: number | string) => {
   const res = await axiosClient.get(`/chi-tiet-phim/${id}`);
   return res.data;
 };
+export const searchMovies = async (keyword: string) => {
+  const res = await axiosClient.get("/search", {
+    params: { keyword },
+  });
+  return res;
+};
 
 
 

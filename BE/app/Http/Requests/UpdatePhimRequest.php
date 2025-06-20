@@ -60,8 +60,8 @@ class UpdatePhimRequest extends FormRequest
 
             'mo_ta.max' => 'Mô tả tối đa 1000 ký tự.',
 
-            'id_the_loai.required' => 'Thể loại là bắt buộc.',
-            'id_the_loai.exists'   => 'Thể loại không tồn tại.',
+            // 'id_the_loai.required' => 'Thể loại là bắt buộc.',
+            // 'id_the_loai.exists'   => 'Thể loại không tồn tại.',
         ];
     }
 }

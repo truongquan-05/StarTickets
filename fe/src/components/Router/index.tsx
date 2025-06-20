@@ -34,6 +34,7 @@ import AddNews from '../pages/Admin/News/AddNews';
 import NewsUser from '../pages/Users/TinTuc/NewsUser';
 import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
 import MovieDetai from '../pages/Users/MovieDetail';
+import SearchPage from '../pages/Users/SearchPage';
 
 
 
@@ -49,6 +50,11 @@ const Routermain = () => {
       children: [
         { path: '/', element: <Home /> },
         { path: '/phim/:id', element:<MovieDetai/>  },
+        { path: '/chi-tiet-phim/:id', element:<MovieDetai/>  },
+        { path: '/search', element:<SearchPage/>  },
+
+
+
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },
         { path: 'news/:id', element: <NewsDetail /> },

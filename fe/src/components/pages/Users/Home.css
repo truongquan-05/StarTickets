@@ -326,5 +326,19 @@
     text-align: left;
   }
 }
+/* search */
+.search-page {
+  padding: 40px;
+  background-color: #12092b;
+  color: white;
+}
+
+.poster-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 
 
