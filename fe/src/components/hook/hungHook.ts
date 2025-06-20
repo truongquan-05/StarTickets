@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getCreateCategoryChair, getCreateMovies, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteMovies, getDeletePhanHoiNguoiDung, getDeleteVaiTro, getListCategoryChair, getListCinemas, getListGhe, getListMovies, getListPhanHoiNguoiDung, getListVaiTro, getUpdateCategoryChair, getUpdateMovies, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import {  checkLichChieu, getCreateCategoryChair, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
 import type { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 
 export const useListMovies = ({ resource = "phim" } : Props) => {
   return useQuery({
@@ -186,6 +187,8 @@ export const useCreatePhanHoiNguoiDung = ({resource = "phan_hoi"} : Props) => {
   })
 }
 
+
+
 export const useUpdatePhanHoiNguoiDung = ({ resource = "phan_hoi" }) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -199,13 +202,20 @@ export const useUpdatePhanHoiNguoiDung = ({ resource = "phan_hoi" }) => {
     },
   });
 };
-
+export const useListPhongChieu = ({resource = "phong_chieu"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListPhongChieu({resource})
+  })
+}
 export const useCreatePhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn : (values : any) => getCreatePhongChieu({resource,values}),
     onSuccess: () => {
-      message.success("Thêm thành công");
+      navigate("/admin/room/list/chuaxuat")
+      message.success("Tạo phòng chiếu thành công")
       queryClient.invalidateQueries({queryKey:[resource]});
     },
     onError : () => {
@@ -227,6 +237,47 @@ export const useUpdatePhongChieu = ({ resource = "phong_chieu" }) => {
     },
   });
 };
+export const useDeletePhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeletePhongChieu({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+
+export const useDestroyPhongChieu = ({resource = "phong_chieu"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDestroyPhongChieu({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+
+export const useListTrashPhongChieu = ({resource = "phong_chieu"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListTrashPhongChieu({resource})
+  })
+}
+export const useRestorePhongChieu = ({ resource = "phong_chieu" }: Props) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string | number) => getRestorePhongChieu({ resource, id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [resource] });
+      navigate("/admin/phongchieu/list"); // chỉnh đường dẫn theo cấu trúc bạn dùng
+    },
+    onError: () => {
+      // Bạn có thể thêm message.error ở đây nếu muốn
+    },
+  });
+};
 
 export const useListCinemas = ({ resource = 'rap' }: Props) => {
   return useQuery({
@@ -245,5 +296,126 @@ export const useListGhe = ({ resource = 'ghe', phong_id }: Props) => {
     enabled: !!phong_id, // chỉ gọi khi có phong_id
   });
 };
+export const useListChair = ({resource = "ghe"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListChair({resource})
+  })
+}
 
+export const useListLichChieu = ({resource = "lich_chieu"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListLichChieu({resource})
+  })
+}
+
+export const useDeleteLichChieu = ({resource = "lich_chieu"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeleteLichChieu({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+export const useCreateLichChieu = ({resource = "lich_chieu"} : Props) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : (values : any) => getCreateLichChieu({resource,values}),
+    onSuccess: () => {
+      navigate("/admin/lichchieu/list")
+      queryClient.invalidateQueries({queryKey:[resource]});
+    },
+    onError : (error : AxiosError) => {
+      const errMsg =
+        (error.response?.data as any)?.message?.err ||
+        "Đã có lỗi xảy ra, vui lòng thử lại";
+      message.error(errMsg);
+
+      // Nếu bạn muốn ném tiếp lỗi ra cho component cũng xử lý, thêm:
+      throw error;
+    }
+  })
+}
+
+export const useListChuyenNgu = ({ resource = "chuyen_ngu", phimId }: Props) => {
+  return useQuery({
+    queryKey: ['chuyenNgu', phimId || 'all'], // tách cache theo phim
+    queryFn: () => getListChuyenNgu({ resource, phimId }),
+    enabled: phimId !== undefined || resource !== "chuyen_ngu", // chỉ gọi nếu có phimId hoặc resource custom
+  });
+};
+
+export const useCheckLichChieu = ({ resource = "lich_chieu/check" }: Props) => {
+  return useMutation({
+    mutationFn: (values: any) => checkLichChieu({ resource, values }),
+  });
+};
+
+export const useMovieDetail = (id?: string | number) => {
+  return useQuery({
+    queryKey: ['phim', id],
+    queryFn: () => getMovieDetail({ resource: "phim", id }),
+    enabled: !!id,
+  });
+};
+
+export const useListNews = ({resource = "tin_tuc"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListNews({resource})
+  })
+}
+
+export const useDeleteNews = ({resource = "tin_tuc"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => getDeleteNews({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+      message.success("Xóa thành công")
+    },
+    onError : () =>{
+      
+    }
+  })
+}
+export const useCreateNews = ({resource = "tin_tuc"} : Props) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn : (values : any) => getCreateNews({resource,values}),
+    onSuccess: () => {
+      message.success("Thêm thành công");
+      queryClient.invalidateQueries({queryKey:[resource]});
+      navigate('/admin/news')
+    },
+    onError : () => {
+      message.error("Thêm thất bại");
+    }
+  })
+}
+
+export const useUpdateNews = ({ resource = "tin_tuc" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateNews({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+      message.error("Cập nhật thất bại");
+    },
+  });
+};
+export const useDetailTinTuc = ({ id, resource = "tin_tuc" }: Props) => {
+  return useQuery({
+    queryKey: [resource, id],
+    queryFn: () => getDetailTinTuc({ id, resource }),
+    enabled: !!id, // chỉ gọi API nếu có id
+  });
+};
 

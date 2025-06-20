@@ -3,6 +3,7 @@ import {  UserOutlined } from "@ant-design/icons";
 import logo from "../../../assets/logo for a movie ticket booking website.png";
 import flag from "../../../assets/cờ.jpg"
 import { Button, Input, Space } from "antd";
+import { Link } from "react-router-dom";
 
 
 const HeaderUser = () => {
@@ -12,7 +13,7 @@ const HeaderUser = () => {
       {/* PHẦN TRÊN */}
       <div className="header-top">
         <div className="header-left">
-          <img src={logo} alt="Cinestar" className="logo" />
+          <Link to=""><img src={logo} alt="Cinestar" className="logo" /></Link>
         </div>
 
         <div className="header-actions">
@@ -25,9 +26,11 @@ const HeaderUser = () => {
           <div className="header-search">
           <Input.Search type="text" placeholder="Tìm phim, rạp" />
           </div>
-          <div className="header-login" >
+          <div className="header-login">
             <UserOutlined />
-            <span>Đăng nhập</span>
+            <Link to="/login">
+              <span className="login-text">Đăng nhập</span>
+            </Link>
           </div>
           <div className="header-lang">
           <img src={flag} alt="Cinestar" className="logo" />
@@ -41,8 +44,8 @@ const HeaderUser = () => {
         <a href="#">📅 Lịch chiếu</a>  
         <a href="#" className="khuyen_mai">🎁 Khuyến mãi</a>
         <a href="#">🏢 Thuê sự kiện</a>
-        <a href="#">🎮 Tất cả các giải trí</a>
-        <a href="#">ℹ️ Giới thiệu</a>
+        <a href="/news">📰 Tin tức</a>
+        <a href="/about">ℹ️ Giới thiệu</a>
       </div>
     </header>
   );

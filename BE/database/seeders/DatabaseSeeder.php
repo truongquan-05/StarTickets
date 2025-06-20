@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\LoaiGhe;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\LoaiGhe;
+use App\Models\ChuyenNgu;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,6 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // $this->call(ChuyenNguSeeder::class);
         // User::factory(10)->create();
 
         // User::factory()->create([

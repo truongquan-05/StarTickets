@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Table, Button, Modal } from "antd";
+import { Table, Button, Modal, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IPhongChieu } from "../interface/phongchieu";
 import {
@@ -10,9 +10,9 @@ import {
 import { useListGhe } from "../../../hook/hungHook";
 import SoDoGhe from "./SoDoGhe";
 
-interface IRap{
-  id:number;
-  ten_rap:string
+interface IRap {
+  id: number;
+  ten_rap: string;
 }
 
 const ListPhongChieu = () => {
@@ -26,21 +26,45 @@ const ListPhongChieu = () => {
     isError: isErrorPhong,
   } = useQuery({
     queryKey: ["phong_chieu"],
-    queryFn: () =>
-      getListPhongChieu({ resource: "phong_chieu" }).then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await getListPhongChieu({ resource: "phong_chieu" });
+        if (Array.isArray(res?.data)) return res.data;
+        if (Array.isArray(res?.data?.data)) return res.data.data;
+        return []; // fallback an toàn
+      } catch (error) {
+        console.error("Lỗi khi fetch phong_chieu:", error);
+        return [];
+      }
+    },
   });
 
-  // Lấy danh sách rạp
+  // Bảo vệ khi phongChieuData không phải mảng
+  const filteredPhongChieuData = useMemo(() => {
+    if (!Array.isArray(phongChieuData)) return [];
+    return phongChieuData.filter(
+      (phong: IPhongChieu) => phong.trang_thai === 1 || phong.trang_thai === "1"
+    );
+  }, [phongChieuData]);
+
   const {
     data: rapData = [],
     isLoading: isLoadingRap,
     isError: isErrorRap,
   } = useQuery({
     queryKey: ["rap"],
-    queryFn: () => getListCinemas({ resource: "rap" }).then((res) => res.data),
+    queryFn: async () => {
+      try {
+        const res = await getListCinemas({ resource: "rap" });
+        if (Array.isArray(res?.data)) return res.data;
+        return [];
+      } catch (error) {
+        console.error("Lỗi khi fetch rap:", error);
+        return [];
+      }
+    },
   });
 
-  // Dùng hook lấy danh sách ghế theo phòng
   const {
     data: danhSachGhe = [],
     isLoading: isLoadingGhe,
@@ -116,8 +140,22 @@ const ListPhongChieu = () => {
       align: "center",
     },
     {
-      title: "Action",
-      key: "action",
+      title: "Trạng Thái",
+      dataIndex: "trang_thai",
+      key: "trang_thai",
+      align: "center",
+      render: (value: string) => {
+        const isActive = value === "1";
+        return (
+          <span style={{ color: isActive ? "green" : "red" }}>
+            {isActive ? "Hoạt động" : "Ngừng hoạt động"}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Chi Tiết",
+      key: "chi_tiet",
       align: "center",
       render: (_text, record) => (
         <Button type="primary" onClick={() => openModal(record)}>
@@ -128,9 +166,15 @@ const ListPhongChieu = () => {
   ];
 
   return (
-    <>
+    <Card
+      style={{
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        background: "#fff",
+        height: "95%",
+      }}
+    >
       <Table
-        dataSource={phongChieuData}
+        dataSource={filteredPhongChieuData}
         columns={columns}
         rowKey={(record) => record.id}
         pagination={{ pageSize: 10 }}
@@ -144,8 +188,15 @@ const ListPhongChieu = () => {
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
-        width={Math.min(60 * Number(selectedPhong?.loai_so_do || 10), 900)}
-        bodyStyle={{ display: "flex", justifyContent: "center" }} 
+        width={1000}
+        bodyStyle={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: 16,
+          overflow: "visible",
+        }}
+        style={{ top: 50 }}
       >
         <SoDoGhe
           phongId={selectedPhong?.id || null}
@@ -153,9 +204,10 @@ const ListPhongChieu = () => {
           danhSachGhe={danhSachGhe}
           isLoadingGhe={isLoadingGhe}
           isErrorGhe={isErrorGhe}
+          trangThaiPhong={1}
         />
       </Modal>
-    </>
+    </Card>
   );
 };
 

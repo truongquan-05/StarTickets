@@ -167,14 +167,14 @@ const UserList = () => {
             }
             onClick={() => handleToggleStatus(record)}
           />
-          <Popconfirm
+          {/* <Popconfirm
             title="Bạn có chắc chắn muốn xoá người dùng này?"
             onConfirm={() => handleDelete(record.id)}
             okText="Xác nhận"
             cancelText="Huỷ"
           >
             <Button danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+          </Popconfirm> */}
           <Button
             type="primary"
             icon={<EyeFilled />}
@@ -186,7 +186,7 @@ const UserList = () => {
   ];
 
   return (
-    <Card style={{ margin: "15px" }}>
+    <Card style={{ margin: "10px", background: "#fff", height: "100%" }}>
       <div
         style={{
           display: "flex",
@@ -255,6 +255,32 @@ const UserList = () => {
           >
             <Input.Password />
           </Form.Item>
+          <Form.Item
+            label="Nhập lại mật khẩu"
+            name="confirmPassword"
+            dependencies={["password"]}
+            rules={
+              editingItem
+                ? []
+                : [
+                    { required: true, message: "Vui lòng nhập lại mật khẩu!" },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Mật khẩu không khớp!")
+                        );
+                      },
+                    }),
+                  ]
+            }
+            hidden={!!editingItem}
+          >
+            <Input.Password />
+          </Form.Item>
+
           <Form.Item
             label="Trạng thái"
             name="trang_thai"

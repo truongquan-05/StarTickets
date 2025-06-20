@@ -14,9 +14,12 @@ import {
   Upload,
 } from "antd";
 import { useEffect, useState } from "react";
-import { getGenreList } from "../../../provider/hungProvider";
+import { getGenreList, getListChuyenNgu } from "../../../provider/hungProvider";
 import { useCreateMovies } from "../../../hook/hungHook";
 import { UploadOutlined } from "@ant-design/icons";
+import moment from "moment";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -27,12 +30,18 @@ const AddMoviesPage = () => {
   const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>(
     []
   );
+  const [chuyen_ngus, value] = useState<{ id: number; the_loai: string }[]>([]);
 
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const data = await getGenreList({ resource: "the_loai" });
         setGenre(data.data || []);
+
+        const chuyenNguData = await getListChuyenNgu({
+          resource: "chuyen_ngu",
+        });
+        value(chuyenNguData.data || []);
       } catch (error) {
         console.error("Lỗi khi tải danh sách thể loại:", error);
       }
@@ -52,6 +61,8 @@ const AddMoviesPage = () => {
         formData.append(key, value[0].originFileObj);
       } else if (key === "ngay_cong_chieu") {
         formData.append(key, (value as any).format("YYYY-MM-DD"));
+      } else if (key === "ngay_ket_thuc") {
+        formData.append(key, (value as any).format("YYYY-MM-DD"));
       } else {
         formData.append(key, String(value));
       }
@@ -63,10 +74,11 @@ const AddMoviesPage = () => {
 
   return (
     <div className="container my-4">
-      <Card style={{ margin: "20px", padding: "20px" }}>
-        <Title level={3} style={{ marginBottom: 20 }}>
-          Thêm Mới Phim
-        </Title>
+      <Card
+        title="Thêm mới phim"
+        bordered={true}
+        style={{ margin: 10, boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
+      >
         <Form
           form={form}
           layout="vertical"
@@ -138,11 +150,39 @@ const AddMoviesPage = () => {
                   </Select>
                 </Form.Item>
                 <Form.Item
+                  label="Loại suất chiếu"
+                  name={"loai_suat_chieu"}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn loại suất chiếu",
+                    },
+                  ]}
+                >
+                  <Select placeholder="Chọn loại suất chiếu">
+                    <Option value="Thường">Suất Chiếu Thường</Option>
+                    <Option value="Đặc biệt">Suất Chiếu Đặc Biệt</Option>
+                    <Option value="Sớm">Suất Chiếu Sớm</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item
                   label="Mô tả"
                   name="mo_ta"
                   rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
                 >
-                  <Input.TextArea rows={5} placeholder="Nhập mô tả phim" />
+                  <ReactQuill
+                    theme="snow"
+                    style={{ height: "300px", marginBottom: "50px" }} // tăng chiều cao
+                    modules={{
+                      toolbar: [
+                        [{ header: [1, 2, false] }],
+                        ["bold", "italic", "underline"],
+                        [{ list: "ordered" }, { list: "bullet" }],
+                        ["link"],
+                        ["clean"],
+                      ],
+                    }}
+                  />
                 </Form.Item>
               </Col>
 
@@ -189,18 +229,66 @@ const AddMoviesPage = () => {
                       required: true,
                       message: "Vui lòng chọn ngày công chiếu",
                     },
+                    {
+                      validator: (_, value) => {
+                        if (!value) return Promise.resolve();
+                        const today = moment().startOf("day");
+                        if (value.isBefore(today)) {
+                          return Promise.reject(
+                            "Chỉ được chọn ngày hiện tại hoặc tương lai"
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
                   ]}
                 >
-                  <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="YYYY-MM-DD"
+                    disabledDate={(current) =>
+                      current && current < moment().startOf("day")
+                    }
+                  />
                 </Form.Item>
+
                 <Form.Item
                   label="Ngày kết thúc"
                   name="ngay_ket_thuc"
                   rules={[
-                    { required: true, message: "Vui lòng chọn ngày kết thúc" },
+                    {
+                      required: true,
+                      message: "Vui lòng chọn ngày kết thúc",
+                    },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value) return Promise.resolve();
+                        const today = moment().startOf("day");
+                        if (value.isBefore(today)) {
+                          return Promise.reject(
+                            "Chỉ được chọn ngày hiện tại hoặc tương lai"
+                          );
+                        }
+
+                        const startDate = getFieldValue("ngay_cong_chieu");
+                        if (startDate && value.isSame(startDate, "day")) {
+                          return Promise.reject(
+                            "Ngày kết thúc phải khác ngày công chiếu"
+                          );
+                        }
+
+                        return Promise.resolve();
+                      },
+                    }),
                   ]}
                 >
-                  <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    format="YYYY-MM-DD"
+                    disabledDate={(current) =>
+                      current && current < moment().startOf("day")
+                    }
+                  />
                 </Form.Item>
 
                 <Form.Item
@@ -215,24 +303,6 @@ const AddMoviesPage = () => {
                 >
                   <Input placeholder="VD: 13+, 18+" />
                 </Form.Item>
-                <Form.Item
-                  label="Loại Suất Chiếu"
-                  name="loai_suat_chieu"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng chọn loại suất chiếu",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Chọn loại suất chiếu">
-                    <Option value="Suất Chiếu Thường">Suất Chiếu Thường</Option>
-                    <Option value="Suất Chiếu Sớm">Suất Chiếu Sớm</Option>
-                    <Option value="Suất Chiếu Đặc Biệt">
-                      Suất Chiếu Đặc Biệt
-                    </Option>
-                  </Select>
-                </Form.Item>
 
                 <Form.Item
                   label="Tình trạng phim"
@@ -245,21 +315,35 @@ const AddMoviesPage = () => {
                   ]}
                 >
                   <Select placeholder="Chọn tình trạng">
-                    <Option value="Sắp Chiếu">Sắp Chiếu</Option>
-                    <Option value="Đang Chiếu">Đang Chiếu</Option>
-                    <Option value="Đã Chiếu">Đã Chiếu</Option>
+                    <Option value="Nháp">Nháp</Option>
+                    <Option value="Xuất bản">Xuất bản</Option>
                   </Select>
+                </Form.Item>
+
+                <Form.Item
+                  label="Phiên bản phim"
+                  name="chuyen_ngu" // ✅ KHÔNG có []
+                  rules={[
+                    { required: true, message: "Vui lòng chọn phiên bản phim" },
+                  ]}
+                >
+                  <Select mode="multiple" placeholder="Chọn phiên bản phim">
+                    {chuyen_ngus.map((item) => (
+                      <Select.Option key={item.id} value={item.id}>
+                        {item.the_loai}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item style={{ textAlign: "right" }}>
+                  <Button type="primary" htmlType="submit">
+                    Thêm mới phim
+                  </Button>
                 </Form.Item>
               </Col>
             </Row>
 
             <Divider />
-
-            <Form.Item style={{ textAlign: "right" }}>
-              <Button type="primary" htmlType="submit">
-                Thêm mới phim
-              </Button>
-            </Form.Item>
           </div>
         </Form>
       </Card>

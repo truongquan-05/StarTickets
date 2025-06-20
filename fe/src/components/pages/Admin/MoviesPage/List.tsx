@@ -18,6 +18,7 @@ import {
   Table,
   Typography,
   Card,
+  Tag,
 } from "antd";
 import { useEffect, useState } from "react";
 import { IMovies, MoviesForm } from "../interface/movies";
@@ -30,6 +31,8 @@ import {
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
 const { Text, Paragraph } = Typography;
@@ -45,9 +48,13 @@ const List = () => {
   const [editingItem, setEditingItem] = useState<IMovies | undefined>(
     undefined
   );
-  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>([]);
+  const [genre, setGenre] = useState<{ id: number; ten_the_loai: string }[]>(
+    []
+  );
   const [filePoster, setFilePoster] = useState<File | null>(null);
-  const [anhPosterPreview, setAnhPosterPreview] = useState<string | undefined>();
+  const [anhPosterPreview, setAnhPosterPreview] = useState<
+    string | undefined
+  >();
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -81,6 +88,7 @@ const List = () => {
 
   const createOrUpdateOpenModal = (record: IMovies | undefined) => {
     setEditingItem(record);
+
     setModalOpen(true);
   };
 
@@ -156,12 +164,12 @@ const List = () => {
       title: "Poster",
       dataIndex: "anh_poster",
       key: "anh_poster",
-      width: 120,
+      width: 210,
       render: (text: string) => (
         <Image
           src={`${BASE_URL}/storage/${text}`}
-          width={100}
-          height={140}
+          width={220}
+          height={280}
           style={{ objectFit: "cover", borderRadius: 4 }}
           fallback="https://via.placeholder.com/100x140?text=No+Image"
           preview={false}
@@ -172,39 +180,39 @@ const List = () => {
       title: "Thông tin phim",
       dataIndex: "ten_phim",
       key: "info",
-      width: 400,
+      width: 380,
       render: (_: any, record: IMovies) => (
         <div>
-          <Text strong style={{ fontSize: 16 }}>
-            {record.ten_phim}
-          </Text>
-          <Paragraph
-            ellipsis={{ rows: 3 }}
-            style={{ marginBottom: 4, marginTop: 4 }}
-          >
-            {record.mo_ta}
-          </Paragraph>
-          <div>
-            <Text>
-              <b>Quốc gia:</b> {record.quoc_gia} | <b>Ngôn ngữ:</b>{" "}
-              {record.ngon_ngu}
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <Text strong style={{ fontSize: 16 }}>
+              <Link to={`/admin/movies/detail/${record.id}`}>
+                🎬 {record.ten_phim}
+              </Link>
             </Text>
-          </div>
-          <div>
+
             <Text>
-              <b>Thể loại:</b> {getGenreName(record.the_loai_id)} |{" "}
+              <b>Loại suất chiếu:</b> {record.loai_suat_chieu}
+            </Text>
+
+            <Text>
+              <b>Quốc gia:</b> {record.quoc_gia}
+            </Text>
+
+            <Text>
+              <b>Thể loại:</b> {getGenreName(record.the_loai_id)}
+            </Text>
+
+            <Text>
               <b>Thời lượng:</b> {record.thoi_luong} phút
             </Text>
-          </div>
-          <div>
+
             <Text>
               <b>Ngày chiếu:</b>{" "}
               {record.ngay_cong_chieu
                 ? moment(record.ngay_cong_chieu).format("DD/MM/YYYY")
                 : "Chưa cập nhật"}
             </Text>
-          </div>
-          <div>
+
             <Text>
               <b>Ngày kết thúc:</b>{" "}
               {record.ngay_ket_thuc
@@ -212,6 +220,43 @@ const List = () => {
                 : "Chưa cập nhật"}
             </Text>
           </div>
+
+          <div>
+            <Text>
+              <b>Chuyên ngữ:</b>{" "}
+              {(() => {
+                try {
+                  const chuyenNguArray = JSON.parse(
+                    typeof record.chuyen_ngu === "string"
+                      ? record.chuyen_ngu
+                      : JSON.stringify(record.chuyen_ngu || [])
+                  );
+                  return Array.isArray(chuyenNguArray) &&
+                    chuyenNguArray.length > 0 ? (
+                    chuyenNguArray.map((item: any, index: number) => (
+                      <Tag
+                        key={index}
+                        color="geekblue"
+                        style={{
+                          fontWeight: 600,
+                          padding: "4px 12px",
+                          borderRadius: 6,
+                          marginBottom: 4,
+                        }}
+                      >
+                        {item.the_loai}
+                      </Tag>
+                    ))
+                  ) : (
+                    <span>Không có dữ liệu</span>
+                  );
+                } catch (e) {
+                  return <span>Không có dữ liệu</span>;
+                }
+              })()}
+            </Text>
+          </div>
+
           <div style={{ marginTop: 4 }}>
             <a href={record.trailer} target="_blank" rel="noreferrer">
               Xem Trailer
@@ -219,15 +264,8 @@ const List = () => {
           </div>
         </div>
       ),
-      
     },
-    {
-      title: "Loại Suất Chiếu",
-      dataIndex: "loai_suat_chieu",
-      key: "loai_suat_chieu",
-      width: 100,
-    },
-    
+
     {
       title: "Giới hạn tuổi",
       dataIndex: "do_tuoi_gioi_han",
@@ -247,8 +285,7 @@ const List = () => {
         { text: "Đang chiếu", value: "Đang chiếu" },
         { text: "Đã chiếu", value: "Đã chiếu" },
       ],
-      onFilter: (value: string, record: IMovies) =>
-        record.tinh_trang === value,
+      onFilter: (value: string, record: IMovies) => record.tinh_trang === value,
       render: (text: string) => (
         <Text
           style={{
@@ -268,7 +305,7 @@ const List = () => {
     {
       title: "Hành động",
       key: "action",
-      width: 130,
+      width: 120,
       fixed: "right",
       render: (_: any, record: IMovies) => (
         <Space>
@@ -286,7 +323,12 @@ const List = () => {
             okText="Xóa"
             cancelText="Hủy"
           >
-            <Button type="default" danger icon={<DeleteOutlined />} size="small">
+            <Button
+              type="default"
+              danger
+              icon={<DeleteOutlined />}
+              size="small"
+            >
               Xóa
             </Button>
           </Popconfirm>
@@ -297,27 +339,25 @@ const List = () => {
 
   return (
     <>
-    <Card style={{ margin: "15px" }}>
-      <Typography.Title level={3} style={{ marginBottom: 16 }}>
-        Danh sách phim
-      </Typography.Title>
-      <Button
-        type="primary"
-        icon={<ExportOutlined />}
-        style={{ marginBottom: 12 }}
-      >
-        <Link to={`/admin/movies/add`}>
-        Thêm phim mới
-        </Link>
-      </Button>
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        rowKey="id"
-        scroll={{ x: 1200 }}
-        pagination={{ pageSize: 6 }}
-      />
-</Card>
+      <Card style={{ margin: "15px" }}>
+        <Typography.Title level={3} style={{ marginBottom: 16 }}>
+          Danh sách phim
+        </Typography.Title>
+        <Button
+          type="primary"
+          icon={<ExportOutlined />}
+          style={{ marginBottom: 12 }}
+        >
+          <Link to={`/admin/movies/add`}>Thêm phim mới</Link>
+        </Button>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          rowKey="id"
+          scroll={{ x: 1200 }}
+          pagination={{ pageSize: 6 }}
+        />
+      </Card>
       <Modal
         open={isModalOpen}
         title={editingItem ? "Sửa phim" : "Thêm phim mới"}
@@ -356,10 +396,18 @@ const List = () => {
               name="mo_ta"
               rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
             >
-              <Input.TextArea
-                rows={4}
+              <ReactQuill
+                theme="snow"
+                style={{ height: "300px", marginBottom: "50px" }}
                 placeholder="Nhập mô tả phim"
-                maxLength={500}
+                modules={{
+                  toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold", "italic", "underline", "strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["clean"],
+                  ],
+                }}
               />
             </Form.Item>
 
@@ -374,7 +422,11 @@ const List = () => {
             </Form.Item>
 
             <Form.Item label="Poster" name="anh_poster">
-              <input type="file" accept="image/*" onChange={onAnhPosterChange} />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={onAnhPosterChange}
+              />
               {anhPosterPreview && (
                 <Image
                   src={anhPosterPreview}

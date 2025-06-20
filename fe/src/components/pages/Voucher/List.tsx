@@ -10,6 +10,9 @@ import {
   Modal,
   Form,
   Input,
+  InputNumber,
+  DatePicker,
+  Select
 } from "antd";
 import {
   CloseCircleFilled,
@@ -18,8 +21,8 @@ import {
   PlusOutlined,
   UnlockOutlined,
 } from "@ant-design/icons";
-
 import { useEffect, useState } from "react";
+import dayjs from 'dayjs';
 import {
   useListVouchers,
   useCreateVoucher,
@@ -28,23 +31,15 @@ import {
 } from "../../hook/thinhHook";
 
 const { Title } = Typography;
+const { Option } = Select;
 
 const VouchersList = () => {
   const { data, isLoading, refetch } = useListVouchers({ resource: "ma_giam_gia" });
   const dataSource = data?.data || [];
 
   const { mutate: deleteVoucher } = useDeleteVoucher({ resource: "ma_giam_gia" });
-  const handleDelete = (id) => {
-    deleteVoucher(id, {
-      onSuccess: () => {
-        message.success("Xoá voucher thành công");
-        refetch();
-      },
-      onError: () => {
-        message.error("Xoá voucher thất bại");
-      },
-    });
-  };
+  const { mutate: createVoucher } = useCreateVoucher({ resource: "ma_giam_gia" });
+  const { mutate: updateVoucher } = useUpdateVoucher({ resource: "ma_giam_gia" });
 
   const [form] = Form.useForm();
   const [isModalOpen, setModalOpen] = useState(false);
@@ -53,18 +48,17 @@ const VouchersList = () => {
   const createOrUpdateOpenModal = (record) => {
     setModalOpen(true);
     setEditingItem(record);
-
     if (!record) form.resetFields();
   };
 
-  const { mutate: createVoucher } = useCreateVoucher({ resource: "ma_giam_gia" });
-  const { mutate: updateVoucher } = useUpdateVoucher({ resource: "ma_giam_gia" });
-
   const onCreateOrUpdate = (values) => {
+    values.ngay_bat_dau = values.ngay_bat_dau?.format("YYYY-MM-DD");
+    values.han_su_dung = values.han_su_dung?.format("YYYY-MM-DD");
+
     if (!editingItem) {
       createVoucher(values, {
         onSuccess: () => {
-          message.success("Thêm mới voucher thành công");
+          message.success("Thêm voucher thành công");
           setModalOpen(false);
           form.resetFields();
           refetch();
@@ -85,10 +79,22 @@ const VouchersList = () => {
     }
   };
 
+  const handleDelete = (id) => {
+    deleteVoucher(id, {
+      onSuccess: () => {
+        message.success("Xóa voucher thành công");
+        refetch();
+      },
+      onError: () => {
+        message.error("Xóa thất bại");
+      },
+    });
+  };
+
   const handleToggleStatus = (voucher) => {
-    const updated = { ...voucher, trang_thai: voucher.trang_thai === 1 ? 0 : 1 };
+    const newStatus = voucher.trang_thai === "ACTIVE" ? "PENDING" : "ACTIVE";
     updateVoucher(
-      { id: voucher.id, values: updated },
+      { id: voucher.id, values: { ...voucher, trang_thai: newStatus } },
       {
         onSuccess: () => {
           message.success("Đã cập nhật trạng thái");
@@ -100,61 +106,93 @@ const VouchersList = () => {
 
   useEffect(() => {
     if (isModalOpen && editingItem) {
-      form.setFieldsValue(editingItem);
+      form.setFieldsValue({
+        ...editingItem,
+        ngay_bat_dau: editingItem.ngay_bat_dau ? dayjs(editingItem.ngay_bat_dau) : null,
+        han_su_dung: editingItem.han_su_dung ? dayjs(editingItem.han_su_dung) : null,
+      });
     }
   }, [isModalOpen, editingItem]);
 
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }}>
+        <Input
+          placeholder={`Tìm ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => confirm()}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button type="primary" onClick={() => confirm()} size="small" style={{ width: 90 }}>Tìm</Button>
+          <Button onClick={() => { clearFilters(); confirm(); }} size="small" style={{ width: 90 }}>Reset</Button>
+        </Space>
+      </div>
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+  });
+
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Mã", dataIndex: "ma", key: "ma" },
-    { title: "Phần trăm giảm", dataIndex: "phan_tram_giam", key: "phan_tram_giam" },
-    { title: "Điều kiện", dataIndex: ["dieu_kien", "dieu_kien"], key: "dieu_kien" },
-    { title: "Hạn sử dụng", dataIndex: "han_su_dung", key: "han_su_dung" },
-    { title: "Ngày bắt đầu", dataIndex: "ngay_bat_dau", key: "ngay_bat_dau" },
-    { title: "Số lần sử dụng", dataIndex: "so_lan_su_dung", key: "so_lan_su_dung" },
+    { title: "ID", dataIndex: "id" },
+    { title: "Mã", dataIndex: "ma", ...getColumnSearchProps("ma") },
+    { title: "Image", dataIndex: "image", ...getColumnSearchProps("image") },
+    { title: "Loại", dataIndex: "loai_giam_gia", filters: [
+      { text: 'FIXED', value: 'FIXED' },
+      { text: 'PERCENT', value: 'PERCENT' },
+    ],
+      onFilter: (value, record) => record.loai_giam_gia === value
+    },
+    { title: "Giá trị giảm", dataIndex: "gia_tri_giam" },
+    { title: "Giảm tối đa", dataIndex: "giam_toi_da" },
+    { title: "Giá trị ĐH tối thiểu", dataIndex: "gia_tri_don_hang_toi_thieu" },
+    { title: "Phần trăm giảm", dataIndex: "phan_tram_giam" },
+    { title: "Điều kiện", dataIndex: "dieu_kien", ...getColumnSearchProps("dieu_kien") },
+    { title: "Ngày bắt đầu", dataIndex: "ngay_bat_dau" },
+    { title: "Hạn sử dụng", dataIndex: "han_su_dung" },
+    { title: "Số lần sử dụng", dataIndex: "so_lan_su_dung" },
+    { title: "Số lần đã sử dụng", dataIndex: "so_lan_da_su_dung" },
     {
       title: "Trạng thái",
       dataIndex: "trang_thai",
-      key: "trang_thai",
-      render: (trang_thai) =>
-        trang_thai === 1 ? (
-          <Tag color="green">Hoạt động</Tag>
-        ) : (
-          <Tag color="red">Tạm ngừng</Tag>
-        ),
+      filters: [
+        { text: 'ACTIVE', value: 'ACTIVE' },
+        { text: 'PENDING', value: 'PENDING' },
+        { text: 'EXPIRED', value: 'EXPIRED' },
+      ],
+      onFilter: (value, record) => record.trang_thai === value,
+      render: (trang_thai) => {
+        let color = "default";
+        if (trang_thai === "ACTIVE") color = "green";
+        else if (trang_thai === "PENDING") color = "orange";
+        else if (trang_thai === "EXPIRED") color = "red";
+        return <Tag color={color}>{trang_thai}</Tag>;
+      },
     },
     {
       title: "Hành động",
-      key: "action",
       render: (_, record) => (
         <Space>
           <Button
-            danger={record.trang_thai === 1}
-            type={record.trang_thai === 1 ? "default" : "primary"}
-            icon={record.trang_thai === 1 ? <CloseCircleFilled /> : <UnlockOutlined />} 
+            icon={record.trang_thai === "ACTIVE" ? <CloseCircleFilled /> : <UnlockOutlined />} 
             onClick={() => handleToggleStatus(record)}
           />
-          <Popconfirm
-            title="Xác nhận xoá voucher?"
-            onConfirm={() => handleDelete(record.id)}
-          >
+          <Popconfirm title="Xóa voucher này?" onConfirm={() => handleDelete(record.id)}>
             <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>
-          <Button
-            type="primary"
-            icon={<EyeFilled />} 
-            onClick={() => createOrUpdateOpenModal(record)}
-          />
+          <Button icon={<EyeFilled />} onClick={() => createOrUpdateOpenModal(record)} />
         </Space>
       ),
     },
   ];
 
   return (
-    <Card style={{ margin: 15 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-        <Title level={3} style={{ margin: 0 }}>Danh sách voucher</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => createOrUpdateOpenModal(undefined)} />
+    <Card title="Cinemas List" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => createOrUpdateOpenModal(undefined)}>
+          Thêm mới
+        </Button>
       </div>
 
       <Table
@@ -162,25 +200,41 @@ const VouchersList = () => {
         dataSource={dataSource}
         columns={columns}
         bordered
-        pagination={{ pageSize: 5 }}
         loading={isLoading}
+        pagination={{ pageSize: 5 }}
       />
 
       <Modal
-        title={editingItem ? "Cập nhật voucher" : "Thêm voucher"}
+        title={editingItem ? "Cập nhật Voucher" : "Thêm Voucher"}
         open={isModalOpen}
         onCancel={() => setModalOpen(false)}
         footer={null}
         destroyOnClose
       >
         <Form form={form} onFinish={onCreateOrUpdate} layout="vertical">
-          <Form.Item label="Mã" name="ma" rules={[{ required: true, message: "Nhập mã giảm giá!" }]}> <Input /> </Form.Item>
-          <Form.Item label="Phần trăm giảm" name="phan_tram_giam" rules={[{ required: true, message: "Nhập % giảm!" }]}> <Input type="number" /> </Form.Item>
-          <Form.Item label="Điều kiện" name={["dieu_kien", "dieu_kien"]}> <Input /> </Form.Item>
-          <Form.Item label="Hạn sử dụng" name="han_su_dung"> <Input /> </Form.Item>
-          <Form.Item label="Ngày bắt đầu" name="ngay_bat_dau"> <Input /> </Form.Item>
-          <Form.Item label="Số lần sử dụng" name="so_lan_su_dung"> <Input type="number" /> </Form.Item>
-          <Button type="primary" htmlType="submit" block>{editingItem ? "Cập nhật" : "Thêm mới"}</Button>
+          <Form.Item label="Mã" name="ma" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="Image" name="image"><Input /></Form.Item>
+          <Form.Item label="Loại giảm giá" name="loai_giam_gia"><Input /></Form.Item>
+          <Form.Item label="Giá trị giảm" name="gia_tri_giam"><InputNumber min={0} style={{ width: '100%' }} /></Form.Item>
+          <Form.Item label="Giảm tối đa" name="giam_toi_da"><InputNumber min={0} style={{ width: '100%' }} /></Form.Item>
+          <Form.Item label="Giá trị đơn hàng tối thiểu" name="gia_tri_don_hang_toi_thieu"><InputNumber min={0} style={{ width: '100%' }} /></Form.Item>
+          <Form.Item label="Phần trăm giảm" name="phan_tram_giam"><InputNumber min={0} max={100} style={{ width: '100%' }} /></Form.Item>
+          <Form.Item label="Điều kiện" name="dieu_kien"><Input /></Form.Item>
+          <Form.Item label="Ngày bắt đầu" name="ngay_bat_dau"><DatePicker style={{ width: '100%' }} /></Form.Item>
+          <Form.Item label="Hạn sử dụng" name="han_su_dung"><DatePicker style={{ width: '100%' }} /></Form.Item>
+          <Form.Item label="Số lần sử dụng" name="so_lan_su_dung"><InputNumber min={0} style={{ width: '100%' }} /></Form.Item>
+          <Form.Item label="Trạng thái" name="trang_thai">
+            <Select>
+              <Option value="PENDING">Chưa bắt đầu</Option>
+              <Option value="ACTIVE">Đang hoạt động</Option>
+              <Option value="EXPIRED">Hết hạn</Option>
+            </Select>
+          </Form.Item>
+          <Button type="primary" htmlType="submit" block>
+            {editingItem ? "Cập nhật" : "Thêm mới"}
+          </Button>
         </Form>
       </Modal>
     </Card>

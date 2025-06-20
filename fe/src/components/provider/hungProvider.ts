@@ -15,11 +15,18 @@ export type Props = {
   id?: number | string;
   values?: any;
   phong_id?: number;
+  phimId?: number;
 };
 export const getListMovies = async ({resource = "phim"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data
 }
+export const getMovieDetail = async ({ id, resource = "phim" }: Props) => {
+  if (!id) throw new Error("Thiếu ID phim");
+  const { data } = await axiosClient.get(`${resource}/${id}`);
+  return data;
+};
+
 
 export const getDeleteMovies = async ({resource = "phim" , id} : Props) => {
   if(!id) return;
@@ -134,7 +141,32 @@ export const getUpdatePhongChieu= async ({resource = "phong_chieu", id, values} 
   return data
 }
 
+//xóa mềm phòng chiếu
+export const getDeletePhongChieu  = async ({resource = "phong_chieu" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+//xóa cứng vĩnh viễn
+export const getDestroyPhongChieu  = async ({resource = "phong_chieu" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}/delete`)
+  return data;
+}
+export const getListTrashPhongChieu = async ({ resource = "phong_chieu" }: Props) => {
+  const { data } = await axiosClient.get(`${resource}/trashed/list`);
+  return data;
+};
+export const getRestorePhongChieu = async ({ resource = "phong_chieu", id }: Props) => {
+  const { data } = await axiosClient.post(`${resource}/restore/${id}`);
+  return data;
+};
+
 export const getListCinemas = async ({ resource = "rap" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+export const getListChair = async ({ resource = "rap" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
 };
@@ -153,5 +185,70 @@ export const getListGhe = async ({
   if (per_page) params.per_page = per_page;
 
   const { data } = await axiosClient.get(resource, { params });
+  return data.data;
+};
+
+export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getListLichChieu = async ({ resource = "lich_chieu" }: Props) => {
+  const res = await axiosClient.get(resource);
+  return res.data.data;  // nếu backend bọc trong data.data
+};
+export const checkLichChieu = async ({ resource = "lich_chieu/check", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values);
+  return data;
+};
+
+export const getCreateLichChieu = async ({resource = "lich_chieu" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+export const getListChuyenNgu = async ({ phimId, resource = "chuyen_ngu" }: Props) => {
+  const url = phimId ? `/lich_chieus/chuyen_ngu/${phimId}` : `/${resource}`;
+  const { data } = await axiosClient.get(url);
+  return data;
+};
+
+export const getListNews = async ({resource = "tin_tuc"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getDeleteNews  = async ({resource = "tin_tuc" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getCreateNews = async ({resource = "tin_tuc" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdateNews= async ({ resource = "tin_tuc", id, values }: Props) => {
+  if (!id) return;
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  }
+
+  // Nếu không có file, thì dùng PUT bình thường
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  return data;
+};
+
+export const getDetailTinTuc = async ({ id, resource = "tin_tuc" }: Props) => {
+  if (!id) return;
+
+  const { data } = await axiosClient.get(`${resource}/${id}`);
   return data.data;
 };

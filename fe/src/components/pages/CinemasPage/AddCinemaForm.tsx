@@ -1,33 +1,47 @@
 // src/components/AddCinemaForm.tsx
 
-import { Button, Form, Input } from "antd";
+import { Button, Card, Form, Input, message } from "antd";
 import { useCreateCinema } from "../../hook/thinhHook";
 
 export interface CinemasForm {
-  name: string;
-  address: string;
+  ten_rap: string;
+  dia_chi: string;
 }
 
-const AddCinemasPage = () =>{
+const AddCinemasPage = () => {
   const [form] = Form.useForm<CinemasForm>();
   const { mutate: createMutate } = useCreateCinema({ resource: "rap" });
 
   const onFinish = (values: CinemasForm) => {
-    createMutate(values);
-    form.resetFields();
-    // Bạn có thể thêm thông báo hoặc chuyển hướng ở đây
+    createMutate(values, {
+      onSuccess: () => {
+        message.success("Cinema created successfully");
+        form.resetFields();
+      },
+      onError: () => {
+        message.error("Create cinema failed");
+      },
+    });
   };
 
   return (
-    <div style={{ maxWidth: 600, margin: "20px auto" }}>
-      <h2>Add Cinema</h2>
+    <Card
+      title="Thêm mới rạp"
+      bordered={true}
+      style={{
+        margin: "10px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        background: "#fff",
+        height: "95%",
+      }}
+    >
       <Form<CinemasForm> form={form} onFinish={onFinish} layout="vertical">
         <Form.Item
           label="Name"
           name="ten_rap"
           rules={[{ required: true, message: "Please enter cinema name" }]}
         >
-          <Input />
+          <Input placeholder="Enter cinema name" />
         </Form.Item>
 
         <Form.Item
@@ -35,14 +49,14 @@ const AddCinemasPage = () =>{
           name="dia_chi"
           rules={[{ required: true, message: "Please enter address" }]}
         >
-          <Input />
+          <Input placeholder="Enter address" />
         </Form.Item>
 
         <Button type="primary" htmlType="submit" style={{ marginTop: 16 }}>
           Create
         </Button>
       </Form>
-    </div>
+    </Card>
   );
 };
 

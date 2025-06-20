@@ -1,47 +1,66 @@
-// src/pages/MovieDetail.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.css";
-import { Button } from "antd";
+import { Button, Spin } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
+import { getMovieDetail } from "../../provider/duProvider"; // chỉnh path nếu khác
 
 const MovieDetail = () => {
+  const { id } = useParams(); // Lấy id từ URL
+  const [movie, setMovie] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMovie = async () => {
+      try {
+        const data = await getMovieDetail(id!);
+        setMovie(data);
+      } catch (error) {
+        console.error("Lỗi lấy chi tiết phim:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovie();
+  }, [id]);
+
+  if (loading) return <Spin />;
+
+  if (!movie) return <p>Không tìm thấy phim</p>;
+
   return (
     <div className="movie-detail-wrapper">
       <div className="movie-detail-container">
         <div className="movie-poster">
-          <img
-            src="https://cdn.galaxycine.vn/media/2025/4/28/tham-tu-kien-2_1745832748529.jpg"
-            alt="Poster"
-          />
+          <img src={movie.anh_poster} alt={movie.ten_phim} />
         </div>
 
         <div className="movie-content">
-          <h1>Thám Tử Kiên (T18)</h1>
+          <h1>{movie.ten_phim}</h1>
 
           <ul className="movie-attributes">
-            <li><span>🎬 Thể loại:</span> Hồi Hộp, Kinh Dị</li>
-            <li><span>⏱ Thời lượng:</span> 114'</li>
+            <li><span>🎬 Thể loại:</span> {movie.the_loai?.ten_the_loai || "Đang cập nhật"}</li>
+            <li><span>⏱ Thời lượng:</span> {movie.thoi_luong}'</li>
             <li><span>💿 Định dạng:</span> 2D</li>
-            <li><span>🌐 Ngôn ngữ:</span> Phụ đề</li>
+            <li><span>🌐 Ngôn ngữ:</span> {movie.ngon_ngu}</li>
           </ul>
 
           <div className="movie-age-warning">
-            🔞 T18: Phim dành cho khán giả từ đủ 18 tuổi trở lên
+            🔞 {movie.do_tuoi_gioi_han}
           </div>
 
           <div className="movie-section">
             <h3>MÔ TẢ</h3>
-            <p>
-              Đạo diễn: Danny Boyle<br />
-              Diễn viên: Aaron Taylor-Johnson, Ralph Fiennes, Jodie Comer, Cillian Murphy<br />
-              Khởi chiếu: Thứ Sáu, 20/06/2025
-            </p>
+            <p>{movie.mo_ta}</p>
           </div>
 
           <div className="movie-section">
-            <h3>NỘI DUNG PHIM</h3>
+            <h3>TRAILER</h3>
             <p>
-              Cơn ác mộng chưa kết thúc. Virus trở lại, kéo theo bóng tối bao trùm nước Anh...
+              <a href={movie.trailer} target="_blank" rel="noopener noreferrer">
+                {movie.trailer}
+              </a>
             </p>
           </div>
 

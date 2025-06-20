@@ -82,6 +82,21 @@ export const getUpdateFood = async ({ resource = "do_an", id, values }: Props) =
   return await axiosClient.put(`${resource}/${id}`, values);
 };
 
+export const getCurrentMovies = async () => {
+  const res = await axiosClient.get("phim-dang-chieu");
+  return res.data;
+};
+export const getUpcomingMovies = async () => {
+  const res = await axiosClient.get("phim-sap-chieu");
+  return res.data;
+};
+
+export const getMovieDetail = async (id: number | string) => {
+  const res = await axiosClient.get(`/chi-tiet-phim/${id}`);
+  return res.data;
+};
+
+
 
 
 
