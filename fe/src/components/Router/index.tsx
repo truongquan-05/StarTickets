@@ -35,6 +35,7 @@ import AddNews from '../pages/Admin/News/AddNews';
 import NewsUser from '../pages/Users/TinTuc/NewsUser';
 import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
 import GoogleCallback from '../pages/auth/GoogleCallback';
+import AddVoucher from '../pages/Voucher/Add';
 
 
 
