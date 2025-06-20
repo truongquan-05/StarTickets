@@ -58,6 +58,18 @@ class PhongChieuController extends Controller
             'hang_vip' => 'required|integer|min:0',
             'trang_thai' => 'required|boolean',
         ]);
+        // Kiểm tra trùng tên phòng chiếu trong cùng rạp, kể cả đã xóa mềm, không phân biệt hoa thường
+        $existingPhongChieu = PhongChieu::withTrashed()
+            ->where('rap_id', $request->rap_id)
+            ->whereRaw('LOWER(ten_phong) = ?', [strtolower($request->ten_phong)])
+            ->first();
+
+        if ($existingPhongChieu) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tên phòng chiếu đã tồn tại trong rạp này (kể cả phòng đã xóa mềm)'
+            ], 422);
+        }
 
         // Tách loai_so_do thành số hàng và cột
         [$rows, $cols] = array_map('intval', explode('x', $request->loai_so_do));
