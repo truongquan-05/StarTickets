@@ -36,6 +36,7 @@ import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
 import GoogleCallback from '../pages/auth/GoogleCallback';
 import AddVoucher from '../pages/Voucher/Add';
 import SearchPage from '../pages/Users/SearchPage';
+import Commet from '../pages/Admin/CommentPage/Comment';
 
 
 
@@ -82,6 +83,7 @@ const Routermain = () => {
         { path: 'room/add', element: <AddPhongChieu /> },
 
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
+        { path: 'comment/list', element: <Commet /> },
 
 
 
