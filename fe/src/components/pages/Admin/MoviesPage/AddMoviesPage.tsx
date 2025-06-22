@@ -141,7 +141,7 @@ const AddMoviesPage = () => {
                     { required: true, message: "Vui lòng chọn thể loại" },
                   ]}
                 >
-                  <Select placeholder="Chọn thể loại">
+                  <Select mode="multiple" placeholder="Chọn thể loại">
                     {genre.map((item) => (
                       <Option key={item.id} value={item.id}>
                         {item.ten_the_loai}

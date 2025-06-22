@@ -20,7 +20,7 @@ const { Title, Paragraph, Text } = Typography;
 const MovieDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useMovieDetail(id);
-   const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = "http://127.0.0.1:8000";
 
   if (isLoading) {
     return (
@@ -41,7 +41,14 @@ const MovieDetail = () => {
         : JSON.stringify(movie.chuyen_ngu || [])
     );
   } catch {}
-
+  let theLoaiArray: any[] = [];
+  try {
+    theLoaiArray = JSON.parse(
+      typeof movie.the_loai_id === "string"
+        ? movie.the_loai_id
+        : JSON.stringify(movie.the_loai_id || [])
+    );
+  } catch {}
   return (
     <Card style={{ maxWidth: 1500, margin: "0 auto", padding: 24 }}>
       <Row gutter={24}>
@@ -66,15 +73,38 @@ const MovieDetail = () => {
             style={{ marginTop: 12 }}
             labelStyle={{ fontWeight: 600, width: 180 }}
           >
-            <Descriptions.Item label="Ngôn ngữ">{movie.ngon_ngu}</Descriptions.Item>
-            <Descriptions.Item label="Quốc gia">{movie.quoc_gia}</Descriptions.Item>
+            <Descriptions.Item label="Ngôn ngữ">
+              {movie.ngon_ngu}
+            </Descriptions.Item>
+            <Descriptions.Item label="Quốc gia">
+              {movie.quoc_gia}
+            </Descriptions.Item>
             <Descriptions.Item label="Thể loại">
-              {movie.the_loai?.ten_the_loai || "Không xác định"}
+              {theLoaiArray.length > 0 ? (
+                theLoaiArray.map((item) => (
+                  <Tag
+                    key={item.id}
+                    color="geekblue"
+                    style={{
+                      fontWeight: 600,
+                      padding: "4px 12px",
+                      borderRadius: 6,
+                      marginBottom: 4,
+                    }}
+                  >
+                    {item.ten_the_loai}
+                  </Tag>
+                ))
+              ) : (
+                <Text type="secondary">Không có thể loại</Text>
+              )}
             </Descriptions.Item>
             <Descriptions.Item label="Thời lượng">
               {movie.thoi_luong} phút
             </Descriptions.Item>
-            <Descriptions.Item label="Loại suất chiếu">{movie.loai_suat_chieu}</Descriptions.Item>
+            <Descriptions.Item label="Loại suất chiếu">
+              {movie.loai_suat_chieu}
+            </Descriptions.Item>
             <Descriptions.Item label="Ngày công chiếu">
               {movie.ngay_cong_chieu
                 ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
@@ -86,7 +116,9 @@ const MovieDetail = () => {
                 : "Chưa cập nhật"}
             </Descriptions.Item>
             <Descriptions.Item label="Độ tuổi giới hạn">
-              {movie.do_tuoi_gioi_han > 0 ? `${movie.do_tuoi_gioi_han}+` : "Tất cả"}
+              {movie.do_tuoi_gioi_han > 0
+                ? `${movie.do_tuoi_gioi_han}+`
+                : "Tất cả"}
             </Descriptions.Item>
             <Descriptions.Item label="Chuyên ngữ">
               {chuyenNguArray.length > 0 ? (
@@ -123,7 +155,11 @@ const MovieDetail = () => {
           }}
         >
           <Paragraph style={{ whiteSpace: "pre-line" }}>
-           <div dangerouslySetInnerHTML={{ __html: movie.mo_ta || "<p>Không có mô tả</p>" }} />
+            <div
+              dangerouslySetInnerHTML={{
+                __html: movie.mo_ta || "<p>Không có mô tả</p>",
+              }}
+            />
           </Paragraph>
         </div>
       </div>
