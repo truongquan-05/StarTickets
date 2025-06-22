@@ -124,8 +124,6 @@ const MovieDetail = () => {
         >
           <Paragraph style={{ whiteSpace: "pre-line" }}>
            <div dangerouslySetInnerHTML={{ __html: movie.mo_ta || "<p>Không có mô tả</p>" }} />
-
-            
           </Paragraph>
         </div>
       </div>

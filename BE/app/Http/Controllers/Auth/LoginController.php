@@ -31,14 +31,13 @@ class LoginController extends Controller
      * Xử lý callback từ Google sau khi người dùng đăng nhập
      */
     public function callback()
+
     {
         try {
             /** @var \Laravel\Socialite\Two\AbstractProvider $provider */
             $provider = Socialite::driver('google');
             $googleUser = $provider->stateless()->user();
 
-
-            // Tìm hoặc tạo user
             $user = NguoiDung::updateOrCreate(
                 ['google_id' => $googleUser->getId()],
                 [
@@ -47,20 +46,29 @@ class LoginController extends Controller
                     'google_token' => $googleUser->token,
                     'vai_tro_id' => 1,
                     'anh_dai_dien' => $googleUser->getAvatar(),
-                    'email_da_xac_thuc' => date('Y-m-d H:i:s'),
+                    'email_da_xac_thuc' => now(),
                     'password' => bcrypt(Str::random(16)),
+                    'so_dien_thoai' => substr(bin2hex(random_bytes(5)), 0, 10),
                 ]
             );
 
-
-            // Tạo token API (Sanctum)
             $token = $user->createToken('google-api')->plainTextToken;
-            return redirect()->away("http://127.0.0.1/oauth-success?token={$token}");
+
+
+            // 🔁 Redirect về FE kèm theo token và user (nếu muốn)
+            return redirect()->away(
+                'http://localhost:5173/auth/google/callback?' . http_build_query([
+                    'token' => $token,
+                    'user' => urlencode(json_encode([
+                        'id' => $user->id,
+                    ]))
+                ])
+            );
         } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Đăng nhập thất bại',
-                'error' => $th->getMessage(),
-            ], 500);
+            // Có thể redirect sang FE với thông báo lỗi cũng được
+            return redirect()->away(
+                'http://localhost:5173/auth/google/callback?error=' . urlencode($th->getMessage())
+            );
         }
     }
 

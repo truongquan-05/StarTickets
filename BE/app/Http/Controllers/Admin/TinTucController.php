@@ -46,7 +46,7 @@ class TinTucController extends Controller
     }
 
     // Lấy chi tiết tin tức
-    public function show(TinTuc $id)
+    public function show($id) // Bỏ chữ TinTuc là được 
     {
 
         $tintuc = TinTuc::find($id);
@@ -60,7 +60,7 @@ class TinTucController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Chi tiết rạp',
+            'message' => 'Chi tiết tin tức',
             'data' => $tintuc
         ], 200);
     }

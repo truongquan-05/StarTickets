@@ -14,6 +14,7 @@ class DoAn extends Model
         'ten_do_an',
         'mo_ta',
         'gia',
-        'so_luong_ton'
+        'so_luong_ton',
+        'image',
     ];
 }

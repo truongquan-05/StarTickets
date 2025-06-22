@@ -1,14 +1,19 @@
 import axios from "axios";
 
 
-const token = localStorage.getItem("token");
-
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    Authorization: token ? `Bearer ${token}` : "",
-  },
 });
+
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 
 export type Props = {
   resource: string;
@@ -211,4 +216,44 @@ export const getListChuyenNgu = async ({ phimId, resource = "chuyen_ngu" }: Prop
   const url = phimId ? `/lich_chieus/chuyen_ngu/${phimId}` : `/${resource}`;
   const { data } = await axiosClient.get(url);
   return data;
+};
+
+export const getListNews = async ({resource = "tin_tuc"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getDeleteNews  = async ({resource = "tin_tuc" , id} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.delete(`${resource}/${id}`)
+  return data;
+}
+
+export const getCreateNews = async ({resource = "tin_tuc" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getUpdateNews= async ({ resource = "tin_tuc", id, values }: Props) => {
+  if (!id) return;
+  if (values instanceof FormData) {
+    values.append("_method", "PUT");
+    const { data } = await axiosClient.post(`${resource}/${id}`, values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  }
+
+  // Nếu không có file, thì dùng PUT bình thường
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  return data;
+};
+
+export const getDetailTinTuc = async ({ id, resource = "tin_tuc" }: Props) => {
+  if (!id) return;
+
+  const { data } = await axiosClient.get(`${resource}/${id}`);
+  return data.data;
 };

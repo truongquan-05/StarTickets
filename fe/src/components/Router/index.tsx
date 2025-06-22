@@ -22,13 +22,20 @@ import VouchersList from '../pages/Voucher/List';
 import Chair from '../pages/Admin/Chair/Chair';
 import AddLichChieu from '../pages/Admin/LichChieu/AddLichChieu';
 import Home from '../pages/Users/Home';
-import News from '../pages/Users/News';
 import PhongChieuChuaXuat from '../pages/Admin/PhongChieu/PhongChieuChuaXuat';
 import LichChieuCu from '../pages/Admin/LichChieu/LichChieuCu';
 import PhongChieuXoaMem from '../pages/Admin/PhongChieu/PhongChieuXoaMem';
 import MovieDetail from '../pages/Admin/MoviesPage/ChiTietPhim';
 import Login from '../pages/auth/Login';
 import Register from '../pages/auth/Register';
+import GioiThieu from '../pages/Users/GioiThieu';
+import ListNews from '../pages/Admin/News/ListNews';
+import AddNews from '../pages/Admin/News/AddNews';
+import NewsUser from '../pages/Users/TinTuc/NewsUser';
+import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
+import GoogleCallback from '../pages/auth/GoogleCallback';
+import AddVoucher from '../pages/Voucher/Add';
+import SearchPage from '../pages/Users/SearchPage';
 
 
 
@@ -43,9 +50,15 @@ const Routermain = () => {
       element: <User />,
       children: [
         { path: '/', element: <Home /> },
-        { path: 'news', element: <News /> },
+        { path: '/phim/:id', element:<MovieDetail/>  },
+        { path: '/chi-tiet-phim/:id', element:<MovieDetail/>  },
+        { path: '/search', element:<SearchPage/>  },
+        { path: 'about', element: <GioiThieu /> },
+        { path: 'news', element: <NewsUser /> },
+        { path: 'news/:id', element: <NewsDetail /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
+        { path: 'auth/google/callback', element: <GoogleCallback /> },
       ],
     },
     {
@@ -81,6 +94,9 @@ const Routermain = () => {
         { path: 'food/add', element: <FoodAdd /> },
         { path: 'food/edit/:id', element: <FoodEdit /> },
         { path: 'vouchers/list', element: <VouchersList /> },
+        { path: 'vouchers/add', element: <AddVoucher /> },
+        { path: 'news', element: <ListNews /> },
+        { path: 'news/add', element: <AddNews /> }
       ],
     },
   ]);

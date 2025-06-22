@@ -16,8 +16,11 @@ class NguoiDungFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
-        ];
+    return [
+        'ten' => $this->faker->name,
+        'email' => $this->faker->unique()->safeEmail,
+        'password' => bcrypt('password'),
+        // Thêm các trường khác nếu cần
+    ];
     }
 }
