@@ -33,6 +33,7 @@ class LoginController extends Controller
     public function callback()
 {
     try {
+         /** @var \Laravel\Socialite\Two\AbstractProvider $provider */
         $provider = Socialite::driver('google');
         $googleUser = $provider->stateless()->user();
 
@@ -46,6 +47,7 @@ class LoginController extends Controller
                 'anh_dai_dien' => $googleUser->getAvatar(),
                 'email_da_xac_thuc' => now(),
                 'password' => bcrypt(Str::random(16)),
+                'so_dien_thoai' => substr(bin2hex(random_bytes(5)), 0, 10),
             ]
         );
 

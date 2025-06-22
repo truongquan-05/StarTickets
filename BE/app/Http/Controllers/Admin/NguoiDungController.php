@@ -114,7 +114,7 @@ class NguoiDungController extends Controller
             return response()->json([
                 'message' => 'Dữ liệu không hợp lệ',
                 'errors' => $validatedData->errors()
-            ]);
+            ],422);
         }
 
         $nguoiDung->update($request->all());

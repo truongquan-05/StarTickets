@@ -112,7 +112,7 @@ const UserList = () => {
           refetch();
         },
         onError: () => {
-          message.error("Cập nhật trạng thái thất bại");
+          // message.error("Cập nhật trạng thái thất bại");
         },
       }
     );
@@ -167,14 +167,6 @@ const UserList = () => {
             }
             onClick={() => handleToggleStatus(record)}
           />
-          {/* <Popconfirm
-            title="Bạn có chắc chắn muốn xoá người dùng này?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Xác nhận"
-            cancelText="Huỷ"
-          >
-            <Button danger icon={<DeleteOutlined />} />
-          </Popconfirm> */}
           <Button
             type="primary"
             icon={<EyeFilled />}
