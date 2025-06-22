@@ -58,7 +58,7 @@ return new class extends Migration {
             $table->string('do_tuoi_gioi_han', 50);
             $table->enum('loai_suat_chieu', ['Thường', 'Đặc biệt', 'Sớm']);
             $table->json('chuyen_ngu')->nullable();
-            $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
+            $table->json('the_loai_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
