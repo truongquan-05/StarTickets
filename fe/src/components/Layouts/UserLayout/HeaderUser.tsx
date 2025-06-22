@@ -1,14 +1,23 @@
-import { UserOutlined } from "@ant-design/icons";
+
 import logo from "../../../assets/logo for a movie ticket booking website.png";
 import flag from "../../../assets/cờ.jpg";
 import { Button, Input, Space, Dropdown, Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGoogleAuth } from "../../pages/auth/GoogleAuth";
 import "../../assets/css/headerUser.css";
+import { useState } from "react";
+import { UserOutlined } from "@ant-design/icons";
 
 const HeaderUser = () => {
   const { user, logout } = useGoogleAuth();
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
 
+  const handleSearch = () => {
+    if (searchValue.trim()) {
+      navigate(`/search?keyword=${encodeURIComponent(searchValue)}`);
+    }
+  };
   const loggedInMenu = (
     <Menu>
       <Menu.Item key="profile">
@@ -36,7 +45,7 @@ const HeaderUser = () => {
       {/* PHẦN TRÊN */}
       <div className="header-top">
         <div className="header-left">
-          <Link to="/">
+          <Link to="">
             <img src={logo} alt="Cinestar" className="logo" />
           </Link>
         </div>
@@ -48,9 +57,16 @@ const HeaderUser = () => {
           </Space>
         </div>
 
+
         <div className="header-account">
           <div className="header-search">
-            <Input.Search type="text" placeholder="Tìm phim, rạp" />
+            <Input.Search
+              type="text"
+              placeholder="Tìm phim, rạp"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onSearch={handleSearch}
+            />
           </div>
 
           <Dropdown overlay={user ? loggedInMenu : guestMenu} trigger={["click"]}>

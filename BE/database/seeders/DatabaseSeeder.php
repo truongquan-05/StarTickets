@@ -25,11 +25,12 @@ class DatabaseSeeder extends Seeder
 
 
 
-        // $this->call([
-        //     VaiTroSeeder::class,
-        //     TheLoaiSeeder::class,
-        //     NguoiDungSeeder::class,
-        //     // DanhGiaSeeder::class,
-        // ]);
+        $this->call([
+            VaiTroSeeder::class,
+            TheLoaiSeeder::class,
+            // NguoiDungSeeder::class,
+            // PhimSeeder::class,
+            // DanhGiaSeeder::class,
+        ]);
     }
 }
