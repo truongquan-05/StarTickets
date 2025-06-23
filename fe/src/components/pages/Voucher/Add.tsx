@@ -30,7 +30,6 @@ const AddVoucher = () => {
 
     createMutate(payload, {
       onSuccess: () => {
-        message.success("Thêm voucher thành công");
         navigate("/admin/vouchers/list");
       },
       onError: (error) => {
