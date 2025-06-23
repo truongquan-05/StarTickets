@@ -163,7 +163,7 @@ export const getListTrashPhongChieu = async ({ resource = "phong_chieu" }: Props
   return data;
 };
 export const getRestorePhongChieu = async ({ resource = "phong_chieu", id }: Props) => {
-  const { data } = await axiosClient.post(`${resource}/${id}/restore`);
+  const { data } = await axiosClient.post(`${resource}/restore/${id}`);
   return data;
 };
 

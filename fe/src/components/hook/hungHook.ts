@@ -271,7 +271,7 @@ export const useRestorePhongChieu = ({ resource = "phong_chieu" }: Props) => {
     mutationFn: (id: string | number) => getRestorePhongChieu({ resource, id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [resource] });
-      navigate("/admin/room/list/chuaxuat"); // chỉnh đường dẫn theo cấu trúc bạn dùng
+      navigate("/admin/phongchieu/list"); // chỉnh đường dẫn theo cấu trúc bạn dùng
     },
     onError: () => {
       // Bạn có thể thêm message.error ở đây nếu muốn
