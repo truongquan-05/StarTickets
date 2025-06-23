@@ -155,6 +155,7 @@ const AddLichChieu = () => {
       setSubmitting(false);
     }
   };
+  const phongListFiltered = phongList.filter((phong: any) => phong.trang_thai === 1 || phong.trang_thai === "1");
 
   return (
     <Card
@@ -219,7 +220,7 @@ const AddLichChieu = () => {
                 }
                 disabled={phongLoading}
               >
-                {phongList.map((phong: any) => (
+                {phongListFiltered.map((phong: any) => (
                   <Option key={phong.id} value={phong.id}>
                     {phong.ten_phong}
                   </Option>
