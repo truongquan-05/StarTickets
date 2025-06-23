@@ -210,7 +210,7 @@ class PhongChieuController extends Controller
         return response()->json([
             'message' => 'Phòng chiếu và ghế đã được khôi phục',
             'data' => $phongChieu->load('ghes', 'rap')
-        ], 200);
+        ]);
     }
 
     // Xóa vĩnh viễn phòng chiếu

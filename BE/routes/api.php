@@ -79,7 +79,7 @@ Route::post('do_an/restore/{id}', [DoAnController::class, 'restore']);
 Route::apiResource('phong_chieu', PhongChieuController::class);
 Route::prefix('phong_chieu')->group(function () {
     Route::get('/trashed/list', [PhongChieuController::class, 'trashed']); // Lấy danh sách phòng đã xóa mềm
-    Route::post('/{id}/restore', [PhongChieuController::class, 'restore']);
+    Route::post('/restore/{id}', [PhongChieuController::class, 'restore']);
     Route::delete('/{id}/delete', [PhongChieuController::class, 'forceDelete']);
 });
 

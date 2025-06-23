@@ -330,6 +330,32 @@ const AddLichChieu = () => {
               </Form.Item>
             </Col>
           )}
+          <Col xs={24} sm={12}>
+            <Form.Item
+              name="chuyen_ngu_id"
+              label="Chuyển Ngữ"
+              rules={[{ required: true, message: "Vui lòng chọn chuyển ngữ" }]}
+            >
+              <Select
+                placeholder="Chọn chuyển ngữ"
+                loading={chuyenNguLoading}
+                showSearch
+                optionFilterProp="children"
+                disabled={!selectedPhimId || chuyenNguLoading}
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              >
+                {chuyenNguList.map((cn: any) => (
+                  <Option key={cn.id} value={cn.id}>
+                    {cn.the_loai}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
         </Row>
 
         <Form.Item>
