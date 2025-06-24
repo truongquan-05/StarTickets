@@ -56,7 +56,7 @@ class LichChieuController extends Controller
 
             foreach ($lichChieuThem as $item) {
                 $duLieuPhim[] = [
-                    "chuyen_ngu_id" => $request->get('chuyen_ngu_id'),
+                    "chuyen_ngu_id" => $item['chuyen_ngu_id'],
                     "gio_chieu"  => $item['gio_chieu'],
                     "gio_ket_thuc" => $item['gio_ket_thuc'],
                     "phim_id" => $request->get('phim_id'),
@@ -64,7 +64,7 @@ class LichChieuController extends Controller
                 ];
             }
         }
-
+        // dd($lichChieuThem);
         $validator->after(function ($validator) use ($phim, $duLieuPhim) {
             foreach ($duLieuPhim as $item) {
                 $gioChieu = Carbon::parse($item['gio_chieu']);
@@ -145,6 +145,39 @@ class LichChieuController extends Controller
 
             $lichDangHD = $lichDangHD->merge($lichTrongNgay);
         }
+        // dd($duLieuPhim);
+
+        foreach ($duLieuPhim as $keyOne => $checkData) {
+            foreach ($duLieuPhim as $keyTwo => $item) {
+                if ($keyOne === $keyTwo) continue; // Bỏ qua chính nó
+
+                if ($checkData['phong_id'] == $item['phong_id']) {
+                    $startA = strtotime($checkData['gio_chieu']);
+                    $endA = strtotime($checkData['gio_ket_thuc']);
+                    $startB = strtotime($item['gio_chieu']);
+                    $endB = strtotime($item['gio_ket_thuc']);
+
+                    // Nếu hai khoảng giao nhau
+                    if ($startA < $endB && $startB < $endA) {
+                        return response()->json([
+                            'message' => "Không được trùng lịch chiếu trong cùng một phòng (khung giờ $checkData[gio_chieu] - $checkData[gio_ket_thuc] bị trùng với $item[gio_chieu] - $item[gio_ket_thuc])",
+                            'trang_thai' => false
+                        ], 422);
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         foreach ($duLieuPhim as $value) {
             foreach ($lichDangHD as $lich) {
@@ -232,12 +265,12 @@ class LichChieuController extends Controller
             $ngayKetThuc = $gioKetThuc->toDateString(); // chỉ lấy phần ngày
             $ngayCongChieu = Carbon::parse($phim->ngay_cong_chieu)->toDateString();
 
-            // 1. Ngày chiếu không được trước ngày công chiếu (nếu không phải "Sớm")
+            // Ngày chiếu không được trước ngày công chiếu (nếu không phải "Sớm")
             if ($ngayChieu < $ngayCongChieu && $phim->loai_suat_chieu != "Sớm") {
                 $validator->errors()->add('gio_chieu', 'Ngày chiếu không được trước ngày công chiếu.');
             }
 
-            // 2. Ngày chiếu không được sau ngày kết thúc (nếu có)
+            // Ngày chiếu không được sau ngày kết thúc (nếu có)
             if (!empty($phim->ngay_ket_thuc)) {
                 $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->toDateString();
                 if ($ngayChieu > $ngayKetThucPhim) {
@@ -245,7 +278,7 @@ class LichChieuController extends Controller
                 }
             }
 
-            // 3. Ngày bắt đầu và kết thúc phải giống nhau
+            // Ngày bắt đầu và kết thúc phải giống nhau
             if ($ngayChieu !== $ngayKetThuc) {
                 $validator->errors()->add('error', 'Suất chiếu phải bắt đầu và kết thúc trong cùng một ngày.');
             }
@@ -272,14 +305,14 @@ class LichChieuController extends Controller
             if ($item['trang_thai'] == 'dang_dat') {
                 return response()->json([
                     'message' => 'Lịch chiếu này có 1 người đang đặt vé, quay lại sau ít phút',
-                ]);
+                ], 422);
             }
         }
         $lichChieu = LichChieu::find($id);
         if (!$lichChieu) {
             return response()->json([
                 'message' => 'Lịch chiếu không tồn tại',
-            ], 404);
+            ], 422);
         }
 
         $data = $request->all();

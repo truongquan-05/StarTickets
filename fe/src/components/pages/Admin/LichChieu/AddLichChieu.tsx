@@ -148,6 +148,7 @@ const AddLichChieu = () => {
           ? dayjs(item.gio_chieu).format("YYYY-MM-DD HH:mm:ss")
           : null,
         gio_ket_thuc: item.gio_ket_thuc || null,
+        chuyen_ngu_id: item.chuyen_ngu_id || null,
       }));
 
       const payload = {
@@ -500,11 +501,56 @@ const AddLichChieu = () => {
                       </Col>
 
                       {/* Xóa */}
-                      <Col xs={24} sm={2} style={{ textAlign: "center" }}>
+                      <Col
+                        xs={24}
+                        sm={2}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <MinusCircleOutlined
                           onClick={() => remove(name)}
-                          style={{ fontSize: 20, color: "red", marginTop: 30 }}
+                          style={{
+                            fontSize: 20,
+                            color: "red",
+                            cursor: "pointer",
+                          }}
                         />
+                      </Col>
+
+                      <Col xs={24} sm={24}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "chuyen_ngu_id"]}
+                          label="Chuyển Ngữ"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Vui lòng chọn chuyển ngữ",
+                            },
+                          ]}
+                        >
+                          <Select
+                            placeholder="Chọn chuyển ngữ"
+                            loading={chuyenNguLoading}
+                            showSearch
+                            optionFilterProp="children"
+                            disabled={!selectedPhimId || chuyenNguLoading}
+                            filterOption={(input, option) =>
+                              (option?.children as unknown as string)
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
+                          >
+                            {chuyenNguList.map((cn: any) => (
+                              <Option key={cn.id} value={cn.id}>
+                                {cn.the_loai}
+                              </Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
                       </Col>
                     </Row>
                   ))}
