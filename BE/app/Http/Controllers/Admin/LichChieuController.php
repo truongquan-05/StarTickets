@@ -47,9 +47,6 @@ class LichChieuController extends Controller
         ]);
 
 
-
-
-
         $lichChieuThem = [];
         if ($request->get('lich_chieu_them') != null) {
             $lichChieuThem = $request->get('lich_chieu_them');
@@ -167,16 +164,6 @@ class LichChieuController extends Controller
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
 
 
         foreach ($duLieuPhim as $value) {
@@ -359,33 +346,33 @@ class LichChieuController extends Controller
     }
 
 
-    public function restore(string $id)
-    {
-        $data = LichChieu::withTrashed()->find($id);
-        if (!$data) {
-            return response()->json([
-                'message' => 'Không tìm thấy dữ liệu'
-            ], 404);
-        }
-        $data->restore();
-        return response()->json([
-            'message' => 'Khôi phục thành công',
-            'data' => $data
-        ]);
-    }
-    public function forceDelete(string $id)
-    {
-        $data = LichChieu::withTrashed()->find($id);
-        if (!$data) {
-            return response()->json([
-                'message' => 'Không tìm thấy dữ liệu'
-            ], 404);
-        }
-        $data->forceDelete();
-        return response()->json([
-            'message' => 'Xóa vĩnh viễn thành công',
-        ]);
-    }
+    // public function restore(string $id)
+    // {
+    //     $data = LichChieu::withTrashed()->find($id);
+    //     if (!$data) {
+    //         return response()->json([
+    //             'message' => 'Không tìm thấy dữ liệu'
+    //         ], 404);
+    //     }
+    //     $data->restore();
+    //     return response()->json([
+    //         'message' => 'Khôi phục thành công',
+    //         'data' => $data
+    //     ]);
+    // }
+    // public function forceDelete(string $id)
+    // {
+    //     $data = LichChieu::withTrashed()->find($id);
+    //     if (!$data) {
+    //         return response()->json([
+    //             'message' => 'Không tìm thấy dữ liệu'
+    //         ], 404);
+    //     }
+    //     $data->forceDelete();
+    //     return response()->json([
+    //         'message' => 'Xóa vĩnh viễn thành công',
+    //     ]);
+    // }
 
 
     public function ChuyenNguIndex($id)
