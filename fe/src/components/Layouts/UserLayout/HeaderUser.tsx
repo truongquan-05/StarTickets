@@ -1,12 +1,15 @@
-
-import logo from "../../../assets/logo for a movie ticket booking website.png";
+import logo from "../../../assets/logodone.png";
 import flag from "../../../assets/cờ.jpg";
 import { Button, Input, Space, Dropdown, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleAuth } from "../../pages/auth/GoogleAuth";
 import "../../assets/css/headerUser.css";
 import { useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
+import {
+  CalendarOutlined,
+  EnvironmentOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 
 const HeaderUser = () => {
   const { user, logout } = useGoogleAuth();
@@ -57,7 +60,6 @@ const HeaderUser = () => {
           </Space>
         </div>
 
-
         <div className="header-account">
           <div className="header-search">
             <Input.Search
@@ -69,7 +71,10 @@ const HeaderUser = () => {
             />
           </div>
 
-          <Dropdown overlay={user ? loggedInMenu : guestMenu} trigger={["click"]}>
+          <Dropdown
+            overlay={user ? loggedInMenu : guestMenu}
+            trigger={["click"]}
+          >
             <div className="header-login">
               {user?.anh_dai_dien ? (
                 <img
@@ -84,7 +89,9 @@ const HeaderUser = () => {
                   }}
                 />
               ) : (
-                <UserOutlined style={{ marginRight: 8 }} />
+                <div className="user-icon">
+                  <UserOutlined />
+                </div>
               )}
               <span className="login-text">
                 {user ? `Xin chào, ${user.ten}` : "Tài khoản"}
@@ -100,14 +107,18 @@ const HeaderUser = () => {
 
       {/* PHẦN MENU */}
       <div className="header-menu">
-        <a href="#">📍 Chọn rạp</a>
-        <a href="#">📅 Lịch chiếu</a>
-        <a href="#" className="khuyen_mai">
-          🎁 Khuyến mãi
+        <a href="#">
+          <EnvironmentOutlined /> Chọn rạp
         </a>
-        <a href="#">🏢 Thuê sự kiện</a>
-        <a href="/news">📰 Tin tức</a>
-        <a href="/about">ℹ️ Giới thiệu</a>
+        <a href="#">
+          <CalendarOutlined /> Lịch chiếu
+        </a>
+        <a href="#" className="khuyen_mai">
+          Khuyến mãi
+        </a>
+        <a href="#">Thuê sự kiện</a>
+        <a href="/news">Tin tức</a>
+        <a href="/about">Giới thiệu</a>
       </div>
     </header>
   );
