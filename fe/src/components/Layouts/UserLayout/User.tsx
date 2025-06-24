@@ -10,7 +10,7 @@ const User = () => {
     <Layout className="main-layout">
       <HeaderUser/>
         <Layout>
-          <Content>
+          <Content style={{ paddingTop: '160px' }}>
             <Outlet />
           </Content>
         </Layout>
