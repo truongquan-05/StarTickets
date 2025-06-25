@@ -7,6 +7,7 @@ import "../../assets/css/headerUser.css";
 import { useState } from "react";
 import {
   CalendarOutlined,
+  CaretDownOutlined,
   EnvironmentOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -101,6 +102,8 @@ const HeaderUser = () => {
 
           <div className="header-lang">
             <img src={flag} alt="Vietnamese Flag" className="logo" />
+            <span className="lang-text">VN</span>
+            <CaretDownOutlined />
           </div>
         </div>
       </div>

@@ -1,12 +1,15 @@
 import { Button, Space } from "antd";
 import logo from "../../../assets/logodone-Photoroom.png";
+import { Link } from "react-router-dom";
 
 const FooterUser = () => {
   return (
     <footer className="cinestar-footer">
       <div className="footer-top">
         <div className="footer-left">
-          <img src={logo} alt="Cinestar Logo" />
+          <Link to="">
+            <img src={logo} alt="Cinestar Logo" />
+          </Link>
           <p>BE HAPPY, BE A STAR</p>
           <div className="header-actions">
             <Space>
