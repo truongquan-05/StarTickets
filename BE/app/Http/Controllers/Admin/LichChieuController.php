@@ -19,7 +19,7 @@ class LichChieuController extends Controller
      */
     public function index()
     {
-        $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu'])
+        $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])
             ->orderBy('id', 'desc')
             ->paginate(10);
         return response()->json($lichChieus);
@@ -131,7 +131,7 @@ class LichChieuController extends Controller
                 ];
             }
         }
-        $OK =GiaVe::insert($dataGiave);
+        $OK = GiaVe::insert($dataGiave);
 
         return response()->json([
             'message' => 'Thêm lịch chiếu thành công',
@@ -251,7 +251,7 @@ class LichChieuController extends Controller
 
     public function show($id)
     {
-        $lichChieu = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu'])->find($id);
+        $lichChieu = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])->find($id);
         if (!$lichChieu) {
             return response()->json([
                 'message' => 'Lịch chiếu không tồn tại',
@@ -327,6 +327,29 @@ class LichChieuController extends Controller
                 ], 422);
             }
         }
+
+        //UPDATE GIÁ VÉ
+        $giaVe = $request->get('gia_ve');
+
+        $DataVeOld = GiaVe::where('lich_chieu_id', $id)->get();
+
+        for ($i = 1; $i <= 3; $i++) {
+            if ($i == 1) {
+                $giaVeNew = $giaVe;
+            } elseif ($i == 2) {
+                $giaVeNew = $giaVe + $giaVe * 0.3;
+            } else {
+                $giaVeNew = $giaVe * 2 + 10000;
+            }
+            $dataGiave[] = [
+                'id' => $DataVeOld[$i - 1]['id'],
+                'lich_chieu_id' => $id,
+                'loai_ghe_id' => $i,
+                'gia_ve' => $giaVeNew
+            ];
+        }
+
+
         $lichChieu = LichChieu::find($id);
         if (!$lichChieu) {
             return response()->json([
@@ -335,7 +358,12 @@ class LichChieuController extends Controller
         }
 
         $data = $request->all();
-        LichChieu::where('id', $id)->update($data);
+        LichChieu::find($id)->update($data);
+
+        foreach ($dataGiave as $item) {
+            GiaVe::find($item['id'])->update($item);
+        }
+
         return response()->json([
             'message' => 'Cập nhật lịch chiếu thành công',
             'data' => LichChieu::with(['phim', 'phong_chieu'])->find($id)
