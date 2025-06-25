@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./Home.css";
 import { Button, Spin } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";

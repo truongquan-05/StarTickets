@@ -38,10 +38,6 @@ import SearchPage from '../pages/Users/SearchPage';
 
 
 
-
-
-
-
 const Routermain = () => {
   const element = useRoutes([
     {

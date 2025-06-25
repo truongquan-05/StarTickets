@@ -40,6 +40,7 @@ const Home = () => {
 
   return (
     <div className="home-wrapper">
+      
       {/* Banner bằng Swiper */}
       <Swiper
         modules={[Navigation, Autoplay]}

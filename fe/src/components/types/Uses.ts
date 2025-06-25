@@ -9,7 +9,7 @@ export interface User {
   email: string;
   password: string;
   so_dien_thoai: string;
-  anh_dai_dien: string; 
+  anh_dai_dien?: string; 
   vai_tro_id: "admin" | "user";
   isActive: boolean;
   trang_thai: boolean;

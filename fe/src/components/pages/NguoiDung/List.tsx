@@ -135,8 +135,26 @@ const UserList = () => {
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Tên", dataIndex: "ten", key: "ten" },
+    {
+      title: "Ảnh đại diện",
+      dataIndex: "anh_dai_dien",
+      key: "anh_dai_dien",
+      render: (url: string) => (
+        <img
+          src={url}
+          alt="avatar"
+          style={{
+            width: 50,
+            height: 50,
+            objectFit: "cover",
+            borderRadius: "50%",
+          }}
+        />
+      ),
+    },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "SĐT", dataIndex: "so_dien_thoai", key: "so_dien_thoai" },
+
     {
       title: "Role",
       dataIndex: "vai_tro_id",
@@ -230,9 +248,20 @@ const UserList = () => {
           >
             <Input />
           </Form.Item>
+
+          <Form.Item
+            label="Ảnh đại diện"
+            name="anh_dai_dien"
+            rules={[
+              { required: true, message: "Vui lòng nhập URL ảnh đại diện!" },
+            ]}
+          >
+            <Input placeholder="Nhập URL ảnh đại diện" />
+          </Form.Item>
           <Form.Item label="SĐT" name="so_dien_thoai">
             <Input />
           </Form.Item>
+          
           <Form.Item
             label="Email"
             name="email"
