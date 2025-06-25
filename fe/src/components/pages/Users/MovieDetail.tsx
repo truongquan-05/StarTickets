@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./Home.css";
 import { Button, Spin } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
