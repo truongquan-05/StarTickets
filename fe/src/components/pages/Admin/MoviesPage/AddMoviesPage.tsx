@@ -37,7 +37,6 @@ const AddMoviesPage = () => {
       try {
         const data = await getGenreList({ resource: "the_loai" });
         setGenre(data.data || []);
-
         const chuyenNguData = await getListChuyenNgu({
           resource: "chuyen_ngu",
         });

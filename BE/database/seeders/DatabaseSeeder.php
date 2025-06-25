@@ -18,18 +18,13 @@ class DatabaseSeeder extends Seeder
         $this->call(ChuyenNguSeeder::class);
         User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
 
 
         $this->call([
             VaiTroSeeder::class,
             TheLoaiSeeder::class,
-            // NguoiDungSeeder::class,
-            // PhimSeeder::class,
+            LoaiGheSeeder::class,
+            RapSeeder::class,
             // DanhGiaSeeder::class,
         ]);
     }

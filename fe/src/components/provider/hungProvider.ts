@@ -257,3 +257,8 @@ export const getDetailTinTuc = async ({ id, resource = "tin_tuc" }: Props) => {
   const { data } = await axiosClient.get(`${resource}/${id}`);
   return data.data;
 };
+
+export const getCreateGiaVe = async ({resource = "gia_ve" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}

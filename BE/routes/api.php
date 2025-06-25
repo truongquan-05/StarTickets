@@ -29,15 +29,17 @@ use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 // })->middleware('auth:sanctum');
 
 
-Route::apiResource('vai_tro', VaiTroController::class);
 
+
+//-------------------ADMIN-------------------//
+
+Route::apiResource('vai_tro', VaiTroController::class);
 // Route::post('/loai-ghe/{id}/restore', [LoaiGheController::class, 'restore'])->name('loai-ghe('loai-ghe.force-delete');
 
 Route::apiResource('nguoi_dung', NguoiDungController::class);
 
 //API phản hồi khách hàng
 Route::apiResource('phan_hoi', PhanHoiKhachHangController::class);
-
 
 // Thể loại phim
 Route::get('the_loai', [TheLoaiController::class, 'index']);           // Lấy danh sách
@@ -48,16 +50,9 @@ Route::delete('the_loai/soft-delete/{id}', [TheLoaiController::class, 'softDelet
 Route::delete('the_loai/delete/{id}', [TheLoaiController::class, 'delete']); // Xóa vĩnh viễn
 Route::post('the_loai/restore/{id}', [TheLoaiController::class, 'restore']);            // Khôi phục
 
-// Phim
-
-
 Route::apiResource('loai_ghe', LoaiGheController::class);
-// Route::post('/loai-ghe/{id}/restore', [LoaiGheController::class, 'restore'])->name('loai-ghe.restore');
-// Route::delete('/loai-ghe/{id}/force-delete', [LoaiGheController::class, 'forceDelete'])->name('loai-ghe.force-delete');
 
-
-// http://127.0.0.1:8000/api/....
-
+// Phim
 Route::get('phim', [PhimController::class, 'index']);
 Route::post('phim', [PhimController::class, 'store']);
 Route::get('phim/{id}', [PhimController::class, 'show']);
@@ -65,7 +60,6 @@ Route::put('phim/{id}', [PhimController::class, 'update']);
 Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
-
 
 Route::get('do_an', [DoAnController::class, 'index']);
 Route::post('do_an', [DoAnController::class, 'store']);
@@ -75,20 +69,20 @@ Route::delete('do_an/{id}', [DoAnController::class, 'delete']);
 Route::delete('do_an/soft-delete/{id}', [DoAnController::class, 'softDelete']);
 Route::post('do_an/restore/{id}', [DoAnController::class, 'restore']);
 
-//
+// Phòng chiếu
 Route::apiResource('phong_chieu', PhongChieuController::class);
 Route::prefix('phong_chieu')->group(function () {
     Route::get('/trashed/list', [PhongChieuController::class, 'trashed']); // Lấy danh sách phòng đã xóa mềm
-    Route::post('/{id}/restore', [PhongChieuController::class, 'restore']);
+    Route::post('/restore/{id}', [PhongChieuController::class, 'restore']);
     Route::delete('/{id}/delete', [PhongChieuController::class, 'forceDelete']);
 });
 
+// Ghế
 Route::apiResource('ghe', GheController::class);
 Route::put('ghe/{ghe}/sua_loai_ghe', [GheController::class, 'changeSeatType']); //sửa loại ghế
 
 //API rạp
 Route::apiResource('rap', RapController::class);
-
 // Các route tùy chỉnh cho soft delete
 Route::prefix('rap')->group(function () {
     Route::get('/trashed/list', [RapController::class, 'trashed']);   // Danh sách đã xóa mềm
@@ -106,27 +100,10 @@ Route::prefix('ma_giam_gia')->group(function () {
     Route::put('/{id}', [MaGiamGiaController::class, 'update']);    // Cập nhật
 });
 
-
 //API lịch chiếu
-//Xóa mềm dùng api api lich_chieu
 Route::apiResource('lich_chieu', LichChieuController::class);
 Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']); //Check thời gian hợp lệ
-Route::post('/lich_chieu/{id}/restore', [LichChieuController::class, 'restore'])->name('lich_chieu.restore'); //Khôi phục
-Route::delete('/lich_chieu/{id}/force-delete', [LichChieuController::class, 'forceDelete'])->name('lich_chieu.force-delete'); //Xóa vinh viễn
 Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenNguIndex']); //Id của phim
-
-
-
-//trang chu
-
-    Route::get('/home', [HomeController::class, 'index']);
-    Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
-    Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
-    Route::get('/search', [HomeController::class, 'search']);
-    Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
-
-
-
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 
 //Tin Tức
@@ -137,15 +114,29 @@ Route::prefix('tin_tuc')->group(function () {
     Route::delete('/{id}/force', [TinTucController::class, 'forceDelete']); //xóa cứng tin tức
 });
 
+// qli đánh giá cho admin
+Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/danh-gia', [AdminDanhGiaController::class, 'index']); // Lấy danh sách đánh giá
+    Route::get('/danh-gia/{id}', [AdminDanhGiaController::class, 'show']); // Xem chi tiết đánh giá
+    Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']); // Xóa đánh giá
+});
 
-
+// XỬ LÝ ĐĂNG NHẬP VỚI GOOGLE
 Route::prefix('auth/google')->group(function () {
     Route::get('redirect', [LoginController::class, 'redirect']); //Dùng cái này
     Route::get('callback', [LoginController::class, 'callback']);
 });
-Route::post('login', [LoginController::class, 'login']);
-Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
 
+
+
+//-------------------CLIENT-------------------//
+
+//trang chu
+Route::get('/home', [HomeController::class, 'index']);
+Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
+Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
+Route::get('/search', [HomeController::class, 'search']);
+Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 
 // đánh giá của người dùng (client)
 Route::middleware('auth:sanctum')->group(function () {
@@ -155,11 +146,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
 });
 
-// qli đánh giá cho admin
-Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
-    Route::get('/danh-gia', [AdminDanhGiaController::class, 'index']); // Lấy danh sách đánh giá
-    Route::get('/danh-gia/{id}', [AdminDanhGiaController::class, 'show']); // Xem chi tiết đánh giá
-    Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']); // Xóa đánh giá
-});
+
+//Đăng nhập và đăng xuất
+Route::post('login', [LoginController::class, 'login']);
+Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // http://127.0.0.1:8000/api/....
