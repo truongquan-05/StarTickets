@@ -9,6 +9,7 @@ use App\Models\LichChieu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ChuyenNgu;
+use App\Models\GiaVe;
 use Illuminate\Support\Facades\Validator;
 
 class LichChieuController extends Controller
@@ -53,6 +54,7 @@ class LichChieuController extends Controller
 
             foreach ($lichChieuThem as $item) {
                 $duLieuPhim[] = [
+                    "gia_ve" => $item['gia_ve'],
                     "chuyen_ngu_id" => $item['chuyen_ngu_id'],
                     "gio_chieu"  => $item['gio_chieu'],
                     "gio_ket_thuc" => $item['gio_ket_thuc'],
@@ -94,17 +96,46 @@ class LichChieuController extends Controller
             }
         }
 
-
-
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
             ], 422);
         }
-        $data = LichChieu::insert($dataLich->toArray());
+
+        $ArrayData = $dataLich->toArray();
+
+        foreach ($ArrayData as $key => $item) {
+            $data[] = LichChieu::create($item);
+
+            //MẢNG LƯU TẠM DATA GIÁ
+            $DataTam[] = [
+                'lich_chieu_id' => $data[$key]->id,
+                'gia_ve' => $item['gia_ve'],
+            ];
+        }
+
+        //TẠO GIÁ VÉ CHO MỖI LỊCH (THƯỜNG-VIP-ĐÔI)
+        foreach ($DataTam as $key => $item) {
+            for ($i = 1; $i <= 3; $i++) {
+                if ($i == 1) {
+                    $giaVe = $item['gia_ve'];
+                } elseif ($i == 2) {
+                    $giaVe = $item['gia_ve'] + $item['gia_ve'] * 0.3;
+                } else {
+                    $giaVe = $item['gia_ve'] * 2 + 10000;
+                }
+                $dataGiave[] = [
+                    'lich_chieu_id' => $item['lich_chieu_id'],
+                    'loai_ghe_id' => $i,
+                    'gia_ve' => $giaVe
+                ];
+            }
+        }
+        $OK =GiaVe::insert($dataGiave);
+
         return response()->json([
             'message' => 'Thêm lịch chiếu thành công',
-            'data' => $dataLich
+            'data' => $OK
         ], 201);
     }
 
@@ -144,6 +175,7 @@ class LichChieuController extends Controller
         }
         // dd($duLieuPhim);
 
+        //CHECK LICH CHIẾU TẠO HÀNG LOẠT
         foreach ($duLieuPhim as $keyOne => $checkData) {
             foreach ($duLieuPhim as $keyTwo => $item) {
                 if ($keyOne === $keyTwo) continue; // Bỏ qua chính nó

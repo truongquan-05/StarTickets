@@ -9,9 +9,9 @@ class LoaiGheSeeder extends Seeder
     public function run()
     {
         DB::table('loai_ghe')->insert([
-            ['ten_loai_ghe' => 'Thường'],
-            ['ten_loai_ghe' => 'Vip'],
-            ['ten_loai_ghe' => 'Đôi'],
+            ['ten_loai_ghe' => 'Ghế Thường'],
+            ['ten_loai_ghe' => 'Ghế Vip'],
+            ['ten_loai_ghe' => 'Ghế Đôi'],
         ]);
     }
 }

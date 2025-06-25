@@ -101,7 +101,7 @@ return new class extends Migration {
 
         Schema::create('loai_ghe', function (Blueprint $table) {
             $table->id();
-            $table->string('ten_loai_ghe', 100);
+            $table->enum('ten_loai_ghe', ['Ghế Thường', 'Ghế Vip', 'Ghế Đôi']);
             $table->timestamps();
         });
 
