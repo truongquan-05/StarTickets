@@ -55,18 +55,22 @@ const Home = () => {
         className="banner-swiper"
       >
         <SwiperSlide>
-          <img
-            src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
-            alt="banner"
-            className="banner-img"
-          />
+          <div className="banner-wrapper">
+            <img
+              src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
+              alt="banner"
+              className="banner-img"
+            />
+          </div>
         </SwiperSlide>
         <SwiperSlide>
-          <img
-            src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
-            alt="banner"
-            className="banner-img"
-          />
+          <div className="banner-wrapper">
+            <img
+              src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
+              alt="banner"
+              className="banner-img"
+            />
+          </div>
         </SwiperSlide>
       </Swiper>
 
@@ -76,13 +80,20 @@ const Home = () => {
         {loading ? (
           <Spin />
         ) : Array.isArray(currentMovies) && currentMovies.length > 0 ? (
-          <Swiper spaceBetween={24} slidesPerView={5} navigation modules={[Navigation]}>
+          <Swiper
+            spaceBetween={24}
+            slidesPerView={5}
+            navigation
+            modules={[Navigation]}
+          >
             {currentMovies.map((movie: any, i: number) => (
               <SwiperSlide key={i}>
                 <div className="movie-card">
                   <Link to={`/phim/${movie.slug || movie.id}`}>
                     <img
-                      src={getImageUrl(movie.hinh_anh || movie.image || movie.anh_poster)}
+                      src={getImageUrl(
+                        movie.hinh_anh || movie.image || movie.anh_poster
+                      )}
                       alt={movie.title || movie.ten_phim}
                       style={{
                         width: "100%",
@@ -121,13 +132,20 @@ const Home = () => {
         {loading ? (
           <Spin />
         ) : Array.isArray(upcomingMovies) && upcomingMovies.length > 0 ? (
-          <Swiper spaceBetween={24} slidesPerView={5} navigation modules={[Navigation]}>
+          <Swiper
+            spaceBetween={24}
+            slidesPerView={5}
+            navigation
+            modules={[Navigation]}
+          >
             {upcomingMovies.map((movie: any, i: number) => (
               <SwiperSlide key={i}>
                 <div className="movie-card">
                   <Link to={`/phim/${movie.slug || movie.id}`}>
                     <img
-                      src={getImageUrl(movie.image || movie.hinh_anh || movie.anh_poster)}
+                      src={getImageUrl(
+                        movie.image || movie.hinh_anh || movie.anh_poster
+                      )}
                       alt={movie.title || movie.ten_phim}
                       style={{
                         width: "100%",
@@ -170,8 +188,13 @@ const Home = () => {
         <div className="featured-overlay">
           <div className="featured-content">
             <Title level={2}>Phim Nổi Bật: Thanh Gươm Diệt Quỷ</Title>
-            <p>Trải nghiệm hành trình tiêu diệt quỷ chưa từng có trên màn ảnh rộng.</p>
-            <Button type="primary" size="large">Đặt vé ngay</Button>
+            <p>
+              Trải nghiệm hành trình tiêu diệt quỷ chưa từng có trên màn ảnh
+              rộng.
+            </p>
+            <Button type="primary" size="large">
+              Đặt vé ngay
+            </Button>
           </div>
         </div>
       </div>
@@ -179,29 +202,43 @@ const Home = () => {
       {/* Thông tin liên hệ */}
       <div className="contact-section">
         <div className="contact-left">
-          <p>Liên hệ với chúng tôi</p>
-          <div className="social-icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="facebook" />
-            <span>FACEBOOK</span>
+          <p>LIÊN HỆ VỚI CHÚNG TÔI</p>
+          <div className="social-icon fb-icon">
+            <a href="#"><img
+              src="https://cinestar.com.vn/assets/images/ct-1.webp"
+              alt="facebook"
+            />
+            <span>FACEBOOK</span></a>
           </div>
-          <div className="social-icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="instagram" />
-            <span>INSTAGRAM</span>
+          <div className="social-icon zl-icon">
+            <a href="#">
+              <span>ZALO CHAT</span>
+            <img
+              src="	https://cinestar.com.vn/assets/images/ct-2.webp"
+              alt="ZALO CHAT"
+            /></a>   
           </div>
         </div>
 
         <div className="contact-right">
-          <Title level={5}>Thông tin liên hệ</Title>
-          <p>📧 cskh@movigo.com</p>
-          <p>📞 1900.0085</p>
-          <p>📍 135 Hai Bà Trưng, Thành phố Hồ Chí Minh</p>
+          <h2>THÔNG TIN LIÊN HỆ</h2>
+          <p>
+            <img src="https://cinestar.com.vn/assets/images/ct-1.svg" alt="" />{" "}
+            cskh@movigo.com
+          </p>
+          <p>
+            <img src="https://cinestar.com.vn/assets/images/ct-2.svg" alt="" />{" "}
+            1900.0085
+          </p>
+          <p>
+            <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />{" "}
+            135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
+          </p>
+          <input type="text" placeholder="Họ và tên" />
+          <input type="email" placeholder="Email" />
+          <textarea placeholder="Thông tin liên hệ hoặc phản ánh" rows={10}></textarea>
+          <button className="contact-btn"><span>Gửi ngay</span></button>
 
-          <Input placeholder="Họ và tên ..." style={{ marginBottom: 12 }} />
-          <Input placeholder="Email ..." style={{ marginBottom: 12 }} />
-          <Input.TextArea placeholder="Thông tin liên hệ" rows={3} style={{ marginBottom: 12 }} />
-          <Button type="primary" style={{ backgroundColor: "yellow", color: "black" }}>
-            GỬI NGAY
-          </Button>
         </div>
       </div>
     </div>
