@@ -1,3 +1,9 @@
+@import url("login.css");
+
+.main-layout{
+  min-height: 100vh;
+}
+/* ======css footer====== */
 .cinestar-footer {
   background: linear-gradient(to right, #5d0eeb, #a943ec);
   color: #fff;
@@ -190,3 +196,6 @@
     gap: 20px;
   }
 }
+
+
+/* ========done footer======== */

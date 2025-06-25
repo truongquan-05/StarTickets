@@ -177,6 +177,12 @@
   color: yellow;
 }
 
+.header-lang {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .header-lang img {
   width: 30px;
   height: 30px;
@@ -184,13 +190,33 @@
   object-fit: cover;
 }
 
+.lang-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.lang-switch {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.lang-switch:hover {
+  background-color: #f0f0f0;
+}
+
+
 /* --- PHẦN MENU --- */
 .header-menu {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 10px;
+  padding: 20px 0px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   gap: 24px;
   flex-wrap: wrap;
@@ -199,7 +225,7 @@
 .header-menu a {
   color: white;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   transition: color 0.2s ease;
   font-family: 'Poppins', sans-serif;
 }
