@@ -13,7 +13,7 @@ import {
   Input,
   InputNumber,
   Select,
-  DatePicker,
+  // DatePicker,
   message,
   Table,
   Typography,
@@ -35,7 +35,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 
 const List = () => {
   const [form] = Form.useForm();
@@ -70,13 +70,19 @@ const List = () => {
 
   useEffect(() => {
     if (isModalOpen && editingItem) {
+      const the_loai_ids = editingItem.the_loai_id
+        ? JSON.parse(editingItem.the_loai_id).map((item: any) => item.id)
+        : [];
+
       form.setFieldsValue({
         ...editingItem,
-        the_loai_id: Number(editingItem.the_loai_id),
+        the_loai_id: the_loai_ids,
+
         ngay_cong_chieu: editingItem.ngay_cong_chieu
           ? moment(editingItem.ngay_cong_chieu)
           : undefined,
       });
+
       setAnhPosterPreview(`${BASE_URL}/storage/${editingItem.anh_poster}`);
     } else {
       form.resetFields();
@@ -145,10 +151,10 @@ const List = () => {
     }
   };
 
-  const getGenreName = (id: number) => {
-    const item = genre.find((g) => g.id === id);
-    return item ? item.ten_the_loai : "Chưa cập nhật";
-  };
+  // const getGenreName = (id: number) => {
+  //   const item = genre.find((g) => g.id === id);
+  //   return item ? item.ten_the_loai : "Chưa cập nhật";
+  // };
 
   // Định nghĩa cột cho Ant Design Table
   const columns = [
@@ -198,9 +204,41 @@ const List = () => {
               <b>Quốc gia:</b> {record.quoc_gia}
             </Text>
 
-            <Text>
-              <b>Thể loại:</b> {getGenreName(record.the_loai_id)}
-            </Text>
+            <div>
+              <Text>
+                <b>Thể loại:</b>{" "}
+                {(() => {
+                  try {
+                    const theLoaiAray = JSON.parse(
+                      typeof record.the_loai_id === "string"
+                        ? record.the_loai_id
+                        : JSON.stringify(record.the_loai_id || [])
+                    );
+                    return Array.isArray(theLoaiAray) &&
+                      theLoaiAray.length > 0 ? (
+                      theLoaiAray.map((item: any, index: number) => (
+                        <Tag
+                          key={index}
+                          color="geekblue"
+                          style={{
+                            fontWeight: 600,
+                            padding: "4px 12px",
+                            borderRadius: 6,
+                            marginBottom: 4,
+                          }}
+                        >
+                          {item.ten_the_loai}
+                        </Tag>
+                      ))
+                    ) : (
+                      <span>Không có dữ liệu</span>
+                    );
+                  } catch (e) {
+                    return <span>Không có dữ liệu</span>;
+                  }
+                })()}
+              </Text>
+            </div>
 
             <Text>
               <b>Thời lượng:</b> {record.thoi_luong} phút
@@ -482,7 +520,7 @@ const List = () => {
               name="the_loai_id"
               rules={[{ required: true, message: "Chọn thể loại phim" }]}
             >
-              <Select placeholder="Chọn thể loại">
+              <Select mode="multiple" placeholder="Chọn thể loại" allowClear>
                 {genre.map((g) => (
                   <Option key={g.id} value={g.id}>
                     {g.ten_the_loai}

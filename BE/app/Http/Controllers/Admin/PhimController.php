@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePhimRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdatePhimRequest;
+use App\Models\TheLoai;
 
 class PhimController extends Controller
 {
@@ -55,12 +56,32 @@ class PhimController extends Controller
             ->values()
             ->toJson();
 
+
+        //Thể loại
+
+        $theLoaiInput = $request->input('the_loai_id');
+        if (is_string($theLoaiInput)) {
+            $theLoaiInput = explode(',', $theLoaiInput);
+        }
+
+        $data['the_loai_id'] = collect($theLoaiInput)
+            ->map(function ($id) {
+                $theLoai = TheLoai::find($id);
+                return $theLoai ? [
+                    'id' => $theLoai->id,
+                    'ten_the_loai' => $theLoai->ten_the_loai,
+                ] : null;
+            })
+            ->filter() // loại bỏ phần null nếu có id không tồn tại
+            ->values()
+            ->toJson();
+
         if ($request->hasFile('anh_poster')) {
             $data['anh_poster'] = $request->file('anh_poster')->store('posters', 'public');
         }
 
         $phim = Phim::create($data);
-        $phim->load('theLoai');
+        // $phim->load('theLoai');
 
         return response()->json([
             'message' => 'Thêm phim thành công',
@@ -82,6 +103,22 @@ class PhimController extends Controller
     {
         $phim = Phim::findOrFail($id);
         $data = $request->validated();
+        $theLoaiInput = $request->input('the_loai_id');
+        if (is_string($theLoaiInput)) {
+            $theLoaiInput = explode(',', $theLoaiInput);
+        }
+
+        $data['the_loai_id'] = collect($theLoaiInput)
+            ->map(function ($id) {
+                $theLoai = TheLoai::find($id);
+                return $theLoai ? [
+                    'id' => $theLoai->id,
+                    'ten_the_loai' => $theLoai->ten_the_loai,
+                ] : null;
+            })
+            ->filter() // loại bỏ phần null nếu có id không tồn tại
+            ->values()
+            ->toJson();
 
         if ($request->hasFile('anh_poster')) {
             // Xóa poster cũ nếu có

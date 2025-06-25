@@ -6,19 +6,19 @@ use App\Models\Phim;
 use App\Models\ChuyenNgu;
 use App\Models\Phongchieu;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class LichChieu extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $table = 'lich_chieu';
     protected $fillable = [
         'phim_id',
         'phong_id',
+        'chuyen_ngu_id',
         'gio_chieu',
-        'gio_ket_thuc',
-        'chuyen_ngu_id'
+        'gio_ket_thuc'
     ];
 
     public function phim()
@@ -32,5 +32,11 @@ class LichChieu extends Model
     public function chuyenngu()
     {
         return $this->belongsTo(ChuyenNgu::class, 'chuyen_ngu_id');
+    }
+    //QUAN HỆ NHIỀU NHIỀU VỚI BẢNG GIA_VE
+    public function giaVe()
+    {
+        return $this->belongsToMany(LoaiGhe::class, 'gia_ve', 'lich_chieu_id', 'loai_ghe_id')
+                ->withPivot('id','gia_ve');
     }
 }

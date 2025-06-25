@@ -20,13 +20,13 @@ class HomeController extends Controller
         //  Lịch chiếu hôm naygiờ >= hiện tại
         $phimDangChieu = Phim::whereHas('lichChieu', function ($query) use ($today, $timeNow) {
             $query->whereDate('gio_chieu', $today)
-                  ->whereTime('gio_chieu', '>=', $timeNow);
+                ->whereTime('gio_chieu', '>=', $timeNow);
         })
-        ->select('phim.*')
-        ->distinct()
-        ->orderBy('ngay_cong_chieu', 'desc')
-        ->take(32)
-        ->get();
+            ->distinct()
+            ->orderBy('ngay_cong_chieu', 'desc')
+            ->take(32)
+            ->get();
+
 
         //
         $phimCoLichChieuIds = DB::table('lich_chieu')->pluck('phim_id')->unique();
@@ -40,20 +40,20 @@ class HomeController extends Controller
         //  all dac biet
 
 
-$phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
-    ->whereHas('lichChieu', function ($query) use ($now) {
-        $query->where('gio_chieu', '>=', $now);
-    })
-    ->select('phim.*')
-    ->distinct()
-    ->orderBy('ngay_cong_chieu', 'desc')
-    ->get();
+        $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
+            ->whereHas('lichChieu', function ($query) use ($now) {
+                $query->where('gio_chieu', '>=', $now);
+            })
+            ->select('phim.*')
+            ->distinct()
+            ->orderBy('ngay_cong_chieu', 'desc')
+            ->get();
 
         return response()->json([
             'phim_dang_chieu' => $phimDangChieu,
             'phim_sap_chieu' => $phimSapChieu,
             'phim_dac_biet' => $phimDacBiet,
-            'login'=>$user
+            'login' => $user
         ]);
     }
 
@@ -80,7 +80,7 @@ $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
 
         return response()->json($phim);
     }
-     public function search(Request $request)
+    public function search(Request $request)
     {
         $query = Phim::query();
         // theo ten va mo ta
@@ -104,18 +104,18 @@ $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
             $query->where('trang_thai_phim', $request->trang_thai_phim);
         }
         //theo quoc gia
-           if ($request->filled('quoc_gia')) {
-        $query->where('quoc_gia', $request->quoc_gia);
-    }
-    //theo do tuoi
-     if ($request->filled('do_tuoi_gioi_han')) {
-        $query->where('do_tuoi_gioi_han', $request->do_tuoi_gioi_han);
-    }
-    //theo loai suat chieu
-    if ($request->filled('loai_suat_chieu')) {
-        $query->where('loai_suat_chieu', $request->loai_suat_chieu);
-    }
-    //sap xep
+        if ($request->filled('quoc_gia')) {
+            $query->where('quoc_gia', $request->quoc_gia);
+        }
+        //theo do tuoi
+        if ($request->filled('do_tuoi_gioi_han')) {
+            $query->where('do_tuoi_gioi_han', $request->do_tuoi_gioi_han);
+        }
+        //theo loai suat chieu
+        if ($request->filled('loai_suat_chieu')) {
+            $query->where('loai_suat_chieu', $request->loai_suat_chieu);
+        }
+        //sap xep
         if ($request->filled('sort_by')) {
             $allowedSorts = ['ten_phim', 'ngay_cong_chieu', 'thoi_luong'];
             $sortBy = in_array($request->sort_by, $allowedSorts) ? $request->sort_by : 'ngay_cong_chieu';
@@ -125,7 +125,7 @@ $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
         $phim = $request->has('paginate') ? $query->paginate(10) : $query->get();
         return response()->json($phim);
     }
-     public function show($id)
+    public function show($id)
     {
         $phim = Phim::with(['theLoai', 'lichChieu'])->find($id);
 

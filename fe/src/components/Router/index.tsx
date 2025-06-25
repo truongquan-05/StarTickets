@@ -33,8 +33,10 @@ import ListNews from '../pages/Admin/News/ListNews';
 import AddNews from '../pages/Admin/News/AddNews';
 import NewsUser from '../pages/Users/TinTuc/NewsUser';
 import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
-import MovieDetai from '../pages/Users/MovieDetail';
+import GoogleCallback from '../pages/auth/GoogleCallback';
+import AddVoucher from '../pages/Voucher/Add';
 import SearchPage from '../pages/Users/SearchPage';
+import Commet from '../pages/Admin/CommentPage/Comment';
 
 
 
@@ -45,17 +47,15 @@ const Routermain = () => {
       element: <User />,
       children: [
         { path: '/', element: <Home /> },
-        { path: '/phim/:id', element:<MovieDetai/>  },
-        { path: '/chi-tiet-phim/:id', element:<MovieDetai/>  },
+        { path: '/phim/:id', element:<MovieDetail/>  },
+        { path: '/chi-tiet-phim/:id', element:<MovieDetail/>  },
         { path: '/search', element:<SearchPage/>  },
-
-
-
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },
         { path: 'news/:id', element: <NewsDetail /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
+        { path: 'auth/google/callback', element: <GoogleCallback /> },
       ],
     },
     {
@@ -79,6 +79,7 @@ const Routermain = () => {
         { path: 'room/add', element: <AddPhongChieu /> },
 
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
+        { path: 'comment/list', element: <Commet /> },
 
 
 
@@ -91,6 +92,7 @@ const Routermain = () => {
         { path: 'food/add', element: <FoodAdd /> },
         { path: 'food/edit/:id', element: <FoodEdit /> },
         { path: 'vouchers/list', element: <VouchersList /> },
+        { path: 'vouchers/add', element: <AddVoucher /> },
         { path: 'news', element: <ListNews /> },
         { path: 'news/add', element: <AddNews /> }
       ],
