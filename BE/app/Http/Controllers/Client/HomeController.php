@@ -192,26 +192,30 @@ public function getAllPhimSapChieu()
             ->get();
     }
 
-   
-    public function locPhimTheoRapNgayTheLoai(Request $request)
-    {
-        $rapId = $request->rap_id;
-        $ngayChieu = $request->ngay_chieu;
-        $theLoaiId = $request->the_loai_id;
 
-        // Nếu thiếu rạp hoặc ngày, trả về danh sách rỗng
+ public function locPhimTheoRapNgayTheLoai(Request $request)
+    {
+        $rapId = $request->input('rap_id');
+        $ngayChieu = $request->input('ngay_chieu');
+        $theLoaiIds = $request->input('the_loai_id'); // Mảng ID
+
         if (!$rapId || !$ngayChieu) {
             return response()->json([]);
         }
 
         $query = DB::table('lich_chieu')
-            ->join('phong_chieu', 'lich_chieu.phong_chieu_id', '=', 'phong_chieu.id')
+            ->join('phong_chieu', 'lich_chieu.phong_id', '=', 'phong_chieu.id')
             ->join('phim', 'lich_chieu.phim_id', '=', 'phim.id')
             ->where('phong_chieu.rap_id', $rapId)
             ->whereDate('lich_chieu.gio_chieu', $ngayChieu);
 
-        if ($theLoaiId) {
-            $query->where('phim.the_loai_id', $theLoaiId);
+        // Lọc theo thể loại (ít nhất 1 khớp)
+        if (is_array($theLoaiIds) && count($theLoaiIds)) {
+            $query->where(function ($q) use ($theLoaiIds) {
+                foreach ($theLoaiIds as $id) {
+                    $q->orWhereJsonContains('phim.the_loai_id', ['id' => (int)$id]);
+                }
+            });
         }
 
         $phim = $query->select(
@@ -223,7 +227,11 @@ public function getAllPhimSapChieu()
                 'phim.the_loai_id'
             )
             ->distinct()
-            ->get();
+            ->get()
+            ->map(function ($item) {
+                $item->the_loai_id = json_decode($item->the_loai_id, true);
+                return $item;
+            });
 
         return response()->json($phim);
     }
