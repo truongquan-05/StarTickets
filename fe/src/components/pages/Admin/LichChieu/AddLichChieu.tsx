@@ -154,7 +154,7 @@ const AddLichChieu = () => {
         ...values,
         lich_chieu_them: lichChieuThem,
       };
-            console.log("Payload gửi đi:", payload);
+      console.log("Payload gửi đi:", payload);
 
       // Kiểm tra trùng lịch
       const checkResult = await checkLichChieu({
@@ -220,11 +220,10 @@ const AddLichChieu = () => {
       });
     } catch (error: any) {
       console.error(error);
-      message.error("Lỗi hệ thống");
+      message.error(error.response.data.message);
       setSubmitting(false);
     }
   };
-  
 
   const phongListFiltered = phongList.filter(
     (phong: any) => phong.trang_thai === 1 || phong.trang_thai === "1"
@@ -428,10 +427,11 @@ const AddLichChieu = () => {
           </Col>
           <Col xs={24} sm={12}>
             <Form.Item
-                name="gia_ve"
+              name="gia_ve"
               rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
             >
               <InputNumber
+                max={1000000000}
                 placeholder="Giá Vé"
                 style={{ width: "100%" }}
               />
@@ -582,11 +582,14 @@ const AddLichChieu = () => {
                       </Col>
                       <Col xs={24} sm={11}>
                         <Form.Item
-                            name="gia_ve"
-                            label="Giá vé"
-                          rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
+                          name="gia_ve"
+                          label="Giá vé"
+                          rules={[
+                            { required: true, message: "Vui lòng nhập giá vé" },
+                          ]}
                         >
                           <InputNumber
+                            max={1000000000}
                             placeholder="Giá Vé"
                             style={{ width: "100%" }}
                           />
