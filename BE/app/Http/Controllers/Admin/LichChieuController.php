@@ -25,7 +25,6 @@ class LichChieuController extends Controller
         return response()->json($lichChieus);
     }
 
-
     /**
      * Store a newly created resource in storage.
      */
@@ -63,7 +62,7 @@ class LichChieuController extends Controller
                 ];
             }
         }
-        // dd($lichChieuThem);
+        
         $validator->after(function ($validator) use ($phim, $duLieuPhim) {
             foreach ($duLieuPhim as $item) {
                 $gioChieu = Carbon::parse($item['gio_chieu']);
@@ -120,7 +119,7 @@ class LichChieuController extends Controller
                 if ($i == 1) {
                     $giaVe = $item['gia_ve'];
                 } elseif ($i == 2) {
-                    $giaVe = $item['gia_ve'] + $item['gia_ve'] * 0.3;
+                    $giaVe = $item['gia_ve'] + $item['gia_ve'] * 0.3; // 30% so với giá thường
                 } else {
                     $giaVe = $item['gia_ve'] * 2 + 10000;
                 }
@@ -173,7 +172,6 @@ class LichChieuController extends Controller
 
             $lichDangHD = $lichDangHD->merge($lichTrongNgay);
         }
-        // dd($duLieuPhim);
 
         //CHECK LICH CHIẾU TẠO HÀNG LOẠT
         foreach ($duLieuPhim as $keyOne => $checkData) {
@@ -196,7 +194,6 @@ class LichChieuController extends Controller
                 }
             }
         }
-
 
         foreach ($duLieuPhim as $value) {
             foreach ($lichDangHD as $lich) {
@@ -239,15 +236,12 @@ class LichChieuController extends Controller
             }
         }
 
-
-
         return response()->json([
             'message' => 'Phòng này không có lịch chiếu nào trùng với thời gian bạn đã chọn.',
             'data' => [],
             'trang_thai' => true
         ]);
     }
-
 
     public function show($id)
     {
@@ -259,7 +253,6 @@ class LichChieuController extends Controller
         }
         return response()->json($lichChieu);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -310,8 +303,6 @@ class LichChieuController extends Controller
             ], 422);
         }
 
-
-
         foreach ($ve as $item) {
             if ($item['trang_thai'] == 'da_dat') {
                 return response()->json([
@@ -330,7 +321,6 @@ class LichChieuController extends Controller
 
         //UPDATE GIÁ VÉ
         $giaVe = $request->get('gia_ve');
-
         $DataVeOld = GiaVe::where('lich_chieu_id', $id)->get();
 
         for ($i = 1; $i <= 3; $i++) {
@@ -348,7 +338,6 @@ class LichChieuController extends Controller
                 'gia_ve' => $giaVeNew
             ];
         }
-
 
         $lichChieu = LichChieu::find($id);
         if (!$lichChieu) {
@@ -405,36 +394,6 @@ class LichChieuController extends Controller
         ], 200);
     }
 
-
-    // public function restore(string $id)
-    // {
-    //     $data = LichChieu::withTrashed()->find($id);
-    //     if (!$data) {
-    //         return response()->json([
-    //             'message' => 'Không tìm thấy dữ liệu'
-    //         ], 404);
-    //     }
-    //     $data->restore();
-    //     return response()->json([
-    //         'message' => 'Khôi phục thành công',
-    //         'data' => $data
-    //     ]);
-    // }
-    // public function forceDelete(string $id)
-    // {
-    //     $data = LichChieu::withTrashed()->find($id);
-    //     if (!$data) {
-    //         return response()->json([
-    //             'message' => 'Không tìm thấy dữ liệu'
-    //         ], 404);
-    //     }
-    //     $data->forceDelete();
-    //     return response()->json([
-    //         'message' => 'Xóa vĩnh viễn thành công',
-    //     ]);
-    // }
-
-
     public function ChuyenNguIndex($id)
     {
         $chuyenNgu = ChuyenNgu::all();
@@ -453,7 +412,6 @@ class LichChieuController extends Controller
             return in_array($item->id, $selectedIds);
         });
         $chuyenNguDaChonArray = $chuyenNguDaChon->values()->all();
-
 
         return response()->json(
             [
