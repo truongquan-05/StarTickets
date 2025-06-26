@@ -10,6 +10,7 @@ import {
   Col,
   Row,
   Input,
+  InputNumber,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -18,6 +19,7 @@ import {
   useListPhongChieu,
   useListChuyenNgu,
   useCheckLichChieu,
+  useCreateGiaVe,
 } from "../../../hook/hungHook";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { getListCinemas } from "../../../provider/hungProvider";
@@ -42,6 +44,7 @@ const AddLichChieu = () => {
 
   const [rapListRaw, setRapListRaw] = useState<any>([]);
   const [rapLoading, setRapLoading] = useState<boolean>(false);
+  const { mutate: createGiaVe } = useCreateGiaVe({ resource: "gia_ve" });
 
   React.useEffect(() => {
     let isMounted = true;
@@ -73,10 +76,6 @@ const AddLichChieu = () => {
     setSelectedRapId(rapId);
     form.setFieldsValue({ phong_id: undefined });
   };
-  const filteredPhongList = phongList.filter(
-    (phong: any) => phong.rap_id === selectedRapId
-  );
-
   const { data: chuyenNguListRaw, isLoading: chuyenNguLoading } =
     useListChuyenNgu({
       resource: "chuyen_ngu",
@@ -155,28 +154,42 @@ const AddLichChieu = () => {
         ...values,
         lich_chieu_them: lichChieuThem,
       };
+            console.log("Payload gửi đi:", payload);
 
-      // Kiểm tra trùng giờ với giờ chiếu chính
+      // Kiểm tra trùng lịch
       const checkResult = await checkLichChieu({
         phong_id: values.phong_id,
         gio_chieu: values.gio_chieu,
         gio_ket_thuc: values.gio_ket_thuc,
-
         lich_chieu_them: lichChieuThem,
       });
 
       if (checkResult.isConflict) {
-        // message.error(
-        //   "Lịch chiếu bị trùng hoặc quá gần lịch chiếu hiện tại trong phòng!"
-        // );
+        message.error("Lịch chiếu bị trùng hoặc quá gần lịch chiếu hiện tại!");
         setSubmitting(false);
         return;
       }
 
-      // Gửi tạo lịch chiếu (gồm cả chính và thêm)
+      // Gửi tạo lịch chiếu
       createLichChieu(payload, {
-        onSuccess: () => {
+        onSuccess: async (res: any) => {
+          const lichChieuId = res?.id;
+          const giaVe = form.getFieldValue("gia_ve");
+
+          if (lichChieuId && giaVe !== undefined) {
+            console.log("Giá vé gửi đi:", giaVe);
+            try {
+              await createGiaVe({
+                lich_chieu_id: lichChieuId,
+                gia_ve: giaVe,
+              });
+            } catch (e) {
+              message.error("Tạo giá vé thất bại");
+            }
+          }
+
           message.success("Thêm lịch chiếu thành công");
+
           form.resetFields();
           setGioKetThucTinh("");
           setThoiLuongPhim(0);
@@ -207,11 +220,15 @@ const AddLichChieu = () => {
       });
     } catch (error: any) {
       console.error(error);
-      message.error(error.response.data.message);
+      message.error("Lỗi hệ thống");
       setSubmitting(false);
     }
   };
+  
 
+  const phongListFiltered = phongList.filter(
+    (phong: any) => phong.trang_thai === 1 || phong.trang_thai === "1"
+  );
   return (
     <Card
       style={{
@@ -299,7 +316,7 @@ const AddLichChieu = () => {
                     .includes(input.toLowerCase())
                 }
               >
-                {filteredPhongList.map((phong: any) => (
+                {phongListFiltered.map((phong: any) => (
                   <Option key={phong.id} value={phong.id}>
                     {phong.ten_phong}
                   </Option>
@@ -406,6 +423,17 @@ const AddLichChieu = () => {
                   border: "1px solid #d9d9d9",
                   borderRadius: 4,
                 }}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item
+                name="gia_ve"
+              rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
+            >
+              <InputNumber
+                placeholder="Giá Vé"
+                style={{ width: "100%" }}
               />
             </Form.Item>
           </Col>
@@ -520,7 +548,7 @@ const AddLichChieu = () => {
                         />
                       </Col>
 
-                      <Col xs={24} sm={24}>
+                      <Col xs={24} sm={11}>
                         <Form.Item
                           {...restField}
                           name={[name, "chuyen_ngu_id"]}
@@ -550,6 +578,18 @@ const AddLichChieu = () => {
                               </Option>
                             ))}
                           </Select>
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={11}>
+                        <Form.Item
+                            name="gia_ve"
+                            label="Giá vé"
+                          rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
+                        >
+                          <InputNumber
+                            placeholder="Giá Vé"
+                            style={{ width: "100%" }}
+                          />
                         </Form.Item>
                       </Col>
                     </Row>
