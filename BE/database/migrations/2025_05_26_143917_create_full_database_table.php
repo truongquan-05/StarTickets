@@ -133,7 +133,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('loai_ghe_id')->constrained('loai_ghe')->onUpdate('cascade')->onDelete('cascade');
-            $table->decimal('gia_ve', 10, 2);
+            $table->decimal('gia_ve', 12, 2);
             $table->timestamps();
         });
 
