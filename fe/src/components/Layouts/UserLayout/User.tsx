@@ -10,7 +10,7 @@ const User = () => {
     <Layout className="main-layout">
       <HeaderUser/>
         <Layout>
-          <Content style={{ paddingTop: '160px' }}>
+          <Content style={{ paddingTop: '160px', backgroundColor: '#1a0933' }}>
             <Outlet />
           </Content>
         </Layout>
