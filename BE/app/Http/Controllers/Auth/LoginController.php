@@ -31,42 +31,46 @@ class LoginController extends Controller
      * Xử lý callback từ Google sau khi người dùng đăng nhập
      */
     public function callback()
-{
-    try {
-        $provider = Socialite::driver('google');
-        $googleUser = $provider->stateless()->user();
 
-        $user = NguoiDung::updateOrCreate(
-            ['google_id' => $googleUser->getId()],
-            [
-                'ten' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
-                'google_token' => $googleUser->token,
-                'vai_tro_id' => 1,
-                'anh_dai_dien' => $googleUser->getAvatar(),
-                'email_da_xac_thuc' => now(),
-                'password' => bcrypt(Str::random(16)),
-            ]
-        );
+    {
+        try {
+            /** @var \Laravel\Socialite\Two\AbstractProvider $provider */
+            $provider = Socialite::driver('google');
+            $googleUser = $provider->stateless()->user();
 
-        $token = $user->createToken('google-api')->plainTextToken;
+            $user = NguoiDung::updateOrCreate(
+                ['google_id' => $googleUser->getId()],
+                [
+                    'ten' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_token' => $googleUser->token,
+                    'vai_tro_id' => 1,
+                    'anh_dai_dien' => $googleUser->getAvatar(),
+                    'email_da_xac_thuc' => now(),
+                    'password' => bcrypt(Str::random(16)),
+                    'so_dien_thoai' => substr(bin2hex(random_bytes(5)), 0, 10),
+                ]
+            );
 
-        // 🔁 Redirect về FE kèm theo token và user (nếu muốn)
-        return redirect()->away(
-            'http://localhost:5173/auth/google/callback?' . http_build_query([
-                'token' => $token,
-                'user' => urlencode(json_encode([
-                    'id' => $user->id,
-                ]))
-            ])
-        );
-    } catch (\Throwable $th) {
-        // Có thể redirect sang FE với thông báo lỗi cũng được
-        return redirect()->away(
-            'http://localhost:5173/auth/google/callback?error=' . urlencode($th->getMessage())
-        );
+            $token = $user->createToken('google-api')->plainTextToken;
+
+
+            // 🔁 Redirect về FE kèm theo token và user (nếu muốn)
+            return redirect()->away(
+                'http://localhost:5173/auth/google/callback?' . http_build_query([
+                    'token' => $token,
+                    'user' => urlencode(json_encode([
+                        'id' => $user->id,
+                    ]))
+                ])
+            );
+        } catch (\Throwable $th) {
+            // Có thể redirect sang FE với thông báo lỗi cũng được
+            return redirect()->away(
+                'http://localhost:5173/auth/google/callback?error=' . urlencode($th->getMessage())
+            );
+        }
     }
-}
 
     public function login(Request $request)
     {
@@ -97,7 +101,7 @@ class LoginController extends Controller
         return response()->json([
             'access_token' => $token,
             'user' => $user,
-            
+
         ]);
     }
 }

@@ -58,7 +58,7 @@ return new class extends Migration {
             $table->string('do_tuoi_gioi_han', 50);
             $table->enum('loai_suat_chieu', ['Thường', 'Đặc biệt', 'Sớm']);
             $table->json('chuyen_ngu')->nullable();
-            $table->foreignId('the_loai_id')->constrained('the_loai')->onUpdate('cascade')->onDelete('cascade');
+            $table->json('the_loai_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -101,7 +101,7 @@ return new class extends Migration {
 
         Schema::create('loai_ghe', function (Blueprint $table) {
             $table->id();
-            $table->string('ten_loai_ghe', 100);
+            $table->enum('ten_loai_ghe', ['Ghế Thường', 'Ghế Vip', 'Ghế Đôi']);
             $table->timestamps();
         });
 
@@ -133,7 +133,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('loai_ghe_id')->constrained('loai_ghe')->onUpdate('cascade')->onDelete('cascade');
-            $table->decimal('gia_ve', 10, 2);
+            $table->decimal('gia_ve', 12, 2);
             $table->timestamps();
         });
 

@@ -3,48 +3,148 @@
 .main-layout{
   min-height: 100vh;
 }
-/* footer */
+/* ======css footer====== */
 .cinestar-footer {
-  background-color: #490889;
+  background: linear-gradient(to right, #5d0eeb, #a943ec);
   color: #fff;
-  padding: 40px 20px 20px;
-  font-family: 'Arial', sans-serif;
+  padding: 90px 10% 0px 10%;
+  font-family: 'Poppins', sans-serif;
 }
 
 .footer-top {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  max-width: 1200px;
-  margin: auto;
-  border-bottom: 1px solid #444;
+  gap: 40px;
   padding-bottom: 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
 }
 
-.footer-logo {
+.footer-left {
   flex: 1 1 300px;
+}
+
+.footer-left img {
+  width: 200px;
+  border-radius: 10px;
   margin-bottom: 20px;
 }
-.footer-logo img {
-  max-width: 180px;
-  margin-bottom: 10px;
-}
-.footer-logo p {
+
+
+.footer-left p {
   margin: 4px 0;
-  font-size: 14px;
+  font-size: 18px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.footer-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.btn-tickett {
+  font-size: 18px;
+  padding: 0 15px;
+  position: relative;
+  font-family: 'Anton', sans-serif;
+  height: 40px;
+  background-color: #eff600; /* màu gốc */
+  color: #000; /* màu chữ gốc */
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden; /* ẩn phần hover thừa */
+  transition: color 0.4s ease; /* mượt đổi màu chữ */
+  margin-bottom: 15px;
+}
+
+.btn-tickett::before { 
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #8200d8, rgb(149, 149, 245));
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left; /* chạy từ trái qua phải */
+  transition: transform 0.4s ease;
+}
+
+.btn-tickett:hover::before {
+  transform: scaleX(1);
+}
+
+.btn-tickett:hover {
+  color: #fff; /* đổi màu chữ khi hover */
+}
+
+.btn-tickett span {
+  position: relative;
+  z-index: 1; /* giữ text nằm trên màu hover */
+}
+
+.btn-popcorn2 {
+  font-size: 18px;
+  padding: 0 15px;
+  position: relative;
+  font-family: 'Anton', sans-serif;
+  height: 40px;
+  background-color: transparent; /* màu gốc */
+  color: #fff; /* màu chữ gốc */
+  border: 1px solid #fff; /* viền trắng */
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden; /* ẩn phần hover thừa */
+  transition: color 0.4s ease; /* mượt đổi màu chữ */
+  margin-bottom: 15px;
+}
+.btn-popcorn2::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c);
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left; /* chạy từ phải qua trái */
+  transition: transform 0.4s ease;
+}
+
+.btn-popcorn2:hover::before {
+  transform: scaleX(1);
+}
+
+.btn-popcorn2 span {
+  position: relative;
+  z-index: 1; /* giữ text nằm trên overlay */
+}
+
+
+.social-icons {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.social-icons img {
+  margin: 0 3px;
+  width: 30px;
 }
 
 .footer-links {
   display: flex;
-  flex: 2 1 600px;
-  justify-content: space-around;
+  flex: 3 1 600px;
+  justify-content: space-between;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
 .footer-links h4 {
-  color: #f2c94c;
-  font-size: 16px;
-  margin-bottom: 10px;
+  color: #fff;
+  font-size: 19px;
+  margin-bottom: 20px;
+  font-family: 'Anton', sans-serif;
 }
 
 .footer-links ul {
@@ -53,38 +153,49 @@
 }
 
 .footer-links li {
-  margin-bottom: 6px;
+  margin: 20px 0;
 }
 
 .footer-links a {
-  color: #ccc;
+  color: #ddd;
   text-decoration: none;
   font-size: 14px;
+  transition: color 0.2s ease;
+  font-size: 16px;
 }
 
 .footer-links a:hover {
-  color: #f2c94c;
-}
-
-.social-icons a {
-  margin-right: 10px;
-}
-
-.social-icons img {
-  width: 24px;
-  height: 24px;
+  color: #ffeb3b;
 }
 
 .footer-bottom {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding-top: 20px;
   font-size: 13px;
-  color: #888;
-}
-.footer-logo img{
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  object-fit: cover;
+  color: #fff;
 }
 
+.footer-bottom-left,
+.footer-bottom-right {
+  flex: 1;
+}
+
+.footer-bottom-right {
+  text-align: right;
+}
+
+
+@media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+  }
+  .footer-links {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+
+/* ========done footer======== */

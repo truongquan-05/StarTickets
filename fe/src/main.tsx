@@ -8,7 +8,6 @@ import { GoogleAuthProvider } from "./components/pages/auth/GoogleAuth.tsx";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
     <GoogleAuthProvider>
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
@@ -16,5 +15,4 @@ createRoot(document.getElementById("root")!).render(
         </QueryClientProvider>
       </BrowserRouter>
     </GoogleAuthProvider>
-  </StrictMode>
 );

@@ -1,7 +1,6 @@
 import {
   Table,
   Button,
-  Popconfirm,
   Space,
   message,
   Tag,
@@ -14,7 +13,6 @@ import {
 } from "antd";
 import {
   CloseCircleFilled,
-  DeleteOutlined,
   EyeFilled,
   PlusOutlined,
   UnlockOutlined,
@@ -23,7 +21,7 @@ import {
 import { User } from "../../types/Uses";
 import {
   useCreateUser,
-  useDeleteUser,
+  // useDeleteUser,
   useListUsers,
   useListVaiTro,
   useUpdateUser,
@@ -45,23 +43,23 @@ const UserList = () => {
   const roles = rolesData?.data || [];
 
   // Xoá người dùng
-  const { mutate: deleteUser } = useDeleteUser({ resource: "nguoi_dung" });
-  const handleDelete = async (id: number) => {
-    try {
-      deleteUser(id, {
-        onSuccess: () => {
-          message.success("Xoá người dùng thành công");
-          refetch();
-        },
-        onError: () => {
-          message.error("Xoá thất bại, vui lòng thử lại");
-        },
-      });
-    } catch (error) {
-      message.error("Xoá thất bại, vui lòng thử lại");
-      console.log(error);
-    }
-  };
+  // const { mutate: deleteUser } = useDeleteUser({ resource: "nguoi_dung" });
+  // const handleDelete = async (id: number) => {
+  //   try {
+  //     deleteUser(id, {
+  //       onSuccess: () => {
+  //         message.success("Xoá người dùng thành công");
+  //         refetch();
+  //       },
+  //       onError: () => {
+  //         message.error("Xoá thất bại, vui lòng thử lại");
+  //       },
+  //     });
+  //   } catch (error) {
+  //     message.error("Xoá thất bại, vui lòng thử lại");
+  //     console.log(error);
+  //   }
+  // };
 
   // Modal và form
   const [form] = Form.useForm();
@@ -112,7 +110,7 @@ const UserList = () => {
           refetch();
         },
         onError: () => {
-          message.error("Cập nhật trạng thái thất bại");
+          // message.error("Cập nhật trạng thái thất bại");
         },
       }
     );
@@ -167,14 +165,6 @@ const UserList = () => {
             }
             onClick={() => handleToggleStatus(record)}
           />
-          {/* <Popconfirm
-            title="Bạn có chắc chắn muốn xoá người dùng này?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Xác nhận"
-            cancelText="Huỷ"
-          >
-            <Button danger icon={<DeleteOutlined />} />
-          </Popconfirm> */}
           <Button
             type="primary"
             icon={<EyeFilled />}
@@ -255,6 +245,32 @@ const UserList = () => {
           >
             <Input.Password />
           </Form.Item>
+          <Form.Item
+            label="Nhập lại mật khẩu"
+            name="confirmPassword"
+            dependencies={["password"]}
+            rules={
+              editingItem
+                ? []
+                : [
+                    { required: true, message: "Vui lòng nhập lại mật khẩu!" },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          new Error("Mật khẩu không khớp!")
+                        );
+                      },
+                    }),
+                  ]
+            }
+            hidden={!!editingItem}
+          >
+            <Input.Password />
+          </Form.Item>
+
           <Form.Item
             label="Trạng thái"
             name="trang_thai"

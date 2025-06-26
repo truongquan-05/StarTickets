@@ -1,151 +1,246 @@
-import React from "react";
-import { Carousel, Row, Col, Button, Typography, Input } from "antd";
+import { useEffect, useState } from "react";
+import { Button, Typography, Input, Spin } from "antd";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Autoplay } from "swiper/modules";
+import { Link } from "react-router-dom";
+import moment from "moment";
+import { getCurrentMovies, getUpcomingMovies } from "../../provider/duProvider";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "./Home.css";
 
 const { Title } = Typography;
+const BASE_URL = "http://127.0.0.1:8000";
+
+// Hàm xử lý ảnh
+const getImageUrl = (path: string | null | undefined) => {
+  if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}/storage/${path}`;
+};
 
 const Home = () => {
-  const currentMovies = [
-    {
-      title: "Thanh Gươm Diệt Quỷ",
-      date: "31.12.2025",
-      image: "https://media.lottecinemavn.com/Media/MovieFile/MovieImg/202401/11379_103_100001.jpg",
-    },
-    {
-      title: "Lật mặt 8",
-      date: "28.11.2025",
-      image: "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/l/m/lm8_-_470x700.jpg",
-    },
-    {
-      title: "Biệt đội sấm sét",
-      date: "20.11.2025",
-      image: "https://upload.wikimedia.org/wikipedia/vi/9/90/Thunderbolts%2A_poster.jpg",
-    },
-    {
-      title: "Thám tử kiên",
-      date: "10.10.2025",
-      image: "https://cdn.galaxycine.vn/media/2025/4/28/tham-tu-kien-2_1745832748529.jpg",
-    },
-  ];
+  const [currentMovies, setCurrentMovies] = useState<any[]>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const upcomingMovies = [
-    {
-      title: "Đào phở piano",
-      image: "https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_9_e81a0cb05d.jpg",
-    },
-    {
-      title: "Nhà gia tiên",
-      image: "https://cinema.momocdn.net/img/17174455224600722-NHAGIATIENSNEAK.jpg?size=M",
-    },
-    {
-      title: "Doraemon",
-      image: "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/c/o/copy_of_250220_dr25_main_b1_localized_embbed_1_.jpg",
-    },
-    {
-      title: "Làm giàu ma",
-      image: "https://simg.zalopay.com.vn/zlp-website/assets/phim_viet_nam_chieu_rap_hay_1_1656a985dc.jpg",
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [current, upcoming] = await Promise.all([
+          getCurrentMovies(),
+          getUpcomingMovies(),
+        ]);
+        setCurrentMovies(current);
+        setUpcomingMovies(upcoming);
+      } catch (error) {
+        console.error("Lỗi khi fetch danh sách phim:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="home-wrapper">
-      {/* Banner */}
-      <Carousel autoplay>
-        <div>
-          <img
-            src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
-            alt="banner"
-            className="banner-img"
-          />
-        </div>
-        <div>
-          <img
-            src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
-            alt="banner"
-            className="banner-img"
-          />
-        </div>
-      </Carousel>
-      
+      {/* Banner bằng Swiper */}
+      <Swiper
+        modules={[Navigation, Autoplay]}
+        navigation
+        autoplay={{ delay: 3000 }}
+        className="banner-swiper"
+      >
+        <SwiperSlide>
+          <div className="banner-wrapper">
+            <img
+              src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
+              alt="banner"
+              className="banner-img"
+            />
+          </div>
+        </SwiperSlide>
+        <SwiperSlide>
+          <div className="banner-wrapper">
+            <img
+              src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
+              alt="banner"
+              className="banner-img"
+            />
+          </div>
+        </SwiperSlide>
+      </Swiper>
 
       {/* Phim đang chiếu */}
       <div className="section">
         <Title level={3}>Phim đang chiếu</Title>
-        <Row gutter={24}>
-          {currentMovies.map((movie, i) => (
-            <Col span={6} key={i}>
-              <div className="movie-card">
-                <img src={movie.image} alt={movie.title} />
-                <h4>{movie.title}</h4>
-                <p>Ngày chiếu: {movie.date}</p>
-                <Button type="primary">Mua vé</Button>
-              </div>
-            </Col>
-          ))}
-        </Row>
+        {loading ? (
+          <Spin />
+        ) : Array.isArray(currentMovies) && currentMovies.length > 0 ? (
+          <Swiper
+            spaceBetween={24}
+            slidesPerView={5}
+            navigation
+            modules={[Navigation]}
+          >
+            {currentMovies.map((movie: any, i: number) => (
+              <SwiperSlide key={i}>
+                <div className="movie-card">
+                  <Link to={`/phim/${movie.slug || movie.id}`}>
+                    <img
+                      src={getImageUrl(
+                        movie.hinh_anh || movie.image || movie.anh_poster
+                      )}
+                      alt={movie.title || movie.ten_phim}
+                      style={{
+                        width: "100%",
+                        height: "280px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://via.placeholder.com/220x280?text=No+Image";
+                      }}
+                    />
+                  </Link>
+                  <h4>{movie.title || movie.ten_phim}</h4>
+                  <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
+                    Ngày chiếu:{" "}
+                    {movie.ngay_cong_chieu
+                      ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+                      : "Chưa cập nhật"}
+                  </p>
+                  <Link to={`/phim/${movie.slug || movie.id}`}>
+                    <Button type="primary">Mua vé</Button>
+                  </Link>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <p>Không có phim đang chiếu.</p>
+        )}
       </div>
 
       {/* Phim sắp chiếu */}
       <div className="section">
         <Title level={3}>Phim sắp chiếu</Title>
-        <Row gutter={24}>
-          {upcomingMovies.map((movie, i) => (
-            <Col span={6} key={i}>
-              <div className="movie-card">
-                <img src={movie.image} alt={movie.title} />
-                <h4>{movie.title}</h4>
-                <Button type="primary">Xem chi tiết</Button>
-              </div>
-            </Col>
-          ))}
-        </Row>
+        {loading ? (
+          <Spin />
+        ) : Array.isArray(upcomingMovies) && upcomingMovies.length > 0 ? (
+          <Swiper
+            spaceBetween={24}
+            slidesPerView={5}
+            navigation
+            modules={[Navigation]}
+          >
+            {upcomingMovies.map((movie: any, i: number) => (
+              <SwiperSlide key={i}>
+                <div className="movie-card">
+                  <Link to={`/phim/${movie.slug || movie.id}`}>
+                    <img
+                      src={getImageUrl(
+                        movie.image || movie.hinh_anh || movie.anh_poster
+                      )}
+                      alt={movie.title || movie.ten_phim}
+                      style={{
+                        width: "100%",
+                        height: "280px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.src =
+                          "https://via.placeholder.com/220x280?text=No+Image";
+                      }}
+                    />
+                  </Link>
+                  <h4>{movie.title || movie.ten_phim}</h4>
+                  <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
+                    Ngày chiếu:{" "}
+                    {movie.ngay_cong_chieu
+                      ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+                      : "Chưa cập nhật"}
+                  </p>
+                  <Link to={`/phim/${movie.slug || movie.id}`}>
+                    <Button type="primary">Xem chi tiết</Button>
+                  </Link>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          <p>Không có phim sắp chiếu.</p>
+        )}
       </div>
+
       {/* Phim nổi bật */}
-<div className="featured-movie">
-  <img
-    src="https://static.zenmarket.jp/images/common-landing-pages/ropevl21.tr4"
-    alt="phim nổi bật"
-    className="featured-img"
-  />
-  <div className="featured-overlay">
-    <div className="featured-content">
-      <Title level={2}>Phim Nổi Bật: Thanh Gươm Diệt Quỷ</Title>
-      <p>Trải nghiệm hành trình tiêu diệt quỷ chưa từng có trên màn ảnh rộng.</p>
-      <Button type="primary" size="large">Đặt vé ngay</Button>
-    </div>
-  </div>
-</div>
+      <div className="featured-movie">
+        <img
+          src="https://static.zenmarket.jp/images/common-landing-pages/ropevl21.tr4"
+          alt="phim nổi bật"
+          className="featured-img"
+        />
+        <div className="featured-overlay">
+          <div className="featured-content">
+            <Title level={2}>Phim Nổi Bật: Thanh Gươm Diệt Quỷ</Title>
+            <p>
+              Trải nghiệm hành trình tiêu diệt quỷ chưa từng có trên màn ảnh
+              rộng.
+            </p>
+            <Button type="primary" size="large">
+              Đặt vé ngay
+            </Button>
+          </div>
+        </div>
+      </div>
 
-{/* Thông tin liên hệ */}
-<div className="contact-section">
-  <div className="contact-left">
-    <p>Liên hệ với chúng tôi</p>
-    <div className="social-icon">
-      <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="facebook" />
-      <span>FACEBOOK</span>
-    </div>
-    <div className="social-icon">
-      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="instagram" />
-      <span>INSTAGRAM</span>
-    </div>
-  </div>
+      {/* Thông tin liên hệ */}
+      <div className="contact-section">
+        <div className="contact-left">
+          <p>LIÊN HỆ VỚI CHÚNG TÔI</p>
+          <div className="social-icon fb-icon">
+            <a href="#"><img
+              src="https://cinestar.com.vn/assets/images/ct-1.webp"
+              alt="facebook"
+            />
+            <span>FACEBOOK</span></a>
+          </div>
+          <div className="social-icon zl-icon">
+            <a href="#">
+              <span>ZALO CHAT</span>
+            <img
+              src="	https://cinestar.com.vn/assets/images/ct-2.webp"
+              alt="ZALO CHAT"
+            /></a>   
+          </div>
+        </div>
 
-  <div className="contact-right">
-    <Title level={5}>Thông tin liên hệ</Title>
-    <p>📧 cskh@movigo.com</p>
-    <p>📞 1900.0085</p>
-    <p>📍 135 Hai Bà Trưng, Thành phố Hồ Chí Minh</p>
+        <div className="contact-right">
+          <h2>THÔNG TIN LIÊN HỆ</h2>
+          <p>
+            <img src="https://cinestar.com.vn/assets/images/ct-1.svg" alt="" />{" "}
+            cskh@movigo.com
+          </p>
+          <p>
+            <img src="https://cinestar.com.vn/assets/images/ct-2.svg" alt="" />{" "}
+            1900.0085
+          </p>
+          <p>
+            <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />{" "}
+            135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
+          </p>
+          <input type="text" placeholder="Họ và tên" />
+          <input type="email" placeholder="Email" />
+          <textarea placeholder="Thông tin liên hệ hoặc phản ánh" rows={10}></textarea>
+          <button className="contact-btn"><span>Gửi ngay</span></button>
 
-    <Input placeholder="Họ và tên ..." style={{ marginBottom: 12 }} />
-    <Input placeholder="Email ..." style={{ marginBottom: 12 }} />
-    <Input.TextArea placeholder="Thông tin liên hệ" rows={3} style={{ marginBottom: 12 }} />
-    <Button type="primary" style={{ backgroundColor: "yellow", color: "black" }}>
-      GỬI NGAY
-    </Button>
-  </div>
-</div>
-
-   
+        </div>
+      </div>
     </div>
   );
 };

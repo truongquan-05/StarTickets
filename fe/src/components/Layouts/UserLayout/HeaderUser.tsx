@@ -1,14 +1,27 @@
-import { UserOutlined } from "@ant-design/icons";
-import logo from "../../../assets/logo for a movie ticket booking website.png";
+import logo from "../../../assets/logodone.png";
 import flag from "../../../assets/cờ.jpg";
 import { Button, Input, Space, Dropdown, Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGoogleAuth } from "../../pages/auth/GoogleAuth";
 import "../../assets/css/headerUser.css";
+import { useState } from "react";
+import {
+  CalendarOutlined,
+  CaretDownOutlined,
+  EnvironmentOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 
 const HeaderUser = () => {
   const { user, logout } = useGoogleAuth();
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
 
+  const handleSearch = () => {
+    if (searchValue.trim()) {
+      navigate(`/search?keyword=${encodeURIComponent(searchValue)}`);
+    }
+  };
   const loggedInMenu = (
     <Menu>
       <Menu.Item key="profile">
@@ -36,7 +49,7 @@ const HeaderUser = () => {
       {/* PHẦN TRÊN */}
       <div className="header-top">
         <div className="header-left">
-          <Link to="/">
+          <Link to="">
             <img src={logo} alt="Cinestar" className="logo" />
           </Link>
         </div>
@@ -50,10 +63,19 @@ const HeaderUser = () => {
 
         <div className="header-account">
           <div className="header-search">
-            <Input.Search type="text" placeholder="Tìm phim, rạp" />
+            <Input.Search
+              type="text"
+              placeholder="Tìm phim, rạp"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onSearch={handleSearch}
+            />
           </div>
 
-          <Dropdown overlay={user ? loggedInMenu : guestMenu} trigger={["click"]}>
+          <Dropdown
+            overlay={user ? loggedInMenu : guestMenu}
+            trigger={["click"]}
+          >
             <div className="header-login">
               {user?.anh_dai_dien ? (
                 <img
@@ -68,7 +90,9 @@ const HeaderUser = () => {
                   }}
                 />
               ) : (
-                <UserOutlined style={{ marginRight: 8 }} />
+                <div className="user-icon">
+                  <UserOutlined />
+                </div>
               )}
               <span className="login-text">
                 {user ? `Xin chào, ${user.ten}` : "Tài khoản"}
@@ -78,20 +102,26 @@ const HeaderUser = () => {
 
           <div className="header-lang">
             <img src={flag} alt="Vietnamese Flag" className="logo" />
+            <span className="lang-text">VN</span>
+            <CaretDownOutlined />
           </div>
         </div>
       </div>
 
       {/* PHẦN MENU */}
       <div className="header-menu">
-        <a href="#">📍 Chọn rạp</a>
-        <a href="#">📅 Lịch chiếu</a>
-        <a href="#" className="khuyen_mai">
-          🎁 Khuyến mãi
+        <a href="#">
+          <EnvironmentOutlined /> Chọn rạp
         </a>
-        <a href="#">🏢 Thuê sự kiện</a>
-        <a href="/news">📰 Tin tức</a>
-        <a href="/about">ℹ️ Giới thiệu</a>
+        <a href="#">
+          <CalendarOutlined /> Lịch chiếu
+        </a>
+        <a href="#" className="khuyen_mai">
+          Khuyến mãi
+        </a>
+        <a href="#">Thuê sự kiện</a>
+        <a href="/news">Tin tức</a>
+        <a href="/about">Giới thiệu</a>
       </div>
     </header>
   );

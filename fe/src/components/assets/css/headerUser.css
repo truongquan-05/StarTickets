@@ -1,10 +1,24 @@
 .header-cinestar {
-  padding: 0 5%;
+  padding: 0 10%;
   background-color: #0c0b1f;
   color: white;
   font-family: 'Roboto', sans-serif;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+.header-cinestar {
+  position: fixed; /* cố định trên cùng */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999; /* cao hơn mọi thành phần khác */
+  padding: 0 10%;
+  background-color: #0c0b1f;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 
 /* --- PHẦN TRÊN --- */
 .header-top {
@@ -17,10 +31,7 @@
 }
 
 .header-left img {
-  width: 75px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
+  width: 200px;
 }
 
 /* Action buttons (Đặt vé, Bắp nước) */
@@ -31,40 +42,99 @@
 }
 
 .btn-ticket {
-  background-color: #eff600;
-  color: #000;
-  font-weight: bold;
-  padding: 6px 12px;
+  font-size: 18px;
+  padding: 0 15px;
+  position: relative;
+  font-family: 'Anton', sans-serif;
+  height: 40px;
+  background-color: #eff600; /* màu gốc */
+  color: #000; /* màu chữ gốc */
   border: none;
   cursor: pointer;
   border-radius: 4px;
+  overflow: hidden; /* ẩn phần hover thừa */
+  transition: color 0.4s ease; /* mượt đổi màu chữ */
 }
 
+.btn-ticket::before { 
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #8200d8, rgb(149, 149, 245));
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left; /* chạy từ trái qua phải */
+  transition: transform 0.4s ease;
+}
+
+.btn-ticket:hover::before {
+  transform: scaleX(1);
+}
+
+.btn-ticket:hover {
+  color: #fff; /* đổi màu chữ khi hover */
+}
+
+.btn-ticket span {
+  position: relative;
+  z-index: 1; /* giữ text nằm trên màu hover */
+}
+
+
 .btn-popcorn {
-  background-color: #8200d8;
-  color: #fff;
-  font-weight: bold;
-  padding: 6px 12px;
+  font-size: 18px;
+  padding: 0 15px;
+  position: relative;
+  font-family: 'Anton', sans-serif;
+  height: 40px;
+  background-color: #8200d8; /* màu gốc */
+  color: #fff; /* màu chữ gốc */
   border: none;
   cursor: pointer;
   border-radius: 4px;
+  overflow: hidden; /* ẩn phần hover thừa */
+  transition: color 0.4s ease; /* mượt đổi màu chữ */
 }
+
+.btn-popcorn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c);
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left; /* chạy từ phải qua trái */
+  transition: transform 0.4s ease;
+}
+
+.btn-popcorn:hover::before {
+  transform: scaleX(1);
+}
+
+.btn-popcorn span {
+  position: relative;
+  z-index: 1; /* giữ text nằm trên overlay */
+}
+
 
 /* Thông tin tài khoản */
 .header-account {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 24px;
+  gap: 40px;
 }
 
 .header-search {
   display: flex;
   align-items: center;
   background: white;
-  border-radius: 20px;
+  border-radius: 30px;
   padding: 4px 12px;
-  width: 250px;
+  width: 310px;
+  height: 40px;
 }
 
 .header-search input {
@@ -73,15 +143,30 @@
   flex: 1;
   padding: 6px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 17px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .header-search .ant-input-search-button {
   border: none;
+  font-size: 27px;
 }
 
+.user-icon {
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+
 .header-login {
-  font-size: 16px;
+  font-size: 20px;
   color: white;
   display: flex;
   align-items: center;
@@ -89,7 +174,13 @@
 }
 
 .header-login .login-text:hover {
-  color: #fdd835;
+  color: yellow;
+}
+
+.header-lang {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .header-lang img {
@@ -99,13 +190,33 @@
   object-fit: cover;
 }
 
+.lang-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.lang-switch {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.lang-switch:hover {
+  background-color: #f0f0f0;
+}
+
+
 /* --- PHẦN MENU --- */
 .header-menu {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 20px 0px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   gap: 24px;
   flex-wrap: wrap;
@@ -114,12 +225,15 @@
 .header-menu a {
   color: white;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 16px;
   transition: color 0.2s ease;
+  font-family: 'Poppins', sans-serif;
 }
 
 .header-menu a:hover {
-  color: #fdd835;
+  color: yellow;
+  text-decoration: underline;
+
 }
 
 .header-menu .khuyen_mai {

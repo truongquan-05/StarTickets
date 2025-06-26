@@ -4,62 +4,113 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* Banner chính */
 .banner-img {
   width: 100%;
   height: 800px;
-  margin-top: 30px;
   object-fit: cover;
 }
 
+/* Section wrapper */
 .section {
   padding: 40px 80px;
 }
 
-.movie-card {
-  background-color: #2b1a47;
-  padding: 16px;
-  border-radius: 10px;
-  text-align: center;
-  color: white;
-}
-
-.movie-card img {
-  width: 50%;
-  height: 250px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-.subscribe-box {
-  background: #2b1a47;
-  padding: 40px;
-  text-align: center;
-}
 .section h3 {
-  color: white; /* Màu vàng nổi bật như Figma */
-  font-size: 26px;
-  font-weight: bold;
+  color: white;
+  font-size: 40px;
   text-transform: uppercase;
   margin-bottom: 24px;
   text-align: center;
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 1px; 
+  font-weight: 500;
 }
 
+/* ==========================
+   THẺ PHIM ĐANG CHIẾU / SẮP CHIẾU
+========================== */
+.movie-card {
+  background-color: #2b1a47;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+}
+
+/* Ảnh phim */
+.movie-card img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+/* Tên phim */
 .movie-card h4 {
-  font-size: 18px;
-  font-weight: 600;
-  color: #ffffff;
-  margin: 12px 0 6px;
-  text-transform: capitalize;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  min-height: 44px;
 }
 
+/* Ngày chiếu / mô tả */
 .movie-card p {
   font-size: 14px;
-  color: #cccccc;
-  margin-bottom: 10px;
+  color: #aaa;
+  margin-bottom: 12px;
 }
 
+/* Nút đặt vé hoặc tìm hiểu thêm */
+.movie-card button {
+  background-color: #facc15;
+  color: #000;
+  border: none;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 6px 14px;
+  transition: all 0.3s ease;
+}
 
+.movie-card button:hover {
+  background-color: #ffe150;
+}
+
+/* Nút "Xem thêm" */
+.section .see-more-button {
+  margin: 30px auto 0;
+  background-color: transparent;
+  border: 2px solid #facc15;
+  color: #facc15;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 6px;
+  transition: 0.3s;
+  display: block;
+}
+
+.section .see-more-button:hover {
+  background-color: #facc15;
+  color: #000;
+}
+
+/* ==========================
+   PHẦN GIỚI THIỆU ĐẶC BIỆT
+========================== */
 .featured-movie {
   position: relative;
   margin: 40px 0;
@@ -102,12 +153,14 @@
   margin-bottom: 16px;
 }
 
-
+/* ==========================
+   PHẦN LIÊN HỆ
+========================== */
 .contact-section {
   display: flex;
   justify-content: space-between;
-  padding: 40px;
-  background-color: #1e0033; /* màu nền tùy chỉnh */
+  padding: 100px 10%;
+  background-color: #1e0033;
   color: white;
   margin-top: 40px;
 }
@@ -120,31 +173,282 @@
 }
 
 .contact-left p {
-  font-size: 18px;
+  font-size: 40px;
   margin-bottom: 20px;
+  font-family: 'Anton', sans-serif;
+  text-align: center;
 }
 
 .social-icon {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
+  justify-content: center;
 }
 
 .social-icon img {
-  width: 40px;
-  height: 40px;
-  margin-right: 12px;
+  width: 200px;
+}
+.social-icon span {
+  font-size: 40px;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+}
+
+.fb-icon,
+.zl-icon{
+  border: 1px solid yellow;
+  border-radius: 6px;
+  height: 200px;
+  margin: 25px 50px;
 }
 
 .contact-right {
   flex: 1;
-  background-color: #531dab;
-  padding: 24px;
-  border-radius: 8px;
+  background-color: rgba(51,102,204,.8);
+  padding: 50px; /* padding đều 4 phía */
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  box-sizing: border-box;
+}
+
+
+.contact-right h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
 }
 
 .contact-right p {
-  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 17px;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.contact-right p img {
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+}
+
+.contact-right input {
+  height: 60px;
+  /* ...các style khác... */
+}
+
+.contact-right input,
+.contact-right textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 50px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: #000;
+}
+
+
+.contact-right input:focus,
+.contact-right textarea:focus {
+  outline: none;
+  border: 2px solid #fff;
+}
+
+.contact-right textarea {
+  min-height: 150px;
+}
+
+.contact-btn {
+  font-size: 20px;
+  padding: 0 30px;
+  position: relative;
+  font-family: 'Anton', sans-serif;
+  height: 50px;
+  background-color: #FFEB3B; /* màu nền ban đầu */
+  color: #000;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  width: 300px;
+}
+
+.contact-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.contact-btn:hover::before {
+  transform: scaleX(1);
+}
+
+.contact-btn:hover {
   color: #fff;
 }
+
+.contact-btn span {
+  position: relative;
+  z-index: 1;
+}
+
+
+
+
+/* RESPONSIVE (MOBILE)*/
+@media (max-width: 768px) {
+  .section {
+    padding: 20px;
+  }
+
+  .movie-card img {
+    height: 200px;
+  }
+
+  .movie-card h4 {
+    font-size: 15px;
+  }
+
+  .movie-card p {
+    font-size: 13px;
+  }
+
+  .contact-section {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+/* Moviedetail */
+.movie-detail-wrapper {
+  background-color: #12092b;
+  color: #ffffff;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.movie-detail-container {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.movie-poster img {
+  width: 320px;
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.movie-content {
+  flex: 1;
+  min-width: 300px;
+}
+
+.movie-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.movie-attributes {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.movie-attributes li {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.movie-attributes span {
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.movie-age-warning {
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 5px;
+  display: inline-block;
+  margin: 10px 0 20px;
+}
+
+.movie-section {
+  margin-bottom: 20px;
+}
+
+.movie-section h3 {
+  color: #ffffff;
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.movie-section p {
+  line-height: 1.6;
+}
+
+.trailer-button {
+  background: #6f36e2;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  padding: 8px 24px;
+  transition: background 0.3s ease;
+}
+
+.trailer-button:hover {
+  background: #e50946;
+  color: #fff;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .movie-detail-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .movie-content {
+    text-align: left;
+  }
+}
+/* search */
+.search-page {
+  padding: 40px;
+  background-color: #12092b;
+  color: white;
+}
+
+.poster-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
 
