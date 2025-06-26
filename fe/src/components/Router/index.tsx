@@ -35,6 +35,7 @@ import NewsUser from '../pages/Users/TinTuc/NewsUser';
 import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
 import MovieDetai from '../pages/Users/MovieDetail';
 import SearchPage from '../pages/Users/SearchPage';
+import ProfilePage from '../pages/Users/Profile';
 
 
 
@@ -48,6 +49,9 @@ const Routermain = () => {
         { path: '/phim/:id', element:<MovieDetai/>  },
         { path: '/chi-tiet-phim/:id', element:<MovieDetai/>  },
         { path: '/search', element:<SearchPage/>  },
+        { path: '/profile', element:<ProfilePage/>  },
+
+
 
 
 

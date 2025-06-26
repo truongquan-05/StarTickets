@@ -22,4 +22,22 @@ export interface Food {
   gia: number;
   so_luong_ton: number;
 }
+export interface Rap {
+  id: number;
+  ten_rap: string;
+}
+
+export interface TheLoai {
+  id: number;
+  ten_the_loai: string;
+}
+
+export interface Phim {
+  id: number;
+  ten_phim: string;
+  mo_ta: string;
+  hinh_anh: string;
+  ngay_cong_chieu: string;
+  the_loai_id: number;
+}
 

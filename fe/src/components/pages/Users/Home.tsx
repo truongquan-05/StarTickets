@@ -9,6 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Home.css";
+import QuickBooking from "../CinemasPage/QuickBooking";
 
 const { Title } = Typography;
 const BASE_URL = "http://127.0.0.1:8000"; // Hoặc dùng: import.meta.env.VITE_API_URL nếu đã có sẵn
@@ -63,7 +64,7 @@ const Home = () => {
           />
         </SwiperSlide>
       </Swiper>
-
+  <QuickBooking />
       {/* Phim đang chiếu */}
       <div className="section">
         <Title level={3}>Phim đang chiếu</Title>

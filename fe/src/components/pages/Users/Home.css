@@ -340,6 +340,67 @@
   border-radius: 10px;
   background-color: #37297b;
 }
+/*lọc phim*/
+.quick-booking-wrapper {
+  background-color: #f0f4ff;
+  border-radius: 10px;
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 100px; /* tăng khoảng cách giữa các item */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+/* Tiêu đề */
+.quick-booking-title {
+  font-weight: 800;
+  font-size: 20px;
+  color: #333;
+  margin-right: 16px;
+  white-space: nowrap;
+}
+
+/* Select Box */
+/* QuickBooking.css */
+.quick-booking-wrapper {
+  background-color: #faf5f5;
+  padding: 20px;
+  border-radius: 8px;
+  color: rgb(204, 197, 221);
+}
+
+.quick-booking-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.quick-booking-form {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.quick-booking-form .ant-btn-primary {
+  background-color: #c2dd2e;
+  color: #000;
+  font-weight: bold;
+  border: none;
+  height: 32px;
+}
+
+
+
+
+
 
 
 
