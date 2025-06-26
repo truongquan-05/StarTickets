@@ -117,6 +117,7 @@ Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenN
 
 
 
+
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 
 //Tin Tức
@@ -150,6 +151,9 @@ Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
 Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
 Route::get('/search', [HomeController::class, 'search']);
 Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
+Route::get('/rap', [HomeController::class, 'getAllRap']);
+Route::get('/the-loai', [HomeController::class, 'getAllTheLoai']);
+Route::get('/phim/loc', [HomeController::class, 'locPhimTheoRapNgayTheLoai']);
 
 // đánh giá của người dùng (client)
 Route::middleware('auth:sanctum')->group(function () {
