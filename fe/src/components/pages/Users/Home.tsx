@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Typography, Input, Spin } from "antd";
+import { Button, Typography, Spin } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Link } from "react-router-dom";

@@ -37,6 +37,8 @@ import GoogleCallback from '../pages/auth/GoogleCallback';
 import AddVoucher from '../pages/Voucher/Add';
 import SearchPage from '../pages/Users/SearchPage';
 import ProfilePage from '../pages/Users/Profile';
+import Comment from '../pages/Admin/CommentPage/Comment';
+import Detail from '../pages/Users/MovieDetail';
 
 
 
@@ -47,8 +49,8 @@ const Routermain = () => {
       element: <User />,
       children: [
         { path: '/', element: <Home /> },
-        { path: '/phim/:id', element:<MovieDetail/>  },
-        { path: '/chi-tiet-phim/:id', element:<MovieDetail/>  },
+        { path: '/phim/:id', element:<Detail/>  },
+        { path: '/chi-tiet-phim/:id', element:<Detail/>  },
         { path: '/search', element:<SearchPage/>  },
         { path: '/profile', element:<ProfilePage/>  },
 
@@ -85,7 +87,7 @@ const Routermain = () => {
         { path: 'room/add', element: <AddPhongChieu /> },
 
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
-        { path: 'comment/list', element: <Commet /> },
+        { path: 'comment/list', element: <Comment /> },
 
 
 

@@ -5,7 +5,7 @@ import { PlayCircleOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { getMovieDetail } from "../../provider/duProvider"; // chỉnh path nếu khác
 
-const MovieDetail = () => {
+const Detail = () => {
   const { id } = useParams(); // Lấy id từ URL
   const [movie, setMovie] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -73,4 +73,4 @@ const MovieDetail = () => {
   );
 };
 
-export default MovieDetail;
+export default Detail;
