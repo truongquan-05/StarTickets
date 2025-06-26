@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Select,
@@ -46,7 +46,7 @@ const AddLichChieu = () => {
   const [rapLoading, setRapLoading] = useState<boolean>(false);
   const { mutate: createGiaVe } = useCreateGiaVe({ resource: "gia_ve" });
 
-  React.useEffect(() => {
+  useEffect(() => {
     let isMounted = true;
     setRapLoading(true);
     getListCinemas({ resource: "rap" })
@@ -63,6 +63,7 @@ const AddLichChieu = () => {
     };
   }, []);
 
+  // Xử lý dữ liệu đầu vào (có thể là array hoặc object có .data)
   const rapLis = Array.isArray(rapListRaw)
     ? rapListRaw
     : rapListRaw?.data || [];
@@ -72,10 +73,12 @@ const AddLichChieu = () => {
 
   const [selectedRapId, setSelectedRapId] = useState<number | null>(null);
 
+  // Khi chọn rạp, cập nhật selectedRapId và reset trường phòng chiếu
   const handleChangeRap = (rapId: number) => {
     setSelectedRapId(rapId);
     form.setFieldsValue({ phong_id: undefined });
   };
+
   const { data: chuyenNguListRaw, isLoading: chuyenNguLoading } =
     useListChuyenNgu({
       resource: "chuyen_ngu",
@@ -97,7 +100,9 @@ const AddLichChieu = () => {
   const { mutateAsync: checkLichChieu } = useCheckLichChieu({
     resource: "lich_chieu/check",
   });
+
   const [showMoreSchedule, setShowMoreSchedule] = useState(false);
+
   const handleChangePhim = (phimId: number) => {
     setSelectedPhimId(phimId);
     const phim = phimList.find((p: any) => p.id === phimId);
@@ -119,6 +124,7 @@ const AddLichChieu = () => {
       setGioKetThucTinh("");
     }
   };
+
   const handleChangeGioChieu = (value: Dayjs | null) => {
     if (value && thoiLuongPhim > 0) {
       const ketThuc = value.add(thoiLuongPhim, "minute");
@@ -154,6 +160,7 @@ const AddLichChieu = () => {
         ...values,
         lich_chieu_them: lichChieuThem,
       };
+      console.log("Payload gửi đi:", payload);
       console.log("Payload gửi đi:", payload);
 
       // Kiểm tra trùng lịch
@@ -194,6 +201,7 @@ const AddLichChieu = () => {
           setGioKetThucTinh("");
           setThoiLuongPhim(0);
           setSelectedPhimId(null);
+          setSelectedRapId(null);
           setSubmitting(false);
         },
         onError: (error: any) => {
@@ -212,6 +220,8 @@ const AddLichChieu = () => {
                 message.error(`${field}: ${messages}`);
               }
             });
+          } else if (error.response && error.response.data?.message) {
+            message.error(error.response.data.message);
           } else {
             message.error("Đã có lỗi xảy ra");
           }
@@ -225,9 +235,16 @@ const AddLichChieu = () => {
     }
   };
 
+  // Lọc phòng chiếu theo trạng thái hoạt động
   const phongListFiltered = phongList.filter(
     (phong: any) => phong.trang_thai === 1 || phong.trang_thai === "1"
   );
+
+  // ** LỌC THEO RẠP ĐƯỢC CHỌN **
+  const phongListFilteredByRap = phongListFiltered.filter(
+    (phong: any) => phong.rap_id === selectedRapId
+  );
+
   return (
     <Card
       style={{
@@ -274,8 +291,9 @@ const AddLichChieu = () => {
           </Col>
           <Col xs={24} sm={12}>
             <Form.Item
+              name="rap_id" // thêm tên name cho rạp
               label="Rạp chiếu"
-              rules={[{ required: true, message: "Vui lòng chọn phòng rạp" }]}
+              rules={[{ required: true, message: "Vui lòng chọn rạp chiếu" }]}
             >
               <Select
                 placeholder="Chọn rạp chiếu"
@@ -315,7 +333,7 @@ const AddLichChieu = () => {
                     .includes(input.toLowerCase())
                 }
               >
-                {phongListFiltered.map((phong: any) => (
+                {phongListFilteredByRap.map((phong: any) => (
                   <Option key={phong.id} value={phong.id}>
                     {phong.ten_phong}
                   </Option>
@@ -430,19 +448,16 @@ const AddLichChieu = () => {
               name="gia_ve"
               rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
             >
-              <InputNumber
-                max={1000000000}
-                placeholder="Giá Vé"
-                style={{ width: "100%" }}
-              />
+              <InputNumber placeholder="Giá Vé" style={{ width: "100%" }} />
             </Form.Item>
           </Col>
         </Row>
 
+        {/* Các phần thêm lịch chiếu khác bạn giữ nguyên */}
+
         <Form.List name="lich_chieu_them">
           {(fields, { add, remove }) => (
             <>
-              {/* Nút hiển thị thêm lịch */}
               <Form.Item>
                 <Button
                   type="dashed"
@@ -456,7 +471,6 @@ const AddLichChieu = () => {
                 </Button>
               </Form.Item>
 
-              {/* Vùng hiển thị các form khi showMoreSchedule = true */}
               {showMoreSchedule && (
                 <Card
                   type="inner"
@@ -470,7 +484,6 @@ const AddLichChieu = () => {
                       align="middle"
                       style={{ marginBottom: 16 }}
                     >
-                      {/* Giờ chiếu */}
                       <Col xs={24} sm={11}>
                         <Form.Item
                           {...restField}
@@ -515,7 +528,6 @@ const AddLichChieu = () => {
                         </Form.Item>
                       </Col>
 
-                      {/* Giờ kết thúc */}
                       <Col xs={24} sm={11}>
                         <Form.Item label="Giờ kết thúc (tự động)">
                           <Input
@@ -528,7 +540,6 @@ const AddLichChieu = () => {
                         </Form.Item>
                       </Col>
 
-                      {/* Xóa */}
                       <Col
                         xs={24}
                         sm={2}
@@ -587,6 +598,7 @@ const AddLichChieu = () => {
                           rules={[
                             { required: true, message: "Vui lòng nhập giá vé" },
                           ]}
+                         
                         >
                           <InputNumber
                             max={1000000000}
@@ -598,7 +610,6 @@ const AddLichChieu = () => {
                     </Row>
                   ))}
 
-                  {/* Nút thêm dòng mới bên trong khối */}
                   <Form.Item>
                     <Button
                       type="dashed"
