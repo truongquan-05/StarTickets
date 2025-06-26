@@ -349,7 +349,6 @@ export const useUpdateLichChieu = ({ resource = "lich_chieu" }) => {
       queryClient.invalidateQueries({queryKey:[resource]})
     },
     onError: () => {
-      message.error("Cập nhật thất bại");
     },
   });
 };

@@ -16,7 +16,6 @@ import {
   useUpdateLichChieu,
   useListLichChieu,
   useListChuyenNgu,
-  useCheckLichChieu,
   useListMovies,
   useListPhongChieu,
   useListCinemas,
@@ -43,9 +42,7 @@ const EditLichChieu = () => {
 
   // Lấy lịch chiếu
   const { data: lichChieuListRaw, isLoading: lichChieuLoading } =
-    useListLichChieu({
-      resource: "lich_chieu",
-    });
+    useListLichChieu({ resource: "lich_chieu" });
   const lichChieu = Array.isArray(lichChieuListRaw)
     ? lichChieuListRaw.find((item) => String(item.id) === id)
     : undefined;
@@ -119,15 +116,13 @@ const EditLichChieu = () => {
       setGioKetThucTinh(gioKetThuc);
       form.setFieldsValue({ gio_ket_thuc: gioKetThuc });
     } else {
+      setGioKetThucTinh("");
       form.setFieldsValue({ gio_ket_thuc: "" });
     }
   };
 
   const { mutate: updateLichChieu } = useUpdateLichChieu({
     resource: "lich_chieu",
-  });
-  const { mutateAsync: checkLichChieu } = useCheckLichChieu({
-    resource: "lich_chieu/check",
   });
 
   const onFinish = async (values: any) => {
@@ -147,30 +142,18 @@ const EditLichChieu = () => {
         chuyen_ngu_id: values.chuyen_ngu_id,
         gio_ket_thuc: gioKetThucTinh,
       };
-      console.log("Payload gửi đi:", payload);
-
-      const checkResult = await checkLichChieu({
-        phong_id: payload.phong_id,
-        gio_chieu: payload.gio_chieu,
-        gio_ket_thuc: payload.gio_ket_thuc,
-        lich_chieu_them: [],
-      });
-
-      if (checkResult.isConflict) {
-        message.error("Lịch chiếu bị trùng hoặc quá gần lịch chiếu khác!");
-        setSubmitting(false);
-        return;
-      }
 
       updateLichChieu(
         { id: id!, values: payload },
         {
           onSuccess: () => {
             message.success("Cập nhật lịch chiếu thành công");
-            navigate("/lich-chieu");
+            navigate("/admin/lichchieu/list");
           },
-          onError: () => {
-            message.error("Cập nhật thất bại");
+          onError: (error: any) => {
+            const errMsg =
+              error?.response?.data?.message || "Cập nhật thất bại do lỗi hệ thống";
+            message.error(errMsg);
             setSubmitting(false);
           },
         }
