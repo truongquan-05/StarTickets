@@ -7,7 +7,7 @@ interface SoDoGheProps {
   danhSachGhe: IGhe[];
   isLoadingGhe: boolean;
   isErrorGhe: boolean;
-  trangThaiPhong: number; // 0 cho phép sửa, 1 không cho sửa
+  trangThaiPhong: number; // 0 cho phép sửa, 1 không cho sửa, 3 cho phép mua ghế, không sửa
 }
 
 const SoDoGhe: React.FC<SoDoGheProps> = ({
@@ -24,8 +24,9 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     setLocalDanhSachGhe(danhSachGhe);
   }, [danhSachGhe]);
 
+  // Xử lý click đổi loại ghế (chỉ khi trạng thái 0)
   const handleClick = (soGhe: string) => {
-    if (trangThaiPhong === 1) return; // Không cho click khi phòng đang hoạt động
+    if (trangThaiPhong !== 0) return; // Chỉ cho đổi loại ghế khi trạng thái 0
 
     setLocalDanhSachGhe((prev) =>
       prev.map((ghe) => {
@@ -39,7 +40,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     );
   };
 
+  // Xử lý double click ẩn/hiện ghế (chỉ khi trạng thái 0 hoặc 1)
   const handleDoubleClick = (soGhe: string) => {
+    if (trangThaiPhong !== 0 && trangThaiPhong !== 1) return; // Không cho sửa khi trạng thái khác 0,1
+
     setLocalDanhSachGhe((prev) =>
       prev.map((ghe) => {
         if (ghe.so_ghe === soGhe) {
@@ -56,6 +60,17 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
         return ghe;
       })
     );
+  };
+
+  // Xử lý click khi trạng thái 3 (mua ghế)
+  const handleClickMuaGhe = (soGhe: string) => {
+    if (trangThaiPhong !== 3) return;
+
+    const ghe = localDanhSachGhe.find((g) => g.so_ghe === soGhe);
+    if (!ghe) return;
+
+    // Hiện thông tin ghế, bạn có thể thay bằng popup, modal, hoặc logic mua ghế
+    alert(`Chi tiết ghế:\n- Số ghế: ${ghe.so_ghe}\n- Loại ghế: ${ghe.loai_ghe_id}\n- Trạng thái: ${ghe.trang_thai ? "Còn ghế" : "Ghế đã tắt"}`);
   };
 
   if (isLoadingGhe) {
@@ -172,11 +187,15 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
             cols.push(
               <div
                 key={`${hang}-${colIndex}`}
-                onClick={() => handleClick(soGheCurrent)}
+                onClick={() => {
+                  if (trangThaiPhong === 3) {
+                    handleClickMuaGhe(soGheCurrent);
+                  } else {
+                    handleClick(soGheCurrent);
+                  }
+                }}
                 onDoubleClick={() => handleDoubleClick(soGheCurrent)}
-                title={`${ghe.so_ghe} - ${
-                  ghe.trang_thai ? "Còn ghế" : "Ghế đã tắt"
-                }`}
+                title={`${ghe.so_ghe} - ${ghe.trang_thai ? "Còn ghế" : "Ghế đã tắt"}`}
                 style={{
                   width: span * 40 + (span - 1) * 6,
                   height: 40,
@@ -187,11 +206,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                   alignItems: "center",
                   justifyContent: "center",
                   userSelect: "none",
-                  cursor: ghe.trang_thai
-                    ? trangThaiPhong === 0 || trangThaiPhong === 1
+                  cursor:
+                    ghe.trang_thai && (trangThaiPhong === 0 || trangThaiPhong === 1 || trangThaiPhong === 3)
                       ? "pointer"
-                      : "not-allowed"
-                    : "not-allowed",
+                      : "not-allowed",
                   opacity: ghe.trang_thai ? 1 : 0.5,
                   marginRight: 6,
                   position: "relative",
@@ -222,54 +240,54 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
         })}
       </div>
 
-      {/* Chú thích */}
-      <div
-        className="legend"
-        style={{
-          marginTop: 24,
-          maxWidth: 700,
-          marginLeft: "auto",
-          marginRight: "auto",
-          display: "flex",
-          justifyContent: "center",
-          gap: 40,
-          fontWeight: 600,
-          fontSize: 14,
-          padding: 12,
-          borderRadius: 6,
-          flexWrap: "wrap",
-          userSelect: "none",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <div style={{ width: 20, height: 20, backgroundColor: "black", borderRadius: 4 }} />
-          <span>Ghế thường</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <div style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 4 }} />
-          <span>Ghế VIP</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <div style={{ width: 20, height: 20, backgroundColor: "blue", borderRadius: 4 }} />
-          <span>Ghế đôi</span>
-        </div>
-        {trangThaiPhong === 0 && (
-          <>
+      {/* Legend (chú thích) */}
+      {trangThaiPhong !== 3 && (
+        <div
+          className="legend"
+          style={{
+            marginTop: 24,
+            maxWidth: 700,
+            marginLeft: "auto",
+            marginRight: "auto",
+            display: "flex",
+            justifyContent: "center",
+            gap: 40,
+            fontWeight: 600,
+            fontSize: 14,
+            padding: 12,
+            borderRadius: 6,
+            flexWrap: "wrap",
+            userSelect: "none",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 20, height: 20, backgroundColor: "black", borderRadius: 4 }} />
+            <span>Ghế thường</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 20, height: 20, backgroundColor: "red", borderRadius: 4 }} />
+            <span>Ghế VIP</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 20, height: 20, backgroundColor: "blue", borderRadius: 4 }} />
+            <span>Ghế đôi</span>
+          </div>
+          {trangThaiPhong === 0 && (
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span>
                 <strong>Click:</strong> Đổi loại ghế
               </span>
             </div>
-          </>
-        )}
-        {(trangThaiPhong === 0 || trangThaiPhong === 1) && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span>
-              <strong>Double click:</strong> Ẩn/hiện ghế
-            </span>
-          </div>
-        )}
-      </div>
+          )}
+          {(trangThaiPhong === 0 || trangThaiPhong === 1) && (
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span>
+                <strong>Double click:</strong> Ẩn/hiện ghế
+              </span>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
