@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use Carbon\Carbon;
+use App\Models\Rap;
 use App\Models\Phim;
-use Illuminate\Support\Facades\DB;
+use App\Models\TheLoai;
+use App\Models\LichChieu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class HomeController extends Controller
@@ -91,30 +94,7 @@ $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
                     ->orWhere('mo_ta', 'like', "%$keyword%");
             });
         }
-        // theo ngay cong chieu
-        if ($request->has('ngay_cong_chieu')) {
-            $query->whereDate('ngay_cong_chieu', $request->ngay_cong_chieu);
-        }
-        //theo the loai
-        if ($request->has('the_loai_id')) {
-            $query->where('the_loai_id', $request->the_loai_id);
-        }
-        // theo trang thai
-        if ($request->has('trang_thai_phim')) {
-            $query->where('trang_thai_phim', $request->trang_thai_phim);
-        }
-        //theo quoc gia
-           if ($request->filled('quoc_gia')) {
-        $query->where('quoc_gia', $request->quoc_gia);
-    }
-    //theo do tuoi
-     if ($request->filled('do_tuoi_gioi_han')) {
-        $query->where('do_tuoi_gioi_han', $request->do_tuoi_gioi_han);
-    }
-    //theo loai suat chieu
-    if ($request->filled('loai_suat_chieu')) {
-        $query->where('loai_suat_chieu', $request->loai_suat_chieu);
-    }
+
     //sap xep
         if ($request->filled('sort_by')) {
             $allowedSorts = ['ten_phim', 'ngay_cong_chieu', 'thoi_luong'];
@@ -134,5 +114,52 @@ $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
         }
 
         return response()->json($phim);
+    }
+
+
+    //loc phim
+    public function getDanhSachRap()
+    {
+        return response()->json(Rap::all());
+    }
+
+    // lay ngay theo rap
+    public function getNgayChieuTheoRap(Request $request)
+    {
+        $ngayChieu = LichChieu::where('rap_id', $request->rap_id)
+            ->selectRaw('DATE(gio_chieu) as ngay')
+            ->distinct()
+            ->pluck('ngay');
+
+        return response()->json($ngayChieu);
+    }
+
+    // lay the loai theo rap + ngay
+    public function getTheLoaiTheoRapVaNgay(Request $request)
+    {
+        $phimIds = LichChieu::where('rap_id', $request->rap_id)
+            ->whereDate('gio_chieu', $request->ngay)
+            ->pluck('phim_id');
+
+        $theLoais = TheLoai::whereHas('phim', function ($q) use ($phimIds) {
+            $q->whereIn('id', $phimIds);
+        })->get();
+
+        return response()->json($theLoais);
+    }
+
+    // lay phim thao rap + ngay +the loai
+    public function getPhimTheoLoc(Request $request)
+    {
+        $query = Phim::query();
+
+        $query->whereHas('lichChieu', function ($q) use ($request) {
+            $q->where('rap_id', $request->rap_id)
+              ->whereDate('gio_chieu', $request->ngay);
+        });
+
+        $query->where('the_loai_id', $request->the_loai_id);
+
+        return response()->json($query->get());
     }
 }

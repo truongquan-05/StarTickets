@@ -124,6 +124,10 @@ Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenN
     Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
     Route::get('/search', [HomeController::class, 'search']);
     Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
+    Route::get('/rap-chieu', [HomeController::class, 'getDanhSachRap']);
+    Route::get('/ngay-chieu', [HomeController::class, 'getNgayChieuTheoRap']);
+    Route::get('/the-loai', [HomeController::class, 'getTheLoaiTheoRapVaNgay']);
+    Route::get('/phim-loc', [HomeController::class, 'getPhimTheoLoc']);
 
 
 
