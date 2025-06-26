@@ -36,12 +36,10 @@ class DoAnController extends Controller
     public function store(DoAnRequest $request)
     {
         $data = $request->all();
-
-        // Xử lý upload ảnh
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('do_an', 'public');
-            $data['image'] = $path;
+            $data['image'] = $request->file('image')->store('uploads', 'public');
         }
+
 
         $item = DoAn::create($data);
         return response()->json(['message' => 'Thêm món thành công!', 'data' => $item]);

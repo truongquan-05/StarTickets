@@ -9,6 +9,8 @@ import {
   Typography,
   Col,
   Row,
+  Input,
+  InputNumber,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -17,7 +19,10 @@ import {
   useListPhongChieu,
   useListChuyenNgu,
   useCheckLichChieu,
+  useCreateGiaVe,
 } from "../../../hook/hungHook";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { getListCinemas } from "../../../provider/hungProvider";
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -33,9 +38,44 @@ const AddLichChieu = () => {
   const { data: phimListRaw, isLoading: phimLoading } = useListMovies({
     resource: "phim",
   });
-  const { data: phongListRaw, isLoading: phongLoading } = useListPhongChieu({
+  const { data: phongListRaw } = useListPhongChieu({
     resource: "phong_chieu",
   });
+
+  const [rapListRaw, setRapListRaw] = useState<any>([]);
+  const [rapLoading, setRapLoading] = useState<boolean>(false);
+  const { mutate: createGiaVe } = useCreateGiaVe({ resource: "gia_ve" });
+
+  React.useEffect(() => {
+    let isMounted = true;
+    setRapLoading(true);
+    getListCinemas({ resource: "rap" })
+      .then((result) => {
+        if (isMounted) {
+          setRapListRaw(result);
+        }
+      })
+      .finally(() => {
+        if (isMounted) setRapLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const rapLis = Array.isArray(rapListRaw)
+    ? rapListRaw
+    : rapListRaw?.data || [];
+  const phongList = Array.isArray(phongListRaw)
+    ? phongListRaw
+    : phongListRaw?.data || [];
+
+  const [selectedRapId, setSelectedRapId] = useState<number | null>(null);
+
+  const handleChangeRap = (rapId: number) => {
+    setSelectedRapId(rapId);
+    form.setFieldsValue({ phong_id: undefined });
+  };
   const { data: chuyenNguListRaw, isLoading: chuyenNguLoading } =
     useListChuyenNgu({
       resource: "chuyen_ngu",
@@ -45,9 +85,7 @@ const AddLichChieu = () => {
   const phimList = Array.isArray(phimListRaw)
     ? phimListRaw
     : phimListRaw?.data || [];
-  const phongList = Array.isArray(phongListRaw)
-    ? phongListRaw
-    : phongListRaw?.data || [];
+
   const chuyenNguList = Array.isArray(chuyenNguListRaw)
     ? chuyenNguListRaw
     : chuyenNguListRaw?.data || [];
@@ -59,7 +97,7 @@ const AddLichChieu = () => {
   const { mutateAsync: checkLichChieu } = useCheckLichChieu({
     resource: "lich_chieu/check",
   });
-
+  const [showMoreSchedule, setShowMoreSchedule] = useState(false);
   const handleChangePhim = (phimId: number) => {
     setSelectedPhimId(phimId);
     const phim = phimList.find((p: any) => p.id === phimId);
@@ -94,6 +132,7 @@ const AddLichChieu = () => {
     setSubmitting(true);
 
     try {
+      // Format giờ chiếu chính
       if (values.gio_chieu && (values.gio_chieu as Dayjs).format) {
         values.gio_chieu = (values.gio_chieu as Dayjs).format(
           "YYYY-MM-DD HH:mm:ss"
@@ -102,25 +141,55 @@ const AddLichChieu = () => {
 
       values.gio_ket_thuc = gioKetThucTinh;
 
-      // Gọi API kiểm tra lịch chiếu trùng + cách nhau ít nhất 15 phút
+      // Xử lý các lịch chiếu thêm
+      const lichChieuThem = (values.lich_chieu_them || []).map((item: any) => ({
+        gio_chieu: item.gio_chieu
+          ? dayjs(item.gio_chieu).format("YYYY-MM-DD HH:mm:ss")
+          : null,
+        gio_ket_thuc: item.gio_ket_thuc || null,
+        chuyen_ngu_id: item.chuyen_ngu_id || null,
+      }));
+
+      const payload = {
+        ...values,
+        lich_chieu_them: lichChieuThem,
+      };
+            console.log("Payload gửi đi:", payload);
+
+      // Kiểm tra trùng lịch
       const checkResult = await checkLichChieu({
         phong_id: values.phong_id,
         gio_chieu: values.gio_chieu,
         gio_ket_thuc: values.gio_ket_thuc,
+        lich_chieu_them: lichChieuThem,
       });
 
       if (checkResult.isConflict) {
-        message.error(
-          "Lịch chiếu bị trùng hoặc thời gian chiếu mới quá gần lịch hiện tại trong phòng này!"
-        );
+        message.error("Lịch chiếu bị trùng hoặc quá gần lịch chiếu hiện tại!");
         setSubmitting(false);
         return;
       }
 
-      // Nếu không trùng mới tạo lịch chiếu
-      createLichChieu(values, {
-        onSuccess: () => {
+      // Gửi tạo lịch chiếu
+      createLichChieu(payload, {
+        onSuccess: async (res: any) => {
+          const lichChieuId = res?.id;
+          const giaVe = form.getFieldValue("gia_ve");
+
+          if (lichChieuId && giaVe !== undefined) {
+            console.log("Giá vé gửi đi:", giaVe);
+            try {
+              await createGiaVe({
+                lich_chieu_id: lichChieuId,
+                gia_ve: giaVe,
+              });
+            } catch (e) {
+              message.error("Tạo giá vé thất bại");
+            }
+          }
+
           message.success("Thêm lịch chiếu thành công");
+
           form.resetFields();
           setGioKetThucTinh("");
           setThoiLuongPhim(0);
@@ -134,7 +203,6 @@ const AddLichChieu = () => {
             error.response.data.errors
           ) {
             const apiErrors = error.response.data.errors;
-
             Object.entries(apiErrors).forEach(([field, messages]) => {
               if (Array.isArray(messages)) {
                 messages.forEach((msg) => {
@@ -145,17 +213,22 @@ const AddLichChieu = () => {
               }
             });
           } else {
+            message.error("Đã có lỗi xảy ra");
           }
           setSubmitting(false);
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      message.error("Phòng này đang hoạt động vào thời gian đó");
+      message.error("Lỗi hệ thống");
       setSubmitting(false);
     }
   };
+  
 
+  const phongListFiltered = phongList.filter(
+    (phong: any) => phong.trang_thai === 1 || phong.trang_thai === "1"
+  );
   return (
     <Card
       style={{
@@ -200,7 +273,31 @@ const AddLichChieu = () => {
               />
             </Form.Item>
           </Col>
-
+          <Col xs={24} sm={12}>
+            <Form.Item
+              label="Rạp chiếu"
+              rules={[{ required: true, message: "Vui lòng chọn phòng rạp" }]}
+            >
+              <Select
+                placeholder="Chọn rạp chiếu"
+                showSearch
+                loading={rapLoading}
+                onChange={handleChangeRap}
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              >
+                {rapLis.map((rap: any) => (
+                  <Option key={rap.id} value={rap.id}>
+                    {rap.ten_rap}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
           <Col xs={24} sm={12}>
             <Form.Item
               name="phong_id"
@@ -209,7 +306,8 @@ const AddLichChieu = () => {
             >
               <Select
                 placeholder="Chọn phòng chiếu"
-                loading={phongLoading}
+                disabled={!selectedRapId}
+                mode="multiple"
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -217,9 +315,8 @@ const AddLichChieu = () => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                disabled={phongLoading}
               >
-                {phongList.map((phong: any) => (
+                {phongListFiltered.map((phong: any) => (
                   <Option key={phong.id} value={phong.id}>
                     {phong.ten_phong}
                   </Option>
@@ -312,25 +409,209 @@ const AddLichChieu = () => {
             </Form.Item>
           </Col>
 
-          {gioKetThucTinh && (
-            <Col span={24}>
-              <Form.Item label="Giờ kết thúc (tự động tính)">
-                <input
-                  type="text"
-                  readOnly
-                  value={gioKetThucTinh}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    backgroundColor: "#f5f5f5",
-                    border: "1px solid #d9d9d9",
-                    borderRadius: 4,
-                  }}
-                />
-              </Form.Item>
-            </Col>
-          )}
+          <Col xs={24} sm={12}>
+            <Form.Item label="Giờ kết thúc (tự động tính)">
+              <input
+                type="text"
+                readOnly
+                value={gioKetThucTinh}
+                style={{
+                  width: "100%",
+                  padding: "5px",
+                  outline: "none",
+                  backgroundColor: "#f5f5f5",
+                  border: "1px solid #d9d9d9",
+                  borderRadius: 4,
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={12}>
+            <Form.Item
+                name="gia_ve"
+              rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
+            >
+              <InputNumber
+                placeholder="Giá Vé"
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          </Col>
         </Row>
+
+        <Form.List name="lich_chieu_them">
+          {(fields, { add, remove }) => (
+            <>
+              {/* Nút hiển thị thêm lịch */}
+              <Form.Item>
+                <Button
+                  type="dashed"
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    setShowMoreSchedule(true);
+                    if (fields.length === 0) add();
+                  }}
+                >
+                  Thêm lịch chiếu khác
+                </Button>
+              </Form.Item>
+
+              {/* Vùng hiển thị các form khi showMoreSchedule = true */}
+              {showMoreSchedule && (
+                <Card
+                  type="inner"
+                  title="Các lịch chiếu thêm"
+                  style={{ marginBottom: 24, background: "#fafafa" }}
+                >
+                  {fields.map(({ key, name, ...restField }) => (
+                    <Row
+                      gutter={16}
+                      key={key}
+                      align="middle"
+                      style={{ marginBottom: 16 }}
+                    >
+                      {/* Giờ chiếu */}
+                      <Col xs={24} sm={11}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "gio_chieu"]}
+                          label="Giờ chiếu"
+                          rules={[
+                            { required: true, message: "Chọn giờ chiếu" },
+                          ]}
+                        >
+                          <DatePicker
+                            showTime={{ format: "HH:mm:ss" }}
+                            disabledDate={(current) =>
+                              current && current < dayjs().startOf("day")
+                            }
+                            format="YYYY-MM-DD HH:mm:ss"
+                            style={{ width: "100%" }}
+                            onChange={(value) => {
+                              const lich =
+                                form.getFieldValue("lich_chieu_them") || [];
+                              if (value && thoiLuongPhim > 0) {
+                                const gio_ket_thuc = value.add(
+                                  thoiLuongPhim,
+                                  "minute"
+                                );
+                                lich[name] = {
+                                  ...lich[name],
+                                  gio_ket_thuc: gio_ket_thuc.format(
+                                    "YYYY-MM-DD HH:mm:ss"
+                                  ),
+                                };
+                              } else {
+                                lich[name] = {
+                                  ...lich[name],
+                                  gio_ket_thuc: "",
+                                };
+                              }
+                              form.setFieldsValue({
+                                lich_chieu_them: [...lich],
+                              });
+                            }}
+                          />
+                        </Form.Item>
+                      </Col>
+
+                      {/* Giờ kết thúc */}
+                      <Col xs={24} sm={11}>
+                        <Form.Item label="Giờ kết thúc (tự động)">
+                          <Input
+                            value={
+                              form.getFieldValue("lich_chieu_them")?.[name]
+                                ?.gio_ket_thuc || ""
+                            }
+                            readOnly
+                          />
+                        </Form.Item>
+                      </Col>
+
+                      {/* Xóa */}
+                      <Col
+                        xs={24}
+                        sm={2}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <MinusCircleOutlined
+                          onClick={() => remove(name)}
+                          style={{
+                            fontSize: 20,
+                            color: "red",
+                            cursor: "pointer",
+                          }}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={11}>
+                        <Form.Item
+                          {...restField}
+                          name={[name, "chuyen_ngu_id"]}
+                          label="Chuyển Ngữ"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Vui lòng chọn chuyển ngữ",
+                            },
+                          ]}
+                        >
+                          <Select
+                            placeholder="Chọn chuyển ngữ"
+                            loading={chuyenNguLoading}
+                            showSearch
+                            optionFilterProp="children"
+                            disabled={!selectedPhimId || chuyenNguLoading}
+                            filterOption={(input, option) =>
+                              (option?.children as unknown as string)
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
+                          >
+                            {chuyenNguList.map((cn: any) => (
+                              <Option key={cn.id} value={cn.id}>
+                                {cn.the_loai}
+                              </Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={11}>
+                        <Form.Item
+                            name="gia_ve"
+                            label="Giá vé"
+                          rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
+                        >
+                          <InputNumber
+                            placeholder="Giá Vé"
+                            style={{ width: "100%" }}
+                          />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  ))}
+
+                  {/* Nút thêm dòng mới bên trong khối */}
+                  <Form.Item>
+                    <Button
+                      type="dashed"
+                      onClick={() => add()}
+                      block
+                      style={{ width: 180, padding: 10 }}
+                      icon={<PlusOutlined />}
+                    >
+                      Thêm 1 dòng lịch chiếu
+                    </Button>
+                  </Form.Item>
+                </Card>
+              )}
+            </>
+          )}
+        </Form.List>
 
         <Form.Item>
           <Button

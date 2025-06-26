@@ -1,14 +1,19 @@
 import axios from "axios";
 
 
-const token = localStorage.getItem("token");
-
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    Authorization: token ? `Bearer ${token}` : "",
-  },
 });
+
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 
 export type Props = {
   resource: string;
@@ -252,3 +257,8 @@ export const getDetailTinTuc = async ({ id, resource = "tin_tuc" }: Props) => {
   const { data } = await axiosClient.get(`${resource}/${id}`);
   return data.data;
 };
+
+export const getCreateGiaVe = async ({resource = "gia_ve" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}

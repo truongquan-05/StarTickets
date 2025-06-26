@@ -10,7 +10,7 @@ import {
   message,
   Row,
   Select,
-  Typography,
+  // Typography,
   Upload,
 } from "antd";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
-const { Title } = Typography;
+// const { Title } = Typography;
 
 const AddMoviesPage = () => {
   const [form] = Form.useForm();
@@ -37,7 +37,6 @@ const AddMoviesPage = () => {
       try {
         const data = await getGenreList({ resource: "the_loai" });
         setGenre(data.data || []);
-
         const chuyenNguData = await getListChuyenNgu({
           resource: "chuyen_ngu",
         });
@@ -141,7 +140,7 @@ const AddMoviesPage = () => {
                     { required: true, message: "Vui lòng chọn thể loại" },
                   ]}
                 >
-                  <Select placeholder="Chọn thể loại">
+                  <Select mode="multiple" placeholder="Chọn thể loại">
                     {genre.map((item) => (
                       <Option key={item.id} value={item.id}>
                         {item.ten_the_loai}

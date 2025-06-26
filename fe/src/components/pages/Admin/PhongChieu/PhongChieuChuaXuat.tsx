@@ -91,7 +91,7 @@ const PhongChieuChuaXuat = () => {
   // Xác nhận bật trạng thái phòng chiếu
   const onConfirm = () => {
     if (!phongToConfirm) return;
-
+    const navigate = useNavigate();
     updatePhongChieuMutation.mutate(
       {
         id: phongToConfirm.id,
@@ -105,8 +105,8 @@ const PhongChieuChuaXuat = () => {
           message.success("Phòng chiếu đã được kích hoạt!");
           setConfirmModalOpen(false);
           setSelectedPhong({ ...phongToConfirm, trang_thai: 1 });
-          setOpen(true);
           setPhongToConfirm(null);
+          navigate("/admin/room/list")
         },
         onError: () => {
           message.error("Cập nhật thất bại");

@@ -6,6 +6,7 @@ use App\Models\Ghe;
 use App\Models\PhongChieu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class PhongChieuController extends Controller
 {
@@ -49,7 +50,7 @@ class PhongChieuController extends Controller
     // Tạo phòng chiếu mới
     public function store(Request $request)
     {
-        $request->validate([
+       $validate= Validator::make($request->all(),[
             'rap_id' => 'required|exists:rap,id',
             'ten_phong' => 'required|string|max:100',
             'loai_so_do' => ['required', 'string', 'regex:/^\d+x\d+$/'], // Ví dụ: "8x8", "12x12"
@@ -58,6 +59,22 @@ class PhongChieuController extends Controller
             'hang_vip' => 'required|integer|min:0',
             'trang_thai' => 'required|boolean',
         ]);
+        if ($validate->fails()) {
+            return response()->json(['message' => $validate->errors()], 422);
+        }
+
+        // Kiểm tra trùng tên phòng chiếu trong cùng rạp, kể cả đã xóa mềm, không phân biệt hoa thường
+        $existingPhongChieu = PhongChieu::withTrashed()
+            ->where('rap_id', $request->rap_id)
+            ->whereRaw('LOWER(ten_phong) = ?', [strtolower($request->ten_phong)])
+            ->first();
+
+        if ($existingPhongChieu) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tên phòng chiếu đã tồn tại trong rạp này (kể cả phòng đã xóa mềm)'
+            ], 422);
+        }
 
         // Tách loai_so_do thành số hàng và cột
         [$rows, $cols] = array_map('intval', explode('x', $request->loai_so_do));
@@ -198,7 +215,7 @@ class PhongChieuController extends Controller
         return response()->json([
             'message' => 'Phòng chiếu và ghế đã được khôi phục',
             'data' => $phongChieu->load('ghes', 'rap')
-        ], 200);
+        ]);
     }
 
     // Xóa vĩnh viễn phòng chiếu
