@@ -1,0 +1,58 @@
+.lichchieu {
+  max-width: 1200px;
+  width: 100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: #12092b;
+  border-radius: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.lichchieu-box {
+  border: 1px solid #40a9ff;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 220px;
+  background-color: #639;
+  box-shadow: 0 2px 8px rgb(24 144 255 / 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.rap-title {
+  margin-bottom: 12px;
+  border-bottom: 1px solid #1890ff;
+  padding-bottom: 6px;
+  color: yellow;
+  font-weight: bold;
+  text-align: center;
+}
+
+.lich-chieu-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.lich-chieu-button {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: 12px;
+  border: 2px solid white;
+  background-color: #6a1b9a;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lich-chieu-button:hover {
+  border-color: #ffca28;
+  color: #ffca28;
+  background-color: #639;
+}
