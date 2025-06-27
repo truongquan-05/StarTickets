@@ -102,10 +102,10 @@ export const searchMovies = async (keyword: string) => {
   return res;
 };
 // lọc phim
-export const getRaps = () => axiosClient.get("/raps").then(res => res.data);
+export const getRaps = () => axiosClient.get("/rap").then(res => res.data);
 export const getTheLoais = () => axiosClient.get("/the-loai").then(res => res.data);
 export const searchPhim = (params: any) => {
-  return axiosClient.get("/client/phim/search", { params });
+  return axiosClient.post("/loc", { params });
 };
 
 

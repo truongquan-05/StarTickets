@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\ChuyenNguController;
 use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
+use App\Http\Controllers\Client\CheckGheController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
@@ -104,6 +105,20 @@ Route::prefix('ma_giam_gia')->group(function () {
 Route::apiResource('lich_chieu', LichChieuController::class);
 Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']); //Check thời gian hợp lệ
 Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenNguIndex']); //Id của phim
+
+
+
+//trang chu
+
+    Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
+    Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
+    Route::get('/search', [HomeController::class, 'search']);
+    Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
+
+
+
+
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 
 //Tin Tức
@@ -137,6 +152,9 @@ Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
 Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
 Route::get('/search', [HomeController::class, 'search']);
 Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
+Route::post('/loc', [HomeController::class, 'locPhimTheoRapNgayTheLoai']);
+Route::get('/rap', [HomeController::class, 'getAllRap']);
+Route::get('/the-loai', [HomeController::class, 'getAllTheLoai']);
 
 // đánh giá của người dùng (client)
 Route::middleware('auth:sanctum')->group(function () {
@@ -151,7 +169,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [LoginController::class, 'login']);
 Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
 
-
+//Check ghế đặt vé
+Route::apiResource('check_ghe',CheckGheController::class);
 
 
 

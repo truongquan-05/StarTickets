@@ -36,9 +36,15 @@ import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
 import GoogleCallback from '../pages/auth/GoogleCallback';
 import AddVoucher from '../pages/Voucher/Add';
 import SearchPage from '../pages/Users/SearchPage';
-import ProfilePage from '../pages/Users/Profile';
+import MovieDetailUser from '../pages/Users/MovieDetail';
+import EditLichChieu from '../pages/Admin/LichChieu/EditLichChieu';
 import Comment from '../pages/Admin/CommentPage/Comment';
-import Detail from '../pages/Users/MovieDetail';
+import ProfilePage from '../pages/Users/Profile';
+import TimKiemPhim from '../pages/Users/Timkiemphim';
+
+
+
+
 
 
 
@@ -48,22 +54,19 @@ const Routermain = () => {
       path: '/',
       element: <User />,
       children: [
-        { path: '/', element: <Home /> },
-        { path: '/phim/:id', element:<Detail/>  },
-        { path: '/chi-tiet-phim/:id', element:<Detail/>  },
-        { path: '/search', element:<SearchPage/>  },
-        { path: '/profile', element:<ProfilePage/>  },
-
-
-
-
-
+        { path: '', element: <Home /> },
+        { path: 'phim/:id', element:<MovieDetailUser/>  },
+        { path: 'search', element:<SearchPage/>  },
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },
         { path: 'news/:id', element: <NewsDetail /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
         { path: 'auth/google/callback', element: <GoogleCallback /> },
+        { path: 'profile', element: <ProfilePage /> },
+        { path: '/tim-kiem-phim', element: <TimKiemPhim /> },
+
+
       ],
     },
     {
@@ -79,6 +82,7 @@ const Routermain = () => {
         { path: 'lichchieu/list', element: <LichChieu /> },
         { path: 'lichchieucu/list', element: <LichChieuCu /> },
         { path: 'lichchieu/add', element: <AddLichChieu /> },
+        { path: 'lichchieu/edit/:id', element: <EditLichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
         { path: 'room/list', element: <ListPhongChieu /> },

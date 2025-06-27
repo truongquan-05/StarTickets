@@ -212,6 +212,13 @@ export const getCreateLichChieu = async ({resource = "lich_chieu" , values} : Pr
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
+
+export const getUpdateLichChieu= async ({resource = "lich_chieu", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
 export const getListChuyenNgu = async ({ phimId, resource = "chuyen_ngu" }: Props) => {
   const url = phimId ? `/lich_chieus/chuyen_ngu/${phimId}` : `/${resource}`;
   const { data } = await axiosClient.get(url);
