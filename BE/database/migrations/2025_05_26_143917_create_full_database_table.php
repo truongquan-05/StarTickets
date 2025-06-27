@@ -133,7 +133,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('loai_ghe_id')->constrained('loai_ghe')->onUpdate('cascade')->onDelete('cascade');
-            $table->decimal('gia_ve', 10, 2);
+            $table->decimal('gia_ve', 12, 2);
             $table->timestamps();
         });
 
@@ -141,7 +141,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->dateTime('ngay_dat');
             $table->decimal('tong_tien', 10, 2);
             $table->string('trang_thai', 20);
             $table->timestamps();
@@ -151,13 +150,13 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('dat_ve_id')->constrained('dat_ve')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('ghe_id')->constrained('ghe')->onUpdate('cascade')->onDelete('cascade');
+            $table->decimal('gia_ve', 10, 2);
             $table->timestamps();
         });
 
         Schema::create('check_ghes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('phong_id')->constrained('phong_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('ghe_id')->constrained('ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('trang_thai', ['trong', 'da_dat', 'dang_dat']);
 
@@ -175,9 +174,9 @@ return new class extends Migration {
         Schema::create('thanh_toan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('dat_ve_id')->constrained('dat_ve')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phuong_thuc_thanh_toan_id')->constrained('phuong_thuc_thanh_toan')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('trang_thai', 20);
-            $table->dateTime('thoi_gian');
+            $table->enum('trang_thai', ['thanh_cong', 'that_bai']);
             $table->string('ma_giao_dich', 255);
             $table->timestamps();
         });

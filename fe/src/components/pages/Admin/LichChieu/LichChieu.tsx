@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Button,
-  DatePicker,
-  message,
-  Popconfirm,
-  Space,
-  Table,
-} from "antd";
+import { Button, DatePicker, message, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -26,22 +19,29 @@ import {
   getListPhongChieu,
   getListChuyenNgu,
 } from "../../../provider/hungProvider";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const LichChieu = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [boLoc, setBoLoc] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const { mutate: deleteCategoryChair } = useDeleteLichChieu({
     resource: "lich_chieu",
   });
 
-  const { data: lichChieuResponse, isLoading, isError } = useListLichChieu({
+  const {
+    data: lichChieuResponse,
+    isLoading,
+    isError,
+  } = useListLichChieu({
     resource: "lich_chieu",
   });
   const lichChieu: ILichChieu[] = Array.isArray(lichChieuResponse)
     ? lichChieuResponse
     : [];
+  console.log(lichChieuResponse);
 
   const { data: phimResponse } = useQuery({
     queryKey: ["phim"],
@@ -104,6 +104,9 @@ const LichChieu = () => {
       ? gioChieuDate.isSame(selectedDate, "day") && isFutureOrNow
       : isFutureOrNow;
   });
+  const onEdit = (id: number) => {
+    navigate(`/admin/lichchieu/edit/${id}`);
+  };
 
   const columns: ColumnsType<ILichChieu> = [
     {
@@ -151,6 +154,23 @@ const LichChieu = () => {
         value ? new Date(value).toLocaleString() : "Không rõ",
     },
     {
+      title: "Giá Vé",
+      dataIndex: "gia_ve",
+      key: "gia_ve",
+      render: (giaVeList: any[]) => {
+        if (!Array.isArray(giaVeList)) return "Chưa có";
+
+        const donThuong = giaVeList.find(
+          (item) => item.ten_loai_ghe === "Đơn Thường"
+        );
+        const gia = donThuong?.pivot?.gia_ve;
+
+        return gia !== undefined
+          ? `${gia.toLocaleString()} đ`
+          : "Không có giá Đơn Thường";
+      },
+    },
+    {
       title: "Thao tác",
       key: "action",
       align: "center" as const,
@@ -172,6 +192,12 @@ const LichChieu = () => {
               title="Xoá"
             />
           </Popconfirm>
+
+          <Button
+            type="primary"
+            onClick={() => onEdit(record.id)} // Gọi hàm onEdit truyền id
+            icon={<EditOutlined />}
+          ></Button>
         </Space>
       ),
     },
@@ -186,18 +212,27 @@ const LichChieu = () => {
         padding: "20px 20px 0px 20px",
         backgroundColor: "#fff",
         borderRadius: 8,
-        height:"100%",
+        height: "100%",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
       <h2>Danh sách lịch chiếu còn sắp tới</h2>
-      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
+      <div
+        style={{
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
         <span>Chọn ngày:&nbsp;</span>
         <DatePicker
           value={selectedDate}
           onChange={(date) => setSelectedDate(date || dayjs())}
           format="YYYY-MM-DD"
-          disabledDate={(current) => current && current < dayjs().startOf("day")}
+          disabledDate={(current) =>
+            current && current < dayjs().startOf("day")
+          }
           disabled={!boLoc}
         />
         <Button onClick={() => setBoLoc(!boLoc)}>
