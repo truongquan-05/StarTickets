@@ -28,7 +28,7 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-container">
-      <h2 className="title">THÔNG TIN KHÁCH HÀNG</h2>
+      <h2 className="title">👤 THÔNG TIN KHÁCH HÀNG</h2>
 
       <Card className="profile-card" bodyStyle={{ padding: 24 }}>
         <h3 className="section-title">Thông tin cá nhân</h3>

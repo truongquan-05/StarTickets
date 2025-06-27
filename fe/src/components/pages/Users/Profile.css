@@ -5,9 +5,13 @@
   font-family: 'Arial', sans-serif;
   
 }
+main {
+  background-color:#1a0933;
+}
+
 
 .title {
-  color: rgb(17, 16, 18);
+  color: rgb(240, 238, 243);
   font-size: 26px;
   font-weight: bold;
   margin-bottom: 24px;
@@ -17,7 +21,7 @@
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 16px;
-  color: #111;
+  color:#111;
 }
 
 .profile-card {

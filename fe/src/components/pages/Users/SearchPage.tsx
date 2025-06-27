@@ -36,7 +36,6 @@ const SearchPage = () => {
 
   return (
     <div className="search-page">
-      <Title level={2}>Kết quả tìm kiếm</Title>
       {loading ? (
         <Spin />
       ) : results.length === 0 ? (
