@@ -26,15 +26,12 @@ class LichChieuController extends Controller
         return response()->json($lichChieus);
     }
 
-
     public function store(Request $request)
     {
         try {
 
-
             $phim = Phim::find($request->phim_id);
             $duLieuPhim[] = $request->except('lich_chieu_them');
-
 
             if (!$phim) {
                 return response()->json(['message' => 'Phim không tồn tại'], 422);
