@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\ChuyenNguController;
 use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
+use App\Http\Controllers\Client\CheckGheController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
@@ -168,7 +169,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [LoginController::class, 'login']);
 Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
 
-
+//Check ghế đặt vé
+Route::apiResource('check_ghe',CheckGheController::class);
 
 
 
