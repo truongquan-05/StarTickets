@@ -153,7 +153,7 @@ Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
 Route::get('/search', [HomeController::class, 'search']);
 Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 Route::post('/loc', [HomeController::class, 'locPhimTheoRapNgayTheLoai']);
-Route::get('/rap', [HomeController::class, 'getAllRap']);
+Route::get('/rap-client', [HomeController::class, 'getAllRap']);
 Route::get('/the-loai', [HomeController::class, 'getAllTheLoai']);
 
 // đánh giá của người dùng (client)
