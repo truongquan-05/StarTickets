@@ -176,7 +176,6 @@ return new class extends Migration {
             $table->foreignId('dat_ve_id')->constrained('dat_ve')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phuong_thuc_thanh_toan_id')->constrained('phuong_thuc_thanh_toan')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('trang_thai', ['thanh_cong', 'that_bai']);
             $table->string('ma_giao_dich', 255);
             $table->timestamps();
         });
