@@ -9,6 +9,9 @@ import {
   CalendarOutlined,
   CaretDownOutlined,
   EnvironmentOutlined,
+  FormOutlined,
+  LoginOutlined,
+  LogoutOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 
@@ -24,22 +27,39 @@ const HeaderUser = () => {
   };
   const loggedInMenu = (
     <Menu>
-      <Menu.Item key="profile">
-        <Link to="/profile">👤 Thông tin cá nhân</Link>
+      <Menu.Item
+        key="profile"
+        icon={<UserOutlined />}
+        className="menu-item-custom"
+      >
+        <Link to="/profile">Thông tin cá nhân</Link>
       </Menu.Item>
-      <Menu.Item key="logout" onClick={logout}>
-        🚪 Đăng xuất
+      <Menu.Item
+        key="logout"
+        icon={<LogoutOutlined />}
+        onClick={logout}
+        className="menu-item-custom logout-item"
+      >
+        Đăng xuất
       </Menu.Item>
     </Menu>
   );
 
   const guestMenu = (
     <Menu>
-      <Menu.Item key="login">
-        <Link to="/login">🔐 Đăng nhập</Link>
+      <Menu.Item
+        key="login"
+        icon={<LoginOutlined />}
+        className="menu-item-custom"
+      >
+        <Link to="/login">Đăng nhập</Link>
       </Menu.Item>
-      <Menu.Item key="register">
-        <Link to="/register">📝 Đăng ký</Link>
+      <Menu.Item
+        key="register"
+        icon={<FormOutlined />}
+        className="menu-item-custom logout-item"
+      >
+        <Link to="/register">Đăng ký</Link>
       </Menu.Item>
     </Menu>
   );
@@ -82,20 +102,22 @@ const HeaderUser = () => {
                   src={user.anh_dai_dien}
                   alt={user.ten}
                   style={{
-                    width: 28,
-                    height: 28,
+                    width: 30,
+                    height: 30,
                     borderRadius: "50%",
                     objectFit: "cover",
                     marginRight: 8,
                   }}
                 />
               ) : (
-                <div className="user-icon">
+                <div className="user-icon shake-rotate">
                   <UserOutlined />
                 </div>
               )}
-              <span className="login-text">
-                {user ? `Xin chào, ${user.ten}` : "Tài khoản"}
+              <span className="login-text" title={user?.ten}>
+                {user
+                  ? `${user.ten.slice(0, 6).toUpperCase()}...`
+                  : "TÀI KHOẢN"}
               </span>
             </div>
           </Dropdown>
