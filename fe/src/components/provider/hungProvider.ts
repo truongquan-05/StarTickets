@@ -278,8 +278,11 @@ export const getCheckGheByLichChieuId = async ({ id, resource = "check_ghe" }: P
 
 // Sửa trạng thái ghế theo id check_ghe (id bản ghi check_ghe)
 export const getUpdateCheckGhe = async ({ id, values, resource = "check_ghe" }: Props) => {
-  if (!id) throw new Error("Thiếu id bản ghi check_ghe");
+  if (!id) {
+    throw new Error("Thiếu id bản ghi check_ghe để cập nhật");
+  }
   const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  
   return data;
 };
 

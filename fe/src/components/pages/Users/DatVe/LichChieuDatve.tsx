@@ -13,12 +13,14 @@ interface LichChieuProps {
   groupedLichChieu: { [rapId: number]: ILichChieu[] };
   rapList: IRap[];
   onLichChieuClick?: (item: ILichChieu) => void;
+  selectedLichChieuId: number | null;
 }
 
 const LichChieuDatVe: React.FC<LichChieuProps> = ({
   groupedLichChieu,
   rapList,
   onLichChieuClick,
+  selectedLichChieuId,
 }) => {
   return (
     <div className="lichchieu">
@@ -31,7 +33,9 @@ const LichChieuDatVe: React.FC<LichChieuProps> = ({
               {lichChieus.map((item) => (
                 <button
                   key={item.id}
-                  className="lich-chieu-button"
+                  className={`lich-chieu-button ${
+                    item.id === selectedLichChieuId ? "selected" : ""
+                  }`}
                   onClick={() => onLichChieuClick?.(item)}
                 >
                   {dayjs(item.gio_chieu).format("DD/MM HH:mm")}

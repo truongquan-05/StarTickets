@@ -466,16 +466,20 @@ export const useDeleteCheckGhe = ({ resource = "check_ghe" }: { resource?: strin
   });
 };
 
+interface UpdateCheckGheVariables {
+  id: number | string; // Đây là ID của bản ghi check_ghe cụ thể (ví dụ: 1, 2, 3...)
+  values: { trang_thai: string }; // Các giá trị muốn cập nhật (ví dụ: { trang_thai: "dang_dat" })
+  lichChieuId: number; // Đây là ID của lịch chiếu, quan trọng cho việc làm mất hiệu lực cache
+}
 // ✅ UPDATE
 export const useUpdateCheckGhe = ({ resource = "check_ghe" }: { resource?: string }) => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
-      getUpdateCheckGhe({ resource, id, values }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [resource] });
+    mutationFn: (variables: UpdateCheckGheVariables) => {
+      return getUpdateCheckGhe({ resource, id: variables.id, values: variables.values });
     },
-    
+    onSuccess: (data, variables) => { // 'variables' ở đây chính là đối tượng `UpdateCheckGheVariables`
+      queryClient.invalidateQueries({ queryKey: [resource, variables.lichChieuId] });
+    },
   });
 };

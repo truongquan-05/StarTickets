@@ -18,10 +18,16 @@ import { IPhongChieu } from "../Admin/interface/phongchieu";
 import LichChieuDatVe from "./DatVe/LichChieuDatve";
 import SoDoGhe from "../Admin/PhongChieu/SoDoGhe";
 import { IGhe } from "../Admin/interface/ghe";
+import { ICheckGhe } from "../Admin/interface/checkghe";
 
 interface IRap {
   id: number;
   ten_rap: string;
+}
+interface SelectedSeatWithPrice {
+  so_ghe: string;
+  loai_ghe: string;
+  gia: number;
 }
 
 // Hàm helper chuyển URL YouTube thường sang embed
@@ -71,12 +77,20 @@ const MovieDetailUser = () => {
   const [selectedLichChieuId, setSelectedLichChieuId] = useState<number | null>(
     null
   );
+  const [selectedLichChieu, setSelectedLichChieu] = useState<ILichChieu | null>(
+    null
+  ); // Giữ lại state này
+
   const { mutate: updateCheckGhe } = useUpdateCheckGhe({
     resource: "check_ghe",
   });
 
   // State quản lý danh sách ghế đã chọn (so_ghe)
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [displaySelectedSeats, setDisplaySelectedSeats] = useState<
+    SelectedSeatWithPrice[]
+  >([]);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   // State báo có ghế cách quãng
   const [hasGap, setHasGap] = useState(false);
 
@@ -84,13 +98,6 @@ const MovieDetailUser = () => {
     useListCheckGhe({
       id: selectedLichChieuId ?? undefined,
     });
-
-  useEffect(() => {
-    if (selectedLichChieuId && checkGheList) {
-      console.log("Dữ liệu check ghế:", checkGheList);
-    }
-  }, [selectedLichChieuId, checkGheList]);
-
   const { data: lichChieuList = [], isLoading: loadingLichChieu } =
     useListLichChieu({ resource: "lich_chieu" });
   const phongQuery = useListPhongChieu({ resource: "phong_chieu" });
@@ -106,7 +113,27 @@ const MovieDetailUser = () => {
   } = useListGhe({ resource: "ghe", phong_id: selectedPhong?.id });
 
   const BASE_URL = "http://127.0.0.1:8000";
+  useEffect(() => {
+    if (selectedLichChieuId !== null && lichChieuList.length > 0) {
+      // Tìm lịch chiếu trong danh sách
+      const foundLichChieu = (lichChieuList as ILichChieu[]).find(
+        (lc) => lc.id === selectedLichChieuId
+      );
+      setSelectedLichChieu(foundLichChieu || null); // Cập nhật state selectedLichChieu
 
+      // (Tùy chọn) Nếu bạn muốn log chi tiết ngay khi lịch chiếu được chọn:
+      if (foundLichChieu) {
+        console.log("Lịch chiếu đã chọn (đầy đủ thông tin):", foundLichChieu);
+      } else {
+        console.warn(
+          `Không tìm thấy lịch chiếu với ID: ${selectedLichChieuId} trong danh sách.`
+        );
+      }
+    } else {
+      // Reset nếu không có lịch chiếu nào được chọn hoặc danh sách chưa tải
+      setSelectedLichChieu(null);
+    }
+  }, [selectedLichChieuId, lichChieuList]);
   useEffect(() => {
     const fetchMovie = async () => {
       try {
@@ -131,7 +158,64 @@ const MovieDetailUser = () => {
       );
     }
   }, [selectedSeats]);
+  useEffect(() => {
+    // Điều kiện thoát sớm:
+    if (
+      !selectedLichChieu ||
+      !selectedLichChieu.gia_ve ||
+      selectedSeats.length === 0 ||
+      danhSachGhe.length === 0
+    ) {
+      setTotalPrice(0);
+      setDisplaySelectedSeats([]);
+      return;
+    }
 
+    let currentTotalPrice = 0;
+    const seatsToDisplay: SelectedSeatWithPrice[] = [];
+
+    // Duyệt qua từng số ghế trong mảng `selectedSeats`
+    selectedSeats.forEach((seatNumber) => {
+      // 1. Tìm đối tượng GHẾ VẬT LÝ (IGhe) tương ứng với `seatNumber` hiện tại
+      const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
+
+      if (ghe) {
+        // Nếu tìm thấy thông tin ghế vật lý
+        // 💡 Lấy `loai_ghe_id` (là một số) từ đối tượng ghế
+        const loaiGheIdCuaGhe = ghe.loai_ghe_id; // Đây sẽ là một số (number)
+
+        // 💡 Tìm bản ghi GIÁ VÉ tương ứng trong mảng `gia_ve` của `selectedLichChieu`
+        // Sử dụng `loaiGheIdCuaGhe` để khớp với `gv.pivot.loai_ghe_id`
+        const giaVeItem = selectedLichChieu.gia_ve.find(
+          (gv) => gv.pivot.loai_ghe_id === loaiGheIdCuaGhe // So sánh hai số ID
+        );
+
+        let price = 0;
+        let tenLoaiGhe = "Không xác định"; // Thêm biến để lưu tên loại ghế
+
+        if (giaVeItem) {
+          price = parseFloat(giaVeItem.pivot.gia_ve);
+          tenLoaiGhe = giaVeItem.ten_loai_ghe; // Lấy tên loại ghế từ bản ghi gia_ve
+        } else {
+          console.warn(
+            `Không tìm thấy giá cho loai_ghe_id: ${loaiGheIdCuaGhe} trong lịch chiếu ID ${selectedLichChieu.id}.`
+          );
+        }
+
+        currentTotalPrice += price;
+
+        // 💡 Cập nhật `seatsToDisplay` để sử dụng `tenLoaiGhe` đã tìm được
+        seatsToDisplay.push({
+          so_ghe: ghe.so_ghe,
+          loai_ghe: tenLoaiGhe, // Sử dụng tên loại ghế đã tìm được
+          gia: price,
+        });
+      }
+    });
+
+    setTotalPrice(currentTotalPrice);
+    setDisplaySelectedSeats(seatsToDisplay);
+  }, [selectedSeats, selectedLichChieu, danhSachGhe]);
   if (
     loadingMovie ||
     loadingLichChieu ||
@@ -172,60 +256,92 @@ const MovieDetailUser = () => {
     setIsModalVisible(false);
   };
 
-  // Xử lí click mua ghế, cập nhật trạng thái và selectedSeats
+  // 💡 HÀM XỬ LÝ CLICK GHẾ ĐÃ SỬA ĐỔI
   const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
-    // 1️⃣ Tìm thông tin ghế hiện tại
+    if (!selectedLichChieuId) {
+      message.warning("Vui lòng chọn lịch chiếu trước khi chọn ghế!");
+      return;
+    }
+    // 1️⃣ Tìm thông tin ghế vật lý hiện tại
     const ghe = danhSachGhe.find((g: IGhe) => g.id === gheId);
-    if (!ghe) return;
+    if (!ghe) {
+      console.error("Không tìm thấy thông tin ghế vật lý với ID:", gheId);
+      return;
+    }
 
-    // 2️⃣ Xác định trạng thái mới
-    let newTrangThai = "trong";
-    if (currentTrangThai === "trong") newTrangThai = "dang_dat";
-    else if (currentTrangThai === "dang_dat") newTrangThai = "trong";
+    // 💡 TÌM BẢN GHI CHECK_GHE TƯƠNG ỨNG VỚI GHẾ VẬT LÝ VÀ LỊCH CHIẾU HIỆN TẠI
+    const checkGheRecord = (checkGheList as ICheckGhe[]).find(
+      (item) =>
+        item.ghe_id === gheId && item.lich_chieu_id === selectedLichChieuId
+    );
 
-    // 3️⃣ Tính danh sách ghế sẽ được chọn sau khi click
-    let newSelectedSeats: string[] = [];
+    if (!checkGheRecord) {
+      console.error(
+        "Không tìm thấy bản ghi check_ghe cho ghế ID",
+        gheId,
+        "trong lịch chiếu ID",
+        selectedLichChieuId
+      );
+      message.error("Lỗi: Không tìm thấy trạng thái ghế để cập nhật.");
+      return;
+    }
+
+    const checkGheRecordId = checkGheRecord.id; // Đây là ID của bản ghi check_ghe trong DB
+    const currentCheckGheStatus = checkGheRecord.trang_thai; // Trạng thái hiện tại của bản ghi check_ghe
+
+    // 2️⃣ Xác định trạng thái mới dựa trên trạng thái hiện tại của bản ghi check_ghe
+    let newTrangThai: string;
+    if (currentCheckGheStatus === "trong") {
+      newTrangThai = "dang_dat";
+    } else if (currentCheckGheStatus === "dang_dat") {
+      newTrangThai = "trong";
+    } else {
+      // Nếu là 'da_ban' hoặc trạng thái khác không thể click, không làm gì
+      message.info("Ghế này đã được bán hoặc không thể chọn.");
+      return;
+    }
+
+    // 3️⃣ Tính danh sách ghế sẽ được chọn sau khi click (dùng `ghe.so_ghe`)
+    let newSelectedSeats: string[] = [...selectedSeats]; // Bắt đầu với danh sách hiện tại
 
     if (newTrangThai === "dang_dat") {
-      // thêm ghế này vào danh sách nếu chưa có
-      newSelectedSeats = selectedSeats.includes(ghe.so_ghe)
-        ? [...selectedSeats]
-        : [...selectedSeats, ghe.so_ghe];
+      if (!newSelectedSeats.includes(ghe.so_ghe)) {
+        newSelectedSeats.push(ghe.so_ghe);
+      }
     } else {
-      // bỏ ghế này khỏi danh sách
-      newSelectedSeats = selectedSeats.filter((s) => s !== ghe.so_ghe);
+      // newTrangThai === "trong"
+      newSelectedSeats = newSelectedSeats.filter((s) => s !== ghe.so_ghe);
     }
 
     /* ------------------------------------------------------------------ */
-    /* 4️⃣ RÀNG BUỘC A. KHÔNG CHO CHỌN GHẾ CÁCH QUÃNG                     */
+    /* 4️⃣ RÀNG BUỘC A. KHÔNG CHO CHỌN GHẾ CÁCH QUÃNG                     */
     /* ------------------------------------------------------------------ */
     if (newTrangThai === "dang_dat" && checkGapSeats(newSelectedSeats)) {
       message.error(
         "Không được chọn ghế cách quãng! Vui lòng chọn ghế liền kề."
       );
-      return; // chặn chọn ghế
+      return;
     }
 
     /* ------------------------------------------------------------------ */
-    /* 5️⃣ RÀNG BUỘC B. KHÔNG CHỌN GHẾ KẾ RÌA NẾU GHẾ RÌA CHƯA CHỌN       */
+    /* 5️⃣ RÀNG BUỘC B. KHÔNG CHỌN GHẾ KẾ RÌA NẾU GHẾ RÌA CHƯA CHỌN       */
     /* ------------------------------------------------------------------ */
     if (newTrangThai === "dang_dat") {
-      const row = ghe.so_ghe[0]; // B
-      const number = parseInt(ghe.so_ghe.slice(1)); // 2
+      const row = ghe.so_ghe[0];
+      const number = parseInt(ghe.so_ghe.slice(1));
 
-      // Tìm số cột nhỏ nhất (min) và lớn nhất (max) trong hàng hiện tại
       const colsInRow = danhSachGhe
         .filter((g: IGhe) => g.so_ghe[0] === row)
         .map((g: IGhe) => parseInt(g.so_ghe.slice(1)))
         .sort((a: any, b: any) => a - b);
-      const min = colsInRow[0]; // ví dụ 1
-      const max = colsInRow[colsInRow.length - 1]; // ví dụ 12
+      const min = colsInRow[0];
+      const max = colsInRow[colsInRow.length - 1];
 
-      const seatLeft = `${row}${min}`; // rìa trái (B1)
-      const seatRight = `${row}${max}`; // rìa phải (B12)
+      const seatLeft = `${row}${min}`;
+      const seatRight = `${row}${max}`;
 
-      const isLeftEdgeNeighbor = number === min + 1; // B2
-      const isRightEdgeNeighbor = number === max - 1; // B11
+      const isLeftEdgeNeighbor = number === min + 1;
+      const isRightEdgeNeighbor = number === max - 1;
 
       const edgeLeftSelected = newSelectedSeats.includes(seatLeft);
       const edgeRightSelected = newSelectedSeats.includes(seatRight);
@@ -237,17 +353,21 @@ const MovieDetailUser = () => {
         message.warning(
           "Không được chọn ghế cạnh rìa khi ghế rìa chưa được chọn!"
         );
-        return; // chặn chọn ghế
+        return;
       }
     }
 
     /* ------------------------------------------------------------------ */
-    /* 6️⃣ HỢP LỆ → CẬP NHẬT STATE VÀ GỌI API                             */
+    /* 6️⃣ HỢP LỆ → CẬP NHẬT STATE VÀ GỌI API                             */
     /* ------------------------------------------------------------------ */
-    setSelectedSeats(newSelectedSeats);
+    setSelectedSeats(newSelectedSeats); // Cập nhật state ghế đã chọn
+
+    // Gọi mutation để cập nhật trạng thái ghế trên backend
+    // Truyền checkGheRecordId (ID của bản ghi check_ghe) và selectedLichChieuId
     updateCheckGhe({
-      id: gheId,
+      id: checkGheRecordId, // ID của bản ghi check_ghe cần cập nhật
       values: { trang_thai: newTrangThai },
+      lichChieuId: selectedLichChieuId, // Truyền ID lịch chiếu để React Query invalidate đúng cache
     });
   };
 
@@ -347,6 +467,7 @@ const MovieDetailUser = () => {
           // Reset danh sách ghế đã chọn khi đổi lịch chiếu mới
           setSelectedSeats([]);
         }}
+        selectedLichChieuId={selectedLichChieuId}
       />
 
       {selectedPhong && (
@@ -505,7 +626,7 @@ const MovieDetailUser = () => {
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 14 }}>Tạm tính</div>
               <div style={{ color: "#00FFB0", fontSize: 18 }}>
-                {selectedSeats.length * 75000} VNĐ
+                Tổng tiền: {totalPrice.toLocaleString("vi-VN")} VNĐ
               </div>
             </div>
           </div>
