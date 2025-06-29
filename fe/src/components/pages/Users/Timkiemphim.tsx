@@ -17,8 +17,8 @@ const TimKiemPhim = () => {
 
     for (const [key, value] of params.entries()) {
       if (key === "the_loai_id[]") {
-        if (!requestParams[key]) requestParams[key] = [];
-        requestParams[key].push(value);
+        if (!requestParams["the_loai_id"]) requestParams["the_loai_id"] = [];
+        requestParams["the_loai_id"].push(value);
       } else {
         requestParams[key] = value;
       }
@@ -51,13 +51,20 @@ const TimKiemPhim = () => {
                 cover={
                   <img
                     alt={phim.ten_phim}
-                    src={`http://127.0.0.1:8000/storage/${phim.anh_poster}`}
+                    src={
+                      phim.anh_poster
+                        ? `http://127.0.0.1:8000/storage/${phim.anh_poster}`
+                        : "https://via.placeholder.com/220x280?text=No+Image"
+                    }
                     className="poster-image"
                   />
                 }
               >
-                <Title level={4}>{phim.ten_phim}</Title>
-                <Paragraph ellipsis={{ rows: 2 }}>{phim.mo_ta}</Paragraph>
+                <Title level={4}>{phim.ten_phim || "Không có tên phim"}</Title>
+                <Paragraph ellipsis={{ rows: 2 }}>
+                  {phim.mo_ta || "Chưa có mô tả"}
+                </Paragraph>
+
                 <Link to={`/chi-tiet-phim/${phim.id}`}>
                   <Button type="primary" block>
                     Xem chi tiết
