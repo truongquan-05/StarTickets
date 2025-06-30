@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  checkLichChieu, getCheckGheByLichChieuId, getCreateCategoryChair, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteCheckGhe, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateCheckGhe, getUpdateLichChieu, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import {  checkLichChieu, getCheckGheByLichChieuId, getCreateCategoryChair, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteCheckGhe, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateCheckGhe, getUpdateLichChieu, getUpdateLoaiGhe, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateTrangThaiGhe, getUpdateVaiTro } from "../provider/hungProvider";
 import { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -302,6 +302,31 @@ export const useListChair = ({resource = "ghe"}) => {
     queryFn: () => getListChair({resource})
   })
 }
+
+export const useUpdateLoaiGhe = ({ resource = "ghe" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateLoaiGhe({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+    },
+  });
+};
+export const useUpdateTrangThaiGhe = ({ resource = "ghe" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateTrangThaiGhe({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+    },
+  });
+};
 
 export const useListLichChieu = ({resource = "lich_chieu"}) => {
   return useQuery({

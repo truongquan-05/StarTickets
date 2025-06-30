@@ -193,6 +193,17 @@ export const getListGhe = async ({
   return data.data;
 };
 
+export const getUpdateLoaiGhe = async ({resource = "ghe", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}/sua_loai_ghe`,values);
+  return data
+}
+export const getUpdateTrangThaiGhe = async ({resource = "ghe", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
 export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.delete(`${resource}/${id}`)
