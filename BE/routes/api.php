@@ -130,7 +130,7 @@ Route::prefix('tin_tuc')->group(function () {
 });
 
 // qli đánh giá cho admin
-Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/danh-gia', [AdminDanhGiaController::class, 'index']); // Lấy danh sách đánh giá
     Route::get('/danh-gia/{id}', [AdminDanhGiaController::class, 'show']); // Xem chi tiết đánh giá
     Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']); // Xóa đánh giá
