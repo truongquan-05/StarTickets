@@ -10,6 +10,7 @@ use App\Models\ChuyenNgu;
 use App\Models\LichChieu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\PhongChieu;
 use Illuminate\Support\Facades\Validator;
 
 class LichChieuController extends Controller
@@ -25,118 +26,130 @@ class LichChieuController extends Controller
         return response()->json($lichChieus);
     }
 
-   
     public function store(Request $request)
     {
         try {
-            
-      
-        $phim = Phim::find($request->phim_id);
-        $duLieuPhim[] = $request->except('lich_chieu_them');
 
+            $phim = Phim::find($request->phim_id);
+            $duLieuPhim[] = $request->except('lich_chieu_them');
 
-        if (!$phim) {
-            return response()->json(['message' => 'Phim không tồn tại'], 422);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'phim_id' => 'required|exists:phim,id',
-            'phong_id' => 'required|exists:phong_chieu,id',
-            'gio_chieu' => 'required|date',
-            'gio_ket_thuc' => 'required|date|after:gio_chieu',
-        ]);
-
-
-        $lichChieuThem = [];
-        if ($request->get('lich_chieu_them') != null) {
-            $lichChieuThem = $request->get('lich_chieu_them');
-
-            foreach ($lichChieuThem as $item) {
-                $duLieuPhim[] = [
-                    "gia_ve" => $item['gia_ve'],
-                    "chuyen_ngu_id" => $item['chuyen_ngu_id'],
-                    "gio_chieu"  => $item['gio_chieu'],
-                    "gio_ket_thuc" => $item['gio_ket_thuc'],
-                    "phim_id" => $request->get('phim_id'),
-                    "phong_id"  => $request->get('phong_id'),
-                ];
+            if (!$phim) {
+                return response()->json(['message' => 'Phim không tồn tại'], 422);
             }
-        }
 
-        $validator->after(function ($validator) use ($phim, $duLieuPhim) {
-            foreach ($duLieuPhim as $item) {
-                $gioChieu = Carbon::parse($item['gio_chieu']);
-                $gioKetThuc = Carbon::parse($item['gio_ket_thuc']);
+            $validator = Validator::make($request->all(), [
+                'phim_id' => 'required|exists:phim,id',
+                'phong_id' => 'required|exists:phong_chieu,id',
+                'gio_chieu' => 'required|date',
+                'gio_ket_thuc' => 'required|date|after:gio_chieu',
+            ]);
 
-                $ngayChieu = $gioChieu->toDateString(); // chỉ lấy phần ngày
-                $ngayKetThuc = $gioKetThuc->toDateString(); // chỉ lấy phần ngày
-                $ngayCongChieu = Carbon::parse($phim->ngay_cong_chieu)->toDateString();
 
-                // 1. Ngày chiếu không được trước ngày công chiếu (nếu không phải "Sớm")
-                if ($ngayChieu < $ngayCongChieu && $phim->loai_suat_chieu != "Sớm") {
-                    $validator->errors()->add('err', 'Ngày chiếu không được trước ngày công chiếu.');
+            $lichChieuThem = [];
+            if ($request->get('lich_chieu_them') != null) {
+                $lichChieuThem = $request->get('lich_chieu_them');
+
+                foreach ($lichChieuThem as $item) {
+                    $duLieuPhim[] = [
+                        "gia_ve" => $item['gia_ve'],
+                        "chuyen_ngu_id" => $item['chuyen_ngu_id'],
+                        "gio_chieu"  => $item['gio_chieu'],
+                        "gio_ket_thuc" => $item['gio_ket_thuc'],
+                        "phim_id" => $request->get('phim_id'),
+                        "phong_id"  => $request->get('phong_id'),
+                    ];
                 }
+            }
 
-                // 2. Ngày chiếu không được sau ngày kết thúc (nếu có)
-                if (!empty($phim->ngay_ket_thuc)) {
-                    $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->toDateString();
-                    if ($ngayChieu > $ngayKetThucPhim) {
-                        $validator->errors()->add('err', 'Ngày chiếu không được sau ngày kết thúc của phim.');
+            $validator->after(function ($validator) use ($phim, $duLieuPhim) {
+                foreach ($duLieuPhim as $item) {
+                    $gioChieu = Carbon::parse($item['gio_chieu']);
+                    $gioKetThuc = Carbon::parse($item['gio_ket_thuc']);
+
+                    $ngayChieu = $gioChieu->toDateString(); // chỉ lấy phần ngày
+                    $ngayKetThuc = $gioKetThuc->toDateString(); // chỉ lấy phần ngày
+                    $ngayCongChieu = Carbon::parse($phim->ngay_cong_chieu)->toDateString();
+
+                    // 1. Ngày chiếu không được trước ngày công chiếu (nếu không phải "Sớm")
+                    if ($ngayChieu < $ngayCongChieu && $phim->loai_suat_chieu != "Sớm") {
+                        $validator->errors()->add('err', 'Ngày chiếu không được trước ngày công chiếu.');
+                    }
+
+                    // 2. Ngày chiếu không được sau ngày kết thúc (nếu có)
+                    if (!empty($phim->ngay_ket_thuc)) {
+                        $ngayKetThucPhim = Carbon::parse($phim->ngay_ket_thuc)->toDateString();
+                        if ($ngayChieu > $ngayKetThucPhim) {
+                            $validator->errors()->add('err', 'Ngày chiếu không được sau ngày kết thúc của phim.');
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        $dataLich = collect();
-        foreach ($request->get('phong_id') as $item) {
-            foreach ($duLieuPhim as $value) {
-                $value['phong_id'] = $item;
-                $dataLich = $dataLich->merge([$value]); // Bao $value trong mảng
-            }
-        }
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors()
-            ], 422);
-        }
-
-        $ArrayData = $dataLich->toArray();
-
-        foreach ($ArrayData as $key => $item) {
-            $data[] = LichChieu::create($item);
-
-            //MẢNG LƯU TẠM DATA GIÁ
-            $DataTam[] = [
-                'lich_chieu_id' => $data[$key]->id,
-                'gia_ve' => $item['gia_ve'],
-            ];
-        }
-
-        //TẠO GIÁ VÉ CHO MỖI LỊCH (THƯỜNG-VIP-ĐÔI)
-        foreach ($DataTam as $key => $item) {
-            for ($i = 1; $i <= 3; $i++) {
-                if ($i == 1) {
-                    $giaVe = $item['gia_ve'];
-                } elseif ($i == 2) {
-                    $giaVe = $item['gia_ve'] + $item['gia_ve'] * 0.3; // 30% so với giá thường
-                } else {
-                    $giaVe = $item['gia_ve'] * 2 + 10000;
+            $dataLich = collect();
+            foreach ($request->get('phong_id') as $item) {
+                foreach ($duLieuPhim as $value) {
+                    $value['phong_id'] = $item;
+                    $dataLich = $dataLich->merge([$value]); // Bao $value trong mảng
                 }
-                $dataGiave[] = [
-                    'lich_chieu_id' => $item['lich_chieu_id'],
-                    'loai_ghe_id' => $i,
-                    'gia_ve' => $giaVe
+            }
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => $validator->errors()
+                ], 422);
+            }
+
+            $ArrayData = $dataLich->toArray();
+
+
+
+            foreach ($ArrayData as $key => $item) {
+                $data[] = LichChieu::create($item);
+
+                //MẢNG LƯU TẠM DATA GIÁ
+                $DataTam[] = [
+                    'lich_chieu_id' => $data[$key]->id,
+                    'gia_ve' => $item['gia_ve'],
                 ];
             }
-        }
-        $OK = GiaVe::insert($dataGiave);
 
-        return response()->json([
-            'message' => 'Thêm lịch chiếu thành công',
-            'data' => $OK
-        ], 201);
-          } catch (\Throwable $th) {
+            //TẠO GIÁ VÉ CHO MỖI LỊCH (THƯỜNG-VIP-ĐÔI)
+            foreach ($DataTam as $key => $item) {
+                for ($i = 1; $i <= 3; $i++) {
+                    if ($i == 1) {
+                        $giaVe = $item['gia_ve'];
+                    } elseif ($i == 2) {
+                        $giaVe = $item['gia_ve'] + $item['gia_ve'] * 0.3; // 30% so với giá thường
+                    } else {
+                        $giaVe = $item['gia_ve'] * 2 + 10000;
+                    }
+                    $dataGiave[] = [
+                        'lich_chieu_id' => $item['lich_chieu_id'],
+                        'loai_ghe_id' => $i,
+                        'gia_ve' => $giaVe
+                    ];
+                }
+            }
+            $OK = GiaVe::insert($dataGiave);
+
+            foreach ($data as $item) {
+                $PhongChieu = PhongChieu::with('ghes')->find($item['phong_id']);
+                $DataGhe = $PhongChieu->ghes;
+                foreach ($DataGhe as $value) {
+                    $DataCheckGhe[] = [
+                        'lich_chieu_id' => $item['id'],
+                        'ghe_id' => $value['id'],
+                        'trang_thai' => 'trong', // Trạng thái ghế ban đầu là "trống"
+                    ];
+                }
+            }
+            CheckGhe::insert($DataCheckGhe);
+
+            return response()->json([
+                'message' => 'Thêm lịch chiếu thành công',
+                'data' => $OK
+            ], 201);
+        } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Đã xảy ra lỗi khi thêm lịch chiếu: ' . $th->getMessage(),
             ], 500);

@@ -179,7 +179,7 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/comment/phanhoinguoidung">Phản Hồi Người Dùng</Link>
         </Menu.Item>
         <Menu.Item key="" icon={<StarOutlined />}>
-          <Link to="/admin/comment/list">Quản lý đánh giá</Link>
+          <Link to="/admin/danh-gia/list">Quản lý đánh giá</Link>
         </Menu.Item>
         <Menu.Item key="" icon={<EditOutlined />}>
           <Link to="/admin/comment/phanhoinguoidung">Quản lý bình luận</Link>

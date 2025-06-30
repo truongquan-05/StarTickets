@@ -1,44 +1,89 @@
 .news-wrapper {
-  padding: 32px 16px;
+  padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #f9f9f9;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.news-title {
-  margin-bottom: 32px;
+.news-wrapper h2 {
+  margin-bottom: 40px;
   text-align: center;
-  color: white;
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-size: 36px;
+  letter-spacing: 1.5px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .news-card {
+  margin-bottom: 30px;
   border-radius: 6px;
-  transition: transform 0.2s ease;
+  overflow: hidden;
+  background-color: #2c1b4f;
+  border: 1px solid #3c2b6f;
+  box-shadow: 0 12px 25px 0 rgba(243, 234, 40, .5);
 }
 
-.news-card:hover {
-  transform: translateY(-4px);
-}
 
 .news-card-title {
-  font-weight: 600;
-  font-size: 18px;
-  color: white;
+  font-family: 'Anton', sans-serif;
+  font-weight: 100;
+  font-size: 20px;
+  color: #ffffff;
+  letter-spacing: 1px;
 }
 
 .news-desc {
-  margin-top: 8px;
-  color: #555;
+  margin-top: 10px;
+  color: #cccccc;
   font-size: 15px;
 }
+
 .news-readmore-btn {
   display: inline-block;
-  margin-top: 6px;
-  color: #1890ff;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-size: 16px;
+  position: relative; /* BẮT BUỘC để z-index hoạt động đúng */
+  font-family: 'Anton', sans-serif;
+  height: 35px;
+  line-height: 35px;
+  background-color: #FFEB3B;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  width: 220px;
+  text-align: center;
+  z-index: 0;
+}
+
+.news-readmore-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #8200d8, rgba(51,102,204,.8));
+  z-index: 0; /* nền ở dưới chữ */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.news-readmore-btn:hover::before {
+  transform: scaleX(1);
 }
 
 .news-readmore-btn:hover {
-  color: #40a9ff;
+  color: #fff;
 }
+
+.news-readmore-btn span {
+  position: relative;
+  z-index: 1; /* chữ ở trên nền */
+}
+

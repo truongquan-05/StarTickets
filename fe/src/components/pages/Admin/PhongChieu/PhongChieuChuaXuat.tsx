@@ -18,6 +18,8 @@ interface IRap {
 }
 
 const PhongChieuChuaXuat = () => {
+  const navigate = useNavigate();  // <-- moved here
+
   const [open, setOpen] = useState(false);
   const [selectedPhong, setSelectedPhong] = useState<IPhongChieu | null>(null);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -26,7 +28,7 @@ const PhongChieuChuaXuat = () => {
   const updatePhongChieuMutation = useUpdatePhongChieu({
     resource: "phong_chieu",
   });
-  const {mutate : deletePhongChieu} = useDeletePhongChieu({
+  const { mutate: deletePhongChieu } = useDeletePhongChieu({
     resource: "phong_chieu",
   });
 
@@ -35,7 +37,6 @@ const PhongChieuChuaXuat = () => {
     data: phongChieuDataRaw,
     isLoading: isLoadingPhong,
     isError: isErrorPhong,
-    error: errorPhong,
   } = useQuery({
     queryKey: ["phong_chieu"],
     queryFn: () =>
@@ -57,7 +58,6 @@ const PhongChieuChuaXuat = () => {
     data: rapDataRaw,
     isLoading: isLoadingRap,
     isError: isErrorRap,
-    error: errorRap,
   } = useQuery({
     queryKey: ["rap"],
     queryFn: () => getListCinemas({ resource: "rap" }).then((res) => res.data),
@@ -91,7 +91,7 @@ const PhongChieuChuaXuat = () => {
   // Xác nhận bật trạng thái phòng chiếu
   const onConfirm = () => {
     if (!phongToConfirm) return;
-    const navigate = useNavigate();
+
     updatePhongChieuMutation.mutate(
       {
         id: phongToConfirm.id,
@@ -106,7 +106,7 @@ const PhongChieuChuaXuat = () => {
           setConfirmModalOpen(false);
           setSelectedPhong({ ...phongToConfirm, trang_thai: 1 });
           setPhongToConfirm(null);
-          navigate("/admin/room/list")
+          navigate("/admin/room/list"); // <-- dùng biến navigate đã khai báo ở trên
         },
         onError: () => {
           message.error("Cập nhật thất bại");
@@ -114,7 +114,7 @@ const PhongChieuChuaXuat = () => {
       }
     );
   };
-  const navigate = useNavigate();
+
   const onCancelConfirm = () => {
     setConfirmModalOpen(false);
     setPhongToConfirm(null);
@@ -203,18 +203,19 @@ const PhongChieuChuaXuat = () => {
       align: "center",
       render: (_text, record) => (
         <Space>
-        <Button icon={<EyeOutlined/>}
-          type="primary"
-          onClick={() => {
-            if (record.trang_thai === "0" || record.trang_thai === 0) {
-              setSelectedPhong(record);
-              setOpen(true);
-            }
-          }}
-        >
-          Xem chi tiết ghế
-        </Button>
-        <Popconfirm
+          <Button
+            icon={<EyeOutlined />}
+            type="primary"
+            onClick={() => {
+              if (record.trang_thai === "0" || record.trang_thai === 0) {
+                setSelectedPhong(record);
+                setOpen(true);
+              }
+            }}
+          >
+            Xem chi tiết ghế
+          </Button>
+          <Popconfirm
             title="Bạn có chắc chắn muốn xoá phòng chiếu này?"
             okText="Xoá"
             cancelText="Huỷ"
@@ -223,12 +224,7 @@ const PhongChieuChuaXuat = () => {
               message.success("Xóa mềm thành công");
             }}
           >
-            <Button
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-              title="Xoá"
-            />
+            <Button danger shape="circle" icon={<DeleteOutlined />} title="Xoá" />
           </Popconfirm>
         </Space>
       ),
@@ -237,18 +233,16 @@ const PhongChieuChuaXuat = () => {
 
   return (
     <Card
-     style={{
+      style={{
         padding: "20px 20px 0px 20px",
         backgroundColor: "#fff",
         borderRadius: 8,
-        height:"100%",
+        height: "100%",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-      }}>
-    <Button
-        style={{ marginBottom: 16 }}
-        onClick={() => navigate("/admin/room/trashed/list")}
-      >
-        Hiển thị phòng đã xóa 
+      }}
+    >
+      <Button style={{ marginBottom: 16 }} onClick={() => navigate("/admin/room/trashed/list")}>
+        Hiển thị phòng đã xóa
       </Button>
       <Table
         dataSource={phongChieuChuaXuatData}

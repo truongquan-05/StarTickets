@@ -37,6 +37,9 @@ import GoogleCallback from '../pages/auth/GoogleCallback';
 import AddVoucher from '../pages/Voucher/Add';
 import SearchPage from '../pages/Users/SearchPage';
 import Commet from '../pages/Admin/CommentPage/Comment';
+import MovieDetailUser from '../pages/Users/MovieDetail';
+import EditLichChieu from '../pages/Admin/LichChieu/EditLichChieu';
+import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
 
 
 
@@ -50,10 +53,9 @@ const Routermain = () => {
       path: '/',
       element: <User />,
       children: [
-        { path: '/', element: <Home /> },
-        { path: '/phim/:id', element:<MovieDetail/>  },
-        { path: '/chi-tiet-phim/:id', element:<MovieDetail/>  },
-        { path: '/search', element:<SearchPage/>  },
+        { path: '', element: <Home /> },
+        { path: 'phim/:id', element:<MovieDetailUser/>  },
+        { path: 'search', element:<SearchPage/>  },
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },
         { path: 'news/:id', element: <NewsDetail /> },
@@ -75,6 +77,7 @@ const Routermain = () => {
         { path: 'lichchieu/list', element: <LichChieu /> },
         { path: 'lichchieucu/list', element: <LichChieuCu /> },
         { path: 'lichchieu/add', element: <AddLichChieu /> },
+        { path: 'lichchieu/edit/:id', element: <EditLichChieu /> },
         { path: 'cinemas/list', element: <ListCinemas /> },
         { path: 'cinemas/add', element: <AddCinemasPage /> },
         { path: 'room/list', element: <ListPhongChieu /> },
@@ -98,7 +101,8 @@ const Routermain = () => {
         { path: 'vouchers/list', element: <VouchersList /> },
         { path: 'vouchers/add', element: <AddVoucher /> },
         { path: 'news', element: <ListNews /> },
-        { path: 'news/add', element: <AddNews /> }
+        { path: 'news/add', element: <AddNews /> },
+        { path: 'danh-gia/list', element: <ListDanhGia /> },
       ],
     },
   ]);
