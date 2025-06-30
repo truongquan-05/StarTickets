@@ -20,7 +20,7 @@ class DatVeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
