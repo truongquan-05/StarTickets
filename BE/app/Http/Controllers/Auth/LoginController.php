@@ -62,7 +62,7 @@ class LoginController extends Controller
                     'user' => urlencode(json_encode([
                         'id' => $user->id,
                     ]))
-                ])
+                ]) 
             );
         } catch (\Throwable $th) {
             // Có thể redirect sang FE với thông báo lỗi cũng được

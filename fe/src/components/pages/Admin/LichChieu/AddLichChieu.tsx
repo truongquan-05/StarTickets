@@ -158,6 +158,7 @@ const AddLichChieu = () => {
         ...values,
         lich_chieu_them: lichChieuThem,
       };
+     
 
       // Kiểm tra trùng lịch
       const checkResult = await checkLichChieu({
@@ -207,34 +208,24 @@ const AddLichChieu = () => {
           setSubmitting(false);
         },
         onError: (error: any) => {
-          console.error("Lỗi khi tạo lịch chiếu:", error);
-          let errorMessage = "Đã có lỗi xảy ra. Vui lòng thử lại.";
-
-          if (error.response) {
-            const { status, data } = error.response;
-
-            if (status === 422 && data.errors) {
-              errorMessage = "Dữ liệu không hợp lệ:";
-              Object.entries(data.errors).forEach(([field, messages]) => {
-                if (Array.isArray(messages)) {
-                  messages.forEach((msg) => {
-                    errorMessage += `\n- ${msg}`;
-                  });
-                } else {
-                  errorMessage += `\n- ${messages}`;
-                }
-              });
-            } else if (data.message) {
-              errorMessage = data.message;
-            } else {
-              errorMessage = `Lỗi ${status}: ${error.response.statusText || 'Lỗi không xác định từ máy chủ'}`;
-            }
-          } else if (error.request) {
-            errorMessage = "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng của bạn.";
-          } else {
-            errorMessage = error.message || "Đã có lỗi không mong muốn xảy ra.";
-          }
-          message.error(errorMessage);
+          // if (
+          //   error.response &&
+          //   error.response.status === 422 &&
+          //   error.response.data.errors
+          // ) {
+          //   const apiErrors = error.response.data.errors;
+          //   Object.entries(apiErrors).forEach(([field, messages]) => {
+          //     if (Array.isArray(messages)) {
+          //       messages.forEach((msg) => {
+          //         message.error(`${field}: ${msg}`);
+          //       });
+          //     } else {
+          //       message.error(`${field}: ${messages}`);
+          //     }
+          //   });
+          // } else {
+          //   message.error("Đã có lỗi xảy ra");
+          // }
           setSubmitting(false);
         },
       });
