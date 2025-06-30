@@ -130,7 +130,7 @@ Route::prefix('tin_tuc')->group(function () {
 });
 
 // qli đánh giá cho admin
-Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/danh-gia', [AdminDanhGiaController::class, 'index']); // Lấy danh sách đánh giá
     Route::get('/danh-gia/{id}', [AdminDanhGiaController::class, 'show']); // Xem chi tiết đánh giá
     Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']); // Xóa đánh giá
@@ -153,16 +153,43 @@ Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
 Route::get('/search', [HomeController::class, 'search']);
 Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 Route::post('/loc', [HomeController::class, 'locPhimTheoRapNgayTheLoai']);
-Route::get('/rap', [HomeController::class, 'getAllRap']);
+Route::get('/rap-client', [HomeController::class, 'getAllRap']);
 Route::get('/the-loai', [HomeController::class, 'getAllTheLoai']);
 
 // đánh giá của người dùng (client)
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']); // Lấy tất cả đánh giá của user
-    Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']); // Thêm đánh giá mới
-    Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']); // Sửa đánh giá
-    Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
-});
+
+// Route::get('/phim/{phim}/danh-gia',           [ClientDanhGiaController::class, 'getByPhim']); // Lấy đánh giá theo phim
+// Route::get('/phim/{phim}/danh-gia/average',   [ClientDanhGiaController::class, 'getAverageRating']); // Lấy điểm trung bình
+
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']); // Lấy tất cả đánh giá của user
+//     Route::get('/phim/{phim}/danh-gia/me', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']); // Lấy đánh giá của user cho phim
+//     Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']); // Thêm đánh giá
+//     Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']); // Sửa đánh giá
+//     Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
+// });
+Route::get('/danh-gia/all', [ClientDanhGiaController::class, 'getAllDanhGia']);
+
+// Lấy tất cả đánh giá của 1 phim
+Route::get('/phim/{phimId}/danh-gia', [ClientDanhGiaController::class, 'getByPhim']);
+
+// Lấy điểm trung bình của phim
+Route::get('/phim/{phimId}/danh-gia/average', [ClientDanhGiaController::class, 'getAverageRating']);
+
+// Lấy đánh giá của user hiện tại cho 1 phim (không có auth thì dùng tạm id test)
+Route::get('/phim/{phimId}/danh-gia/my', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']);
+
+// Lấy tất cả đánh giá của chính người dùng hiện tại
+Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']);
+
+// Thêm đánh giá mới
+Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']);
+
+// Cập nhật đánh giá
+Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']);
+
+// Xoá đánh giá
+Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']);
 
 
 //Đăng nhập và đăng xuất

@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Col, Row, Typography, Image, Spin, Empty } from "antd";
 import { INews } from "../../Admin/interface/news";
 import { useListNews } from "../../../hook/hungHook";
+import "../../../assets/css/tintuc.css"; // Assuming you have a CSS file for styling
 
 const { Title, Paragraph } = Typography;
 const BASE_URL = "http://127.0.0.1:8000";
@@ -29,14 +30,13 @@ const NewsUser: React.FC = () => {
 
   return (
     <div className="news-wrapper">
-      <Title level={2} className="news-title" style={{color:"white"}}>
+      <h2 className="news-title">
         Tin tức mới từ StarTicket
-      </Title>
+      </h2>
       <Row gutter={[24, 24]}>
         {newsList.map((item) => (
           <Col xs={24} sm={24} md={12} lg={12} key={item.id}>
             <Card
-              hoverable
               className="news-card"
               cover={
                 <Image
@@ -61,7 +61,7 @@ const NewsUser: React.FC = () => {
                       href={`/news/${item.id}`}
                       className="news-readmore-btn"
                     >
-                      Xem thêm →
+                      <span>Xem thêm</span>
                     </a>
                   </>
                 }

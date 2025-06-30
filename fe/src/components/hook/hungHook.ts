@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  checkLichChieu, getCreateCategoryChair, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateLichChieu, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
-import type { Props } from "../provider/hungProvider";
+import {  checkLichChieu, getCheckGheByLichChieuId, getCreateCategoryChair, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteCheckGhe, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateCheckGhe, getUpdateLichChieu, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -438,3 +438,48 @@ export const useCreateGiaVe = ({resource = "gia_ve"} : Props) => {
   
   })
 }
+export const useListCheckGhe = ({ id, resource = "check_ghe" }: { id?: number; resource?: string }) => {
+  return useQuery({
+    queryKey: [resource, id],
+    queryFn: () => {
+      if (!id) return Promise.resolve([]);
+      return getCheckGheByLichChieuId({ id, resource });
+    },
+    enabled: !!id,
+    select: (data) => data.data || [],
+  });
+};
+
+// ✅ DELETE
+export const useDeleteCheckGhe = ({ resource = "check_ghe" }: { resource?: string }) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number | string) => getDeleteCheckGhe({ resource, id }),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: [resource] });
+      message.success("Xóa thành công");
+    },
+    onError: () => {
+      message.error("Xóa thất bại");
+    },
+  });
+};
+
+interface UpdateCheckGheVariables {
+  id: number | string; // Đây là ID của bản ghi check_ghe cụ thể (ví dụ: 1, 2, 3...)
+  values: { trang_thai: string }; // Các giá trị muốn cập nhật (ví dụ: { trang_thai: "dang_dat" })
+  lichChieuId: number; // Đây là ID của lịch chiếu, quan trọng cho việc làm mất hiệu lực cache
+}
+// ✅ UPDATE
+export const useUpdateCheckGhe = ({ resource = "check_ghe" }: { resource?: string }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (variables: UpdateCheckGheVariables) => {
+      return getUpdateCheckGhe({ resource, id: variables.id, values: variables.values });
+    },
+    onSuccess: (data, variables) => { // 'variables' ở đây chính là đối tượng `UpdateCheckGheVariables`
+      queryClient.invalidateQueries({ queryKey: [resource, variables.lichChieuId] });
+    },
+  });
+};
