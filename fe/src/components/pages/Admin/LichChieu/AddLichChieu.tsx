@@ -160,8 +160,7 @@ const AddLichChieu = () => {
         ...values,
         lich_chieu_them: lichChieuThem,
       };
-      console.log("Payload gửi đi:", payload);
-      console.log("Payload gửi đi:", payload);
+     
 
       // Kiểm tra trùng lịch
       const checkResult = await checkLichChieu({
@@ -205,26 +204,24 @@ const AddLichChieu = () => {
           setSubmitting(false);
         },
         onError: (error: any) => {
-          if (
-            error.response &&
-            error.response.status === 422 &&
-            error.response.data.errors
-          ) {
-            const apiErrors = error.response.data.errors;
-            Object.entries(apiErrors).forEach(([field, messages]) => {
-              if (Array.isArray(messages)) {
-                messages.forEach((msg) => {
-                  message.error(`${field}: ${msg}`);
-                });
-              } else {
-                message.error(`${field}: ${messages}`);
-              }
-            });
-          } else if (error.response && error.response.data?.message) {
-            message.error(error.response.data.message);
-          } else {
-            message.error("Đã có lỗi xảy ra");
-          }
+          // if (
+          //   error.response &&
+          //   error.response.status === 422 &&
+          //   error.response.data.errors
+          // ) {
+          //   const apiErrors = error.response.data.errors;
+          //   Object.entries(apiErrors).forEach(([field, messages]) => {
+          //     if (Array.isArray(messages)) {
+          //       messages.forEach((msg) => {
+          //         message.error(`${field}: ${msg}`);
+          //       });
+          //     } else {
+          //       message.error(`${field}: ${messages}`);
+          //     }
+          //   });
+          // } else {
+          //   message.error("Đã có lỗi xảy ra");
+          // }
           setSubmitting(false);
         },
       });

@@ -330,7 +330,7 @@ export const useCreateLichChieu = ({resource = "lich_chieu"} : Props) => {
     },
     onError : (error : AxiosError) => {
       const errMsg =
-        (error.response?.data as any)?.message?.err ||
+        (error.response?.data as any)?.message?.err[0] ||
         "Đã có lỗi xảy ra, vui lòng thử lại";
       message.error(errMsg);
 
