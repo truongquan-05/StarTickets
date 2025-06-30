@@ -193,7 +193,7 @@ public function getAllPhimSapChieu()
     }
 
 
- public function locPhimTheoRapNgayTheLoai(Request $request)
+   public function locPhimTheoRapNgayTheLoai(Request $request)
     {
         $rapId = $request->input('rap_id');
         $ngayChieu = $request->input('ngay_chieu');
