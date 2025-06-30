@@ -161,7 +161,7 @@ const LichChieu = () => {
         if (!Array.isArray(giaVeList)) return "Chưa có";
 
         const donThuong = giaVeList.find(
-          (item) => item.ten_loai_ghe === "Đơn Thường"
+          (item) => item.ten_loai_ghe === "Ghế Thường"
         );
         const gia = donThuong?.pivot?.gia_ve;
 
