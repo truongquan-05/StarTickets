@@ -164,18 +164,53 @@
   font-size: 20px;
 }
 
+@keyframes shake-rotate {
+  0%   { transform: rotate(0deg); }
+  15%  { transform: rotate(-10deg); }
+  30%  { transform: rotate(10deg); }
+  45%  { transform: rotate(-8deg); }
+  60%  { transform: rotate(8deg); }
+  75%  { transform: rotate(-4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.shake-rotate {
+  animation: shake-rotate 0.8s ease-in-out infinite;
+  color: #fff;
+}
+
+
 
 .header-login {
   font-size: 20px;
   color: white;
   display: flex;
   align-items: center;
-  gap: 2px;
+}
+.login-text{
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .header-login .login-text:hover {
   color: yellow;
 }
+
+
+
+.menu-item-custom {
+  padding: 8px 18px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  color: #ffff !important;
+  background-color: #0c0b1f !important;
+}
+
+.menu-item-custom:hover {
+  color: yellow !important;
+}
+
 
 .header-lang {
   display: flex;

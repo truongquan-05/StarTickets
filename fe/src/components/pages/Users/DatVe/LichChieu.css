@@ -56,3 +56,11 @@
   color: #ffca28;
   background-color: #639;
 }
+
+/* Thêm style cho nút khi được chọn */
+.lich-chieu-button.selected {
+  border: 2px solid #FFD700; /* Màu vàng Gold cho viền khi được chọn */
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); /* Thêm hiệu ứng đổ bóng nhẹ */
+  color: yellow;
+}
+
