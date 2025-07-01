@@ -13,8 +13,8 @@ const FooterUser = () => {
           <p>BE HAPPY, BE A STAR</p>
           <div className="header-actions">
             <Space>
-              <Button className="btn-tickett">🎫 ĐẶT VÉ NGAY</Button>
-              <Button className="btn-popcorn2">🍿 ĐẶT BẮP NƯỚC</Button>
+              <button className="btn-tickett"><span>🎫 ĐẶT VÉ NGAY</span></button>
+            <button className="btn-popcorn2"><span>🍿 ĐẶT BẮP NƯỚC</span></button>
             </Space>
           </div>
           <div className="social-icons">

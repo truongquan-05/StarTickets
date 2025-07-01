@@ -11,6 +11,26 @@
   color: white;
   transition: color 0.3s ease;
 }
+.login-title {
+  color: white;
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-family: 'Anton', sans-serif;
+  font-size: 30px;
+}
+
+/* Checkbox khi được chọn (check) sẽ có màu vàng */
+.custom-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: gold;
+  border-color: gold;
+}
+
+/* Khi hover vào checkbox */
+.custom-checkbox .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.custom-checkbox .ant-checkbox:hover .ant-checkbox-inner {
+  border-color: gold;
+}
+
 
 .header-login:hover .login-text {
   color: gold;
@@ -49,9 +69,9 @@
 
 /* Box chứa form */
 .login-box {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(51,102,204,.8);
   padding: 40px 30px;
-  border-radius: 10px;
+  border-radius: 6px;
   box-shadow: 0 8px 24px rgb(149 157 165 / 20%);
 }
 
@@ -61,19 +81,110 @@
   color: #333;
 }
 
-/* Nút Google */
-.btn-google {
-  background-color: #de4b39;
-  color: white;
-  font-weight: 600;
+.btn-submit-login-effect {
+  font-family: 'Anton', sans-serif;
+  position: relative;
+  display: inline-block;
+  font-size: 15px;
+  height: 45px;
+  line-height: 45px;
+  background-color: #FFEB3B;
+  color: #000;
   border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  width: 100%;
+  text-align: center;
+  z-index: 0;
 }
 
-.btn-google:hover,
-.btn-google:focus {
-  background-color: #c43d2d;
-  color: white;
+/* Gradient nền trượt */
+.btn-submit-login-effect::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #8200d8, rgba(51,102,204,.8));
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
 }
+
+/* Hover: hiệu ứng trượt nền */
+.btn-submit-login-effect:hover::before {
+  transform: scaleX(1);
+}
+
+/* Hover: chữ thành trắng */
+.btn-submit-login-effect:hover {
+  color: #fff;
+}
+
+/* Đảm bảo chữ nằm trên nền */
+.btn-submit-login-effect span {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Nút Google */
+.btn-submit-gg-effect {
+  font-family: 'Anton', sans-serif;
+  position: relative;
+  display: inline-block;
+  font-size: 15px;
+  height: 45px;
+  line-height: 45px;
+  background-color: #8200d8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  width: 100%;
+  text-align: center;
+  z-index: 0;
+}
+
+/* Gradient nền trượt */
+.btn-submit-gg-effect::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c);
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+
+
+/* Hover: hiệu ứng trượt nền */
+.btn-submit-gg-effect:hover::before {
+  transform: scaleX(1);
+}
+
+/* Hover: chữ thành trắng */
+.btn-submit-gg-effect:hover {
+  color: #fff;
+}
+
+/* Đảm bảo chữ nằm trên nền */
+.btn-submit-gg-effect span {
+  position: relative;
+  z-index: 1;
+}
+
 
 /* Nút Facebook */
 .btn-facebook {
