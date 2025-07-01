@@ -303,3 +303,30 @@ export const getDeleteCheckGhe = async ({ id, resource = "check_ghe" }: Props) =
   const { data } = await axiosClient.delete(`${resource}/${id}`);
   return data;
 };
+// 👇 XÓA MỀM phim (soft-delete)
+export const getSoftDeleteMovies = async ({ resource = "phim", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/soft-delete/${id}`);
+  return data;
+};
+
+// 👇 DANH SÁCH phim đã xóa mềm
+export const getListTrashMovies = async ({ resource = "phim" }: Props) => {
+  const { data } = await axiosClient.get(`${resource}/trashed/list`);
+  return data;
+};
+
+// 👇 KHÔI PHỤC phim đã xóa mềm
+export const getRestoreMovies = async ({ resource = "phim", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.post(`${resource}/restore/${id}`);
+  return data;
+};
+// xóa vĩnh viễn
+// ✅ XÓA VĨNH VIỄN PHIM
+export const deleteForeverMovie = async ({ resource = "phim", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+

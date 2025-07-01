@@ -144,6 +144,12 @@ const AddLichChieu = () => {
 
       values.gio_ket_thuc = gioKetThucTinh;
 
+        if (values.phong_id !== undefined && !Array.isArray(values.phong_id)) {
+        values.phong_id = [values.phong_id];
+      } else if (values.phong_id === undefined) {
+        values.phong_id = [];
+      }
+
       // Xử lý các lịch chiếu thêm
       const lichChieuThem = (values.lich_chieu_them || []).map((item: any) => ({
         gio_chieu: item.gio_chieu && dayjs.isDayjs(item.gio_chieu)
@@ -226,6 +232,7 @@ const AddLichChieu = () => {
           // } else {
           //   message.error("Đã có lỗi xảy ra");
           // }
+          console.log(error)
           setSubmitting(false);
         },
       });
@@ -370,6 +377,7 @@ const AddLichChieu = () => {
                 placeholder="Chọn phòng chiếu"
                 disabled={!selectedRapId}
                 showSearch
+                 mode="multiple"
                 optionFilterProp="children"
                 filterOption={(input, option) =>
                   (option?.children as unknown as string)
@@ -473,10 +481,7 @@ const AddLichChieu = () => {
                 min={0}
                 max={1000000000}
                 step={1000}
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-                parser={(value) => Number(value!.replace(/\$\s?|(,*)/g, ""))}
+           
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -651,12 +656,12 @@ const AddLichChieu = () => {
                             min={0}
                             max={1000000000}
                             step={1000}
-                            formatter={(value) =>
-                              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                            }
-                            parser={(value) =>
-                              Number(value!.replace(/\$\s?|(,*)/g, ""))
-                            }
+                            // formatter={(value) =>
+                            //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                            // }
+                            // parser={(value) =>
+                            //   Number(value!.replace(/\$\s?|(,*)/g, ""))
+                            // }
                             placeholder="Giá Vé"
                             style={{ width: "100%" }}
                           />

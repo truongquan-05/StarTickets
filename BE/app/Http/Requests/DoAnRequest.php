@@ -16,7 +16,8 @@ class DoAnRequest extends FormRequest
         return [
             'ten_do_an' => 'required|string|max:255',
             'mo_ta' => 'nullable|string',
-            'gia' => 'required|integer|min:0',
+            'gia_nhap' => 'required|numeric|min:0',
+            'gia_ban' => 'required|numeric|min:0',
             'so_luong_ton' => 'nullable|integer|min:0',
         ];
     }

@@ -54,7 +54,7 @@ const LichChieuDatVe: React.FC<LichChieuProps> = ({
               }`}
               onClick={() => onLichChieuClick?.(item)}
             >
-              {dayjs(item.gio_chieu).format("HH:mm - DD/MM")}
+              {dayjs(item.gio_chieu).format("HH:mm")} - {dayjs(item.gio_ket_thuc).format("HH:mm")} ({dayjs(item.gio_chieu).format("DD/MM")})
             </button>
           ))}
         </div>

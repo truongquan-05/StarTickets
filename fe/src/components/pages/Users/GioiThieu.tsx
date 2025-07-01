@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Row, Col, Typography, Image, Spin, Card } from "antd";
 import "../../assets/css/news.css";
 import Banner from "../../../assets/Screenshot 2025-06-16 112804.png";
