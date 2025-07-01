@@ -27,6 +27,7 @@ import {
   useListMovies,
   useDeleteMovies,
   useUpdateMovies,
+  useSoftDeleteMovies,
 } from "../../../hook/hungHook";
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
@@ -41,8 +42,10 @@ const List = () => {
   const [form] = Form.useForm();
   const { data } = useListMovies({ resource: "phim" });
   const dataSource = data?.data || [];
-  const { mutate: deleteMutate } = useDeleteMovies({ resource: "phim" });
+  // const { mutate: deleteMutate } = useDeleteMovies({ resource: "phim" });
   const { mutate: updateMutate } = useUpdateMovies({ resource: "phim" });
+  const { mutate: softDeleteMovie } = useSoftDeleteMovies({ resource: "phim" });
+
   const BASE_URL = "http://127.0.0.1:8000";
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<IMovies | undefined>(
@@ -355,21 +358,28 @@ const List = () => {
           >
             Sửa
           </Button>
-          <Popconfirm
-            title="Bạn chắc chắn muốn xóa phim này?"
-            onConfirm={() => deleteMutate(record.id)}
-            okText="Xóa"
-            cancelText="Hủy"
-          >
-            <Button
-              type="default"
-              danger
-              icon={<DeleteOutlined />}
-              size="small"
-            >
-              Xóa
-            </Button>
-          </Popconfirm>
+         <Popconfirm
+  title="Bạn có chắc muốn xóa mềm phim này?"
+  onConfirm={() =>
+    softDeleteMovie(record.id, {
+      onError: () => {
+        message.error("Xóa mềm thất bại");
+      },
+    })
+  }
+  okText="Xóa mềm"
+  cancelText="Hủy"
+>
+  <Button
+    type="default"
+    danger
+    icon={<DeleteOutlined />}
+    size="small"
+  >
+    Xóa
+  </Button>
+</Popconfirm>
+
         </Space>
       ),
     },
