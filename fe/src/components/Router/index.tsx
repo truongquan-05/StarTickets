@@ -43,6 +43,7 @@ import ProfilePage from '../pages/Users/Profile';
 import TimKiemPhim from '../pages/Users/Timkiemphim';
 import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
 import TrashMovies from '../pages/Admin/MoviesPage/TrashMovies';
+import ThanhToan from '../pages/Users/DatVe/ThanhToan';
 
 
 
