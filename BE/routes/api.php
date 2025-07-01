@@ -62,6 +62,11 @@ Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
 
+
+
+
+
+
 Route::get('do_an', [DoAnController::class, 'index']);
 Route::post('do_an', [DoAnController::class, 'store']);
 Route::get('do_an/{id}', [DoAnController::class, 'show']);
