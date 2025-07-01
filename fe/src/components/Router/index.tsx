@@ -40,6 +40,7 @@ import Commet from '../pages/Admin/CommentPage/Comment';
 import MovieDetailUser from '../pages/Users/MovieDetail';
 import EditLichChieu from '../pages/Admin/LichChieu/EditLichChieu';
 import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
+import ThanhToan from '../pages/Users/DatVe/ThanhToan';
 
 
 
@@ -55,6 +56,7 @@ const Routermain = () => {
       children: [
         { path: '', element: <Home /> },
         { path: 'phim/:id', element:<MovieDetailUser/>  },
+        { path: 'thanhtoan', element: <ThanhToan /> },
         { path: 'search', element:<SearchPage/>  },
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },

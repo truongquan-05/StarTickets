@@ -144,6 +144,12 @@ const AddLichChieu = () => {
 
       values.gio_ket_thuc = gioKetThucTinh;
 
+        if (values.phong_id !== undefined && !Array.isArray(values.phong_id)) {
+        values.phong_id = [values.phong_id];
+      } else if (values.phong_id === undefined) {
+        values.phong_id = [];
+      }
+
       // Xử lý các lịch chiếu thêm
       const lichChieuThem = (values.lich_chieu_them || []).map((item: any) => ({
         gio_chieu: item.gio_chieu && dayjs.isDayjs(item.gio_chieu)
@@ -208,24 +214,6 @@ const AddLichChieu = () => {
           setSubmitting(false);
         },
         onError: (error: any) => {
-          // if (
-          //   error.response &&
-          //   error.response.status === 422 &&
-          //   error.response.data.errors
-          // ) {
-          //   const apiErrors = error.response.data.errors;
-          //   Object.entries(apiErrors).forEach(([field, messages]) => {
-          //     if (Array.isArray(messages)) {
-          //       messages.forEach((msg) => {
-          //         message.error(`${field}: ${msg}`);
-          //       });
-          //     } else {
-          //       message.error(`${field}: ${messages}`);
-          //     }
-          //   });
-          // } else {
-          //   message.error("Đã có lỗi xảy ra");
-          // }
           setSubmitting(false);
         },
       });
