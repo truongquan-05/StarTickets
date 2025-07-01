@@ -15,18 +15,16 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 40px;
   padding-bottom: 30px;
   border-bottom: 1px solid rgba(255,255,255,0.3);
 }
 
 .footer-left {
-  flex: 1 1 300px;
+  flex: 1 1 250px;
 }
 
 .footer-left img {
-  width: 200px;
-  border-radius: 10px;
+  width: 180px;
   margin-bottom: 20px;
 }
 
@@ -45,11 +43,12 @@
 }
 
 .btn-tickett {
-  font-size: 18px;
-  padding: 0 15px;
+  letter-spacing: 1px;
+  font-size: 14px;
+  padding: 0 12px;
   position: relative;
   font-family: 'Anton', sans-serif;
-  height: 40px;
+  height: 35px;
   background-color: #eff600; /* màu gốc */
   color: #000; /* màu chữ gốc */
   border: none;
@@ -86,11 +85,12 @@
 }
 
 .btn-popcorn2 {
-  font-size: 18px;
-  padding: 0 15px;
+  letter-spacing: 1px;
+  font-size: 14px;
+  padding: 0 12px;
   position: relative;
   font-family: 'Anton', sans-serif;
-  height: 40px;
+  height: 35px;
   background-color: transparent; /* màu gốc */
   color: #fff; /* màu chữ gốc */
   border: 1px solid #fff; /* viền trắng */
@@ -129,7 +129,7 @@
 }
 .social-icons img {
   margin: 0 3px;
-  width: 30px;
+  width: 25px;
 }
 
 .footer-links {
@@ -142,7 +142,7 @@
 
 .footer-links h4 {
   color: #fff;
-  font-size: 19px;
+  font-size: 17px;
   margin-bottom: 20px;
   font-family: 'Anton', sans-serif;
 }
@@ -159,9 +159,8 @@
 .footer-links a {
   color: #ddd;
   text-decoration: none;
-  font-size: 14px;
   transition: color 0.2s ease;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 .footer-links a:hover {

@@ -173,17 +173,15 @@
 }
 
 .contact-left p {
-  font-size: 40px;
+  font-size: 35px;
   margin-bottom: 20px;
   font-family: 'Anton', sans-serif;
   text-align: center;
 }
 
 .social-icon {
-  display: flex;
-  align-items: center;
   margin-bottom: 12px;
-  justify-content: center;
+
 }
 
 .social-icon img {
@@ -198,24 +196,27 @@
 .fb-icon,
 .zl-icon{
   border: 1px solid yellow;
-  border-radius: 6px;
-  height: 200px;
-  margin: 25px 50px;
+  border-radius: 4px;
+  height: 100px;
+  margin: 25px 40px 25px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .contact-right {
   flex: 1;
   background-color: rgba(51,102,204,.8);
-  padding: 50px; /* padding đều 4 phía */
-  border-radius: 6px;
+  padding: 40px; /* padding đều 4 phía */
+  border-radius: 4px;
   color: #fff;
-  font-family: 'Arial', sans-serif;
+  font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
 
 
 .contact-right h2 {
-  font-size: 30px;
+  font-size: 25px;
   margin-bottom: 20px;
   font-family: 'Anton', sans-serif;
   text-transform: uppercase;
@@ -225,19 +226,19 @@
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  font-size: 17px;
+  font-size: 15px;
   color: #fff;
   font-family: 'Poppins', sans-serif;
 }
 
 .contact-right p img {
   margin-right: 10px;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
 }
 
 .contact-right input {
-  height: 60px;
+  height: 50px;
   /* ...các style khác... */
 }
 
@@ -245,9 +246,9 @@
 .contact-right textarea {
   width: 100%;
   padding: 15px;
-  margin-bottom: 50px;
+  margin-bottom: 35px;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 16px;
   box-sizing: border-box;
   font-family: inherit;
@@ -266,21 +267,21 @@
 }
 
 .contact-btn {
-  font-size: 20px;
-  padding: 0 30px;
+  font-size: 15px;
+  padding: 0 25px;
   position: relative;
   font-family: 'Anton', sans-serif;
-  height: 50px;
+  height: 40px;
   background-color: #FFEB3B; /* màu nền ban đầu */
   color: #000;
   border: none;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   transition: color 0.4s ease;
   letter-spacing: 1px;
   text-transform: uppercase;
-  width: 300px;
+  width: 200px;
 }
 
 .contact-btn::before {

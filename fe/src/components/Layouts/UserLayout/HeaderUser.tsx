@@ -76,8 +76,8 @@ const HeaderUser = () => {
 
         <div className="header-actions">
           <Space>
-            <Button className="btn-ticket">🎫 ĐẶT VÉ NGAY</Button>
-            <Button className="btn-popcorn">🍿 ĐẶT BẮP NƯỚC</Button>
+            <button className="btn-ticket"><span>🎫 ĐẶT VÉ NGAY</span></button>
+            <button className="btn-popcorn"><span>🍿 ĐẶT BẮP NƯỚC</span></button>
           </Space>
         </div>
 
