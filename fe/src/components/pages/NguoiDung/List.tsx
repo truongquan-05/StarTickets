@@ -10,6 +10,9 @@ import {
   Input,
   Modal,
   Select,
+  Col,
+  Row,
+  notification,
 } from "antd";
 import {
   CloseCircleFilled,
@@ -76,6 +79,7 @@ const UserList = () => {
   };
 
   const { mutate: createUser } = useCreateUser({ resource: "nguoi_dung" });
+  // const { mutate: updateUser } = useUpdateUser({ resource: "nguoi_dung" });
 
   const onCreateOrUpdate = (values: User) => {
     if (!editingItem) {
@@ -87,11 +91,54 @@ const UserList = () => {
           refetch();
         },
         onError: (error) => {
-          message.error("Thêm mới thất bại");
-          console.log(error);
+          const errors = error.response?.data?.errors || {};
+          const messages = Object.values(errors).flat();
+
+          notification.error({
+            message: "Đã xảy ra lỗi",
+            description: (
+              <div>
+                {messages.map((msg, index) => (
+                  <div key={index}>• {msg}</div>
+                ))}
+              </div>
+            ),
+          });
+
         },
       });
     }
+    else{
+   
+
+       updateUser(
+        { id: editingItem.id, values },
+        {
+          onSuccess: () => {
+            message.success("Thêm mới thành công");
+            setModalOpen(false);
+            form.resetFields();
+            refetch();
+          },
+          onError: (error) => {
+            const errors = error.response?.data?.errors || {};
+            const messages = Object.values(errors).flat();
+
+            notification.error({
+              message: "Đã xảy ra lỗi",
+              description: (
+                <div>
+                  {messages.map((msg, index) => (
+                    <div key={index}>• {String(msg)}</div>
+                  ))}
+                </div>
+              ),
+            });
+          },
+        }
+      );
+    }
+    
   };
   const { mutate: updateUser } = useUpdateUser({ resource: "nguoi_dung" });
   const handleToggleStatus = (user: User) => {
@@ -133,8 +180,26 @@ const UserList = () => {
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Tên", dataIndex: "ten", key: "ten" },
+    {
+      title: "Ảnh đại diện",
+      dataIndex: "anh_dai_dien",
+      key: "anh_dai_dien",
+      render: (url: string) => (
+        <img
+          src={url}
+          alt="avatar"
+          style={{
+            width: 50,
+            height: 50,
+            objectFit: "cover",
+            borderRadius: "50%",
+          }}
+        />
+      ),
+    },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "SĐT", dataIndex: "so_dien_thoai", key: "so_dien_thoai" },
+
     {
       title: "Role",
       dataIndex: "vai_tro_id",
@@ -211,102 +276,131 @@ const UserList = () => {
         onCancel={() => setModalOpen(false)}
         footer={null}
         destroyOnClose
+        width={800}
       >
-        <Form form={form} onFinish={onCreateOrUpdate} layout="vertical">
-          <Form.Item
-            label="Tên"
-            name="ten"
-            rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item label="SĐT" name="so_dien_thoai">
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Vui lòng nhập email!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Mật khẩu"
-            name="password"
-            rules={
-              editingItem
-                ? []
-                : [
-                    { required: true, message: "Vui lòng nhập mật khẩu!" },
-                    { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự!" },
-                  ]
-            }
-            hidden={!!editingItem} // Ẩn nếu đang sửa hoặc xem chi tiết
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item
-            label="Nhập lại mật khẩu"
-            name="confirmPassword"
-            dependencies={["password"]}
-            rules={
-              editingItem
-                ? []
-                : [
-                    { required: true, message: "Vui lòng nhập lại mật khẩu!" },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        if (!value || getFieldValue("password") === value) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject(
-                          new Error("Mật khẩu không khớp!")
-                        );
-                      },
-                    }),
-                  ]
-            }
-            hidden={!!editingItem}
-          >
-            <Input.Password />
-          </Form.Item>
+        <Form
+          form={form}
+          onFinish={onCreateOrUpdate}
+          layout="vertical"
+          style={{ paddingTop: 12 }}
+        >
+          <Row gutter={24}>
+            {/* Cột trái - Thông tin cá nhân */}
+            <Col span={12}>
+              <Form.Item
+                label="Tên"
+                name="ten"
+                rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
+              >
+                <Input placeholder="Nhập họ tên" />
+              </Form.Item>
 
-          <Form.Item
-            label="Trạng thái"
-            name="trang_thai"
-            initialValue={true}
-            rules={
-              editingItem
-                ? []
-                : [{ required: true, message: "Vui lòng chọn trạng thái" }]
-            }
-            hidden={!!editingItem}
-          >
-            <Select>
-              <Select.Option value={true}>Kích hoạt</Select.Option>
-              <Select.Option value={false}>Khóa</Select.Option>
-            </Select>
+              <Form.Item
+                label="Ảnh đại diện"
+                name="anh_dai_dien"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập URL ảnh đại diện!",
+                  },
+                ]}
+              >
+                <Input placeholder="Nhập URL ảnh đại diện" />
+              </Form.Item>
+
+              <Form.Item label="SĐT" name="so_dien_thoai">
+                <Input placeholder="Nhập số điện thoại" />
+              </Form.Item>
+
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+              >
+                <Input placeholder="Nhập email" />
+              </Form.Item>
+            </Col>
+
+            {/* Cột phải - Tài khoản và bảo mật */}
+            <Col span={12}>
+              {!editingItem && (
+                <>
+                  <Form.Item
+                    label="Mật khẩu"
+                    name="password"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập mật khẩu!" },
+                      { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự!" },
+                    ]}
+                  >
+                    <Input.Password placeholder="Nhập mật khẩu" />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Nhập lại mật khẩu"
+                    name="confirmPassword"
+                    dependencies={["password"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập lại mật khẩu!",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue("password") === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error("Mật khẩu không khớp!")
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password placeholder="Nhập lại mật khẩu" />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Trạng thái"
+                    name="trang_thai"
+                    initialValue={true}
+                    rules={[
+                      { required: true, message: "Vui lòng chọn trạng thái" },
+                    ]}
+                  >
+                    <Select placeholder="Chọn trạng thái">
+                      <Select.Option value={true}>Kích hoạt</Select.Option>
+                      <Select.Option value={false}>Khóa</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </>
+              )}
+
+              <Form.Item
+                label="Vai trò"
+                name="vai_tro_id"
+                rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
+              >
+                <Select
+                  placeholder="Chọn vai trò"
+                  loading={rolesLoading}
+                  allowClear
+                >
+                  {roles.map((role: any) => (
+                    <Select.Option key={role.id} value={role.id}>
+                      {role.ten_vai_tro}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item style={{ marginTop: 24 }}>
+            <Button type="primary" htmlType="submit" block>
+              {editingItem ? "Cập nhật" : "Thêm mới"}
+            </Button>
           </Form.Item>
-          <Form.Item
-            label="Vai trò"
-            name="vai_tro_id"
-            rules={[{ required: true, message: "Vui lòng chọn vai trò!" }]}
-          >
-            <Select
-              placeholder="Chọn vai trò"
-              loading={rolesLoading}
-              allowClear
-            >
-              {roles.map((role: any) => (
-                <Select.Option key={role.id} value={role.id}>
-                  {role.ten_vai_tro}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Button type="primary" htmlType="submit" block>
-            {editingItem ? "Cập nhật" : "Thêm mới"}
-          </Button>
         </Form>
       </Modal>
     </Card>

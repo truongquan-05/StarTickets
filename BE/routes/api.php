@@ -61,6 +61,8 @@ Route::put('phim/{id}', [PhimController::class, 'update']);
 Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
+Route::get('/phim/trashed/list', [PhimController::class, 'trashed']); 
+
 
 
 

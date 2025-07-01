@@ -94,7 +94,7 @@ class PhimController extends Controller
     // Chi tiết phim theo ID
     public function show($id)
     {
-        $phim = Phim::with('theLoai')->findOrFail($id);
+        $phim = Phim::withTrashed()->findOrFail($id);
         return response()->json($phim);
     }
 
@@ -139,24 +139,44 @@ class PhimController extends Controller
     // Xóa phim
     public function delete($id)
     {
-        $phim = Phim::findOrFail($id);
+        // Cho phép tìm luôn cả phim đã bị xóa mềm
+        $phim = Phim::withTrashed()->findOrFail($id);
 
+        // Xóa ảnh nếu có
         if ($phim->anh_poster) {
             Storage::disk('public')->delete($phim->anh_poster);
         }
 
+<<<<<<< HEAD
+=======
+        // Xóa vĩnh viễn
+>>>>>>> dev
         $phim->forceDelete();
 
         return response()->json(['message' => 'Xóa phim thành công']);
     }
+
     // Xóa mềm phim
     public function softDelete($id)
     {
-        $phim = Phim::findOrFail($id);
+        $phim = Phim::find($id);
+
+        if (!$phim) {
+            return response()->json(['message' => 'Phim không tồn tại hoặc đã bị xóa'], 200); // Không 404
+        }
+
         $phim->delete();
 
         return response()->json(['message' => 'Phim đã được xóa mềm']);
     }
+
+    // Lấy phim đã xóa mềm
+    public function trashed()
+    {
+        $trashed = Phim::onlyTrashed()->get();
+        return response()->json(['data' => $trashed]);
+    }
+
 
     // Khôi phục phim đã xóa mềm
 
@@ -168,7 +188,6 @@ class PhimController extends Controller
             $phim->restore();
             return response()->json(['message' => 'Phim đã được khôi phục']);
         }
-
         return response()->json(['message' => 'Phim chưa bị xóa hoặc không tồn tại'], 404);
     }
 }

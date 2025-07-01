@@ -54,7 +54,6 @@ return new class extends Migration {
             $table->string('anh_poster', 255)->nullable();
             $table->date('ngay_cong_chieu');
             $table->date('ngay_ket_thuc')->nullable();
-            $table->string('trang_thai_phim', 100);
             $table->string('do_tuoi_gioi_han', 50);
             $table->enum('loai_suat_chieu', ['Thường', 'Đặc biệt', 'Sớm']);
             $table->json('chuyen_ngu')->nullable();
@@ -140,6 +139,7 @@ return new class extends Migration {
         Schema::create('dat_ve', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->decimal('tong_tien', 10, 2);
             $table->timestamps();
         });
@@ -188,13 +188,6 @@ return new class extends Migration {
             $table->integer('so_luong_ton');
             $table->timestamps();
             $table->softDeletes();
-        });
-
-        Schema::create('ve_lich_chieu', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('dat_ve_id')->constrained('dat_ve')->onUpdate('cascade')->onDelete('cascade');
-            $table->timestamps();
         });
 
         Schema::create('don_do_an', function (Blueprint $table) {

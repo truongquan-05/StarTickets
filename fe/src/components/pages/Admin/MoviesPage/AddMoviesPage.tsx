@@ -303,7 +303,7 @@ const AddMoviesPage = () => {
                   <Input placeholder="VD: 13+, 18+" />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   label="Tình trạng phim"
                   name="trang_thai_phim"
                   rules={[
@@ -317,7 +317,7 @@ const AddMoviesPage = () => {
                     <Option value="Nháp">Nháp</Option>
                     <Option value="Xuất bản">Xuất bản</Option>
                   </Select>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item
                   label="Phiên bản phim"

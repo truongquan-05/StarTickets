@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  checkLichChieu, getCheckGheByLichChieuId, getCreateCategoryChair, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteCheckGhe, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestorePhongChieu, getUpdateCategoryChair, getUpdateCheckGhe, getUpdateLichChieu, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateVaiTro } from "../provider/hungProvider";
+import {  checkLichChieu, deleteForeverMovie, getCheckGheByLichChieuId, getCreateCategoryChair, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteCheckGhe, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashMovies, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestoreMovies, getRestorePhongChieu, getSoftDeleteMovies, getUpdateCategoryChair, getUpdateCheckGhe, getUpdateLichChieu, getUpdateLoaiGhe, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateTrangThaiGhe, getUpdateVaiTro } from "../provider/hungProvider";
 import { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -303,6 +303,31 @@ export const useListChair = ({resource = "ghe"}) => {
   })
 }
 
+export const useUpdateLoaiGhe = ({ resource = "ghe" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateLoaiGhe({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+    },
+  });
+};
+export const useUpdateTrangThaiGhe = ({ resource = "ghe" }) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateTrangThaiGhe({ resource, id, values }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:[resource]})
+    },
+    onError: () => {
+    },
+  });
+};
+
 export const useListLichChieu = ({resource = "lich_chieu"}) => {
   return useQuery({
     queryKey:[resource],
@@ -481,5 +506,60 @@ export const useUpdateCheckGhe = ({ resource = "check_ghe" }: { resource?: strin
     onSuccess: (data, variables) => { // 'variables' ở đây chính là đối tượng `UpdateCheckGheVariables`
       queryClient.invalidateQueries({ queryKey: [resource, variables.lichChieuId] });
     },
+    
+  });
+  
+};
+// ✅ XÓA MỀM PHIM
+export const useSoftDeleteMovies = ({ resource = "phim" }: Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id?: string | number) => getSoftDeleteMovies({ resource, id }),
+    onSuccess: () => {
+      message.success("Xóa mềm thành công");
+      queryClient.invalidateQueries({ queryKey: [resource] });
+    },
+    onError: () => {
+      message.error("Xóa mềm thất bại");
+    },
   });
 };
+
+// ✅ DANH SÁCH PHIM ĐÃ XÓA MỀM
+export const useListTrashMovies = ({ resource = "phim" }: Props) => {
+  return useQuery({
+    queryKey: [resource, "trash"],
+    queryFn: () => getListTrashMovies({ resource }),
+  });
+};
+
+// ✅ KHÔI PHỤC PHIM
+export const useRestoreMovies = ({ resource = "phim" }: Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string | number) => getRestoreMovies({ resource, id }),
+    onSuccess: () => {
+      message.success("Khôi phục thành công");
+      queryClient.invalidateQueries({ queryKey: [resource] });
+    },
+    onError: () => {
+      message.error("Khôi phục thất bại");
+    },
+  });
+};
+
+export const useDeleteForeverMovie = ({ resource = "phim" }: Props) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string | number) => deleteForeverMovie({ resource, id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [resource, "trash"] });
+    },
+    onError: () => {
+      message.error("Xóa vĩnh viễn thất bại");
+    },
+  });
+};
+
+
