@@ -41,6 +41,7 @@ import EditLichChieu from '../pages/Admin/LichChieu/EditLichChieu';
 import Comment from '../pages/Admin/CommentPage/Comment';
 import ProfilePage from '../pages/Users/Profile';
 import TimKiemPhim from '../pages/Users/Timkiemphim';
+import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
 
 
 
@@ -106,7 +107,8 @@ const Routermain = () => {
         { path: 'vouchers/list', element: <VouchersList /> },
         { path: 'vouchers/add', element: <AddVoucher /> },
         { path: 'news', element: <ListNews /> },
-        { path: 'news/add', element: <AddNews /> }
+        { path: 'news/add', element: <AddNews /> },
+        { path: 'danh-gia/list', element: <ListDanhGia /> },
       ],
     },
   ]);

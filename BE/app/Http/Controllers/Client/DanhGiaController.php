@@ -7,52 +7,107 @@ use App\Http\Requests\StoreDanhGiaRequest;
 use App\Http\Requests\UpdateDanhGiaRequest;
 use App\Models\DanhGia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DanhGiaController extends Controller
 {
-public function getAllDanhGia()
-{
-    $danhGias = DanhGia::with(['nguoiDung', 'phim'])
-        ->latest()
-        ->get();
-
-    return response()->json([
-        'message' => 'Danh sách tất cả đánh giá',
-        'data' => $danhGias
-    ]);
-}
-    // Người dùng gửi đánh giá
-public function store(StoreDanhGiaRequest $request)
-{
-    if (!Auth::check()) {
-        return response()->json(['message' => 'Bạn cần đăng nhập để đánh giá'], 401);
-    }
-
-    $userId = Auth::id();
-    $data = $request->validated();
-
-    $daDanhGia = DanhGia::where('nguoi_dung_id', $userId)
-        ->where('phim_id', $data['phim_id'])
-        ->exists();
-
-    if ($daDanhGia) {
-        return response()->json(['message' => 'Bạn đã đánh giá phim này!'], 409);
-    }
-
-    $data['nguoi_dung_id'] = $userId;
-    $danhGia = DanhGia::create($data)->load(['nguoiDung', 'phim']);
-
-    return response()->json(['message' => 'Đánh giá thành công', 'data' => $danhGia], 201);
-}
-
-
-    // Sửa đánh giá
-   public function update(UpdateDanhGiaRequest $request, $id)
+    // Lấy tất cả đánh giá (admin)
+    public function getAllDanhGia()
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Bạn cần đăng nhập để sửa đánh giá'], 401);
+        $danhGias = DanhGia::with(['nguoiDung', 'phim'])->latest()->get();
+        return response()->json([
+            'message' => 'Danh sách tất cả đánh giá',
+            'data' => $danhGias
+        ]);
+    }
+
+    // Lấy đánh giá theo phim
+    public function getByPhim($phimId)
+    {
+        $danhGias = DanhGia::with('nguoiDung')
+            ->where('phim_id', $phimId)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'message' => 'Danh sách đánh giá cho phim',
+            'data' => $danhGias
+        ]);
+    }
+
+    // Lấy điểm trung bình đánh giá của một phim
+    public function getAverageRating($phimId)
+    {
+        $average = DanhGia::where('phim_id', $phimId)->avg('so_sao');
+        return response()->json([
+            'message' => 'Điểm trung bình đánh giá phim',
+            'average' => round($average ?? 0, 2)  // nếu không có đánh giá thì trả 0
+        ]);
+    }
+
+    // Lấy tất cả đánh giá của user đã đăng nhập
+    public function index()
+    {
+        $userId = Auth::id();
+        $danhGias = DanhGia::with(['phim'])
+            ->where('nguoi_dung_id', $userId)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'message' => 'Danh sách đánh giá của bạn',
+            'data' => $danhGias
+        ]);
+    }
+
+    // Lấy đánh giá của user cho 1 phim
+    public function getMyDanhGiaByPhim($phimId)
+    {
+        $userId = Auth::id();
+        $danhGia = DanhGia::where('phim_id', $phimId)
+            ->where('nguoi_dung_id', $userId)
+            ->with(['nguoiDung', 'phim'])
+            ->first();
+
+        if (!$danhGia) {
+            return response()->json([
+                'message' => 'Bạn chưa đánh giá phim này'
+            ], 404);
         }
 
+        return response()->json([
+            'message' => 'Đánh giá của bạn cho phim',
+            'data' => $danhGia
+        ]);
+    }
+
+    // Thêm đánh giá mới
+    public function store(StoreDanhGiaRequest $request)
+    {
+        $userId = Auth::id();
+        $data = $request->validated();
+
+        $oldDanhGia = DanhGia::where('nguoi_dung_id', $userId)
+            ->where('phim_id', $data['phim_id'])
+            ->with(['nguoiDung', 'phim'])
+            ->first();
+
+        if ($oldDanhGia) {
+            return response()->json([
+                'message' => 'Bạn đã đánh giá phim này!',
+                'data' => $oldDanhGia
+            ], 409);
+        }
+
+        $data['nguoi_dung_id'] = $userId;
+        $danhGia = DanhGia::create($data)->load(['nguoiDung', 'phim']);
+
+        return response()->json(['message' => 'Đánh giá thành công', 'data' => $danhGia], 201);
+    }
+
+    // Sửa đánh giá
+    public function update(UpdateDanhGiaRequest $request, $id)
+    {
         $userId = Auth::id();
         $danhGia = DanhGia::where('id', $id)
             ->where('nguoi_dung_id', $userId)
@@ -64,20 +119,20 @@ public function store(StoreDanhGiaRequest $request)
         return response()->json(['message' => 'Cập nhật đánh giá thành công', 'data' => $danhGia]);
     }
 
-    // Xoá đánh giá
- public function delete($id)
+    // Xóa đánh giá
+    public function destroy($id)
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Bạn cần đăng nhập để xoá đánh giá'], 401);
+        try {
+            $userId = Auth::id();
+            $danhGia = DanhGia::where('id', $id)
+                ->where('nguoi_dung_id', $userId)
+                ->firstOrFail();
+
+            $danhGia->delete();
+
+            return response()->json(['message' => 'Xoá đánh giá thành công']);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Không tìm thấy đánh giá'], 404);
         }
-
-        $userId = Auth::id();
-        $danhGia = DanhGia::where('id', $id)
-            ->where('nguoi_dung_id', $userId)
-            ->firstOrFail();
-
-        $danhGia->delete();
-
-        return response()->json(['message' => 'Xoá đánh giá thành công']);
     }
 }

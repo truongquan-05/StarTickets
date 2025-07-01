@@ -193,6 +193,17 @@ export const getListGhe = async ({
   return data.data;
 };
 
+export const getUpdateLoaiGhe = async ({resource = "ghe", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}/sua_loai_ghe`,values);
+  return data
+}
+export const getUpdateTrangThaiGhe = async ({resource = "ghe", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
 export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.delete(`${resource}/${id}`)
@@ -269,3 +280,26 @@ export const getCreateGiaVe = async ({resource = "gia_ve" , values} : Props) => 
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
+
+export const getCheckGheByLichChieuId = async ({ id, resource = "check_ghe" }: Props) => {
+  if (!id) throw new Error("Thiếu lich_chieu_id");
+  const { data } = await axiosClient.get(`${resource}/${id}`);
+  return data;
+};
+
+// Sửa trạng thái ghế theo id check_ghe (id bản ghi check_ghe)
+export const getUpdateCheckGhe = async ({ id, values, resource = "check_ghe" }: Props) => {
+  if (!id) {
+    throw new Error("Thiếu id bản ghi check_ghe để cập nhật");
+  }
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  
+  return data;
+};
+
+// Xóa bản ghi check_ghe theo id
+export const getDeleteCheckGhe = async ({ id, resource = "check_ghe" }: Props) => {
+  if (!id) throw new Error("Thiếu id bản ghi check_ghe");
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
