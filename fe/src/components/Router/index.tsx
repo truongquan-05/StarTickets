@@ -58,6 +58,7 @@ const Routermain = () => {
       children: [
         { path: '', element: <Home /> },
         { path: 'phim/:id', element:<MovieDetailUser/>  },
+        { path: 'thanhtoan', element: <ThanhToan /> },
         { path: 'search', element:<SearchPage/>  },
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },
