@@ -1,5 +1,5 @@
 // MovieDetailUser.tsx
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react"; // <-- Import useRef
 import { Button, Spin, Image, Modal, message } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
@@ -33,11 +33,11 @@ interface SelectedSeatWithPrice {
 function convertYouTubeUrlToEmbed(url: string) {
   if (!url) return "";
   const regExp =
-    /^.*(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([a-zA-Z0-9_-]{11})(?:(?:\?|&).*)?$/; // Regex updated for better YouTube URL matching
+    /^.*(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([a-zA-Z0-9_-]{11})(?:(?:\?|&).*)?$/;
   const match = url.match(regExp);
   return match && match[1]
-    ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` // Sử dụng HTTPS và định dạng embed
-    : url; // nếu không phải youtube thì giữ nguyên url
+    ? `https://www.youtube.com/embed/${match[1]}?autoplay=1`
+    : url;
 }
 function checkGapSeats(selectedSeats: string[]): boolean {
   if (selectedSeats.length <= 1) return false;
@@ -59,7 +59,7 @@ function checkGapSeats(selectedSeats: string[]): boolean {
   return false; // không cách quãng
 }
 const MovieDetailUser = () => {
-  const TIMEOUT_MINUTES = 5;
+  const TIMEOUT_MINUTES = 1;
   const { id } = useParams();
   const [movie, setMovie] = useState<any>(null);
   const [loadingMovie, setLoadingMovie] = useState(true);
@@ -70,7 +70,7 @@ const MovieDetailUser = () => {
   );
   const [selectedLichChieu, setSelectedLichChieu] = useState<ILichChieu | null>(
     null
-  ); // Giữ lại state này
+  );
   const { mutate: updateCheckGhe } = useUpdateCheckGhe({
     resource: "check_ghe",
   });
@@ -84,7 +84,8 @@ const MovieDetailUser = () => {
     useListCheckGhe({
       id: selectedLichChieuId ?? undefined,
     });
-  const { data: lichChieuList = [], isLoading: loadingLichChieu } = useListLichChieu({ resource: "lich_chieu" });
+  const { data: lichChieuList = [], isLoading: loadingLichChieu } =
+    useListLichChieu({ resource: "lich_chieu" });
   const phongQuery = useListPhongChieu({ resource: "phong_chieu" });
   const rapQuery = useListCinemas({ resource: "rap" });
   const phongList = phongQuery.data?.data || [];
@@ -95,37 +96,82 @@ const MovieDetailUser = () => {
     isError: isErrorGhe,
   } = useListGhe({ resource: "ghe", phong_id: selectedPhong?.id });
   const BASE_URL = "http://127.0.0.1:8000";
-  const releaseSelectedSeatsPlaceholder = useCallback(async () => {
+
+  // 1. Tạo Refs để lưu trữ giá trị state/data mới nhất
+  const selectedSeatsRef = useRef<string[]>([]);
+  const selectedLichChieuIdRef = useRef<number | null>(null);
+  const danhSachGheRef = useRef<IGhe[]>([]);
+  const checkGheListRef = useRef<ICheckGhe[]>([]);
+
+  // 2. Cập nhật Refs mỗi khi state/data thay đổi
+  useEffect(() => {
+    selectedSeatsRef.current = selectedSeats;
+  }, [selectedSeats]);
+
+  useEffect(() => {
+    selectedLichChieuIdRef.current = selectedLichChieuId;
+  }, [selectedLichChieuId]);
+
+  useEffect(() => {
+    danhSachGheRef.current = danhSachGhe;
+  }, [danhSachGhe]);
+
+  useEffect(() => {
+    checkGheListRef.current = checkGheList;
+  }, [checkGheList]);
+  const releaseSeatsApiCore = useCallback(async (
+    seatsToProcess: string[],
+    lichChieuIdToProcess: number | null
+  ) => {
+    if (!lichChieuIdToProcess || seatsToProcess.length === 0) {
+      return;
+    }
+    const currentDanhSachGhe = danhSachGheRef.current;
+    const currentCheckGheList = checkGheListRef.current;
+    for (const seatNumber of seatsToProcess) {
+      const ghe = currentDanhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
+      if (ghe) {
+        const correspondingCheckGhe = currentCheckGheList.find(
+          item => item.ghe_id === ghe.id && item.lich_chieu_id === lichChieuIdToProcess
+        );
+        if (correspondingCheckGhe && correspondingCheckGhe.trang_thai === "dang_dat") {
+          updateCheckGhe({
+            id: correspondingCheckGhe.id,
+            values: { trang_thai: "trong" },
+            lichChieuId: lichChieuIdToProcess,
+          });
+        } 
+      } 
+    }
+  }, [updateCheckGhe]); // Dependencies của hàm core: chỉ là mutation function
+  const releaseOccupiedSeatsForUI = useCallback(async () => {
+    await releaseSeatsApiCore([...selectedSeats], selectedLichChieuId);
     setSelectedSeats([]);
     setDisplaySelectedSeats([]);
     setTotalPrice(0);
-  }, []);
+  }, [selectedSeats, selectedLichChieuId, releaseSeatsApiCore]); // Dependencies
+  const releaseOccupiedSeatsOnUnmount = useCallback(async () => {
+    await releaseSeatsApiCore(selectedSeatsRef.current, selectedLichChieuIdRef.current);
+  }, [releaseSeatsApiCore]); // Dependencies: chỉ là hàm core API
   const { clearTimer, remainingTime } = useBookingTimer({
     selectedSeatsCount: selectedSeats.length,
     selectedLichChieuId: selectedLichChieuId,
-    onTimerEndCallback: releaseSelectedSeatsPlaceholder,
+    onTimerEndCallback: releaseOccupiedSeatsForUI, // <-- Đã đổi sang hàm mới
     timeoutMinutes: TIMEOUT_MINUTES,
   });
   const formatTime = (totalSeconds: number) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
-  const handleLichChieuClick = (lichChieu: ILichChieu) => {
-    if (selectedLichChieuId !== lichChieu.id) {
-        setSelectedLichChieuId(lichChieu.id);
-        setSelectedSeats([]);
-        setDisplaySelectedSeats([]);
-        setTotalPrice(0);
-        clearTimer(); // 💡 Gọi clearTimer() để reset đồng hồ trong hook
-    }
+    return `${minutes < 10 ? "0" : ""}${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}`;
   };
   useEffect(() => {
     if (selectedLichChieuId !== null && lichChieuList.length > 0) {
       const foundLichChieu = (lichChieuList as ILichChieu[]).find(
         (lc) => lc.id === selectedLichChieuId
       );
-      setSelectedLichChieu(foundLichChieu || null); // Cập nhật state selectedLichChieu
+      setSelectedLichChieu(foundLichChieu || null);
       if (foundLichChieu) {
       } else {
         console.warn(
@@ -136,6 +182,7 @@ const MovieDetailUser = () => {
       setSelectedLichChieu(null);
     }
   }, [selectedLichChieuId, lichChieuList]);
+
   useEffect(() => {
     const fetchMovie = async () => {
       try {
@@ -149,26 +196,25 @@ const MovieDetailUser = () => {
     };
     fetchMovie();
   }, [id]);
-  useEffect(() => {
-    // Chỉ kiểm tra cách quãng nếu có ghế được chọn và phim đã tải
-    if (selectedSeats.length > 0 && danhSachGhe.length > 0) {
-        // Lọc các ghế đã chọn chỉ bao gồm ghế thường (loai_ghe_id 1) và VIP (loai_ghe_id 2)
-        const seatsToCheckForGaps = selectedSeats.filter(seatNumber => {
-            const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
-            return ghe && (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2);
-        });
 
-        const gap = checkGapSeats(seatsToCheckForGaps);
-        setHasGap(gap);
-        if (gap) {
-            message.warning(
-                "Bạn đang chọn ghế cách quãng, vui lòng chọn ghế liền nhau!"
-            );
-        }
+  useEffect(() => {
+    if (selectedSeats.length > 0 && danhSachGhe.length > 0) {
+      const seatsToCheckForGaps = selectedSeats.filter((seatNumber) => {
+        const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
+        return ghe && (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2);
+      });
+
+      const gap = checkGapSeats(seatsToCheckForGaps);
+      setHasGap(gap);
+      if (gap) {
+        message.warning(
+          "Bạn đang chọn ghế cách quãng, vui lòng chọn ghế liền nhau!"
+        );
+      }
     } else {
-        setHasGap(false); // Đặt lại hasGap nếu không có ghế nào được chọn
+      setHasGap(false);
     }
-}, [selectedSeats, danhSachGhe]); // Thêm danhSachGhe vào dependencies
+  }, [selectedSeats, danhSachGhe]);
 
   useEffect(() => {
     if (selectedLichChieuId !== null && lichChieuList.length > 0) {
@@ -185,7 +231,8 @@ const MovieDetailUser = () => {
         setSelectedLichChieu(null);
       }
     }
-  }, [selectedLichChieuId, lichChieuList]);
+  }, [selectedLichChieuId, lichChieuList, selectedLichChieu]); // Thêm selectedLichChieu vào dependencies để tránh loop
+
   useEffect(() => {
     if (
       !selectedLichChieu ||
@@ -232,15 +279,48 @@ const MovieDetailUser = () => {
     if (totalPrice !== currentTotalPrice) {
       setTotalPrice(currentTotalPrice);
     }
-    if (JSON.stringify(displaySelectedSeats) !== JSON.stringify(seatsToCalculateDisplay)) {
+    if (
+      JSON.stringify(displaySelectedSeats) !==
+      JSON.stringify(seatsToCalculateDisplay)
+    ) {
       setDisplaySelectedSeats(seatsToCalculateDisplay);
     }
-  }, [selectedSeats, selectedLichChieu, danhSachGhe, totalPrice, displaySelectedSeats]);
+  }, [
+    selectedSeats,
+    selectedLichChieu,
+    danhSachGhe,
+    totalPrice,
+    displaySelectedSeats,
+  ]);
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (selectedSeatsRef.current.length > 0 && selectedLichChieuIdRef.current !== null) {
+        const data = {
+          lich_chieu_id: selectedLichChieuIdRef.current,
+          ghe_so: selectedSeatsRef.current,
+        };
+        const blob = new Blob([JSON.stringify(data)], {
+          type: "application/json",
+        });
+        try {
+          navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
+        } catch (error) {
+        }
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload); // Loại bỏ listener để tránh rò rỉ bộ nhớ
+      releaseOccupiedSeatsOnUnmount();
+    };
+  }, [releaseOccupiedSeatsOnUnmount]); // <-- Dependency duy nhất là hàm cleanup cụ thể này
   if (
     loadingMovie ||
     loadingLichChieu ||
     phongQuery.isLoading ||
-    rapQuery.isLoading
+    rapQuery.isLoading ||
+    loadingCheckGhe || // Thêm loadingCheckGhe
+    isLoadingGhe // Thêm isLoadingGhe
   )
     return <Spin />;
   if (!movie) return <p>Không tìm thấy phim</p>;
@@ -283,18 +363,11 @@ const MovieDetailUser = () => {
       console.error("Không tìm thấy thông tin ghế vật lý với ID:", gheId);
       return;
     }
-
-    // Xác định (các) ghế sẽ bị ảnh hưởng bởi hành động click
     let seatsToToggle: IGhe[] = [ghe]; // Bắt đầu với ghế được click
-
-    // Nếu là ghế đôi (loai_ghe_id === 3), tìm ghế đối tác của nó
     if (ghe.loai_ghe_id === 3) {
       const row = ghe.so_ghe[0];
       const col = parseInt(ghe.so_ghe.slice(1), 10);
-      // Giả định ghế đôi là liên tiếp (ví dụ: A1-A2, A3-A4).
-      // Nếu số cột của ghế hiện tại là chẵn, ghế đối tác là số lẻ trước đó.
-      // Nếu số cột của ghế hiện tại là lẻ, ghế đối tác là số chẵn sau đó.
-      const partnerCol = col % 2 === 0 ? col - 1 : col + 1; 
+      const partnerCol = col % 2 === 0 ? col - 1 : col + 1;
       const partnerSeatNumber = `${row}${partnerCol}`;
       const partnerGhe = danhSachGhe.find(
         (g: IGhe) => g.so_ghe === partnerSeatNumber && g.loai_ghe_id === 3
@@ -310,16 +383,19 @@ const MovieDetailUser = () => {
 
     let newTrangThai: string;
     // Kiểm tra xem bất kỳ ghế nào trong danh sách `seatsToToggle` có trạng thái 'da_ban' hay không
-    const anySeatSold = seatsToToggle.some(st => {
-        const correspondingCheckGhe = (checkGheList as ICheckGhe[]).find(
-            item => item.ghe_id === st.id && item.lich_chieu_id === selectedLichChieuId
-        );
-        return correspondingCheckGhe && correspondingCheckGhe.trang_thai === 'da_ban';
+    const anySeatSold = seatsToToggle.some((st) => {
+      const correspondingCheckGhe = (checkGheList as ICheckGhe[]).find(
+        (item) =>
+          item.ghe_id === st.id && item.lich_chieu_id === selectedLichChieuId
+      );
+      return (
+        correspondingCheckGhe && correspondingCheckGhe.trang_thai === "da_ban"
+      );
     });
 
     if (anySeatSold) {
-        message.info("Một hoặc cả hai ghế đã được bán và không thể chọn.");
-        return;
+      message.info("Một hoặc cả hai ghế đã được bán và không thể chọn.");
+      return;
     }
 
     // Xác định trạng thái mới dựa trên trạng thái hiện tại của ghế được click
@@ -335,51 +411,60 @@ const MovieDetailUser = () => {
 
     // 3️⃣ Tính danh sách ghế sẽ được chọn sau khi click (dùng `ghe.so_ghe`)
     let newSelectedSeats: string[] = [...selectedSeats]; // Bắt đầu với danh sách hiện tại
-    const seatsToToggleNumbers = seatsToToggle.map(st => st.so_ghe);
+    const seatsToToggleNumbers = seatsToToggle.map((st) => st.so_ghe);
 
     if (newTrangThai === "dang_dat") {
       // Thêm tất cả các ghế trong cặp nếu chúng chưa được chọn
-      seatsToToggleNumbers.forEach(seatNum => {
+      seatsToToggleNumbers.forEach((seatNum) => {
         if (!newSelectedSeats.includes(seatNum)) {
           newSelectedSeats.push(seatNum);
         }
       });
     } else {
       // newTrangThai === "trong" - Loại bỏ tất cả các ghế trong cặp
-      newSelectedSeats = newSelectedSeats.filter((s) => !seatsToToggleNumbers.includes(s));
+      newSelectedSeats = newSelectedSeats.filter(
+        (s) => !seatsToToggleNumbers.includes(s)
+      );
     }
-    
+
     /* ------------------------------------------------------------------ */
     /* 4️⃣ RÀNG BUỘC A. KHÔNG CHO CHỌN GHẾ CÁCH QUÃNG                     */
-    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                               */
+    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                               */
     /* ------------------------------------------------------------------ */
-    const seatsForGapCheck = newSelectedSeats.filter(seatNumber => {
-        const seatObj = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
-        return seatObj && (seatObj.loai_ghe_id === 1 || seatObj.loai_ghe_id === 2);
+    const seatsForGapCheck = newSelectedSeats.filter((seatNumber) => {
+      const seatObj = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
+      return (
+        seatObj && (seatObj.loai_ghe_id === 1 || seatObj.loai_ghe_id === 2)
+      );
     });
 
     if (newTrangThai === "dang_dat" && checkGapSeats(seatsForGapCheck)) {
-        message.error(
-            "Không được chọn ghế cách quãng đối với ghế thường và VIP! Vui lòng chọn ghế liền kề."
-        );
-        return;
+      message.error(
+        "Không được chọn ghế cách quãng đối với ghế thường và VIP! Vui lòng chọn ghế liền kề."
+      );
+      return;
     }
 
     /* ------------------------------------------------------------------ */
     /* 5️⃣ RÀNG BUỘC B. KHÔNG CHỌN GHẾ KẾ RÌA NẾU GHẾ RÌA CHƯA CHỌN       */
-    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                               */
+    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                               */
     /* ------------------------------------------------------------------ */
-    if (newTrangThai === "dang_dat" && (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)) {
+    if (
+      newTrangThai === "dang_dat" &&
+      (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
+    ) {
       const row = ghe.so_ghe[0];
       const number = parseInt(ghe.so_ghe.slice(1));
 
-      // Lấy chỉ các ghế thường và VIP trong hàng hiện tại để kiểm tra rìa
       const colsInRow = danhSachGhe
-        .filter((g: IGhe) => g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2))
+        .filter(
+          (g: IGhe) =>
+            g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
+        )
         .map((g: IGhe) => parseInt(g.so_ghe.slice(1)))
         .sort((a: any, b: any) => a - b);
 
-      if (colsInRow.length > 0) { // Đảm bảo có ghế liên quan trong hàng
+      if (colsInRow.length > 0) {
         const min = colsInRow[0];
         const max = colsInRow[colsInRow.length - 1];
 
@@ -392,15 +477,14 @@ const MovieDetailUser = () => {
         const edgeLeftSelected = newSelectedSeats.includes(seatLeft);
         const edgeRightSelected = newSelectedSeats.includes(seatRight);
 
-        // Kiểm tra xem ghế hiện tại (nếu là ghế thường/VIP và là hàng xóm) có đang được chọn mà không có ghế rìa đối tác không
         if (
-            (isLeftEdgeNeighbor && !edgeLeftSelected) || 
-            (isRightEdgeNeighbor && !edgeRightSelected)
+          (isLeftEdgeNeighbor && !edgeLeftSelected) ||
+          (isRightEdgeNeighbor && !edgeRightSelected)
         ) {
-            message.warning(
-                "Không được chọn ghế cạnh rìa khi ghế rìa chưa được chọn (áp dụng cho ghế thường và VIP)!"
-            );
-            return;
+          message.warning(
+            "Không được chọn ghế cạnh rìa khi ghế rìa chưa được chọn (áp dụng cho ghế thường và VIP)!"
+          );
+          return;
         }
       }
     }
@@ -411,17 +495,18 @@ const MovieDetailUser = () => {
     setSelectedSeats(newSelectedSeats); // Cập nhật state với danh sách ghế đã chọn mới
 
     // Cập nhật tất cả các bản ghi check_ghe bị ảnh hưởng (cho ghế thường/VIP/đôi)
-    seatsToToggle.forEach(st => {
-        const correspondingCheckGhe = (checkGheList as ICheckGhe[]).find(
-            item => item.ghe_id === st.id && item.lich_chieu_id === selectedLichChieuId
-        );
-        if (correspondingCheckGhe) {
-            updateCheckGhe({
-                id: correspondingCheckGhe.id, // ID của bản ghi check_ghe cần cập nhật
-                values: { trang_thai: newTrangThai },
-                lichChieuId: selectedLichChieuId, // Truyền ID lịch chiếu để React Query invalidate đúng cache
-            });
-        }
+    seatsToToggle.forEach((st) => {
+      const correspondingCheckGhe = (checkGheList as ICheckGhe[]).find(
+        (item) =>
+          item.ghe_id === st.id && item.lich_chieu_id === selectedLichChieuId
+      );
+      if (correspondingCheckGhe) {
+        updateCheckGhe({
+          id: correspondingCheckGhe.id,
+          values: { trang_thai: newTrangThai },
+          lichChieuId: selectedLichChieuId,
+        });
+      }
     });
   };
   return (
@@ -471,7 +556,7 @@ const MovieDetailUser = () => {
       </div>
       <Modal
         title={`Trailer - ${movie.ten_phim}`}
-        open={isModalVisible} // Changed visible to open for Ant Design v5
+        open={isModalVisible}
         onCancel={handleCloseModal}
         footer={null}
         width={800}
@@ -507,12 +592,19 @@ const MovieDetailUser = () => {
         groupedLichChieu={groupedLichChieu}
         rapList={rapList}
         onLichChieuClick={(lichChieu) => {
+          if (selectedLichChieuId !== lichChieu.id) {
+            // Chỉ giải phóng nếu thực sự là lịch chiếu mới
+            releaseOccupiedSeatsForUI(); // <-- Đã đổi sang hàm mới
+            clearTimer(); // Reset timer của lịch chiếu cũ
+          }
           const phong = phongList.find(
             (p: IPhongChieu) => p.id === lichChieu.phong_id
           );
           if (phong) setSelectedPhong(phong);
           setSelectedLichChieuId(lichChieu.id);
           setSelectedSeats([]);
+          setDisplaySelectedSeats([]);
+          setTotalPrice(0);
         }}
         selectedLichChieuId={selectedLichChieuId}
       />
@@ -661,21 +753,27 @@ const MovieDetailUser = () => {
                 fontSize: 16,
               }}
             >
-              {selectedSeats.length > 0 ? (
-                `⏰ ${formatTime(remainingTime)}` // Hiển thị thời gian đếm ngược thực tế
-              ) : (
-                `⏰ ${formatTime(TIMEOUT_MINUTES * 60)}` // Hiển thị thời gian ban đầu (05:00) nếu chưa chọn ghế
-              )}
+              {selectedSeats.length > 0
+                ? `⏰ ${formatTime(remainingTime)}`
+                : `⏰ ${formatTime(TIMEOUT_MINUTES * 60)}`}
             </div>
             <div style={{ textAlign: "right" }}>
               <button
                 onClick={() => {
-                  clearTimer(); // 💡 Hủy timer thủ công khi người dùng tiến hành thanh toán
-                  message.success("Chuyển đến trang thanh toán...");
-                  // navigate('/payment'); // Chuyển hướng đến trang thanh toán của bạn
+                  clearTimer();
+                  
                 }}
-                style={{ padding: '6px 12px', fontSize: 16, backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: 8, cursor: 'pointer', opacity: selectedSeats.length > 0 ? 1 : 0.6 }}
-                disabled={selectedSeats.length === 0 || hasGap} // Disable if there's a gap
+                style={{
+                  padding: "6px 12px",
+                  fontSize: 16,
+                  backgroundColor: "#28a745",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  opacity: selectedSeats.length > 0 ? 1 : 0.6,
+                }}
+                disabled={selectedSeats.length === 0 || hasGap}
               >
                 Thanh toán {totalPrice.toLocaleString("vi-VN")} VNĐ
               </button>

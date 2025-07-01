@@ -75,12 +75,19 @@ export const getDeleteFood = async ({ resource = "do_an", id }: Props) => {
 };
 
 export const getCreateFood = async ({ resource = "do_an", values }: Props) => {
+  
   return await axiosClient.post(`${resource}`, values);
 };
 
-export const getUpdateFood = async ({ resource = "do_an", id, values }: Props) => {
-  return await axiosClient.put(`${resource}/${id}`, values);
+export const getUpdateFood = async ({ id, values }: any) => {
+  values.append("_method", "PUT"); // ✅ Bắt buộc với FormData
+  return await axios.post(`http://127.0.0.1:8000/api/do_an/${id}`, values, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
+
 
 export const getCurrentMovies = async () => {
   const res = await axiosClient.get("phim-dang-chieu");
