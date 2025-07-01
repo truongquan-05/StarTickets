@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Typography, Input, Spin } from "antd";
+import { Button, Typography, Spin } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Link } from "react-router-dom";
@@ -10,6 +10,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Home.css";
+import QuickBooking from "../CinemasPage/QuickBooking";
 
 const { Title } = Typography;
 const BASE_URL = "http://127.0.0.1:8000";
@@ -33,6 +34,8 @@ const Home = () => {
           getCurrentMovies(),
           getUpcomingMovies(),
         ]);
+         console.log("Phim đang chiếu:", current);
+      console.log("Phim sắp chiếu:", upcoming);
         setCurrentMovies(current);
         setUpcomingMovies(upcoming);
       } catch (error) {
@@ -47,6 +50,7 @@ const Home = () => {
 
   return (
     <div className="home-wrapper">
+      
       {/* Banner bằng Swiper */}
       <Swiper
         modules={[Navigation, Autoplay]}
@@ -73,7 +77,7 @@ const Home = () => {
           </div>
         </SwiperSlide>
       </Swiper>
-
+  <QuickBooking />
       {/* Phim đang chiếu */}
       <div className="section">
         <Title level={3}>Phim đang chiếu</Title>
