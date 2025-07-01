@@ -9,6 +9,8 @@ import {
   InputNumber,
   Input,
   Select,
+  Col,
+  Row,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
@@ -94,7 +96,7 @@ const EditLichChieu = () => {
 
       // Lấy giá vé loại ghế "Đơn Thường" từ mảng gia_ve
       const giaVeDonThuong = Array.isArray(lichChieu.gia_ve)
-        ? lichChieu.gia_ve.find((x: any) => x.ten_loai_ghe === "Đơn Thường")
+        ? lichChieu.gia_ve.find((x: any) => x.ten_loai_ghe === "Ghế Thường")
             ?.pivot?.gia_ve
         : null;
 
@@ -151,9 +153,9 @@ const EditLichChieu = () => {
             navigate("/admin/lichchieu/list");
           },
           onError: (error: any) => {
-            const errMsg =
-              error?.response?.data?.message || "Cập nhật thất bại do lỗi hệ thống";
-            message.error(errMsg);
+         
+            message.error(error.response.data.message.error[0] ||
+              "Cập nhật thất bại do lỗi hệ thống");
             setSubmitting(false);
           },
         }
@@ -181,85 +183,105 @@ const EditLichChieu = () => {
   const tenRap = rapList.find((r: IRap) => r.id === rapId)?.ten_rap || "";
 
   return (
-    <Card style={{ maxWidth: 700, margin: "0 auto", padding: "2rem" }}>
-      <Title level={3} style={{ textAlign: "center", marginBottom: 24 }}>
-        Chỉnh sửa lịch chiếu
+    <Card
+      style={{
+        maxWidth: 1200,
+        maxHeight: "78vh",
+        padding: "2rem",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        borderRadius: "12px",
+      }}
+    >
+      <Title level={3} style={{ textAlign: "center", marginBottom: 32 }}>
+        🎬 Chỉnh sửa lịch chiếu
       </Title>
+
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item label="Rạp">
-          <Input value={tenRap} readOnly />
-        </Form.Item>
+        <Row gutter={24}>
+          {/* Cột trái - thông tin chi tiết (readonly) */}
+          <Col span={12}>
+            <Form.Item label="Rạp">
+              <Input value={tenRap} readOnly />
+            </Form.Item>
 
-        <Form.Item label="Phim">
-          <Input value={tenPhim} readOnly />
-        </Form.Item>
+            <Form.Item label="Phim">
+              <Input value={tenPhim} readOnly />
+            </Form.Item>
 
-        <Form.Item label="Phòng chiếu">
-          <Input value={tenPhong} readOnly />
-        </Form.Item>
+            <Form.Item label="Phòng chiếu">
+              <Input value={tenPhong} readOnly />
+            </Form.Item>
+          </Col>
 
-        <Form.Item
-          name="gio_chieu"
-          label="Giờ chiếu"
-          rules={[
-            { required: true, message: "Vui lòng chọn giờ chiếu" },
-            {
-              validator: (_, value) => {
-                if (!value) return Promise.resolve();
-                if (value.isBefore(dayjs())) {
-                  return Promise.reject(
-                    new Error("Không được chọn thời gian trong quá khứ")
-                  );
-                }
-                return Promise.resolve();
-              },
-            },
-          ]}
-        >
-          <DatePicker
-            showTime={{ format: "HH:mm:ss" }}
-            format="YYYY-MM-DD HH:mm:ss"
-            onChange={handleChangeGioChieu}
-            style={{ width: "100%" }}
-          />
-        </Form.Item>
+          {/* Cột phải - các trường người dùng thao tác */}
+          <Col span={12}>
+            <Form.Item
+              name="chuyen_ngu_id"
+              label="🌐 Chuyển ngữ"
+              rules={[{ required: true, message: "Vui lòng chọn chuyển ngữ" }]}
+            >
+              <Select placeholder="Chọn chuyển ngữ">
+                {chuyenNguList.map((cn: IChuyenNgu) => (
+                  <Select.Option key={cn.id} value={cn.id}>
+                    {cn.the_loai}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
 
-        <Form.Item label="Giờ kết thúc">
+            <Form.Item
+              name="gia_ve"
+              label="💸 Giá vé (Đơn thường)"
+              rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
+            >
+              <InputNumber<number>
+                style={{ width: "100%" }}
+                min={0}
+                placeholder="Nhập giá vé (vd: 70000)"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="gio_chieu"
+              label="🕒 Giờ chiếu"
+              rules={[
+                { required: true, message: "Vui lòng chọn giờ chiếu" },
+                {
+                  validator: (_, value) => {
+                    if (!value) return Promise.resolve();
+                    if (value.isBefore(dayjs())) {
+                      return Promise.reject(
+                        new Error("Không được chọn thời gian trong quá khứ")
+                      );
+                    }
+                    return Promise.resolve();
+                  },
+                },
+              ]}
+            >
+              <DatePicker
+                showTime={{ format: "HH:mm:ss" }}
+                format="YYYY-MM-DD HH:mm:ss"
+                onChange={handleChangeGioChieu}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item label="🕓 Giờ kết thúc">
           <Input value={gioKetThucTinh} readOnly />
         </Form.Item>
 
-        <Form.Item
-          name="gia_ve"
-          label="Giá vé (Đơn Thường)"
-          rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
-        >
-          <InputNumber<number>
-            style={{ width: "100%" }}
-            min={0}
-            formatter={(value) =>
-              value ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : ""
-            }
-            parser={(value) => (value ? Number(value.replace(/,/g, "")) : 0)}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="chuyen_ngu_id"
-          label="Chuyển ngữ"
-          rules={[{ required: true, message: "Vui lòng chọn chuyển ngữ" }]}
-        >
-          <Select placeholder="Chọn chuyển ngữ">
-            {chuyenNguList.map((cn: IChuyenNgu) => (
-              <Select.Option key={cn.id} value={cn.id}>
-                {cn.the_loai}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-
         <Form.Item>
-          <Button type="primary" htmlType="submit" loading={submitting} block>
-            Cập nhật lịch chiếu
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={submitting}
+            block
+            size="large"
+            style={{ marginTop: 24 }}
+          >
+            ✅ Cập nhật lịch chiếu
           </Button>
         </Form.Item>
       </Form>

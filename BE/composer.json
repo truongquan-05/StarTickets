@@ -13,6 +13,11 @@
         "google/apiclient": "2.14",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
+<<<<<<< HEAD
+=======
+        "laravel/socialite": "*",
+        "laravel/sanctum": "^4.1",
+>>>>>>> f05d4cece4d2c6c7efbb60519e815b1457c2a272
         "laravel/socialite": "^5.21",
         "laravel/tinker": "^2.10.1"
     },

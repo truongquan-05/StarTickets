@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Input, Spin, Card, Row, Col, Typography, Button } from "antd";
+import { Spin, Card, Row, Col, Typography, Button } from "antd";
 import axios from "axios";
 import "./Home.css"; // tạo thêm CSS riêng
 
@@ -36,7 +36,6 @@ const SearchPage = () => {
 
   return (
     <div className="search-page">
-      <Title level={2}>Kết quả tìm kiếm</Title>
       {loading ? (
         <Spin />
       ) : results.length === 0 ? (

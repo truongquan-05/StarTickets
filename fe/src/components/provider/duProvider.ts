@@ -101,6 +101,26 @@ export const searchMovies = async (keyword: string) => {
   });
   return res;
 };
+// lọc phim
+// duProvider.ts
+export const getRaps = () =>
+  axiosClient.get("/rap").then((res) => {
+    console.log(">>> getRaps:", res.data); // debug
+    return res.data.data || []; // 👈 đảm bảo trả về mảng
+  });
+
+export const getTheLoais = () =>
+  axiosClient.get("/the_loai").then((res) => {
+    console.log(">>> getTheLoais:", res.data); // debug
+    return res.data.data || [];
+  });
+
+export const searchPhim = (params: any) => {
+  return axiosClient.post("/loc", { params });
+};
+
+
+
 
 
 
