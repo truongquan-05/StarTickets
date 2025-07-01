@@ -157,6 +157,7 @@
 }
 
 .footer-links a {
+  font-family: "Poppins", sans-serif;
   color: #ddd;
   text-decoration: none;
   transition: color 0.2s ease;

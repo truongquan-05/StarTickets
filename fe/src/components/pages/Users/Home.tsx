@@ -204,7 +204,7 @@ const Home = () => {
         <div className="contact-left">
           <p>LIÊN HỆ VỚI CHÚNG TÔI</p>
           <div className="social-icon fb-icon">
-            <a href="#"><img
+            <a href="https://www.facebook.com/hthinh575"><img
               src="https://cinestar.com.vn/assets/images/ct-1.webp"
               alt="facebook"
             />

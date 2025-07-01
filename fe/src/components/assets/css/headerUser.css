@@ -271,6 +271,51 @@
 
 }
 
+.dropdown-full {
+  position: relative;
+}
+
+.dropdown-full .dropdown-content {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 35px;
+  position: fixed; /* Chiếm toàn màn hình */
+  top: 90px; /* điều chỉnh theo đúng vị trí dưới menu */
+  left: 10%; /* đúng padding trái của header-cinestar */
+  width: 80%; /* bằng header-cinestar (padding 10%) */
+  background-color: #0c0b1f;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 999;
+  font-family: "Poppins", sans-serif;
+}
+
+.dropdown-full:hover .dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-full .dropdown-content a {
+  padding: 8px 12px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-full .dropdown-content a:hover {
+  color: yellow;
+}
+
+
 .header-menu .khuyen_mai {
   margin-left: auto;
 }
