@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
 use App\Models\DatVe;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class DatVeController extends Controller
