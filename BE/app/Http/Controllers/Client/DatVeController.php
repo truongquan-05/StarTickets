@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
 use App\Models\DatVe;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class DatVeController extends Controller
@@ -20,7 +21,27 @@ class DatVeController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $dat_ve = $request->all('dat_ve');
+
+        $DatVe = DatVe::insert($dat_ve);
+
+        return response()->json([
+            'data' => $DatVe
+        ]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     /**

@@ -147,10 +147,7 @@ class PhimController extends Controller
             Storage::disk('public')->delete($phim->anh_poster);
         }
 
-<<<<<<< HEAD
-=======
         // Xóa vĩnh viễn
->>>>>>> dev
         $phim->forceDelete();
 
         return response()->json(['message' => 'Xóa phim thành công']);

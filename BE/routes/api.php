@@ -2,19 +2,18 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Client\DatVeController;
 use App\Http\Controllers\Admin\GheController;
 use App\Http\Controllers\Admin\RapController;
 use App\Http\Controllers\Admin\DoAnController;
 use App\Http\Controllers\Admin\PhimController;
 use App\Http\Controllers\Auth\LoginController;
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\TheLoaiController;
-use App\Http\Controllers\Client\SearchController;
 use App\Http\Controllers\Admin\ChuyenNguController;
 use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
@@ -149,6 +148,8 @@ Route::prefix('auth/google')->group(function () {
     Route::get('callback', [LoginController::class, 'callback']);
 });
 
+//XỬ LÝ THANH TOÁN
+Route::apiResource('dat_ve', DatVeController::class);
 
 
 //-------------------CLIENT-------------------//
