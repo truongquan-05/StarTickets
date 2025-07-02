@@ -1,0 +1,335 @@
+/* ===== KHUNG NGOÀI ===== */
+.quick-booking-wrapper {
+  width: 100%;
+  background-color: #1a0933;
+  padding: 15px 10%;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+
+.quick-booking-inner {
+  width: 100%;
+  background-color: #ecf2ff;
+  border-radius: 4px;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 90px;
+}
+
+/* ===== TIÊU ĐỀ ===== */
+.quick-booking-title {
+  font-family: 'Anton', sans-serif;
+  font-weight: 100;
+  font-size: 30px;
+  color: #4d535f;
+  text-align: center;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+  line-height: 85px;
+}
+
+/* ===== FORM ===== */
+.quick-booking-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+/* ===== ITEM CHUNG ===== */
+.quick-booking-item {
+  min-width: 180px;
+  flex-shrink: 0;
+}
+
+/* ===== CÁC Ô CHỌN ===== */
+input[type="date"], .genres-toggle {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  font-size: 20px;
+  font-weight: 100;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #6527BE;
+  font-family: 'Anton', sans-serif;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.genres-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Anton', sans-serif;
+  font-weight: 100;
+  height: 40px;
+  padding: 0 14px;
+  font-size: 20px;
+  text-align: center;
+
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #6527BE;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.select-wrapper {
+  position: relative;
+  min-width: 180px;
+}
+
+.custom-select-display {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  color: #6527BE;
+  font-family: 'Anton', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.custom-select-options {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+.custom-select-option {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-family: 'Anton', sans-serif;
+  font-size: 15px;
+  color: #000;
+}
+
+.custom-select-option:hover {
+  background-color: #eee;
+  color: #6527BE;
+}
+
+.custom-select-option.selected {
+  background-color: #eee;
+  color: #6527BE;
+}
+
+
+
+/* BỎ MŨI TÊN SELECT */
+.select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none;
+}
+
+/* FOCUS */
+.select-wrapper select:focus,
+.date-wrapper input[type="date"]:focus {
+  outline: none;
+  border-color: #6527BE;
+  color: #000;
+}
+
+/* ===== GENRES DROPDOWN ===== */
+.genres-wrapper {
+  position: relative;
+}
+
+.genres-options {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  padding: 10px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+/* Căn chỉnh label */
+.custom-checkbox {
+    font-family: "Anton", sans-serif;
+    font-weight: 100;
+    padding-top: 3px;
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #000;
+  transition: color 0.2s ease;
+}
+
+/* Ẩn checkbox mặc định */
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Hộp vuông bên trái */
+.custom-checkbox .checkmark {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  height: 18px;
+  width: 18px;
+  background-color: white;
+  border: 2px solid #ccc;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+/* Khi checkbox được chọn */
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: #6527BE; /* vàng */
+  border-color: #6527BE;
+}
+
+/* Dấu tích */
+.custom-checkbox .checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.custom-checkbox input:checked ~ .checkmark::after {
+  display: block;
+}
+
+.custom-checkbox .checkmark::after {
+  left: 5px;
+  top: 1px;
+  width: 4px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Nội dung chuyển vàng khi tích */
+.custom-checkbox input:checked ~ span:not(.checkmark) {
+  color: #6527BE;
+}
+
+
+.genre-item {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.genre-item input {
+  margin-right: 6px;
+}
+
+/* Check màu vàng nếu muốn (giữ lại nếu cần) */
+.genre-item input[type="checkbox"]:checked {
+  accent-color: #facc15;
+}
+
+/* ===== BUTTON ===== */
+.button-wrapper .btn-submit {
+  background-color: #6527BE;
+  color: white;
+  font-family: 'Anton', sans-serif;
+  font-size: 16px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+}
+
+.btn-submit {
+  font-size: 15px;
+  padding: 0 25px;
+  position: relative;
+  font-family: 'Anton', sans-serif;
+  height: 40px;
+  background-color: #FFEB3B; /* màu nền ban đầu */
+  color: #000;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  width: 200px;
+}
+
+.btn-submit::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c); /* màu khi hover */
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.btn-submit:hover::before {
+  transform: scaleX(1);
+}
+
+.btn-submit:hover {
+  color: #fff;
+}
+
+.btn-submit span {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .quick-booking-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+  }
+
+  .quick-booking-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quick-booking-item {
+    width: 100%;
+  }
+
+  .button-wrapper .btn-submit {
+    width: 100%;
+    align-self: center;
+  }
+}

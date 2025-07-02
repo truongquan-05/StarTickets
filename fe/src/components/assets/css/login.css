@@ -69,10 +69,10 @@
 
 /* Box chứa form */
 .login-box {
-  background: rgba(51,102,204,.8);
+  background: rgba(0, 0, 0, 0.5);
   padding: 40px 30px;
   border-radius: 6px;
-  box-shadow: 0 8px 24px rgb(149 157 165 / 20%);
+  box-shadow: 0 8px 30px rgb(149 157 165 / 30%);
 }
 
 /* Style label trong form */
