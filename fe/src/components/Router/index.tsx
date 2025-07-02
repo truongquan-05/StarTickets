@@ -43,6 +43,7 @@ import ProfilePage from '../pages/Users/Profile';
 import TimKiemPhim from '../pages/Users/Timkiemphim';
 import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
 import TrashMovies from '../pages/Admin/MoviesPage/TrashMovies';
+import ThanhToan from '../pages/Users/DatVe/ThanhToan';
 
 
 
@@ -58,6 +59,7 @@ const Routermain = () => {
       children: [
         { path: '', element: <Home /> },
         { path: 'phim/:id', element:<MovieDetailUser/>  },
+        { path: 'thanhtoan', element: <ThanhToan /> },
         { path: 'search', element:<SearchPage/>  },
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },
