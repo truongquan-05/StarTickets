@@ -29,47 +29,49 @@ const NewsUser: React.FC = () => {
   }
 
   return (
-    <div className="news-wrapper">
-      <h2 className="news-title">
-        Tin tức mới từ StarTicket
-      </h2>
-      <Row gutter={[24, 24]}>
-        {newsList.map((item) => (
-          <Col xs={24} sm={24} md={12} lg={12} key={item.id}>
-            <Card
-              className="news-card"
-              cover={
-                <Image
-                  src={`${BASE_URL}${item.hinh_anh}`}
-                  alt={item.tieu_de}
-                  height={280}
-                  style={{
-                    objectFit: "cover",
-                    borderTopLeftRadius: 6,
-                    borderTopRightRadius: 6,
-                  }}
-                  fallback="https://via.placeholder.com/400x220?text=No+Image"
-                  preview={false}
-                />
-              }
-            >
-              <Card.Meta
-                title={<span className="news-card-title">{item.tieu_de}</span>}
-                description={
-                  <>
-                    <a
-                      href={`/news/${item.id}`}
-                      className="news-readmore-btn"
-                    >
-                      <span>Xem thêm</span>
-                    </a>
-                  </>
+    <div className="tintuc">
+      <div className="news-wrapper">
+        <h2 className="news-title">Tin tức mới từ StarTicket</h2>
+        <Row gutter={[24, 24]}>
+          {newsList.map((item) => (
+            <Col xs={24} sm={24} md={12} lg={12} key={item.id}>
+              <Card
+                className="news-card"
+                cover={
+                  <Image
+                    src={`${BASE_URL}${item.hinh_anh}`}
+                    alt={item.tieu_de}
+                    height={280}
+                    style={{
+                      objectFit: "cover",
+                      borderTopLeftRadius: 6,
+                      borderTopRightRadius: 6,
+                    }}
+                    fallback="https://via.placeholder.com/400x220?text=No+Image"
+                    preview={false}
+                  />
                 }
-              />
-            </Card>
-          </Col>
-        ))}
-      </Row>
+              >
+                <Card.Meta
+                  title={
+                    <span className="news-card-title">{item.tieu_de}</span>
+                  }
+                  description={
+                    <>
+                      <a
+                        href={`/news/${item.id}`}
+                        className="news-readmore-btn"
+                      >
+                        <span>Xem thêm</span>
+                      </a>
+                    </>
+                  }
+                />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </div>
     </div>
   );
 };

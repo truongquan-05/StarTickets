@@ -48,7 +48,7 @@
   position: relative;
   font-family: 'Anton', sans-serif;
   height: 35px;
-  background-color: #eff600; /* màu gốc */
+  background-color: yellow; /* màu gốc */
   color: #000; /* màu chữ gốc */
   border: none;
   cursor: pointer;
@@ -194,7 +194,7 @@
 }
 
 .header-login .login-text:hover {
-  color: yellow;
+  color: yellow !important;
 }
 
 
@@ -228,6 +228,9 @@
 .lang-text {
   font-size: 14px;
   font-weight: 500;
+}
+.header-lang .lang-text:hover {
+  color: yellow;
 }
 
 .lang-switch {

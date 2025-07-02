@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import featuredImage from "../../../assets/image.png";
 import { getCurrentMovies, getUpcomingMovies } from "../../provider/duProvider";
 
 import "swiper/css";
@@ -184,24 +185,24 @@ const Home = () => {
 
       {/* Phim nổi bật */}
       <div className="featured-movie">
-        <img
-          src="https://static.zenmarket.jp/images/common-landing-pages/ropevl21.tr4"
-          alt="phim nổi bật"
-          className="featured-img"
-        />
-        <div className="featured-overlay">
-          <div className="featured-content">
-            <Title level={2}>Phim Nổi Bật: Thanh Gươm Diệt Quỷ</Title>
-            <p>
-              Trải nghiệm hành trình tiêu diệt quỷ chưa từng có trên màn ảnh
-              rộng.
-            </p>
-            <Button type="primary" size="large">
-              Đặt vé ngay
-            </Button>
-          </div>
-        </div>
-      </div>
+  <img
+    src={featuredImage}
+    alt="phim nổi bật"
+    className="featured-img"
+  />
+  <div className="featured-overlay">
+    <div className="featured-content">
+      <h2>Bạn chưa có tài khoản ?</h2>
+      <p>
+        Hãy đăng ký ngay để trải nghiệm những bộ phim mới nhất và nhận nhiều ưu đãi hấp dẫn từ StarTickets!
+      </p>
+      <button className="featured-button">
+        <a href="/register">Đăng ký ngay</a>
+      </button>
+    </div>
+  </div>
+</div>
+
 
       {/* Thông tin liên hệ */}
       <div className="contact-section">
