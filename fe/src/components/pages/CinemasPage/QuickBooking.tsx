@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
-import { Select, Button, DatePicker, message, Checkbox } from "antd";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { getRaps, getTheLoais } from "../../provider/duProvider";
 import type { Rap, TheLoai } from "../../types/Uses";
-import { DownOutlined } from "@ant-design/icons";
-
-const { Option } = Select;
+import "./QuickBooking.css";
 
 const QuickBooking = () => {
   const [raps, setRaps] = useState<Rap[]>([]);
   const [theLoais, setTheLoais] = useState<TheLoai[]>([]);
   const [selectedRap, setSelectedRap] = useState<number | null>(null);
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
-  const [selectedDate, setSelectedDate] = useState<any>(null);
+  const [selectedDate, setSelectedDate] = useState<string>("");
   const [genresOpen, setGenresOpen] = useState(false);
-
 
   const navigate = useNavigate();
 
@@ -23,34 +19,28 @@ const QuickBooking = () => {
     getRaps()
       .then((data) => {
         if (Array.isArray(data)) setRaps(data);
-        else message.error("Dữ liệu rạp không hợp lệ");
+        else alert("Dữ liệu rạp không hợp lệ");
       })
-      .catch((err) => {
-        console.error("Lỗi khi lấy rạp:", err);
-        message.error("Không thể lấy danh sách rạp");
-      });
+      .catch(() => alert("Không thể lấy danh sách rạp"));
 
     getTheLoais()
       .then((data) => {
         if (Array.isArray(data)) setTheLoais(data);
-        else message.error("Dữ liệu thể loại không hợp lệ");
+        else alert("Dữ liệu thể loại không hợp lệ");
       })
-      .catch((err) => {
-        console.error("Lỗi khi lấy thể loại:", err);
-        message.error("Không thể lấy danh sách thể loại");
-      });
+      .catch(() => alert("Không thể lấy danh sách thể loại"));
   }, []);
 
   const handleSubmit = () => {
     if (!selectedRap || !selectedDate) {
-      message.warning("Vui lòng chọn rạp và ngày chiếu");
+      alert("Vui lòng chọn rạp và ngày chiếu");
       return;
     }
 
     const query = {
       rap_id: selectedRap,
       the_loai_id: selectedGenres,
-      ngay_cong_chieu: dayjs(selectedDate).format("YYYY-MM-DD"),
+      ngay_cong_chieu: selectedDate,
     };
 
     const searchParams = new URLSearchParams();
@@ -63,113 +53,99 @@ const QuickBooking = () => {
     }
 
     searchParams.append("ngay_cong_chieu", query.ngay_cong_chieu);
-
     navigate(`/tim-kiem-phim?${searchParams.toString()}`);
   };
 
+  const handleCheckboxChange = (id: number) => {
+    setSelectedGenres((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  
+  const [rapsOpen, setRapsOpen] = useState(false);
+
   return (
     <div className="quick-booking-wrapper">
-      <div className="quick-booking-title">ĐẶT VÉ NHANH</div>
+      <div className="quick-booking-inner">
+        <h2 className="quick-booking-title">LỌC PHIM</h2>
+        <div className="quick-booking-form">
+          {/* Chọn rạp */}
+          <div className="quick-booking-item select-wrapper">
+            <div
+              className="custom-select-display"
+              onClick={() => setRapsOpen((prev) => !prev)}
+            >
+              {selectedRap
+                ? raps.find((r) => r.id === selectedRap)?.ten_rap
+                : "Chọn rạp"}
+            </div>
 
-      <div className="quick-booking-form">
-        <Select
-          placeholder="1. Chọn Rạp"
-          value={selectedRap || undefined}
-          onChange={setSelectedRap}
-          style={{ width: 160 }}
-        >
-          {Array.isArray(raps) &&
-            raps.map((rap) => (
-              <Option key={rap.id} value={rap.id}>
-                {rap.ten_rap}
-              </Option>
-            ))}
-        </Select>
+            {rapsOpen && (
+              <ul className="custom-select-options">
+                {raps.map((rap) => (
+                  <li
+                    key={rap.id}
+                    className={`custom-select-option ${
+                      selectedRap === rap.id ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedRap(rap.id);
+                      setRapsOpen(false);
+                    }}
+                  >
+                    {rap.ten_rap}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
- <div style={{ marginTop: 6 }}>
-  <div
-    onClick={() => setGenresOpen(!genresOpen)}
-    style={{
-      width: "100%",
-      maxWidth: 420,
-      padding: "10px 30px",
-      border: "1px solid #aaa",
-      borderRadius: 8,
-      backgroundColor: "#fff",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      boxShadow: genresOpen ? "0 0 0 2px #1890ff inset" : "none",
-      transition: "all 0.2s",
-    }}
-  >
-    <span style={{ color: selectedGenres.length > 0 ? "#000" : "#999" }}>
-      {selectedGenres.length > 0
-        ? `Đã chọn ${selectedGenres.length} thể loại`
-        : "2. Chọn Thể loại"}
-    </span>
-    <DownOutlined style={{ fontSize: 14 }} />
-  </div>
+          {/* Chọn thể loại */}
+          <div className="quick-booking-item genres-wrapper">
+            <div
+              className="genres-toggle"
+              onClick={() => setGenresOpen(!genresOpen)}
+            >
+              {selectedGenres.length > 0
+                ? `Đã chọn ${selectedGenres.length} thể loại`
+                : "Chọn Thể loại"}
+            </div>
+            {genresOpen && (
+              <div className="genres-options">
+                {theLoais.map((tl) => (
+                  <label key={tl.id} className="genre-item custom-checkbox">
+                    <input
+                      type="checkbox"
+                      value={tl.id}
+                      checked={selectedGenres.includes(tl.id)}
+                      onChange={() => handleCheckboxChange(tl.id)}
+                    />
+                    <span className="checkmark"></span>
+                    <span>{tl.ten_the_loai}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
 
-  {genresOpen && (
-    <div
-      style={{
-        marginTop: 8,
-        padding: 12,
-        backgroundColor: "#f9f9f9",
-        border: "1px solid #ddd",
-        borderRadius: 8,
-        maxHeight: 240,
-        overflowY: "auto",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        display: "flex",
-        flexWrap: "wrap",
-        gap: "10px",
-      }}
-    >
-      <Checkbox.Group
-        value={selectedGenres}
-        onChange={(values) => setSelectedGenres(values as number[])}
-      >
-        {theLoais.map((tl) => (
-          <Checkbox
-            key={tl.id}
-            value={tl.id}
-            style={{
-              backgroundColor: selectedGenres.includes(tl.id)
-                ? "#1890ff"
-                : "#fff",
-              color: selectedGenres.includes(tl.id) ? "#fff" : "#333",
-              padding: "6px 10px",
-              borderRadius: "16px",
-              border: "1px solid #ccc",
-              cursor: "pointer",
-              transition: "all 0.2s",
-            }}
-          >
-            {tl.ten_the_loai}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  )}
-</div>
+          {/* Ngày chiếu */}
+          <div className="quick-booking-item date-wrapper">
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              min={dayjs().format("YYYY-MM-DD")}
+            />
+          </div>
 
-
-
-
-
-        <DatePicker
-          placeholder="3. Chọn Ngày"
-          value={selectedDate}
-          onChange={setSelectedDate}
-          style={{ width: 160 }}
-        />
-
-        <Button type="primary" onClick={handleSubmit}>
-          ĐẶT NGAY
-        </Button>
+          {/* Nút đặt */}
+          <div className="quick-booking-item button-wrapper">
+            <button className="btn-submit" onClick={handleSubmit}>
+              <span>TÌM NGAY</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

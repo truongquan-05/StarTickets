@@ -1,10 +1,10 @@
 import logo from "../../../assets/logodone.png";
 import flag from "../../../assets/cờ.jpg";
-import { Button, Input, Space, Dropdown, Menu } from "antd";
+import { Input, Space, Dropdown, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useGoogleAuth } from "../../pages/auth/GoogleAuth";
 import "../../assets/css/headerUser.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CalendarOutlined,
   CaretDownOutlined,
@@ -14,6 +14,7 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import axios from "axios";
 
 const HeaderUser = () => {
   const { user, logout } = useGoogleAuth();
@@ -64,6 +65,28 @@ const HeaderUser = () => {
     </Menu>
   );
 
+  type Rap = {
+    id: number;
+    ten_rap: string;
+  };
+
+  const [rapList, setRapList] = useState<Rap[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/rap")
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setRapList(res.data); // Nếu trả ra mảng
+        } else {
+          setRapList(res.data.data); // Nếu là object có field `data`
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi lấy danh sách rạp:", err);
+      });
+  }, []);
+
   return (
     <header className="header-cinestar">
       {/* PHẦN TRÊN */}
@@ -76,8 +99,12 @@ const HeaderUser = () => {
 
         <div className="header-actions">
           <Space>
-            <button className="btn-ticket"><span>🎫 ĐẶT VÉ NGAY</span></button>
-            <button className="btn-popcorn"><span>🍿 ĐẶT BẮP NƯỚC</span></button>
+            <button className="btn-ticket">
+              <span>🎫 ĐẶT VÉ NGAY</span>
+            </button>
+            <button className="btn-popcorn">
+              <span>🍿 ĐẶT BẮP NƯỚC</span>
+            </button>
           </Space>
         </div>
 
@@ -132,9 +159,19 @@ const HeaderUser = () => {
 
       {/* PHẦN MENU */}
       <div className="header-menu">
-        <a href="#">
-          <EnvironmentOutlined /> Chọn rạp
-        </a>
+        <div className="dropdown dropdown-full">
+          <a href="#">
+            <EnvironmentOutlined /> Chọn rạp
+          </a>
+          <div className="dropdown-content">
+            {rapList.map((rap) => (
+              <a key={rap.id} href="#">
+                {rap.ten_rap}
+              </a>
+            ))}
+          </div>
+        </div>
+
         <a href="#">
           <CalendarOutlined /> Lịch chiếu
         </a>
