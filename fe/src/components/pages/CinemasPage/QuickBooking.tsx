@@ -68,7 +68,7 @@ const QuickBooking = () => {
   return (
     <div className="quick-booking-wrapper">
       <div className="quick-booking-inner">
-        <h2 className="quick-booking-title">ĐẶT VÉ NHANH</h2>
+        <h2 className="quick-booking-title">LỌC PHIM</h2>
         <div className="quick-booking-form">
           {/* Chọn rạp */}
           <div className="quick-booking-item select-wrapper">
@@ -142,7 +142,7 @@ const QuickBooking = () => {
           {/* Nút đặt */}
           <div className="quick-booking-item button-wrapper">
             <button className="btn-submit" onClick={handleSubmit}>
-              <span>ĐẶT NGAY</span>
+              <span>TÌM NGAY</span>
             </button>
           </div>
         </div>
