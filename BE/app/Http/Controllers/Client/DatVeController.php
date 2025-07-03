@@ -64,13 +64,13 @@ class DatVeController extends Controller
             foreach ($dat_ve_chi_tiet as $value) {
                 foreach ($value as $item) {
                     $item['dat_ve_id'] = $idDatVe;
-                    $DonVeChiTiet =  DatVeChiTiet::insert($item);
+                    DatVeChiTiet::insert($item);
                 }
             }
         }
 
 
-        $dataThanhToan = DatVe::with(['DonDoAn.DoAn','DatVeChiTiet.GheDat'])->find($idDatVe);
+        $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat'])->find($idDatVe);
 
         return response()->json([
             'data' => $dataThanhToan

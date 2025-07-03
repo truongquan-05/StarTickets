@@ -22,6 +22,7 @@ use App\Http\Controllers\Client\CheckGheController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
+use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 
 // Route::get('/user', function (Request $request) {
@@ -150,6 +151,9 @@ Route::prefix('auth/google')->group(function () {
 
 //XỬ LÝ THANH TOÁN
 Route::apiResource('dat_ve', DatVeController::class);
+Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
+Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
+
 
 
 //-------------------CLIENT-------------------//
