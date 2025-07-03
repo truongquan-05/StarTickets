@@ -13,13 +13,8 @@ class DoAn extends Model
     protected $fillable = [
         'ten_do_an',
         'mo_ta',
-<<<<<<< HEAD
-        'gia_ban',
-        'gia_nhap',
-=======
         'gia_nhap',
         'gia_ban',
->>>>>>> dev
         'so_luong_ton',
         'image',
     ];

@@ -11,6 +11,16 @@ class DatVe extends Model
         'nguoi_dung_id',
         'lich_chieu_id',
         'tong_tien',
-        'trang_thai',
     ];
+
+
+    public function DonDoAn()
+    {
+        return $this->hasMany(DonDoAn::class, 'dat_ve_id', 'id');
+    }
+
+    public function DatVeChiTiet()
+    {
+        return $this->hasMany(DatVeChiTiet::class, 'dat_ve_id', 'id');
+    }
 }
