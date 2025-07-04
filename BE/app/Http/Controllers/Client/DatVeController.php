@@ -106,7 +106,7 @@ class DatVeController extends Controller
             DB::commit();
 
 
-            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat'])->find($idDatVe);
+            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat.loaiGhe'])->find($idDatVe);
 
             return response()->json([
                 'data' => $dataThanhToan
@@ -114,7 +114,7 @@ class DatVeController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
-                'message' => "ERROR"
+                'message' => $th->getMessage(),
             ]);
         }
     }
