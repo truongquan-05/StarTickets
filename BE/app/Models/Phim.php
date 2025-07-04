@@ -20,7 +20,6 @@ class Phim extends Model
         'ngay_cong_chieu',
         'ngay_ket_thuc',
         'do_tuoi_gioi_han',
-        'trang_thai_phim',
         'chuyen_ngu',
         'the_loai_id',
         'loai_suat_chieu',

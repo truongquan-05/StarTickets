@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Typography, Space, Rate, Button, Modal, Select, Image } from 'antd';
+import {
+  Table,
+  Typography,
+  Space,
+  Rate,
+  Button,
+  Modal,
+  Select,
+  Image,
+  Card,
+} from 'antd';
 import axios from 'axios';
 import type { ColumnsType } from 'antd/es/table';
 
@@ -35,9 +45,12 @@ const ListDanhGia: React.FC = () => {
   const [selectedDanhGia, setSelectedDanhGia] = useState<DanhGia | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [soSaoFilter, setSoSaoFilter] = useState<number | null>(null);
+  const [phimOptions, setPhimOptions] = useState<Phim[]>([]);
+  const [selectedPhimId, setSelectedPhimId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchDanhGia();
+    fetchPhimList();
   }, []);
 
   const fetchDanhGia = async () => {
@@ -56,6 +69,19 @@ const ListDanhGia: React.FC = () => {
     }
   };
 
+  const fetchPhimList = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/api/phim', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setPhimOptions(response.data.data);
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách phim:', error);
+    }
+  };
+
   const handleViewDetail = (record: DanhGia) => {
     setSelectedDanhGia(record);
     setModalVisible(true);
@@ -63,6 +89,7 @@ const ListDanhGia: React.FC = () => {
 
   const filteredData = data.filter((item) => {
     if (soSaoFilter !== null && item.so_sao !== soSaoFilter) return false;
+    if (selectedPhimId !== null && item.phim.id !== selectedPhimId) return false;
     return true;
   });
 
@@ -86,7 +113,24 @@ const ListDanhGia: React.FC = () => {
       ),
     },
     {
-      title: 'Phim được đánh giá',
+      title: (
+        <Space direction="vertical">
+          <span>Phim được đánh giá</span>
+          <Select
+            placeholder="Chọn phim"
+            allowClear
+            size="small"
+            style={{ width: '100%' }}
+            onChange={(value) => setSelectedPhimId(value)}
+          >
+            {phimOptions.map((phim) => (
+              <Option key={phim.id} value={phim.id}>
+                {phim.ten_phim}
+              </Option>
+            ))}
+          </Select>
+        </Space>
+      ),
       dataIndex: 'phim',
       key: 'phim',
       render: (phim: Phim) => (
@@ -130,10 +174,24 @@ const ListDanhGia: React.FC = () => {
       width: 160,
     },
     {
-      title: 'Nội dung',
-      dataIndex: 'noi_dung',
-      key: 'noi_dung',
-    },
+  title: 'Nội dung',
+  dataIndex: 'noi_dung',
+  key: 'noi_dung',
+  render: (text: string) => (
+    <div
+      style={{
+        maxWidth: 300,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}
+      title={text}
+    >
+      {text}
+    </div>
+  ),
+},
+
     {
       title: 'Hành động',
       key: 'actions',
@@ -147,8 +205,7 @@ const ListDanhGia: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: 24 }}>
-      <Title level={3}>Quản lý đánh giá</Title>
+      <Card title="Danh sách rạp" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)',background: "#fff", height: "95%"  }}>
       <Table
         rowKey="id"
         loading={loading}
@@ -172,10 +229,11 @@ const ListDanhGia: React.FC = () => {
             <p><strong>Phim:</strong> {selectedDanhGia.phim.ten_phim}</p>
             <p><strong>Số sao:</strong> <Rate disabled defaultValue={selectedDanhGia.so_sao} /></p>
             <p><strong>Nội dung:</strong> {selectedDanhGia.noi_dung}</p>
+            <p><strong>Thời gian đánh giá:</strong> {selectedDanhGia.created_at || 'Không có'}</p>
           </div>
         )}
       </Modal>
-    </div>
+      </Card>
   );
 };
 

@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import "./LichChieu.css";
 import { ILichChieu } from "../../Admin/interface/lichchieu";
 
-
 interface IRap {
   id: number;
   ten_rap: string;
@@ -22,29 +21,57 @@ const LichChieuDatVe: React.FC<LichChieuProps> = ({
   onLichChieuClick,
   selectedLichChieuId,
 }) => {
+  const now = dayjs(); // Lấy thời gian hiện tại
+  let hasFutureShowtimes = false; // Biến cờ để kiểm tra có lịch chiếu nào trong tương lai không
+
+  const renderedShowtimes = Object.entries(groupedLichChieu).map(([rapId, lichChieus]) => {
+    const rap = rapList.find((r) => r.id === Number(rapId));
+
+    // Lọc các lịch chiếu: chỉ giữ lại những lịch chiếu có thời gian (gio_chieu) lớn hơn thời gian hiện tại
+    const futureLichChieus = lichChieus
+      .filter((item) => dayjs(item.gio_chieu).isAfter(now))
+      .sort((a, b) => dayjs(a.gio_chieu).diff(dayjs(b.gio_chieu))); // Sắp xếp theo thời gian tăng dần
+
+    // Nếu có lịch chiếu trong tương lai, đặt biến cờ là true
+    if (futureLichChieus.length > 0) {
+      hasFutureShowtimes = true;
+    }
+
+    // Chỉ hiển thị rạp nếu có lịch chiếu trong tương lai
+    if (futureLichChieus.length === 0) {
+      return null; // Không hiển thị rạp này nếu không có lịch chiếu nào trong tương lai
+    }
+
+    return (
+      <div key={rapId} className="lichchieu-box">
+        <h4 className="rap-title">{rap?.ten_rap || "Rạp không xác định"}</h4>
+        <div className="lich-chieu-buttons">
+          {futureLichChieus.map((item) => (
+            <button
+              key={item.id}
+              className={`lich-chieu-button ${
+                item.id === selectedLichChieuId ? "selected" : ""
+              }`}
+              onClick={() => onLichChieuClick?.(item)}
+            >
+              {dayjs(item.gio_chieu).format("HH:mm")} - {dayjs(item.gio_ket_thuc).format("HH:mm")} ({dayjs(item.gio_chieu).format("DD/MM")})
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  });
+
   return (
     <div className="lichchieu">
-      {Object.entries(groupedLichChieu).map(([rapId, lichChieus]) => {
-        const rap = rapList.find((r) => r.id === Number(rapId));
-        return (
-          <div key={rapId} className="lichchieu-box">
-            <h4 className="rap-title">{rap?.ten_rap || "Rạp không xác định"}</h4>
-            <div className="lich-chieu-buttons">
-              {lichChieus.map((item) => (
-                <button
-                  key={item.id}
-                  className={`lich-chieu-button ${
-                    item.id === selectedLichChieuId ? "selected" : ""
-                  }`}
-                  onClick={() => onLichChieuClick?.(item)}
-                >
-                  {dayjs(item.gio_chieu).format("DD/MM HH:mm")}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-      })}
+      {hasFutureShowtimes ? (
+        renderedShowtimes // Nếu có lịch chiếu, hiển thị các rạp và lịch chiếu
+      ) : (
+        // Nếu không có bất kỳ lịch chiếu nào trong tương lai, hiển thị thông báo
+        <p style={{ textAlign: 'center', fontSize: '1.2em', color: '#888', padding: '20px',margin:"auto" }}>
+          Chưa có lịch chiếu nào cho phim này trong thời gian tới. Vui lòng quay lại sau!
+        </p>
+      )}
     </div>
   );
 };

@@ -26,12 +26,12 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 0;
+  padding: 5px 0;
   gap: 12px;
 }
 
 .header-left img {
-  width: 200px;
+  width: 180px;
 }
 
 /* Action buttons (Đặt vé, Bắp nước) */
@@ -42,12 +42,13 @@
 }
 
 .btn-ticket {
-  font-size: 18px;
-  padding: 0 15px;
+  letter-spacing: 1px;
+  font-size: 14px;
+  padding: 0 12px;
   position: relative;
   font-family: 'Anton', sans-serif;
-  height: 40px;
-  background-color: #eff600; /* màu gốc */
+  height: 35px;
+  background-color: yellow; /* màu gốc */
   color: #000; /* màu chữ gốc */
   border: none;
   cursor: pointer;
@@ -83,11 +84,12 @@
 
 
 .btn-popcorn {
-  font-size: 18px;
-  padding: 0 15px;
+  letter-spacing: 1px;
+  font-size: 14px;
+  padding: 0 12px;
   position: relative;
   font-family: 'Anton', sans-serif;
-  height: 40px;
+  height: 35px;
   background-color: #8200d8; /* màu gốc */
   color: #fff; /* màu chữ gốc */
   border: none;
@@ -132,24 +134,22 @@
   align-items: center;
   background: white;
   border-radius: 30px;
-  padding: 4px 12px;
-  width: 310px;
-  height: 40px;
+  padding: 4px 6px;
+  width: 230px;
+  height: 35px;
 }
 
 .header-search input {
   border: none;
   outline: none;
-  flex: 1;
-  padding: 6px;
   border-radius: 20px;
-  font-size: 17px;
+  font-size: 15px;
   font-family: 'Poppins', sans-serif;
 }
 
 .header-search .ant-input-search-button {
   border: none;
-  font-size: 27px;
+  font-size: 20px;
 }
 
 .user-icon {
@@ -194,7 +194,7 @@
 }
 
 .header-login .login-text:hover {
-  color: yellow;
+  color: yellow !important;
 }
 
 
@@ -229,6 +229,9 @@
   font-size: 14px;
   font-weight: 500;
 }
+.header-lang .lang-text:hover {
+  color: yellow;
+}
 
 .lang-switch {
   padding: 4px 8px;
@@ -251,7 +254,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0px;
+  padding: 13px 0px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   gap: 24px;
   flex-wrap: wrap;
@@ -270,6 +273,51 @@
   text-decoration: underline;
 
 }
+
+.dropdown-full {
+  position: relative;
+}
+
+.dropdown-full .dropdown-content {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 35px;
+  position: fixed; /* Chiếm toàn màn hình */
+  top: 90px; /* điều chỉnh theo đúng vị trí dưới menu */
+  left: 10%; /* đúng padding trái của header-cinestar */
+  width: 80%; /* bằng header-cinestar (padding 10%) */
+  background-color: #0c0b1f;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 999;
+  font-family: "Poppins", sans-serif;
+}
+
+.dropdown-full:hover .dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-full .dropdown-content a {
+  padding: 8px 12px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-full .dropdown-content a:hover {
+  color: yellow;
+}
+
 
 .header-menu .khuyen_mai {
   margin-left: auto;

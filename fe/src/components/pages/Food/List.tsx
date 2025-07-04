@@ -26,11 +26,17 @@ import {
   useUpdateFood,
   useDeleteFood,
 } from "../../hook/duHook";
-import type { RcFile } from "antd/es/upload/interface";
 
 const { Title } = Typography;
 
 const FoodList = () => {
+  const BASE_URL = "http://127.0.0.1:8000";
+
+  const getImageUrl = (path: string | null | undefined) => {
+    if (!path) return "https://via.placeholder.com/100";
+    return `${BASE_URL}/storage/${path}`;
+  };
+
   const { data, isLoading, refetch } = useListFoods();
   const foods = data?.data ?? [];
 
@@ -48,12 +54,18 @@ const FoodList = () => {
     setEditingItem(record);
     if (record) {
       form.setFieldsValue(record);
-      setFileList(record.hinh_anh ? [{
-        uid: "-1",
-        name: "image.png",
-        status: "done",
-        url: record.hinh_anh,
-      }] : []);
+      setFileList(
+        record.image
+          ? [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                url: getImageUrl(record.image),
+              },
+            ]
+          : []
+      );
     } else {
       form.resetFields();
       setFileList([]);
@@ -62,106 +74,70 @@ const FoodList = () => {
 
   const handleDelete = (id: number) => {
     deleteFood(id, {
-      onSuccess: () => {
-        message.success("Xoá món ăn thành công");
-        refetch();
-      },
       onError: () => {
         message.error("Xoá thất bại");
       },
     });
   };
 
-  const onFinish = (values: Food) => {
-    if (fileList.length > 0 && fileList[0].url) {
-      values.hinh_anh = fileList[0].url;
-    }
-
-    if (editingItem) {
-      updateFood(
-        { id: editingItem.id, values },
-        {
-          onSuccess: () => {
-            message.success("Cập nhật món ăn thành công");
-            refetch();
-            setModalOpen(false);
-          },
-          onError: () => {
-            message.error("Cập nhật thất bại");
-          },
-        }
-      );
-    } else {
-      createFood(values, {
-        onSuccess: () => {
-          message.success("Thêm món ăn thành công");
-          refetch();
-          setModalOpen(false);
-          form.resetFields();
-          setFileList([]);
-        },
-        onError: () => {
-          message.error("Thêm món ăn thất bại");
-        },
-      });
-    }
-  };
-
-  const customUpload = async (options: any) => {
-    const { file, onSuccess, onError } = options;
-
+  const onFinish = async (values: Food) => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("ten_do_an", values.ten_do_an);
+    formData.append("mo_ta", values.mo_ta);
+    formData.append("gia_nhap", values.gia_nhap.toString());
+    formData.append("gia_ban", values.gia_ban.toString());
+    formData.append("so_luong_ton", values.so_luong_ton.toString());
 
-    try {
-      const res = await fetch("/poster", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        setFileList([
-          {
-            uid: file.uid,
-            name: file.name,
-            status: "done",
-            url: data.url,
-          },
-        ]);
-        onSuccess("Ok");
-      } else {
-        throw new Error("Upload failed");
-      }
-    } catch (err) {
-      message.error("Tải ảnh lên thất bại");
-      onError?.(err);
+    if (fileList.length > 0 && fileList[0].originFileObj) {
+      formData.append("image", fileList[0].originFileObj);
     }
+
+    const mutationFn = editingItem ? updateFood : createFood;
+    const payload = editingItem
+      ? { id: editingItem.id, values: formData }
+      : formData;
+
+    mutationFn(payload, {
+      onSuccess: () => {
+        setModalOpen(false);
+        form.resetFields();
+        setFileList([]);
+      },
+      onError: () => {
+        message.error(editingItem ? "Cập nhật thất bại" : "Thêm thất bại");
+      },
+    });
   };
-  useEffect(() => {
-  if (isModalOpen && editingItem) {
-    form.setFieldsValue({ ...editingItem });
-  }
-}, [isModalOpen, editingItem]);
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
     {
       title: "Hình ảnh",
-      dataIndex: "hinh_anh",
-      key: "hinh_anh",
-      render: (url: string) =>
-        url ? <img src={url} alt="" width={60} /> : "Không có",
+      dataIndex: "image",
+      key: "image",
+      render: (url: string) => (
+        <img src={getImageUrl(url)} alt="Ảnh món ăn" width={60} />
+      ),
     },
     { title: "Tên món", dataIndex: "ten_do_an", key: "ten_do_an" },
     { title: "Mô tả", dataIndex: "mo_ta", key: "mo_ta" },
     {
-      title: "Giá",
-      dataIndex: "gia",
-      key: "gia",
+      title: "Giá nhập",
+      dataIndex: "gia_nhap",
+      key: "gia_nhap",
       render: (gia: number) => gia.toLocaleString() + " đ",
     },
-    { title: "Số lượng", dataIndex: "so_luong_ton", key: "so_luong_ton" },
+    {
+      title: "Giá bán",
+      dataIndex: "gia_ban",
+      key: "gia_ban",
+      render: (gia: number) => gia.toLocaleString() + " đ",
+    },
+    {
+      title: "Số lượng tồn",
+      dataIndex: "so_luong_ton",
+      key: "so_luong_ton",
+    },
     {
       title: "Hành động",
       key: "action",
@@ -186,12 +162,22 @@ const FoodList = () => {
   ];
 
   return (
-    <Card style={{ margin: "15px" ,background: "#fff", height: "95%" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
+    <Card style={{ margin: "15px", background: "#fff", height: "95%" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
         <Title level={3} style={{ margin: 0 }}>
           Danh sách món ăn
         </Title>
-        <Button icon={<PlusOutlined />} type="primary" onClick={() => openModal()}>
+        <Button
+          icon={<PlusOutlined />}
+          type="primary"
+          onClick={() => openModal()}
+        >
           Thêm món ăn
         </Button>
       </div>
@@ -230,26 +216,27 @@ const FoodList = () => {
           </Form.Item>
           <Form.Item label="Hình ảnh">
             <Upload
-              customRequest={customUpload}
               listType="picture"
               fileList={fileList}
+              onChange={({ fileList }) => setFileList(fileList)}
               onRemove={() => setFileList([])}
-              beforeUpload={(file: RcFile) => {
-                const isImage = ["image/jpeg", "image/png", "image/gif"].includes(file.type);
-                if (!isImage) {
-                  message.error("Chỉ hỗ trợ JPG/PNG/GIF");
-                }
-                return isImage || Upload.LIST_IGNORE;
-              }}
+              beforeUpload={() => false}
               maxCount={1}
             >
-              <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
+              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
             </Upload>
           </Form.Item>
           <Form.Item
-            label="Giá (VND)"
-            name="gia"
-            rules={[{ required: true, message: "Vui lòng nhập giá!" }]}
+            label="Giá nhập (VND)"
+            name="gia_nhap"
+            rules={[{ required: true, message: "Vui lòng nhập giá nhập!" }]}
+          >
+            <InputNumber min={0} style={{ width: "100%" }} />
+          </Form.Item>
+          <Form.Item
+            label="Giá bán (VND)"
+            name="gia_ban"
+            rules={[{ required: true, message: "Vui lòng nhập giá bán!" }]}
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
