@@ -352,3 +352,8 @@ export const getCreateThanhToanMoMo = async ({resource = "momo-pay" , values} : 
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
+
+export const getListThanhToan = async ({resource = "thanh_toan"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}

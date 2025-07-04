@@ -44,6 +44,7 @@ import TimKiemPhim from '../pages/Users/Timkiemphim';
 import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
 import TrashMovies from '../pages/Admin/MoviesPage/TrashMovies';
 import ThanhToan from '../pages/Users/DatVe/ThanhToan';
+import LichSuDatVe from '../pages/Users/DatVe/LichSuDatVe';
 
 
 
@@ -68,6 +69,7 @@ const Routermain = () => {
         { path: 'register', element: <Register /> },
         { path: 'auth/google/callback', element: <GoogleCallback /> },
         { path: 'profile', element: <ProfilePage /> },
+        { path: 'history', element: <LichSuDatVe /> },
         { path: '/tim-kiem-phim', element: <TimKiemPhim /> },
 
 

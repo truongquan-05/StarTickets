@@ -91,23 +91,33 @@ class CheckOutController extends Controller
     }
 
     public function handleIpn(Request $request)
-    {
-        $data = $request->all();
-        $extraData = json_decode($data['extraData'], true);
-        $extraData['ma_giao_dich'] = $data['orderId'];
-        if ($data['resultCode'] == 0) {
-           $ThanhToan = ThanhToan::create($extraData);
+{
+    $data = $request->all();
 
-            return response()->json([
-                
-                'data' => $ThanhToan
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Error'
-            ], 422);
-        }
+    if (!isset($data['extraData']) || !isset($data['orderId'])) {
+        return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
     }
+
+    $extraData = json_decode($data['extraData'], true);
+    $extraData['ma_giao_dich'] = $data['orderId'];
+
+    if ($data['resultCode'] == 0) {
+        $thanhToan = ThanhToan::create($extraData);
+
+        // Redirect về trang history với dữ liệu truyền qua query string
+        $queryParams = http_build_query([
+            'dat_ve_id' => $thanhToan->dat_ve_id,
+            'phuong_thuc_thanh_toan_id' => $thanhToan->phuong_thuc_thanh_toan_id,
+            'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+            'ma_giao_dich' => $thanhToan->ma_giao_dich,
+        ]);
+
+        return redirect("http://localhost:5173/history?$queryParams");
+    } else {
+        return redirect("http://localhost:5173/history?error=1");
+    }
+}
+
 
 
 

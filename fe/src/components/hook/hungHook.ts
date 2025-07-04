@@ -601,3 +601,10 @@ export const useCreateThanhToanMoMo = ({ resource = "momo-pay" }: Props) => {
   });
 };
 
+export const useListThanhToan = ({resource = "thanh_toan"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListDatVe({resource})
+  })
+}
+
