@@ -23,4 +23,7 @@ class DatVe extends Model
     {
         return $this->hasMany(DatVeChiTiet::class, 'dat_ve_id', 'id');
     }
+    public function lichChieu() {
+    return $this->belongsTo(LichChieu::class, 'lich_chieu_id');
+}
 }
