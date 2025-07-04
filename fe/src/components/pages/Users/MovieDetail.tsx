@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react"; // <-- Import useRef
 import { Button, Spin, Image, Modal, message } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../../provider/duProvider";
 import {
   useListLichChieu,
@@ -59,8 +59,9 @@ function checkGapSeats(selectedSeats: string[]): boolean {
   return false; // không cách quãng
 }
 const MovieDetailUser = () => {
-  const TIMEOUT_MINUTES = 1;
+  const TIMEOUT_MINUTES = 5;
   const { id } = useParams();
+  const [modalVisible, setModalVisible] = useState(false);
   const [movie, setMovie] = useState<any>(null);
   const [loadingMovie, setLoadingMovie] = useState(true);
   const [selectedPhong, setSelectedPhong] = useState<IPhongChieu | null>(null);
@@ -96,14 +97,33 @@ const MovieDetailUser = () => {
     isError: isErrorGhe,
   } = useListGhe({ resource: "ghe", phong_id: selectedPhong?.id });
   const BASE_URL = "http://127.0.0.1:8000";
-
+  const navigate = useNavigate();
   // 1. Tạo Refs để lưu trữ giá trị state/data mới nhất
   const selectedSeatsRef = useRef<string[]>([]);
   const selectedLichChieuIdRef = useRef<number | null>(null);
   const danhSachGheRef = useRef<IGhe[]>([]);
   const checkGheListRef = useRef<ICheckGhe[]>([]);
+   useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const selectedSeats = sessionStorage.getItem("selectedSeats");
+      if (selectedSeats && selectedSeats.length > 0) {
+        event.preventDefault();
+        event.returnValue = ""; // Bắt buộc có để hiện cảnh báo trên Chrome
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-  // 2. Cập nhật Refs mỗi khi state/data thay đổi
+    // 2. Khi trang được load lại, kiểm tra ghế trong sessionStorage
+    const selectedSeatsOnLoad = sessionStorage.getItem("selectedSeats");
+    if (selectedSeatsOnLoad && selectedSeatsOnLoad.length > 0) {
+      // Đẩy về trang chủ nếu có ghế chưa thanh toán
+      navigate("/", { replace: true });
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [navigate]);
   useEffect(() => {
     selectedSeatsRef.current = selectedSeats;
   }, [selectedSeats]);
@@ -119,31 +139,38 @@ const MovieDetailUser = () => {
   useEffect(() => {
     checkGheListRef.current = checkGheList;
   }, [checkGheList]);
-  const releaseSeatsApiCore = useCallback(async (
-    seatsToProcess: string[],
-    lichChieuIdToProcess: number | null
-  ) => {
-    if (!lichChieuIdToProcess || seatsToProcess.length === 0) {
-      return;
-    }
-    const currentDanhSachGhe = danhSachGheRef.current;
-    const currentCheckGheList = checkGheListRef.current;
-    for (const seatNumber of seatsToProcess) {
-      const ghe = currentDanhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
-      if (ghe) {
-        const correspondingCheckGhe = currentCheckGheList.find(
-          item => item.ghe_id === ghe.id && item.lich_chieu_id === lichChieuIdToProcess
+  const releaseSeatsApiCore = useCallback(
+    async (seatsToProcess: string[], lichChieuIdToProcess: number | null) => {
+      if (!lichChieuIdToProcess || seatsToProcess.length === 0) {
+        return;
+      }
+      const currentDanhSachGhe = danhSachGheRef.current;
+      const currentCheckGheList = checkGheListRef.current;
+      for (const seatNumber of seatsToProcess) {
+        const ghe = currentDanhSachGhe.find(
+          (g: IGhe) => g.so_ghe === seatNumber
         );
-        if (correspondingCheckGhe && correspondingCheckGhe.trang_thai === "dang_dat") {
-          updateCheckGhe({
-            id: correspondingCheckGhe.id,
-            values: { trang_thai: "trong" },
-            lichChieuId: lichChieuIdToProcess,
-          });
-        } 
-      } 
-    }
-  }, [updateCheckGhe]); // Dependencies của hàm core: chỉ là mutation function
+        if (ghe) {
+          const correspondingCheckGhe = currentCheckGheList.find(
+            (item) =>
+              item.ghe_id === ghe.id &&
+              item.lich_chieu_id === lichChieuIdToProcess
+          );
+          if (
+            correspondingCheckGhe &&
+            correspondingCheckGhe.trang_thai === "dang_dat"
+          ) {
+            updateCheckGhe({
+              id: correspondingCheckGhe.id,
+              values: { trang_thai: "trong" },
+              lichChieuId: lichChieuIdToProcess,
+            });
+          }
+        }
+      }
+    },
+    [updateCheckGhe]
+  ); // Dependencies của hàm core: chỉ là mutation function
   const releaseOccupiedSeatsForUI = useCallback(async () => {
     await releaseSeatsApiCore([...selectedSeats], selectedLichChieuId);
     setSelectedSeats([]);
@@ -151,8 +178,12 @@ const MovieDetailUser = () => {
     setTotalPrice(0);
   }, [selectedSeats, selectedLichChieuId, releaseSeatsApiCore]); // Dependencies
   const releaseOccupiedSeatsOnUnmount = useCallback(async () => {
-    await releaseSeatsApiCore(selectedSeatsRef.current, selectedLichChieuIdRef.current);
+    await releaseSeatsApiCore(
+      selectedSeatsRef.current,
+      selectedLichChieuIdRef.current
+    );
   }, [releaseSeatsApiCore]); // Dependencies: chỉ là hàm core API
+  
   const { clearTimer, remainingTime } = useBookingTimer({
     selectedSeatsCount: selectedSeats.length,
     selectedLichChieuId: selectedLichChieuId,
@@ -294,7 +325,10 @@ const MovieDetailUser = () => {
   ]);
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (selectedSeatsRef.current.length > 0 && selectedLichChieuIdRef.current !== null) {
+      if (
+        selectedSeatsRef.current.length > 0 &&
+        selectedLichChieuIdRef.current !== null
+      ) {
         const data = {
           lich_chieu_id: selectedLichChieuIdRef.current,
           ghe_so: selectedSeatsRef.current,
@@ -304,8 +338,7 @@ const MovieDetailUser = () => {
         });
         try {
           navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
-        } catch (error) {
-        }
+        } catch (error) {}
       }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -314,6 +347,13 @@ const MovieDetailUser = () => {
       releaseOccupiedSeatsOnUnmount();
     };
   }, [releaseOccupiedSeatsOnUnmount]); // <-- Dependency duy nhất là hàm cleanup cụ thể này
+  useEffect(() => {
+    if (selectedSeats.length > 0) {
+      sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
+    } else {
+      sessionStorage.removeItem("selectedSeats");
+    }
+  }, [selectedSeats]);
   if (
     loadingMovie ||
     loadingLichChieu ||
@@ -324,7 +364,29 @@ const MovieDetailUser = () => {
   )
     return <Spin />;
   if (!movie) return <p>Không tìm thấy phim</p>;
+  const handleThanhToanClick = () => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      alert("Vui lòng đăng nhập trước khi thanh toán.");
+      navigate("/login");
+      return;
+    }
 
+    if (!selectedLichChieuId || selectedSeats.length === 0) {
+      alert("Vui lòng chọn ghế trước khi thanh toán.");
+      return;
+    }
+
+    clearTimer();
+
+    navigate("/check-out", {
+      state: {
+        lichChieuId: selectedLichChieuId,
+        selectedSeats,
+        totalPrice,
+      },
+    });
+  };
   const filteredLichChieu = (lichChieuList as ILichChieu[]).filter(
     (lc) => lc.phim_id === movie.id
   );
@@ -759,10 +821,7 @@ const MovieDetailUser = () => {
             </div>
             <div style={{ textAlign: "right" }}>
               <button
-                onClick={() => {
-                  clearTimer();
-                  
-                }}
+                onClick={handleThanhToanClick}
                 style={{
                   padding: "6px 12px",
                   fontSize: 16,
