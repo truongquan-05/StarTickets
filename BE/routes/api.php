@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Client\DatVeController;
 use App\Http\Controllers\Admin\GheController;
 use App\Http\Controllers\Admin\RapController;
 use App\Http\Controllers\Admin\DoAnController;
@@ -12,6 +11,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\VaiTroController;
+use App\Http\Controllers\Client\DatVeController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\TheLoaiController;
 use App\Http\Controllers\Admin\ChuyenNguController;
@@ -19,10 +19,11 @@ use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Client\CheckGheController;
+use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Admin\PhongChieuController;
+use App\Http\Controllers\Admin\QuanLyDonVeController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
-use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 
 // Route::get('/user', function (Request $request) {
@@ -61,7 +62,7 @@ Route::put('phim/{id}', [PhimController::class, 'update']);
 Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
-Route::get('/phim/trashed/list', [PhimController::class, 'trashed']); 
+Route::get('/phim/trashed/list', [PhimController::class, 'trashed']);
 
 
 
@@ -143,6 +144,14 @@ Route::prefix('admin')->group(function () {
     Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']); // Xóa đánh giá
 });
 
+//quan ly don ve
+
+Route::prefix('admin')->group(function () {
+    Route::get('don-ve', [QuanLyDonVeController::class, 'index']);
+    Route::get('don-ve/{id}', [QuanLyDonVeController::class, 'show']);
+    Route::post('don-ve/loc', [QuanLyDonVeController::class, 'loc']);
+    Route::get('don-ve-phim', [QuanLyDonVeController::class, 'phimCoLichChieu']);
+});
 // XỬ LÝ ĐĂNG NHẬP VỚI GOOGLE
 Route::prefix('auth/google')->group(function () {
     Route::get('redirect', [LoginController::class, 'redirect']); //Dùng cái này
