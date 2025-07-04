@@ -80,7 +80,7 @@ export const getCreateFood = async ({ resource = "do_an", values }: Props) => {
 };
 
 export const getUpdateFood = async ({ id, values }: any) => {
-  values.append("_method", "PUT"); // ✅ Bắt buộc với FormData
+  values.append("_method", "PUT"); 
   return await axios.post(`http://127.0.0.1:8000/api/do_an/${id}`, values, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -112,13 +112,13 @@ export const searchMovies = async (keyword: string) => {
 // duProvider.ts
 export const getRaps = () =>
   axiosClient.get("/rap").then((res) => {
-    console.log(">>> getRaps:", res.data); // debug
-    return res.data.data || []; // 👈 đảm bảo trả về mảng
+    console.log(">>> getRaps:", res.data); 
+    return res.data.data || [];
   });
 
 export const getTheLoais = () =>
   axiosClient.get("/the_loai").then((res) => {
-    console.log(">>> getTheLoais:", res.data); // debug
+    console.log(">>> getTheLoais:", res.data); 
     return res.data.data || [];
   });
 
