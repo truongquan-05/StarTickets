@@ -35,6 +35,8 @@ const Home = () => {
           getCurrentMovies(),
           getUpcomingMovies(),
         ]);
+        console.log("Phim đang chiếu:", current);
+        console.log("Phim sắp chiếu:", upcoming);
         setCurrentMovies(current);
         setUpcomingMovies(upcoming);
       } catch (error) {
@@ -46,10 +48,10 @@ const Home = () => {
 
     fetchData();
   }, []);
+  const [activeTab, setActiveTab] = useState<"now" | "upcoming">("now");
 
   return (
     <div className="home-wrapper">
-      
       {/* Banner bằng Swiper */}
       <Swiper
         modules={[Navigation, Autoplay]}
@@ -76,68 +78,72 @@ const Home = () => {
           </div>
         </SwiperSlide>
       </Swiper>
-  <QuickBooking />
-      {/* Phim đang chiếu */}
-      <div className="section">
-        <Title level={3}>Phim đang chiếu</Title>
-        {loading ? (
-          <Spin />
-        ) : Array.isArray(currentMovies) && currentMovies.length > 0 ? (
-          <Swiper
-            spaceBetween={24}
-            slidesPerView={5}
-            navigation
-            modules={[Navigation]}
-          >
-            {currentMovies.map((movie: any, i: number) => (
-              <SwiperSlide key={i}>
-                <div className="movie-card">
-                  <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <img
-                      src={getImageUrl(
-                        movie.hinh_anh || movie.image || movie.anh_poster
-                      )}
-                      alt={movie.title || movie.ten_phim}
-                      style={{
-                        width: "100%",
-                        height: "280px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://via.placeholder.com/220x280?text=No+Image";
-                      }}
-                    />
-                  </Link>
-                  <h4>{movie.title || movie.ten_phim}</h4>
-                  <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
-                    Ngày chiếu:{" "}
-                    {movie.ngay_cong_chieu
-                      ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
-                      : "Chưa cập nhật"}
-                  </p>
-                  <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <Button type="primary">Mua vé</Button>
-                  </Link>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        ) : (
-          <p>Không có phim đang chiếu.</p>
-        )}
+      <QuickBooking />
+      {/* Tabs chọn phim */}
+      <div className=" movie-tabs">
+        <button
+          className={`tab-btn ${activeTab === "now" ? "active" : ""}`}
+          onClick={() => setActiveTab("now")}
+        >
+          PHIM ĐANG CHIẾU
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "upcoming" ? "active" : ""}`}
+          onClick={() => setActiveTab("upcoming")}
+        >
+          PHIM SẮP CHIẾU
+        </button>
       </div>
 
-      {/* Phim sắp chiếu */}
+      {/* Nội dung phim dựa theo tab */}
       <div className="section">
-        <Title level={3}>Phim sắp chiếu</Title>
         {loading ? (
           <Spin />
+        ) : activeTab === "now" ? (
+          Array.isArray(currentMovies) && currentMovies.length > 0 ? (
+            <Swiper
+              spaceBetween={24}
+              slidesPerView={4}
+              navigation
+              modules={[Navigation]}
+            >
+              {currentMovies.map((movie: any, i: number) => (
+                <SwiperSlide key={i}>
+                  <div className="movie-card">
+                    <Link to={`/phim/${movie.slug || movie.id}`}>
+                      <img
+                        src={getImageUrl(
+                          movie.hinh_anh || movie.image || movie.anh_poster
+                        )}
+                        alt={movie.title || movie.ten_phim}
+
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://via.placeholder.com/220x280?text=No+Image";
+                        }}
+                      />
+                    </Link>
+                    <h4>{movie.title || movie.ten_phim}</h4>
+                    <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
+                      Ngày chiếu:{" "}
+                      {movie.ngay_cong_chieu
+                        ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+                        : "Chưa cập nhật"}
+                    </p>
+                    <Link to={`/phim/${movie.slug || movie.id}`}>
+                      <Button type="primary">Mua vé</Button>
+                    </Link>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <p>Không có phim đang chiếu.</p>
+          )
         ) : Array.isArray(upcomingMovies) && upcomingMovies.length > 0 ? (
           <Swiper
             spaceBetween={24}
-            slidesPerView={5}
+            slidesPerView={4}
             navigation
             modules={[Navigation]}
           >
@@ -150,12 +156,6 @@ const Home = () => {
                         movie.image || movie.hinh_anh || movie.anh_poster
                       )}
                       alt={movie.title || movie.ten_phim}
-                      style={{
-                        width: "100%",
-                        height: "280px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
                       onError={(e) => {
                         e.currentTarget.src =
                           "https://via.placeholder.com/220x280?text=No+Image";
@@ -183,43 +183,42 @@ const Home = () => {
 
       {/* Phim nổi bật */}
       <div className="featured-movie">
-  <img
-    src={featuredImage}
-    alt="phim nổi bật"
-    className="featured-img"
-  />
-  <div className="featured-overlay">
-    <div className="featured-content">
-      <h2>Bạn chưa có tài khoản ?</h2>
-      <p>
-        Hãy đăng ký ngay để trải nghiệm những bộ phim mới nhất và nhận nhiều ưu đãi hấp dẫn từ StarTickets!
-      </p>
-      <button className="featured-button">
-        <a href="/register">Đăng ký ngay</a>
-      </button>
-    </div>
-  </div>
-</div>
-
+        <img src={featuredImage} alt="phim nổi bật" className="featured-img" />
+        <div className="featured-overlay">
+          <div className="featured-content">
+            <h2>Bạn chưa có tài khoản ?</h2>
+            <p>
+              Hãy đăng ký ngay để trải nghiệm những bộ phim mới nhất và nhận
+              nhiều ưu đãi hấp dẫn từ StarTickets!
+            </p>
+            <button className="featured-button">
+              <a href="/register">Đăng ký ngay</a>
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Thông tin liên hệ */}
       <div className="contact-section">
         <div className="contact-left">
           <p>LIÊN HỆ VỚI CHÚNG TÔI</p>
           <div className="social-icon fb-icon">
-            <a href="https://www.facebook.com/hthinh575"><img
-              src="https://cinestar.com.vn/assets/images/ct-1.webp"
-              alt="facebook"
-            />
-            <span>FACEBOOK</span></a>
+            <a href="https://www.facebook.com/hthinh575">
+              <img
+                src="https://cinestar.com.vn/assets/images/ct-1.webp"
+                alt="facebook"
+              />
+              <span>FACEBOOK</span>
+            </a>
           </div>
           <div className="social-icon zl-icon">
             <a href="#">
               <span>ZALO CHAT</span>
-            <img
-              src="	https://cinestar.com.vn/assets/images/ct-2.webp"
-              alt="ZALO CHAT"
-            /></a>   
+              <img
+                src="	https://cinestar.com.vn/assets/images/ct-2.webp"
+                alt="ZALO CHAT"
+              />
+            </a>
           </div>
         </div>
 
@@ -239,9 +238,13 @@ const Home = () => {
           </p>
           <input type="text" placeholder="Họ và tên" />
           <input type="email" placeholder="Email" />
-          <textarea placeholder="Thông tin liên hệ hoặc phản ánh" rows={10}></textarea>
-          <button className="contact-btn"><span>Gửi ngay</span></button>
-
+          <textarea
+            placeholder="Thông tin liên hệ hoặc phản ánh"
+            rows={10}
+          ></textarea>
+          <button className="contact-btn">
+            <span>Gửi ngay</span>
+          </button>
         </div>
       </div>
     </div>
