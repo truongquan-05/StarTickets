@@ -48,11 +48,11 @@ const QuickBooking = () => {
 
     if (query.the_loai_id.length > 0) {
       query.the_loai_id.forEach((id) =>
-        searchParams.append("the_loai_id[]", id.toString())
+        searchParams.append("the_loai_id", id.toString())
       );
     }
 
-    searchParams.append("ngay_cong_chieu", query.ngay_cong_chieu);
+    searchParams.append("ngay_chieu", query.ngay_cong_chieu);
     navigate(`/tim-kiem-phim?${searchParams.toString()}`);
   };
 

@@ -88,7 +88,7 @@ export const getUpdateFood = async ({ id, values }: any) => {
   });
 };
 
-
+// Hiển thị phim
 export const getCurrentMovies = async () => {
   const res = await axiosClient.get("phim-dang-chieu");
   return res.data;
@@ -123,7 +123,7 @@ export const getTheLoais = () =>
   });
 
 export const searchPhim = (params: any) => {
-  return axiosClient.post("/loc", { params });
+  return axiosClient.post("/loc", params);
 };
 
 
