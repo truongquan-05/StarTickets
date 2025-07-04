@@ -204,6 +204,7 @@ const MovieDetailUser = () => {
       );
       setSelectedLichChieu(foundLichChieu || null);
       if (foundLichChieu) {
+        
       } else {
         console.warn(
           `Không tìm thấy lịch chiếu với ID: ${selectedLichChieuId} trong danh sách.`
@@ -338,7 +339,9 @@ const MovieDetailUser = () => {
         });
         try {
           navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
-        } catch (error) {}
+        } catch (error) {
+          
+        }
       }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);

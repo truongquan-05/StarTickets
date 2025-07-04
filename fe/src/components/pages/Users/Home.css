@@ -512,7 +512,12 @@
   flex-wrap: wrap;
   margin-top: 30px;
 }
-
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px; 
+}
 /* Tiêu đề */
 .quick-booking-title {
   font-weight: 800;
@@ -553,6 +558,7 @@
   border: none;
   height: 32px;
 }
+
 
 
 
