@@ -66,6 +66,9 @@ const ThanhToan: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const bookingData = location.state?.bookingData as BookingData | undefined;
+  useEffect(() => {
+  console.log("Booking Data:", bookingData);
+}, [bookingData]);
 
   const { data: rapList, isLoading: loadingRap } = useListCinemas({ resource: "rap" });
 
