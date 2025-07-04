@@ -48,6 +48,7 @@ const Home = () => {
 
     fetchData();
   }, []);
+  const [activeTab, setActiveTab] = useState<"now" | "upcoming">("now");
 
   return (
     <div className="home-wrapper">
@@ -78,67 +79,71 @@ const Home = () => {
         </SwiperSlide>
       </Swiper>
       <QuickBooking />
-      {/* Phim đang chiếu */}
-      <div className="section">
-        <Title level={3}>Phim đang chiếu</Title>
-        {loading ? (
-          <Spin />
-        ) : Array.isArray(currentMovies) && currentMovies.length > 0 ? (
-          <Swiper
-            spaceBetween={24}
-            slidesPerView={5}
-            navigation
-            modules={[Navigation]}
-          >
-            {currentMovies.map((movie: any, i: number) => (
-              <SwiperSlide key={i}>
-                <div className="movie-card">
-                  <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <img
-                      src={getImageUrl(
-                        movie.hinh_anh || movie.image || movie.anh_poster
-                      )}
-                      alt={movie.title || movie.ten_phim}
-                      style={{
-                        width: "100%",
-                        height: "280px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://via.placeholder.com/220x280?text=No+Image";
-                      }}
-                    />
-                  </Link>
-                  <h4>{movie.title || movie.ten_phim}</h4>
-                  <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
-                    Ngày chiếu:{" "}
-                    {movie.ngay_cong_chieu
-                      ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
-                      : "Chưa cập nhật"}
-                  </p>
-                  <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <Button type="primary">Mua vé</Button>
-                  </Link>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        ) : (
-          <p>Không có phim đang chiếu.</p>
-        )}
+      {/* Tabs chọn phim */}
+      <div className=" movie-tabs">
+        <button
+          className={`tab-btn ${activeTab === "now" ? "active" : ""}`}
+          onClick={() => setActiveTab("now")}
+        >
+          PHIM ĐANG CHIẾU
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "upcoming" ? "active" : ""}`}
+          onClick={() => setActiveTab("upcoming")}
+        >
+          PHIM SẮP CHIẾU
+        </button>
       </div>
 
-      {/* Phim sắp chiếu */}
+      {/* Nội dung phim dựa theo tab */}
       <div className="section">
-        <Title level={3}>Phim sắp chiếu</Title>
         {loading ? (
           <Spin />
+        ) : activeTab === "now" ? (
+          Array.isArray(currentMovies) && currentMovies.length > 0 ? (
+            <Swiper
+              spaceBetween={24}
+              slidesPerView={4}
+              navigation
+              modules={[Navigation]}
+            >
+              {currentMovies.map((movie: any, i: number) => (
+                <SwiperSlide key={i}>
+                  <div className="movie-card">
+                    <Link to={`/phim/${movie.slug || movie.id}`}>
+                      <img
+                        src={getImageUrl(
+                          movie.hinh_anh || movie.image || movie.anh_poster
+                        )}
+                        alt={movie.title || movie.ten_phim}
+
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://via.placeholder.com/220x280?text=No+Image";
+                        }}
+                      />
+                    </Link>
+                    <h4>{movie.title || movie.ten_phim}</h4>
+                    <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
+                      Ngày chiếu:{" "}
+                      {movie.ngay_cong_chieu
+                        ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+                        : "Chưa cập nhật"}
+                    </p>
+                    <Link to={`/phim/${movie.slug || movie.id}`}>
+                      <Button type="primary">Mua vé</Button>
+                    </Link>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <p>Không có phim đang chiếu.</p>
+          )
         ) : Array.isArray(upcomingMovies) && upcomingMovies.length > 0 ? (
           <Swiper
             spaceBetween={24}
-            slidesPerView={5}
+            slidesPerView={4}
             navigation
             modules={[Navigation]}
           >
@@ -151,12 +156,6 @@ const Home = () => {
                         movie.image || movie.hinh_anh || movie.anh_poster
                       )}
                       alt={movie.title || movie.ten_phim}
-                      style={{
-                        width: "100%",
-                        height: "280px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
                       onError={(e) => {
                         e.currentTarget.src =
                           "https://via.placeholder.com/220x280?text=No+Image";
