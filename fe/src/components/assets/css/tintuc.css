@@ -29,7 +29,10 @@
   overflow: hidden;
   background-color: #2c1b4f;
   border: 1px solid #3c2b6f;
-  box-shadow: 0 12px 25px 0 rgba(243, 234, 40, .5);
+  box-shadow: 0 8px 24px rgb(149 157 165 / 20%);
+}
+.news-card:hover {
+  box-shadow: 0 12px 32px rgb(149 157 165 / 30%);
 }
 
 

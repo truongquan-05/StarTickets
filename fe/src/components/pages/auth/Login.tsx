@@ -25,7 +25,6 @@ const Login = () => {
       <Row justify="center" align="middle" className="login-container">
         <Col xs={22} sm={20} md={16} lg={12} xl={10} className="login-box">
           <h2 className="login-title">Đăng nhập</h2>
-
           <Form
             name="loginForm"
             initialValues={{ remember: true }}
@@ -77,7 +76,7 @@ const Login = () => {
                 <Col>
                   <Form.Item name="remember" valuePropName="checked" noStyle>
                     <Checkbox
-                      className="custom-checkbox"
+                      className="custom-checkboxx"
                       style={{ color: "white" }}
                     >
                       Ghi nhớ đăng nhập

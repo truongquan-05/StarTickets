@@ -13,7 +13,11 @@
 
 /* Section wrapper */
 .section {
-  padding: 40px 80px;
+    width: 100%;
+  background-color: #1a0933;
+  padding: 15px 10%;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
 .section h3 {
@@ -247,6 +251,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 8px 24px rgb(149 157 165 / 40%);
 }
 
 .contact-right {
@@ -254,6 +259,7 @@
   background-color: rgba(51,102,204,.8);
   padding: 40px; /* padding đều 4 phía */
   border-radius: 4px;
+  box-shadow: 0 8px 24px rgb(149 157 165 / 20%);
   color: #fff;
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
