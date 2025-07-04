@@ -193,6 +193,17 @@ export const getListGhe = async ({
   return data.data;
 };
 
+export const getUpdateLoaiGhe = async ({resource = "ghe", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}/sua_loai_ghe`,values);
+  return data
+}
+export const getUpdateTrangThaiGhe = async ({resource = "ghe", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
+
 export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props) => {
   if(!id) return;
   const {data} = await axiosClient.delete(`${resource}/${id}`)
@@ -266,6 +277,78 @@ export const getDetailTinTuc = async ({ id, resource = "tin_tuc" }: Props) => {
 };
 
 export const getCreateGiaVe = async ({resource = "gia_ve" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getCheckGheByLichChieuId = async ({ id, resource = "check_ghe" }: Props) => {
+  if (!id) throw new Error("Thiếu lich_chieu_id");
+  const { data } = await axiosClient.get(`${resource}/${id}`);
+  return data;
+};
+
+// Sửa trạng thái ghế theo id check_ghe (id bản ghi check_ghe)
+export const getUpdateCheckGhe = async ({ id, values, resource = "check_ghe" }: Props) => {
+  if (!id) {
+    throw new Error("Thiếu id bản ghi check_ghe để cập nhật");
+  }
+  const { data } = await axiosClient.put(`${resource}/${id}`, values);
+  
+  return data;
+};
+
+// Xóa bản ghi check_ghe theo id
+export const getDeleteCheckGhe = async ({ id, resource = "check_ghe" }: Props) => {
+  if (!id) throw new Error("Thiếu id bản ghi check_ghe");
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+// 👇 XÓA MỀM phim (soft-delete)
+export const getSoftDeleteMovies = async ({ resource = "phim", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/soft-delete/${id}`);
+  return data;
+};
+
+// 👇 DANH SÁCH phim đã xóa mềm
+export const getListTrashMovies = async ({ resource = "phim" }: Props) => {
+  const { data } = await axiosClient.get(`${resource}/trashed/list`);
+  return data;
+};
+
+// 👇 KHÔI PHỤC phim đã xóa mềm
+export const getRestoreMovies = async ({ resource = "phim", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.post(`${resource}/restore/${id}`);
+  return data;
+};
+// xóa vĩnh viễn
+// ✅ XÓA VĨNH VIỄN PHIM
+export const deleteForeverMovie = async ({ resource = "phim", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+
+export const getCreateDatVe = async ({resource = "dat_ve" , values} : Props) => {
+  console.log("👉 Dữ liệu gửi đi:", values);
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const deleteDatVe = async ({ resource = "dat_ve", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+
+export const getListDatVe = async ({ resource = "dat_ve" }: Props) => {
+  const { data } = await axiosClient.get(`${resource}/trashed/list`);
+  return data;
+};
+
+export const getCreateThanhToanMoMo = async ({resource = "momo-pay" , values} : Props) => {
+  console.log("👉 Dữ liệu gửi đi:", values);
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }

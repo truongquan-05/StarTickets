@@ -1,8 +1,31 @@
-import { Button, Space } from "antd";
+import { Space } from "antd";
 import logo from "../../../assets/logodone-Photoroom.png";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const FooterUser = () => {
+  type Rap = {
+    id: number;
+    ten_rap: string;
+  };
+  const [rapList, setRapList] = useState<Rap[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/rap")
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setRapList(res.data);
+        } else {
+          setRapList(res.data.data); // Nếu API trả về dạng { data: [...] }
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi lấy danh sách rạp:", err);
+      });
+  }, []);
+
   return (
     <footer className="cinestar-footer">
       <div className="footer-top">
@@ -13,8 +36,12 @@ const FooterUser = () => {
           <p>BE HAPPY, BE A STAR</p>
           <div className="header-actions">
             <Space>
-              <Button className="btn-tickett">🎫 ĐẶT VÉ NGAY</Button>
-              <Button className="btn-popcorn2">🍿 ĐẶT BẮP NƯỚC</Button>
+              <button className="btn-tickett">
+                <span>🎫 ĐẶT VÉ NGAY</span>
+              </button>
+              <button className="btn-popcorn2">
+                <span>🍿 ĐẶT BẮP NƯỚC</span>
+              </button>
             </Space>
           </div>
           <div className="social-icons">
@@ -44,16 +71,16 @@ const FooterUser = () => {
             </a>
           </div>
         </div>
-        
+
         <div className="footer-links">
           <div>
-            <h4>Tài khoản</h4>
+            <h4> TÀI KHOẢN</h4>
             <ul>
               <li>
-                <a href="#">Đăng nhập</a>
+                <a href="login">Đăng nhập</a>
               </li>
               <li>
-                <a href="#">Đăng ký</a>
+                <a href="register">Đăng ký</a>
               </li>
               <li>
                 <a href="#">Membership</a>
@@ -61,18 +88,21 @@ const FooterUser = () => {
             </ul>
           </div>
           <div>
-            <h4>Thuê sự kiện</h4>
+            <h4>XEM PHIM</h4>
             <ul>
               <li>
-                <a href="#">Thuê rạp</a>
+                <a href="#">Phim đang chiếu</a>
               </li>
               <li>
-                <a href="#">Các loại hình cho thuê khác</a>
+                <a href="#">Phim sắp chiếu</a>
+              </li>
+              <li>
+                <a href="#">Suất chiếu đặc biệt</a>
               </li>
             </ul>
           </div>
           <div>
-            <h4>Dịch vụ khác</h4>
+            <h4>DỊCH VỤ KHÁC</h4>
             <ul>
               <li>
                 <a href="#">Nhà hàng</a>
@@ -98,38 +128,16 @@ const FooterUser = () => {
             </ul>
           </div>
           <div>
-            <h4>Hệ thống rạp</h4>
+            <h4>HỆ THỐNG RẠP</h4>
             <ul>
               <li>
                 <a href="#">Tất cả hệ thống rạp</a>
               </li>
-              <li>
-                <a href="#">Cinestar Quốc Thanh (TP.HCM)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Quận 6 (TP.HCM)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Hai Bà Trưng (TP.HCM)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Sinh Viên (Bình Dương)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Huế (TP.Huế)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Đà Lạt (TP.Đà Lạt)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Lâm Đồng (Đức Trọng)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Mỹ Tho (Tiền Giang)</a>
-              </li>
-              <li>
-                <a href="#">Cinestar Kiên Giang (Rạch Sỏi)</a>
-              </li>
+              {rapList.map((rap) => (
+                <li key={rap.id}>
+                  <a href="#">{rap.ten_rap}</a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

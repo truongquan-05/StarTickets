@@ -7,20 +7,21 @@ use App\Http\Controllers\Admin\RapController;
 use App\Http\Controllers\Admin\DoAnController;
 use App\Http\Controllers\Admin\PhimController;
 use App\Http\Controllers\Auth\LoginController;
-use Illuminate\Contracts\Auth\Authenticatable;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\VaiTroController;
+use App\Http\Controllers\Client\DatVeController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\TheLoaiController;
-use App\Http\Controllers\Client\SearchController;
 use App\Http\Controllers\Admin\ChuyenNguController;
 use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
 use App\Http\Controllers\Admin\NguoiDungController;
 use App\Http\Controllers\Client\CheckGheController;
+use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Admin\PhongChieuController;
+use App\Http\Controllers\Admin\QuanLyDonVeController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
@@ -61,6 +62,13 @@ Route::put('phim/{id}', [PhimController::class, 'update']);
 Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
+Route::get('/phim/trashed/list', [PhimController::class, 'trashed']);
+
+
+
+
+
+
 
 Route::get('do_an', [DoAnController::class, 'index']);
 Route::post('do_an', [DoAnController::class, 'store']);
@@ -130,17 +138,30 @@ Route::prefix('tin_tuc')->group(function () {
 });
 
 // qli đánh giá cho admin
-Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/danh-gia', [AdminDanhGiaController::class, 'index']); // Lấy danh sách đánh giá
     Route::get('/danh-gia/{id}', [AdminDanhGiaController::class, 'show']); // Xem chi tiết đánh giá
     Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']); // Xóa đánh giá
 });
 
+//quan ly don ve
+
+Route::prefix('admin')->group(function () {
+    Route::get('don-ve', [QuanLyDonVeController::class, 'index']);
+    Route::get('don-ve/{id}', [QuanLyDonVeController::class, 'show']);
+    Route::post('don-ve/loc', [QuanLyDonVeController::class, 'loc']);
+    Route::get('don-ve-phim', [QuanLyDonVeController::class, 'phimCoLichChieu']);
+});
 // XỬ LÝ ĐĂNG NHẬP VỚI GOOGLE
 Route::prefix('auth/google')->group(function () {
     Route::get('redirect', [LoginController::class, 'redirect']); //Dùng cái này
     Route::get('callback', [LoginController::class, 'callback']);
 });
+
+//XỬ LÝ THANH TOÁN
+Route::apiResource('dat_ve', DatVeController::class);
+Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
+Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
 
 
 
@@ -153,16 +174,43 @@ Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
 Route::get('/search', [HomeController::class, 'search']);
 Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 Route::post('/loc', [HomeController::class, 'locPhimTheoRapNgayTheLoai']);
-Route::get('/rap', [HomeController::class, 'getAllRap']);
+Route::get('/rap-client', [HomeController::class, 'getAllRap']);
 Route::get('/the-loai', [HomeController::class, 'getAllTheLoai']);
 
 // đánh giá của người dùng (client)
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']); // Lấy tất cả đánh giá của user
-    Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']); // Thêm đánh giá mới
-    Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']); // Sửa đánh giá
-    Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
-});
+
+// Route::get('/phim/{phim}/danh-gia',           [ClientDanhGiaController::class, 'getByPhim']); // Lấy đánh giá theo phim
+// Route::get('/phim/{phim}/danh-gia/average',   [ClientDanhGiaController::class, 'getAverageRating']); // Lấy điểm trung bình
+
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']); // Lấy tất cả đánh giá của user
+//     Route::get('/phim/{phim}/danh-gia/me', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']); // Lấy đánh giá của user cho phim
+//     Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']); // Thêm đánh giá
+//     Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']); // Sửa đánh giá
+//     Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
+// });
+Route::get('/danh-gia/all', [ClientDanhGiaController::class, 'getAllDanhGia']);
+
+// Lấy tất cả đánh giá của 1 phim
+Route::get('/phim/{phimId}/danh-gia', [ClientDanhGiaController::class, 'getByPhim']);
+
+// Lấy điểm trung bình của phim
+Route::get('/phim/{phimId}/danh-gia/average', [ClientDanhGiaController::class, 'getAverageRating']);
+
+// Lấy đánh giá của user hiện tại cho 1 phim (không có auth thì dùng tạm id test)
+Route::get('/phim/{phimId}/danh-gia/my', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']);
+
+// Lấy tất cả đánh giá của chính người dùng hiện tại
+Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']);
+
+// Thêm đánh giá mới
+Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']);
+
+// Cập nhật đánh giá
+Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']);
+
+// Xoá đánh giá
+Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']);
 
 
 //Đăng nhập và đăng xuất

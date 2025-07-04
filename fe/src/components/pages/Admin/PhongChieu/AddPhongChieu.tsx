@@ -57,11 +57,11 @@ const AddPhongChieu = () => {
 
     createMutate(formData, {
       onSuccess: () => {
-        message.success("Thêm phòng chiếu thành công!");
+        // message.success("Thêm phòng chiếu thành công!");
         form.resetFields();
       },
       onError: (error: any) => {
-        message.error("Thêm phòng chiếu thất bại!");
+        // message.error("Thêm phòng chiếu thất bại!");
         console.error("Lỗi khi tạo phòng chiếu:", error);
       },
     });

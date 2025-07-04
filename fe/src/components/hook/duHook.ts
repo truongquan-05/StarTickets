@@ -41,7 +41,6 @@ export const useCreateUser = ({resource = "nguoi_dung"} : Props) => {
     onError: (error: any) => {
   if (error.response?.data?.errors) {
     console.error("Validation errors:", error.response.data.errors);
-    message.error("Lỗi nhập liệu: " + JSON.stringify(error.response.data.errors));
   } else {
     message.error("Thêm thất bại");
   }
@@ -71,7 +70,7 @@ export const useUpdateUser = ({ resource = "nguoi_dung" }) => {
         const messages = Object.values(errors)
           .flat()
           .join("\n");
-        message.error(messages);
+        // message.error(messages);
       } else {
         message.error("Cập nhật thất bại");
       }

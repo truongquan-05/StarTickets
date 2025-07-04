@@ -26,6 +26,7 @@ import {
   ShoppingOutlined,
   GoldOutlined,
   PaperClipOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -92,8 +93,8 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/movies/list" icon={<UnorderedListOutlined />}>
           <Link to="/admin/movies/list">Danh Sách Phim</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/movies/add" icon={<PlusCircleOutlined />}>
-          <Link to="/admin/movies/add">Add</Link>
+        <Menu.Item key="/admin/movies/trash" icon={<DeleteOutlined />}>
+          <Link to="/admin/movies/trash">Thùng rác</Link>
         </Menu.Item>
         <Menu.Item key="/admin/genre" icon={<WindowsOutlined />}>
           <Link to="/admin/genre">Thể loại phim</Link>
@@ -179,7 +180,7 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/comment/phanhoinguoidung">Phản Hồi Người Dùng</Link>
         </Menu.Item>
         <Menu.Item key="" icon={<StarOutlined />}>
-          <Link to="/admin/comment/list">Quản lý đánh giá</Link>
+          <Link to="/admin/danh-gia/list">Quản lý đánh giá</Link>
         </Menu.Item>
         <Menu.Item key="" icon={<EditOutlined />}>
           <Link to="/admin/comment/phanhoinguoidung">Quản lý bình luận</Link>
