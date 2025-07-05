@@ -52,7 +52,7 @@ const QuickBooking = () => {
       );
     }
 
-    searchParams.append("ngay_chieu", query.ngay_cong_chieu);
+    searchParams.append("ngay_cong_chieu", query.ngay_cong_chieu);
     navigate(`/tim-kiem-phim?${searchParams.toString()}`);
   };
 
