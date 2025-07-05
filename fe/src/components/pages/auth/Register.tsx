@@ -8,6 +8,7 @@ import {
   Col,
   Divider,
   Checkbox,
+  message,
 } from "antd";
 import {
   UserOutlined,
@@ -18,13 +19,47 @@ import {
   GoogleOutlined,
   SolutionOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import { useGoogleAuth } from "./GoogleAuth";
 
 const { Text, Link } = Typography;
 
 const Register = () => {
   const [form] = Form.useForm();
-  const { loginWithGoogle } = useGoogleAuth(); // hook đăng nhập với Google
+  const navigate = useNavigate();
+  const { loginWithGoogle } = useGoogleAuth();
+
+  const onFinish = async (values) => {
+    const { confirm, remember, ...submitValues } = values;
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(submitValues),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 422 && data.errors) {
+          const firstError = Object.values(data.errors)[0][0];
+          message.error(firstError || "Đăng ký không thành công.");
+        } else {
+          message.error(data.message || "Đăng ký thất bại.");
+        }
+      } else {
+        message.success("Đăng ký thành công!");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Lỗi kết nối:", error);
+      message.error("Không thể kết nối đến máy chủ.");
+    }
+  };
 
   return (
     <div className="login-background">
@@ -38,16 +73,13 @@ const Register = () => {
             layout="vertical"
             className="login-form"
             scrollToFirstError
+            onFinish={onFinish}
           >
-            <Row gutter={30}>
+            <Row gutter={24}>
               {/* Cột trái */}
               <Col xs={24} md={12}>
                 <Form.Item
-                  label={
-                    <span style={{ color: "white", fontWeight: 600 }}>
-                      Họ và tên{" "}
-                    </span>
-                  }
+                  label={<span style={{ color: "white", fontWeight: 600 }}>Họ và tên</span>}
                   name="ten"
                   rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
                 >
@@ -60,11 +92,7 @@ const Register = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label={
-                    <span style={{ color: "white", fontWeight: 600 }}>
-                      Email
-                    </span>
-                  }
+                  label={<span style={{ color: "white", fontWeight: 600 }}>Email</span>}
                   name="email"
                   rules={[
                     { required: true, message: "Vui lòng nhập email!" },
@@ -83,11 +111,7 @@ const Register = () => {
               {/* Cột phải */}
               <Col xs={24} md={12}>
                 <Form.Item
-                  label={
-                    <span style={{ color: "white", fontWeight: 600 }}>
-                      Số điện thoại
-                    </span>
-                  }
+                  label={<span style={{ color: "white", fontWeight: 600 }}>Số điện thoại</span>}
                   name="so_dien_thoai"
                   rules={[
                     { required: true, message: "Vui lòng nhập số điện thoại!" },
@@ -106,14 +130,10 @@ const Register = () => {
                   />
                 </Form.Item>
 
-                <Row gutter={20}>
+                <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
-                      label={
-                        <span style={{ color: "white", fontWeight: 600 }}>
-                          Mật khẩu
-                        </span>
-                      }
+                      label={<span style={{ color: "white", fontWeight: 600 }}>Mật khẩu</span>}
                       name="password"
                       rules={[
                         { required: true, message: "Vui lòng nhập mật khẩu!" },
@@ -132,34 +152,28 @@ const Register = () => {
 
                   <Col span={12}>
                     <Form.Item
-                      label={
-                        <span style={{ color: "white", fontWeight: 600 }}>
-                          Xác thực mật khẩu
-                        </span>
-                      }
+                      label={<span style={{ color: "white", fontWeight: 600 }}>Xác thực mật khẩu</span>}
                       name="confirm"
                       dependencies={["password"]}
                       hasFeedback
                       rules={[
                         {
                           required: true,
-                          message: "Vui lòng xác thực mật khẩu!",
+                          message: "Vui lòng xác nhận mật khẩu!",
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
                             if (!value || getFieldValue("password") === value) {
                               return Promise.resolve();
                             }
-                            return Promise.reject(
-                              new Error("Mật khẩu xác thực không khớp!")
-                            );
+                            return Promise.reject(new Error("Mật khẩu xác nhận không khớp!"));
                           },
                         }),
                       ]}
                     >
                       <Input.Password
                         prefix={<LockOutlined />}
-                        placeholder="Xác thực mật khẩu"
+                        placeholder="Xác nhận mật khẩu"
                         size="large"
                         style={{ borderRadius: "1px" }}
                       />
@@ -190,28 +204,23 @@ const Register = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                          new Error("Vui lòng chấp nhận với các điều khoản của chúng tôi!")
+                          new Error("Bạn phải đồng ý với các điều khoản!")
                         ),
                 },
               ]}
             >
-              <Checkbox className="custom-checkboxx" style={{ color: "white" }}>
-                Tôi cam kết tuân theo chính sách bảo mật và điều khoản sử dụng
-                của StarTickets.
+              <Checkbox className="custom-checkbox" style={{ color: "white" }}>
+                Tôi cam kết tuân theo chính sách bảo mật và điều khoản sử dụng của StarTickets.
               </Checkbox>
             </Form.Item>
 
-            {/* Nút đăng ký */}
-            <Row gutter={30}>
+            {/* Nút đăng ký và Google */}
+            <Row gutter={16}>
               <Col span={12}>
                 <Form.Item>
                   <Button
                     type="primary"
-                    icon={
-                      <SolutionOutlined
-                        style={{ marginRight: 5, fontSize: 20 }}
-                      />
-                    }
+                    icon={<SolutionOutlined style={{ marginRight: 5, fontSize: 20 }} />}
                     htmlType="submit"
                     block
                     size="large"
@@ -226,11 +235,7 @@ const Register = () => {
                 <Form.Item>
                   <Button
                     type="primary"
-                    icon={
-                      <GoogleOutlined
-                        style={{ marginRight: 5, fontSize: 20 }}
-                      />
-                    }
+                    icon={<GoogleOutlined style={{ marginRight: 5, fontSize: 20 }} />}
                     size="large"
                     className="btn-submit-gg-effect"
                     block
@@ -247,10 +252,7 @@ const Register = () => {
             <Form.Item style={{ textAlign: "center" }}>
               <Text style={{ color: "white" }}>
                 Bạn đã có tài khoản?{" "}
-                <Link
-                  href="/login"
-                  style={{ color: "yellow", textDecoration: "underline" }}
-                >
+                <Link href="/login" style={{ color: "yellow", textDecoration: "underline" }}>
                   Đăng nhập ngay
                 </Link>
               </Text>

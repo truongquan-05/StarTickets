@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   Input,
@@ -8,18 +8,55 @@ import {
   Row,
   Col,
   Divider,
+  message,
 } from "antd";
 import { GoogleOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useGoogleAuth } from "./GoogleAuth";
+import { useNavigate } from "react-router-dom";
 
 const { Text, Link } = Typography;
 
 const Login = () => {
-  // const onFinish = (values) => {
-  //   console.log('Login form values:', values);
-  //   // TODO: xử lý đăng nhập
-  // };
   const { loginWithGoogle } = useGoogleAuth();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // để chuyển hướng sau khi đăng nhập
+
+  const onFinish = async (values) => {
+    try {
+      setLoading(true);
+      const response = await fetch("http://127.0.0.1:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          message.error(data.message || "Email hoặc mật khẩu không đúng.");
+        } else {
+          message.error("Đã xảy ra lỗi khi đăng nhập.");
+        }
+      } else {
+        message.success("Đăng nhập thành công!");
+        // Lưu token và thông tin người dùng vào localStorage (hoặc context)
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        // Điều hướng đến trang chính
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      message.error("Không thể kết nối đến máy chủ.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-background">
       <Row justify="center" align="middle" className="login-container">
@@ -28,14 +65,12 @@ const Login = () => {
           <Form
             name="loginForm"
             initialValues={{ remember: true }}
-            // onFinish={onFinish}
+            onFinish={onFinish}
             layout="vertical"
             className="login-form"
           >
             <Form.Item
-              label={
-                <span style={{ color: "white", fontWeight: 600 }}>Email</span>
-              }
+              label={<span style={{ color: "white", fontWeight: 600 }}>Email</span>}
               name="email"
               rules={[
                 { required: true, message: "Vui lòng nhập email!" },
@@ -46,18 +81,12 @@ const Login = () => {
                 prefix={<UserOutlined />}
                 placeholder="Nhập email của bạn"
                 size="large"
-                style={{
-                  borderRadius: "1px",
-                }}
+                style={{ borderRadius: "1px" }}
               />
             </Form.Item>
 
             <Form.Item
-              label={
-                <span style={{ color: "white", fontWeight: 600 }}>
-                  Mật khẩu
-                </span>
-              }
+              label={<span style={{ color: "white", fontWeight: 600 }}>Mật khẩu</span>}
               name="password"
               rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
             >
@@ -65,9 +94,7 @@ const Login = () => {
                 prefix={<LockOutlined />}
                 placeholder="Nhập mật khẩu"
                 size="large"
-                style={{
-                  borderRadius: "1px",
-                }}
+                style={{ borderRadius: "1px" }}
               />
             </Form.Item>
 
@@ -75,10 +102,7 @@ const Login = () => {
               <Row justify="space-between" align="middle">
                 <Col>
                   <Form.Item name="remember" valuePropName="checked" noStyle>
-                    <Checkbox
-                      className="custom-checkboxx"
-                      style={{ color: "white" }}
-                    >
+                    <Checkbox className="custom-checkboxx" style={{ color: "white" }}>
                       Ghi nhớ đăng nhập
                     </Checkbox>
                   </Form.Item>
@@ -101,6 +125,7 @@ const Login = () => {
                 block
                 size="large"
                 className="btn-submit-login-effect"
+                loading={loading}
               >
                 Đăng nhập
               </Button>
@@ -111,7 +136,9 @@ const Login = () => {
             <Form.Item style={{ textAlign: "center" }}>
               <Text style={{ color: "white" }}>
                 Bạn chưa có tài khoản?{" "}
-                <Link href="/register" style={{ color: "yellow", textDecoration: "underline" }}>Đăng ký ngay</Link>
+                <Link href="/register" style={{ color: "yellow", textDecoration: "underline" }}>
+                  Đăng ký ngay
+                </Link>
               </Text>
             </Form.Item>
 

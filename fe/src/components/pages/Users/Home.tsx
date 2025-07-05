@@ -12,6 +12,12 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  PlayCircleOutlined,
+  TagOutlined,
+} from "@ant-design/icons";
 
 const { Title } = Typography;
 const BASE_URL = "http://127.0.0.1:8000";
@@ -116,7 +122,6 @@ const Home = () => {
                           movie.hinh_anh || movie.image || movie.anh_poster
                         )}
                         alt={movie.title || movie.ten_phim}
-
                         onError={(e) => {
                           e.currentTarget.src =
                             "https://via.placeholder.com/220x280?text=No+Image";
@@ -162,16 +167,38 @@ const Home = () => {
                       }}
                     />
                   </Link>
-                  <h4>{movie.title || movie.ten_phim}</h4>
-                  <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
-                    Ngày chiếu:{" "}
+
+                  {/* Tên phim giới hạn độ dài */}
+                  <h4 className="movie-title">
+                    {movie.title || movie.ten_phim}
+                  </h4>
+
+                  <p style={{ fontSize: 12, color: "#888" }}>
+                    <CalendarOutlined /> :{" "}
                     {movie.ngay_cong_chieu
                       ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
                       : "Chưa cập nhật"}
                   </p>
-                  <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <Button type="primary">Xem chi tiết</Button>
-                  </Link>
+                  <p style={{ fontSize: 12, color: "#888" }}>
+                    <TagOutlined /> :{" "}
+                    {movie.theLoai
+                      ? movie.theLoai.join(", ")
+                      : "Chưa cập nhật"}
+                  </p>
+                  <p style={{ fontSize: 12, color: "#888" }}>
+                    <ClockCircleOutlined /> :{" "}
+                    {movie.thoi_luong ? `${movie.thoi_luong}'` : "Chưa cập nhật"}
+                  </p>
+
+                  {/* Nút trailer và đặt vé nằm cạnh nhau */}
+                  <div className="movie-buttons">
+                    <Link to={`/phim/${movie.slug || movie.id}`}>
+                      <button className="play-button"><PlayCircleOutlined style={{ marginRight: 8 }} /><span>Trailer</span></button>
+                    </Link>
+                    <Link to={`/phim/${movie.slug || movie.id}`}>
+                      <button className="book-button"><span>ĐẶT VÉ NGAY</span></button>
+                    </Link>
+                  </div>
                 </div>
               </SwiperSlide>
             ))}
