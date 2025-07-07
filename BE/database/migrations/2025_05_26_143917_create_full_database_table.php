@@ -236,8 +236,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->float('diem');
-            $table->float('tong_diem');
-            $table->string('cap_do', 50);
             $table->timestamps();
         });
 
