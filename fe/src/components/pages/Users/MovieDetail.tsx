@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react"; // <-- Import useRef
 import { Button, Spin, Image, Modal, message } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../../provider/duProvider";
 import {
   useListLichChieu,
@@ -65,8 +65,8 @@ function checkGapSeats(selectedSeats: string[]): boolean {
 
 const MovieDetailUser = () => {
   const TIMEOUT_MINUTES = 5;
+  const location = useLocation();
   const { id } = useParams();
-  const [isNavigatingFromPayment, setIsNavigatingFromPayment] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [movie, setMovie] = useState<any>(null);
   const [loadingMovie, setLoadingMovie] = useState(true);
@@ -110,27 +110,27 @@ const MovieDetailUser = () => {
   const selectedLichChieuIdRef = useRef<number | null>(null);
   const danhSachGheRef = useRef<IGhe[]>([]);
   const checkGheListRef = useRef<ICheckGhe[]>([]);
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      const selectedSeats = sessionStorage.getItem("selectedSeats");
-      if (selectedSeats && selectedSeats.length > 0) {
-        event.preventDefault();
-        event.returnValue = ""; // Bắt buộc có để hiện cảnh báo trên Chrome
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+  //     const selectedSeats = sessionStorage.getItem("selectedSeats");
+  //     if (selectedSeats && selectedSeats.length > 0) {
+  //       event.preventDefault();
+  //       event.returnValue = ""; // Bắt buộc có để hiện cảnh báo trên Chrome
+  //     }
+  //   };
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // 2. Khi trang được load lại, kiểm tra ghế trong sessionStorage
-    const selectedSeatsOnLoad = sessionStorage.getItem("selectedSeats");
-    if (selectedSeatsOnLoad && selectedSeatsOnLoad.length > 0) {
-      // Đẩy về trang chủ nếu có ghế chưa thanh toán
-      navigate("/", { replace: true });
-    }
+  //   // 2. Khi trang được load lại, kiểm tra ghế trong sessionStorage
+  //   const selectedSeatsOnLoad = sessionStorage.getItem("selectedSeats");
+  //   if (selectedSeatsOnLoad && selectedSeatsOnLoad.length > 0) {
+  //     // Đẩy về trang chủ nếu có ghế chưa thanh toán
+  //     navigate("/", { replace: true });
+  //   }
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [navigate]);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, [navigate]);
   useEffect(() => {
     selectedSeatsRef.current = selectedSeats;
   }, [selectedSeats]);
@@ -190,19 +190,21 @@ const MovieDetailUser = () => {
     isProcessingPayment,
   ]);
 
-  const releaseOccupiedSeatsOnUnmount = useCallback(async () => {
-    const cameFromThanhToan = sessionStorage.getItem("justNavigatedFromThanhToan");
+  // const releaseOccupiedSeatsOnUnmount = useCallback(async () => {
+  //   const cameFromThanhToan = sessionStorage.getItem(
+  //     "justNavigatedFromThanhToan"
+  //   );
 
-    if (cameFromThanhToan === "true") {
-      console.log("Vừa chuyển từ thanh toán, không giải phóng ghế.");
-      return;
-    }
+  //   if (cameFromThanhToan === "true") {
+  //     console.log("Vừa chuyển từ thanh toán, không giải phóng ghế.");
+  //     return;
+  //   }
 
-    await releaseSeatsApiCore(
-      selectedSeatsRef.current,
-      selectedLichChieuIdRef.current
-    );
-  }, [releaseSeatsApiCore]);
+  //   await releaseSeatsApiCore(
+  //     selectedSeatsRef.current,
+  //     selectedLichChieuIdRef.current
+  //   );
+  // }, [releaseSeatsApiCore]);
 
   const { clearTimer, remainingTime } = useBookingTimer({
     selectedSeatsCount: selectedSeats.length,
@@ -345,30 +347,39 @@ const MovieDetailUser = () => {
     totalPrice,
     displaySelectedSeats, // Dependencies: đảm bảo chạy lại khi các giá trị này thay đổi
   ]);
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (
-        selectedSeatsRef.current.length > 0 &&
-        selectedLichChieuIdRef.current !== null
-      ) {
-        const data = {
-          lich_chieu_id: selectedLichChieuIdRef.current,
-          ghe_so: selectedSeatsRef.current,
-        };
-        const blob = new Blob([JSON.stringify(data)], {
-          type: "application/json",
-        });
-        try {
-          navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
-        } catch (error) {}
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload); // Loại bỏ listener để tránh rò rỉ bộ nhớ
-      releaseOccupiedSeatsOnUnmount();
-    };
-  }, [releaseOccupiedSeatsOnUnmount]); // <-- Dependency duy nhất là hàm cleanup cụ thể này
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+  //     if (
+  //       selectedSeatsRef.current.length > 0 &&
+  //       selectedLichChieuIdRef.current !== null
+  //     ) {
+  //       const data = {
+  //         lich_chieu_id: selectedLichChieuIdRef.current,
+  //         ghe_so: selectedSeatsRef.current,
+  //       };
+  //       const blob = new Blob([JSON.stringify(data)], {
+  //         type: "application/json",
+  //       });
+  //       try {
+  //         navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
+  //       } catch (error) {
+  //         console.error("sendBeacon error:", error);
+  //       }
+  //       // Chrome yêu cầu gán event.returnValue để hiện cảnh báo unload
+  //       event.preventDefault();
+  //       event.returnValue = "";
+  //     }
+  //   };
+
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //     // Gọi giải phóng ghế khi unmount hoặc chuyển trang
+  //     releaseOccupiedSeatsOnUnmount();
+  //   };
+  // }, [location.pathname, releaseOccupiedSeatsOnUnmount]);
+
   useEffect(() => {
     if (selectedSeats.length > 0) {
       sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
@@ -387,7 +398,6 @@ const MovieDetailUser = () => {
     return <Spin />;
   if (!movie) return <p>Không tìm thấy phim</p>;
   const handleThanhToanClick = () => {
-    setIsNavigatingFromPayment(true);
     const userStr = localStorage.getItem("user");
     const user = userStr ? JSON.parse(userStr) : null;
 
