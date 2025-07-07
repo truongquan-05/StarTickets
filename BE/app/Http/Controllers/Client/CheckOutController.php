@@ -9,6 +9,7 @@ use App\Models\CheckGhe;
 use App\Models\ThanhToan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\DiemThanhVien;
 
 class CheckOutController extends Controller
 {
@@ -107,6 +108,21 @@ class CheckOutController extends Controller
 
         if ($data['resultCode'] == 0) {
             $thanhToan = ThanhToan::create($extraData);
+            $DatVe = DatVe::find($thanhToan->dat_ve_id);
+
+            $diemCong = $DatVe->tong_tien * 0.001;
+
+            $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
+
+            if ($DiemThanhVien) {
+                $DiemThanhVien->diem += $diemCong;
+                $DiemThanhVien->save();
+            } else {
+                DiemThanhVien::create([
+                    'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+                    'diem' => $diemCong
+                ]);
+            }
 
             // Redirect về trang history với dữ liệu truyền qua query string
             $queryParams = http_build_query([
@@ -142,6 +158,7 @@ class CheckOutController extends Controller
                         }
                     });
                 }
+                $dataVe->delete();
             } else {
                 $dataVe = null;
             }
