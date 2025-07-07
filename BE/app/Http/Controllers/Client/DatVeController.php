@@ -114,7 +114,7 @@ class DatVeController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return response()->json([
-                'message' => "ERROR"
+                'message' => $th->getMessage(),
             ]);
         }
     }
