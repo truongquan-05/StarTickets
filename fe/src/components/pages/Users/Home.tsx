@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Typography, Spin } from "antd";
+import { Button, Spin, Modal } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Link } from "react-router-dom";
@@ -14,25 +14,49 @@ import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
 import {
   CalendarOutlined,
+  CaretRightOutlined,
   ClockCircleOutlined,
+  DoubleRightOutlined,
+  PlayCircleFilled,
   PlayCircleOutlined,
   TagOutlined,
 } from "@ant-design/icons";
 
-const { Title } = Typography;
 const BASE_URL = "http://127.0.0.1:8000";
 
-// Hàm xử lý ảnh
 const getImageUrl = (path: string | null | undefined) => {
   if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
   if (path.startsWith("http")) return path;
   return `${BASE_URL}/storage/${path}`;
 };
 
+const convertYouTubeUrlToEmbed = (url: string): string => {
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+};
+
 const Home = () => {
   const [currentMovies, setCurrentMovies] = useState<any[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"now" | "upcoming">("now");
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState("");
+  const [trailerTitle, setTrailerTitle] = useState("");
+
+  const handleShowTrailer = (url: string, title: string) => {
+    setTrailerUrl(url);
+    setTrailerTitle(title);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setTrailerUrl("");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,8 +65,6 @@ const Home = () => {
           getCurrentMovies(),
           getUpcomingMovies(),
         ]);
-        console.log("Phim đang chiếu:", current);
-        console.log("Phim sắp chiếu:", upcoming);
         setCurrentMovies(current);
         setUpcomingMovies(upcoming);
       } catch (error) {
@@ -54,11 +76,9 @@ const Home = () => {
 
     fetchData();
   }, []);
-  const [activeTab, setActiveTab] = useState<"now" | "upcoming">("now");
 
   return (
     <div className="home-wrapper">
-      {/* Banner bằng Swiper */}
       <Swiper
         modules={[Navigation, Autoplay]}
         navigation
@@ -85,7 +105,6 @@ const Home = () => {
         </SwiperSlide>
       </Swiper>
       <QuickBooking />
-      {/* Tabs chọn phim */}
       <div className=" movie-tabs">
         <button
           className={`tab-btn ${activeTab === "now" ? "active" : ""}`}
@@ -101,7 +120,6 @@ const Home = () => {
         </button>
       </div>
 
-      {/* Nội dung phim dựa theo tab */}
       <div className="section">
         {loading ? (
           <Spin />
@@ -135,12 +153,29 @@ const Home = () => {
                         ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
                         : "Chưa cập nhật"}
                     </p>
-                    <Link to={`/phim/${movie.slug || movie.id}`}>
-                      <Button type="primary">Mua vé</Button>
-                    </Link>
+                    <div className="movie-buttons">
+                      <Button
+                        icon={<PlayCircleOutlined />}
+                        onClick={() =>
+                          handleShowTrailer(movie.trailer, movie.ten_phim)
+                        }
+                      >
+                        Trailer
+                      </Button>
+                      <Link to={`/phim/${movie.slug || movie.id}`}>
+                        <Button type="primary">Mua vé</Button>
+                      </Link>
+                    </div>
                   </div>
                 </SwiperSlide>
               ))}
+              <div className="loadmorebox">
+                <Link to="/phim-sap-chieu">
+                  <button className="load-more-button">
+                    <span>Xem tất cả</span>
+                  </button>
+                </Link>
+              </div>
             </Swiper>
           ) : (
             <p>Không có phim đang chiếu.</p>
@@ -155,24 +190,36 @@ const Home = () => {
             {upcomingMovies.map((movie: any, i: number) => (
               <SwiperSlide key={i}>
                 <div className="movie-card">
+                  <div className="movie-poster-wrapper">
+                    <Link to={`/phim/${movie.slug || movie.id}`}>
+                      <img
+                        src={getImageUrl(
+                          movie.image || movie.hinh_anh || movie.anh_poster
+                        )}
+                        alt={movie.title || movie.ten_phim}
+                        onError={(e) => {
+                          e.currentTarget.src =
+                            "https://via.placeholder.com/220x280?text=No+Image";
+                        }}
+                      />
+                    </Link>
+                    <div className="movie-overlay">
+                      <button
+                        className="play-overlay-button"
+                        onClick={() =>
+                          handleShowTrailer(movie.trailer, movie.ten_phim)
+                        }
+                      >
+                        <PlayCircleFilled style={{ fontSize: 70 }} />
+                      </button>
+                    </div>
+                  </div>
+
                   <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <img
-                      src={getImageUrl(
-                        movie.image || movie.hinh_anh || movie.anh_poster
-                      )}
-                      alt={movie.title || movie.ten_phim}
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://via.placeholder.com/220x280?text=No+Image";
-                      }}
-                    />
+                    <h4 className="movie-title">
+                      {movie.title || movie.ten_phim}
+                    </h4>
                   </Link>
-
-                  {/* Tên phim giới hạn độ dài */}
-                  <h4 className="movie-title">
-                    {movie.title || movie.ten_phim}
-                  </h4>
-
                   <p style={{ fontSize: 12, color: "#888" }}>
                     <CalendarOutlined /> :{" "}
                     {movie.ngay_cong_chieu
@@ -181,34 +228,73 @@ const Home = () => {
                   </p>
                   <p style={{ fontSize: 12, color: "#888" }}>
                     <TagOutlined /> :{" "}
-                    {movie.theLoai
-                      ? movie.theLoai.join(", ")
+                    {movie.the_loai
+                      ? movie.the_loai.join(", ")
                       : "Chưa cập nhật"}
                   </p>
                   <p style={{ fontSize: 12, color: "#888" }}>
                     <ClockCircleOutlined /> :{" "}
-                    {movie.thoi_luong ? `${movie.thoi_luong}'` : "Chưa cập nhật"}
+                    {movie.thoi_luong
+                      ? `${movie.thoi_luong}'`
+                      : "Chưa cập nhật"}
                   </p>
-
-                  {/* Nút trailer và đặt vé nằm cạnh nhau */}
                   <div className="movie-buttons">
+                    <button
+                      className="play-button"
+                      onClick={() =>
+                        handleShowTrailer(movie.trailer, movie.ten_phim)
+                      }
+                    >
+                      <PlayCircleOutlined style={{ marginRight: 8 }} />
+                      <span>Trailer</span>
+                    </button>
                     <Link to={`/phim/${movie.slug || movie.id}`}>
-                      <button className="play-button"><PlayCircleOutlined style={{ marginRight: 8 }} /><span>Trailer</span></button>
-                    </Link>
-                    <Link to={`/phim/${movie.slug || movie.id}`}>
-                      <button className="book-button"><span>ĐẶT VÉ NGAY</span></button>
+                      <button className="book-button">
+                        <span>ĐẶT VÉ NGAY</span>
+                      </button>
                     </Link>
                   </div>
                 </div>
               </SwiperSlide>
             ))}
+            <div className="loadmorebox">
+              <Link to="/phim-sap-chieu">
+                <button className="load-more-button">
+                  <span>Xem tất cả</span>
+                </button>
+              </Link>
+            </div>
           </Swiper>
         ) : (
           <p>Không có phim sắp chiếu.</p>
         )}
       </div>
 
-      {/* Phim nổi bật */}
+      <Modal
+        title={`Trailer - ${trailerTitle}`}
+        open={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={800}
+        bodyStyle={{ padding: 0, height: 450 }}
+        destroyOnClose
+        centered
+      >
+        {trailerUrl ? (
+          <iframe
+            width="100%"
+            height="100%"
+            src={convertYouTubeUrlToEmbed(trailerUrl)}
+            title="Trailer"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <p style={{ padding: 20, textAlign: "center" }}>Không có trailer</p>
+        )}
+      </Modal>
+
       <div className="featured-movie">
         <img src={featuredImage} alt="phim nổi bật" className="featured-img" />
         <div className="featured-overlay">
@@ -242,7 +328,7 @@ const Home = () => {
             <a href="#">
               <span>ZALO CHAT</span>
               <img
-                src="	https://cinestar.com.vn/assets/images/ct-2.webp"
+                src="https://cinestar.com.vn/assets/images/ct-2.webp"
                 alt="ZALO CHAT"
               />
             </a>
@@ -252,15 +338,15 @@ const Home = () => {
         <div className="contact-right">
           <h2>THÔNG TIN LIÊN HỆ</h2>
           <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-1.svg" alt="" />{" "}
+            <img src="https://cinestar.com.vn/assets/images/ct-1.svg" alt="" />
             cskh@movigo.com
           </p>
           <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-2.svg" alt="" />{" "}
+            <img src="https://cinestar.com.vn/assets/images/ct-2.svg" alt="" />
             1900.0085
           </p>
           <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />{" "}
+            <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />
             135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
           </p>
           <input type="text" placeholder="Họ và tên" />
