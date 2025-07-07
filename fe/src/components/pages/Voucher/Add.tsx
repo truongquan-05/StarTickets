@@ -36,9 +36,11 @@ const AddVoucher = () => {
       onSuccess: () => {
         navigate("/admin/vouchers/list");
       },
-      onError: (error) => {
-        console.error("Thêm voucher lỗi:", error);
-        message.error("Thêm voucher thất bại");
+      onError: (error :any) => {
+        message.error(
+          error?.response?.data?.message.ma[0] ||
+          "Đã xảy ra lỗi khi thêm voucher."
+        );
       },
     });
   };
@@ -60,12 +62,28 @@ const AddVoucher = () => {
       >
         <Row gutter={24}>
           <Col xs={24} md={12}>
-            <Form.Item
-              label="Mã voucher"
-              name="ma"
-              rules={[{ required: true, message: "Vui lòng nhập mã voucher!" }]}
-            >
-              <Input />
+            <Form.Item label="Mã voucher" required>
+              <Space.Compact style={{ width: "100%" }}>
+                <Form.Item
+                  name="ma"
+                  noStyle
+                  rules={[
+                    { required: true, message: "Vui lòng nhập mã voucher!" },
+                  ]}
+                >
+                  <Input placeholder="Nhập mã hoặc tạo ngẫu nhiên" />
+                </Form.Item>
+                <Button
+                  onClick={() => {
+                    const randomCode =
+                      "VC" +
+                      Math.random().toString(36).substring(2, 8).toUpperCase();
+                    form.setFieldsValue({ ma: randomCode });
+                  }}
+                >
+                  Tạo mã
+                </Button>
+              </Space.Compact>
             </Form.Item>
 
             <Form.Item

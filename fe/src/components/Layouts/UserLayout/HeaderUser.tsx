@@ -10,6 +10,7 @@ import {
   CaretDownOutlined,
   EnvironmentOutlined,
   FormOutlined,
+  HistoryOutlined,
   LoginOutlined,
   LogoutOutlined,
   UserOutlined,
@@ -34,6 +35,13 @@ const HeaderUser = () => {
         className="menu-item-custom"
       >
         <Link to="/profile">Thông tin cá nhân</Link>
+      </Menu.Item>
+      <Menu.Item
+        key="history"
+        icon={<HistoryOutlined />}
+        className="menu-item-custom"
+      >
+        <Link to="history">Lịch Sử Đặt Vé</Link>
       </Menu.Item>
       <Menu.Item
         key="logout"
