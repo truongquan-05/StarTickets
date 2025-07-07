@@ -67,10 +67,41 @@ class MaGiamGiaController extends Controller
             'ngay_ket_thuc' => 'required|date|after_or_equal:ngay_bat_dau',
             'so_lan_su_dung' => 'nullable|integer|min:1',
             'trang_thai' => 'in:CHƯA KÍCH HOẠT,KÍCH HOẠT,HẾT HẠN',
+        ], [
+            'ma.required' => 'Vui lòng nhập mã giảm giá.',
+            'ma.string' => 'Mã giảm giá phải là chuỗi ký tự.',
+            'ma.unique' => 'Mã giảm giá đã tồn tại.',
+            'ma.max' => 'Mã giảm giá không được vượt quá :max ký tự.',
+
+            'image.string' => 'Hình ảnh phải là chuỗi.',
+            'image.max' => 'Đường dẫn hình ảnh không được vượt quá :max ký tự.',
+
+            'phan_tram_giam.numeric' => 'Phần trăm giảm phải là số.',
+            'phan_tram_giam.min' => 'Phần trăm giảm không được nhỏ hơn :min.',
+            'phan_tram_giam.max' => 'Phần trăm giảm không được lớn hơn :max.',
+
+            'giam_toi_da.numeric' => 'Giá trị giảm tối đa phải là số.',
+            'giam_toi_da.min' => 'Giảm tối đa không được nhỏ hơn :min.',
+
+            'gia_tri_don_hang_toi_thieu.numeric' => 'Giá trị đơn hàng tối thiểu phải là số.',
+            'gia_tri_don_hang_toi_thieu.min' => 'Giá trị tối thiểu không được nhỏ hơn :min.',
+
+            'ngay_bat_dau.required' => 'Vui lòng chọn ngày bắt đầu.',
+            'ngay_bat_dau.date' => 'Ngày bắt đầu không đúng định dạng.',
+
+            'ngay_ket_thuc.required' => 'Vui lòng chọn ngày kết thúc.',
+            'ngay_ket_thuc.date' => 'Ngày kết thúc không đúng định dạng.',
+            'ngay_ket_thuc.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.',
+
+            'so_lan_su_dung.integer' => 'Số lần sử dụng phải là số nguyên.',
+            'so_lan_su_dung.min' => 'Số lần sử dụng phải lớn hơn hoặc bằng :min.',
+
+            'trang_thai.in' => 'Trạng thái không hợp lệ. Chỉ chấp nhận: CHƯA KÍCH HOẠT, KÍCH HOẠT, HẾT HẠN.',
         ]);
 
+
         if ($validator->fails()) {
-            return response()->json(['Lỗi' => $validator->errors()], 422);
+            return response()->json(['message' => $validator->errors()], 422);
         }
 
         $ma = MaGiamGia::create($request->all());

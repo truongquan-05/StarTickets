@@ -99,9 +99,7 @@ export const useCreateVoucher = ({ resource = "ma_giam_gia" }: Props) => {
       queryClient.invalidateQueries({ queryKey: [resource] });
       navigate("/admin/vouchers/list"); // Cập nhật đúng đường dẫn của voucher
     },
-    onError: () => {
-      message.error("Thêm voucher thất bại");
-    },
+    
   });
 };
 
