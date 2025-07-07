@@ -330,3 +330,30 @@ export const deleteForeverMovie = async ({ resource = "phim", id }: Props) => {
   return data;
 };
 
+export const getCreateDatVe = async ({resource = "dat_ve" , values} : Props) => {
+  console.log("👉 Dữ liệu gửi đi:", values);
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const deleteDatVe = async ({ resource = "dat_ve", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+
+export const getListDatVe = async ({ resource = "dat_ve" }: Props) => {
+  const { data } = await axiosClient.get(`${resource}/trashed/list`);
+  return data;
+};
+
+export const getCreateThanhToanMoMo = async ({resource = "momo-pay" , values} : Props) => {
+  console.log("👉 Dữ liệu gửi đi:", values);
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getListThanhToan = async ({resource = "thanh_toan"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}

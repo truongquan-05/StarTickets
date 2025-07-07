@@ -23,6 +23,7 @@ class Phim extends Model
         'chuyen_ngu',
         'the_loai_id',
         'loai_suat_chieu',
+        'trang_thai_phim'
     ];
 
     // protected $dates = ['deleted_at', 'ngay_cong_chieu'];

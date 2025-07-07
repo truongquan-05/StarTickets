@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  checkLichChieu, deleteForeverMovie, getCheckGheByLichChieuId, getCreateCategoryChair, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateVaiTro, getDeleteCategoryChair, getDeleteCheckGhe, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashMovies, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestoreMovies, getRestorePhongChieu, getSoftDeleteMovies, getUpdateCategoryChair, getUpdateCheckGhe, getUpdateLichChieu, getUpdateLoaiGhe, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateTrangThaiGhe, getUpdateVaiTro } from "../provider/hungProvider";
+import {  checkLichChieu, deleteDatVe, deleteForeverMovie, getCheckGheByLichChieuId, getCreateCategoryChair, getCreateDatVe, getCreateGiaVe, getCreateLichChieu, getCreateMovies, getCreateNews, getCreatePhanHoiNguoiDung, getCreatePhongChieu, getCreateThanhToanMoMo, getCreateVaiTro, getDeleteCategoryChair, getDeleteCheckGhe, getDeleteLichChieu, getDeleteMovies, getDeleteNews, getDeletePhanHoiNguoiDung, getDeletePhongChieu, getDeleteVaiTro, getDestroyPhongChieu, getDetailTinTuc, getListCategoryChair, getListChair, getListChuyenNgu, getListCinemas, getListDatVe, getListGhe, getListLichChieu, getListMovies, getListNews, getListPhanHoiNguoiDung, getListPhongChieu, getListTrashMovies, getListTrashPhongChieu, getListVaiTro, getMovieDetail, getRestoreMovies, getRestorePhongChieu, getSoftDeleteMovies, getUpdateCategoryChair, getUpdateCheckGhe, getUpdateLichChieu, getUpdateLoaiGhe, getUpdateMovies, getUpdateNews, getUpdatePhanHoiNguoiDung, getUpdatePhongChieu, getUpdateTrangThaiGhe, getUpdateVaiTro } from "../provider/hungProvider";
 import { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -562,4 +562,49 @@ export const useDeleteForeverMovie = ({ resource = "phim" }: Props) => {
   });
 };
 
+export const useDeleteDatVe = ({resource = "dat_ve"} : Props) => {
+  const queryclient = useQueryClient();
+  return useMutation({
+    mutationFn: (id ? : string | number ) => deleteDatVe({resource , id}),
+    onSuccess : () => {
+      queryclient.invalidateQueries({queryKey:[resource]})
+    }
+  })
+}
+
+export const useCreateDatVe = ({ resource = "dat_ve" }: Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (values: any) => getCreateDatVe({ resource, values }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [resource] });
+      return data?.data; // Trả về toàn bộ response data
+    },
+  });
+};
+
+export const useListDatVe = ({resource = "dat_ve"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListDatVe({resource})
+  })
+}
+
+export const useCreateThanhToanMoMo = ({ resource = "momo-pay" }: Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (values: any) => getCreateThanhToanMoMo({ resource, values }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [resource] });
+      return data;
+    },
+  });
+};
+
+export const useListThanhToan = ({resource = "thanh_toan"}) => {
+  return useQuery({
+    queryKey:[resource],
+    queryFn: () => getListDatVe({resource})
+  })
+}
 

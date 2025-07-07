@@ -194,6 +194,7 @@ class HomeController extends Controller
 
 
     public function locPhimTheoRapNgayTheLoai(Request $request)
+
     {
         $rapId = $request->input('rap_id');
         $ngayChieu = $request->input('ngay_cong_chieu');

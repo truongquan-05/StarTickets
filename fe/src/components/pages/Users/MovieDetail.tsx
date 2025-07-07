@@ -11,6 +11,7 @@ import {
   useListGhe,
   useListCheckGhe,
   useUpdateCheckGhe,
+  useCreateDatVe,
 } from "../../hook/hungHook";
 import "./Home.css";
 import { ILichChieu } from "../Admin/interface/lichchieu";
@@ -20,16 +21,19 @@ import SoDoGhe from "../Admin/PhongChieu/SoDoGhe";
 import { IGhe } from "../Admin/interface/ghe";
 import { ICheckGhe } from "../Admin/interface/checkghe";
 import { useBookingTimer } from "./DatVe/useBookingTimer";
+import { IDatVeChiTietPayload } from "../Admin/interface/datve";
 
 interface IRap {
   id: number;
   ten_rap: string;
 }
 interface SelectedSeatWithPrice {
+  ghe_id: number;
   so_ghe: string;
   loai_ghe: string;
   gia: number;
 }
+
 function convertYouTubeUrlToEmbed(url: string) {
   if (!url) return "";
   const regExp =
@@ -58,10 +62,12 @@ function checkGapSeats(selectedSeats: string[]): boolean {
   }
   return false; // không cách quãng
 }
+
 const MovieDetailUser = () => {
   const TIMEOUT_MINUTES = 5;
   const { id } = useParams();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isNavigatingFromPayment, setIsNavigatingFromPayment] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [movie, setMovie] = useState<any>(null);
   const [loadingMovie, setLoadingMovie] = useState(true);
   const [selectedPhong, setSelectedPhong] = useState<IPhongChieu | null>(null);
@@ -91,6 +97,7 @@ const MovieDetailUser = () => {
   const rapQuery = useListCinemas({ resource: "rap" });
   const phongList = phongQuery.data?.data || [];
   const rapList = rapQuery.data || [];
+  const { mutate: createDatVe } = useCreateDatVe({ resource: "dat_ve" });
   const {
     data: danhSachGhe = [],
     isLoading: isLoadingGhe,
@@ -103,7 +110,7 @@ const MovieDetailUser = () => {
   const selectedLichChieuIdRef = useRef<number | null>(null);
   const danhSachGheRef = useRef<IGhe[]>([]);
   const checkGheListRef = useRef<ICheckGhe[]>([]);
-   useEffect(() => {
+  useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       const selectedSeats = sessionStorage.getItem("selectedSeats");
       if (selectedSeats && selectedSeats.length > 0) {
@@ -176,14 +183,27 @@ const MovieDetailUser = () => {
     setSelectedSeats([]);
     setDisplaySelectedSeats([]);
     setTotalPrice(0);
-  }, [selectedSeats, selectedLichChieuId, releaseSeatsApiCore]); // Dependencies
+  }, [
+    selectedSeats,
+    selectedLichChieuId,
+    releaseSeatsApiCore,
+    isProcessingPayment,
+  ]);
+
   const releaseOccupiedSeatsOnUnmount = useCallback(async () => {
+    const cameFromThanhToan = sessionStorage.getItem("justNavigatedFromThanhToan");
+
+    if (cameFromThanhToan === "true") {
+      console.log("Vừa chuyển từ thanh toán, không giải phóng ghế.");
+      return;
+    }
+
     await releaseSeatsApiCore(
       selectedSeatsRef.current,
       selectedLichChieuIdRef.current
     );
-  }, [releaseSeatsApiCore]); // Dependencies: chỉ là hàm core API
-  
+  }, [releaseSeatsApiCore]);
+
   const { clearTimer, remainingTime } = useBookingTimer({
     selectedSeatsCount: selectedSeats.length,
     selectedLichChieuId: selectedLichChieuId,
@@ -301,6 +321,7 @@ const MovieDetailUser = () => {
         }
         currentTotalPrice += price;
         seatsToCalculateDisplay.push({
+          ghe_id: ghe.id, // <-- Đã thêm ghe.id vào đây
           so_ghe: ghe.so_ghe,
           loai_ghe: tenLoaiGhe,
           gia: price,
@@ -310,6 +331,7 @@ const MovieDetailUser = () => {
     if (totalPrice !== currentTotalPrice) {
       setTotalPrice(currentTotalPrice);
     }
+    // So sánh chuỗi JSON để tránh re-render không cần thiết nếu dữ liệu không thay đổi
     if (
       JSON.stringify(displaySelectedSeats) !==
       JSON.stringify(seatsToCalculateDisplay)
@@ -321,7 +343,7 @@ const MovieDetailUser = () => {
     selectedLichChieu,
     danhSachGhe,
     totalPrice,
-    displaySelectedSeats,
+    displaySelectedSeats, // Dependencies: đảm bảo chạy lại khi các giá trị này thay đổi
   ]);
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -365,28 +387,71 @@ const MovieDetailUser = () => {
     return <Spin />;
   if (!movie) return <p>Không tìm thấy phim</p>;
   const handleThanhToanClick = () => {
-    const user = localStorage.getItem("user");
+    setIsNavigatingFromPayment(true);
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
+
     if (!user) {
-      alert("Vui lòng đăng nhập trước khi thanh toán.");
+      message.warning("Vui lòng đăng nhập trước khi thanh toán.");
       navigate("/login");
       return;
     }
 
     if (!selectedLichChieuId || selectedSeats.length === 0) {
-      alert("Vui lòng chọn ghế trước khi thanh toán.");
+      message.warning("Vui lòng chọn ghế trước khi thanh toán.");
       return;
     }
 
-    clearTimer();
+    // Không cần kiểm tra selectedLichChieu.gia_ve hay danhSachGhe ở đây nữa
+    // vì displaySelectedSeats đã chứa đầy đủ thông tin về ghế và giá.
+    if (displaySelectedSeats.length !== selectedSeats.length) {
+      message.error("Lỗi dữ liệu ghế hoặc giá vé. Vui lòng thử lại.");
+      return;
+    }
 
-    navigate("/check-out", {
-      state: {
-        lichChieuId: selectedLichChieuId,
-        selectedSeats,
-        totalPrice,
+    clearTimer(); // Dừng bộ đếm thời gian
+
+    // Sử dụng trực tiếp displaySelectedSeats để tạo dat_ve_chi_tiet
+    const dat_ve_chi_tiet: IDatVeChiTietPayload[] = displaySelectedSeats.map(
+      (seatInfo) => ({
+        ghe_id: seatInfo.ghe_id, // Lấy ghe_id trực tiếp từ displaySelectedSeats
+        gia_ve: seatInfo.gia, // Lấy gia trực tiếp từ displaySelectedSeats
+      })
+    );
+
+    const payload = {
+      dat_ve: [
+        {
+          lich_chieu_id: selectedLichChieuId,
+          nguoi_dung_id: user.id,
+          tong_tien: Number(totalPrice), // totalPrice đã được tính toán và cập nhật
+        },
+      ],
+      dat_ve_chi_tiet: dat_ve_chi_tiet,
+    };
+
+    // --- LOG DỮ LIỆU ĐI ---
+    console.log("Dữ liệu gửi đi:", payload);
+    // ----------------------
+
+    // Gọi hàm API để gửi payload
+    createDatVe(payload, {
+      onSuccess: (response) => {
+        message.success("Đặt vé thành công!");
+        navigate("/check-out", {
+          state: { bookingData: response.data },
+        });
+        setIsProcessingPayment(false); // reset sau thành công
+      },
+      onError: (error) => {
+        message.error(
+          "Thanh toán thất bại: " + (error.message || "Lỗi không xác định")
+        );
+        setIsProcessingPayment(false); // reset sau lỗi
       },
     });
   };
+
   const filteredLichChieu = (lichChieuList as ILichChieu[]).filter(
     (lc) => lc.phim_id === movie.id
   );

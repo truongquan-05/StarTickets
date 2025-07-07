@@ -185,7 +185,6 @@ const EditLichChieu = () => {
   return (
     <Card
       style={{
-        maxWidth: 1200,
         maxHeight: "78vh",
         padding: "2rem",
         boxShadow: "0 4px 12px rgba(0,0,0,0.1)",

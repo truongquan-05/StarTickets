@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
+use App\Models\DoAn;
+use App\Models\DatVe;
+use App\Models\DonDoAn;
+use App\Models\CheckGhe;
 use App\Models\ThanhToan;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class CheckOutController extends Controller
 {
@@ -93,21 +97,58 @@ class CheckOutController extends Controller
     public function handleIpn(Request $request)
     {
         $data = $request->all();
+
+        if (!isset($data['extraData']) || !isset($data['orderId'])) {
+            return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
+        }
+
         $extraData = json_decode($data['extraData'], true);
         $extraData['ma_giao_dich'] = $data['orderId'];
-        if ($data['resultCode'] == 0) {
-           $ThanhToan = ThanhToan::create($extraData);
 
-            return response()->json([
-                
-                'data' => $ThanhToan
-            ], 200);
+        if ($data['resultCode'] == 0) {
+            $thanhToan = ThanhToan::create($extraData);
+
+            // Redirect về trang history với dữ liệu truyền qua query string
+            $queryParams = http_build_query([
+                'dat_ve_id' => $thanhToan->dat_ve_id,
+                'phuong_thuc_thanh_toan_id' => $thanhToan->phuong_thuc_thanh_toan_id,
+                'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+                'ma_giao_dich' => $thanhToan->ma_giao_dich,
+            ]);
+
+            return redirect("http://localhost:5173/history?$queryParams");
         } else {
-            return response()->json([
-                'message' => 'Error'
-            ], 422);
+            if (isset($data['extraData'])) {
+                $dataVe = json_decode($data['extraData'], true);
+                $dataVeId = $dataVe['dat_ve_id'];
+                $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
+                $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
+                $don_do_an = $dataVe->DonDoAn ?? null;
+                if ($dat_ve_chi_tiet->isNotEmpty()) {
+                    $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
+                        $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
+                            ->where('lich_chieu_id', $dataVe->lich_chieu_id)
+                            ->first();
+                        if ($checkGhe) {
+                            $checkGhe->update(['trang_thai' => 'trong']);
+                        }
+                    });
+                }
+                if ($don_do_an->isNotEmpty()) {
+                    $don_do_an->each(function ($item) {
+                        $doAn = DoAn::find($item->do_an_id);
+                        if ($doAn) {
+                            $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
+                        }
+                    });
+                }
+            } else {
+                $dataVe = null;
+            }
+            return redirect("http://localhost:5173/history?error=1");
         }
     }
+
 
 
 
