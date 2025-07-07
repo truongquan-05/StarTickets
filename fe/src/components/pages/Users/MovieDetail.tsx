@@ -226,6 +226,7 @@ const MovieDetailUser = () => {
       );
       setSelectedLichChieu(foundLichChieu || null);
       if (foundLichChieu) {
+        
       } else {
         console.warn(
           `Không tìm thấy lịch chiếu với ID: ${selectedLichChieuId} trong danh sách.`
@@ -347,39 +348,32 @@ const MovieDetailUser = () => {
     totalPrice,
     displaySelectedSeats, // Dependencies: đảm bảo chạy lại khi các giá trị này thay đổi
   ]);
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-  //     if (
-  //       selectedSeatsRef.current.length > 0 &&
-  //       selectedLichChieuIdRef.current !== null
-  //     ) {
-  //       const data = {
-  //         lich_chieu_id: selectedLichChieuIdRef.current,
-  //         ghe_so: selectedSeatsRef.current,
-  //       };
-  //       const blob = new Blob([JSON.stringify(data)], {
-  //         type: "application/json",
-  //       });
-  //       try {
-  //         navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
-  //       } catch (error) {
-  //         console.error("sendBeacon error:", error);
-  //       }
-  //       // Chrome yêu cầu gán event.returnValue để hiện cảnh báo unload
-  //       event.preventDefault();
-  //       event.returnValue = "";
-  //     }
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //     // Gọi giải phóng ghế khi unmount hoặc chuyển trang
-  //     releaseOccupiedSeatsOnUnmount();
-  //   };
-  // }, [location.pathname, releaseOccupiedSeatsOnUnmount]);
-
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (
+        selectedSeatsRef.current.length > 0 &&
+        selectedLichChieuIdRef.current !== null
+      ) {
+        const data = {
+          lich_chieu_id: selectedLichChieuIdRef.current,
+          ghe_so: selectedSeatsRef.current,
+        };
+        const blob = new Blob([JSON.stringify(data)], {
+          type: "application/json",
+        });
+        try {
+          navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
+        } catch (error) {
+          
+        }
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload); // Loại bỏ listener để tránh rò rỉ bộ nhớ
+      releaseOccupiedSeatsOnUnmount();
+    };
+  }, [releaseOccupiedSeatsOnUnmount]); // <-- Dependency duy nhất là hàm cleanup cụ thể này
   useEffect(() => {
     if (selectedSeats.length > 0) {
       sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));

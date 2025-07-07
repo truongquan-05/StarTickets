@@ -11,7 +11,7 @@ const axiosClient = axios.create({
 });
 
 export type Props = {
-  resource: string;
+  resource?: string;
   id?: number | string;
   values?: any;
 };
@@ -80,7 +80,7 @@ export const getCreateFood = async ({ resource = "do_an", values }: Props) => {
 };
 
 export const getUpdateFood = async ({ id, values }: any) => {
-  values.append("_method", "PUT"); // ✅ Bắt buộc với FormData
+  values.append("_method", "PUT"); 
   return await axios.post(`http://127.0.0.1:8000/api/do_an/${id}`, values, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -88,7 +88,7 @@ export const getUpdateFood = async ({ id, values }: any) => {
   });
 };
 
-
+// Hiển thị phim
 export const getCurrentMovies = async () => {
   const res = await axiosClient.get("phim-dang-chieu");
   return res.data;
@@ -112,18 +112,73 @@ export const searchMovies = async (keyword: string) => {
 // duProvider.ts
 export const getRaps = () =>
   axiosClient.get("/rap").then((res) => {
-    return res.data.data || []; // 👈 đảm bảo trả về mảng
+    console.log(">>> getRaps:", res.data); 
+    return res.data.data || [];
   });
 
 export const getTheLoais = () =>
   axiosClient.get("/the_loai").then((res) => {
+    console.log(">>> getTheLoais:", res.data); 
     return res.data.data || [];
   });
 
 export const searchPhim = (params: any) => {
-  console.log(params)
-  return axiosClient.post("/loc", { params });
+  return axiosClient.post("/loc", params);
 };
+
+// 1. Lấy danh sách banner
+export const getListBanners = async ({ resource = "banner" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+
+// 2. Tạo banner mới
+export const getCreateBanner = async ({ resource = "banner", values }: Props) => {
+  const { data } = await axiosClient.post(resource, values, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return data;
+};
+
+// 3. Bật/tắt banner
+export const getToggleBanner = async ({ resource = "banner", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.patch(`${resource}/${id}/toggle`);
+  return data;
+};
+
+// 4. Xóa banner
+export const getDeleteBanner = async ({ resource = "banner", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+
+// Đơn vé
+export const getListDonVe = async () => {
+  const res = await axiosClient.get("/admin/don-ve");
+  return res.data.data; // ✅ đúng
+};
+
+export const getDonVeById = async (id: number | string) => {
+  const res = await axiosClient.get(`/admin/don-ve/${id}`);
+  return res.data.data;
+};
+
+
+export const locDonVe = async (values: any) => {
+  const { data } = await axiosClient.post("/admin/don-ve/loc", values);
+  return data;
+};
+
+export const getPhimCoLichChieu = async () => {
+  const { data } = await axiosClient.get("/admin/don-ve-phim");
+  return data;
+};
+
+
 
 
 
