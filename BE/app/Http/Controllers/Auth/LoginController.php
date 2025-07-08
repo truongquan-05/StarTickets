@@ -69,6 +69,7 @@ class LoginController extends Controller
                     ]))
                 ])
             );
+            
         } catch (\Throwable $th) {
             // Có thể redirect sang FE với thông báo lỗi cũng được
             return redirect()->away(
