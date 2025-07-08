@@ -30,9 +30,15 @@ return new class extends Migration {
 
         Schema::create('quyen_han', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vai_tro_id')->constrained('vai_tro')->onUpdate('cascade')->onDelete('cascade');
             $table->string('quyen', 100);
             $table->text('mo_ta')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('quyen_truy_cap', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('vai_tro_id')->constrained('vai_tro')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('quyen_han_id')->constrained('quyen_han')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
 
