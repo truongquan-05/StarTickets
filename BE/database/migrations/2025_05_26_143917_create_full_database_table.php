@@ -65,6 +65,7 @@ return new class extends Migration {
             $table->enum('trang_thai_phim', ['Nháp', 'Xuất bản']);
             $table->json('chuyen_ngu')->nullable();
             $table->json('the_loai_id')->nullable();
+            $table->enum('trang_thai_phim', ['Nháp', 'Xuất bản']);
             $table->timestamps();
             $table->softDeletes();
         });
