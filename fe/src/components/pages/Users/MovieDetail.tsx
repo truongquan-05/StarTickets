@@ -348,32 +348,32 @@ const MovieDetailUser = () => {
     totalPrice,
     displaySelectedSeats, // Dependencies: đảm bảo chạy lại khi các giá trị này thay đổi
   ]);
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (
-        selectedSeatsRef.current.length > 0 &&
-        selectedLichChieuIdRef.current !== null
-      ) {
-        const data = {
-          lich_chieu_id: selectedLichChieuIdRef.current,
-          ghe_so: selectedSeatsRef.current,
-        };
-        const blob = new Blob([JSON.stringify(data)], {
-          type: "application/json",
-        });
-        try {
-          navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
-        } catch (error) {
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     if (
+  //       selectedSeatsRef.current.length > 0 &&
+  //       selectedLichChieuIdRef.current !== null
+  //     ) {
+  //       const data = {
+  //         lich_chieu_id: selectedLichChieuIdRef.current,
+  //         ghe_so: selectedSeatsRef.current,
+  //       };
+  //       const blob = new Blob([JSON.stringify(data)], {
+  //         type: "application/json",
+  //       });
+  //       try {
+  //         navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
+  //       } catch (error) {
           
-        }
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload); // Loại bỏ listener để tránh rò rỉ bộ nhớ
-      releaseOccupiedSeatsOnUnmount();
-    };
-  }, [releaseOccupiedSeatsOnUnmount]); // <-- Dependency duy nhất là hàm cleanup cụ thể này
+  //       }
+  //     }
+  //   };
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload); // Loại bỏ listener để tránh rò rỉ bộ nhớ
+  //     releaseOccupiedSeatsOnUnmount();
+  //   };
+  // }, [releaseOccupiedSeatsOnUnmount]); // <-- Dependency duy nhất là hàm cleanup cụ thể này
   useEffect(() => {
     if (selectedSeats.length > 0) {
       sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
