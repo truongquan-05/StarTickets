@@ -22,9 +22,6 @@ class PhimController extends Controller
             $query->where('ten_phim', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->has('tinh_trang')) {
-            $query->where('tinh_trang', $request->tinh_trang);
-        }
 
         $perPage = $request->get('per_page', 10);
         $phims = $query->orderBy('id', 'desc')->paginate($perPage);
