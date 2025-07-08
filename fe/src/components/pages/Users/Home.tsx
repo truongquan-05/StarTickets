@@ -35,8 +35,6 @@ const Home = () => {
           getCurrentMovies(),
           getUpcomingMovies(),
         ]);
-        console.log("Phim đang chiếu:", current);
-        console.log("Phim sắp chiếu:", upcoming);
         setCurrentMovies(current);
         setUpcomingMovies(upcoming);
       } catch (error) {

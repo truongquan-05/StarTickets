@@ -69,6 +69,20 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
+        Schema::create('xac_nhan', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('ma_xac_nhan', 100);
+            $table->timestamps();
+        });
+
+         Schema::create('xac_nhan_dang_ky', function (Blueprint $table) {
+            $table->id();
+            $table->string('email', 100);
+            $table->string('ma_xac_nhan', 100);
+            $table->timestamps();
+        });
+
         Schema::create('chuyen_ngu', function (Blueprint $table) {
             $table->id();
             $table->string('the_loai', 100);
@@ -208,16 +222,16 @@ return new class extends Migration {
 
         Schema::create('ma_giam_gia', function (Blueprint $table) {
             $table->id();
-            $table->string('ma', 50)->unique()->comment('Mã giảm giá, ví dụ: SUMMER2025');
-            $table->string('image', 150)->nullable()->comment('Hình ảnh đại diện cho mã giảm giá');
-            $table->decimal('giam_toi_da', 10, 2)->nullable()->comment('Số tiền giảm tối đa, áp dụng cho PERCENTAGE');
-            $table->decimal('gia_tri_don_hang_toi_thieu', 10, 2)->nullable()->comment('Giá trị đơn hàng tối thiểu để áp dụng');
-            $table->float('phan_tram_giam')->nullable()->comment('Phần trăm giảm giá, áp dụng cho PERCENTAGE');
-            $table->date('ngay_bat_dau')->comment('Ngày bắt đầu hiệu lực');
-            $table->date('ngay_ket_thuc')->comment('Ngày hết hạn');
-            $table->integer('so_lan_su_dung')->nullable()->comment('Số lần sử dụng tối đa, NULL nếu không giới hạn');
-            $table->integer('so_lan_da_su_dung')->default(0)->comment('Số lần đã sử dụng');
-            $table->enum('trang_thai', ['CHƯA KÍCH HOẠT', 'KÍCH HOẠT', 'HẾT HẠN'])->default('KÍCH HOẠT')->comment('Trạng thái: chưa bắt đầu, đang hoạt động, hết hạn');
+            $table->string('ma', 50)->unique();
+            $table->string('image', 150)->nullable();
+            $table->decimal('giam_toi_da', 10, 2)->nullable();
+            $table->decimal('gia_tri_don_hang_toi_thieu', 10, 2)->nullable();
+            $table->float('phan_tram_giam')->nullable();
+            $table->date('ngay_bat_dau');
+            $table->date('ngay_ket_thuc');
+            $table->integer('so_lan_su_dung')->nullable();
+            $table->integer('so_lan_da_su_dung')->default(0);
+            $table->enum('trang_thai', ['CHƯA KÍCH HOẠT', 'KÍCH HOẠT', 'HẾT HẠN'])->default('KÍCH HOẠT');
             $table->timestamps();
         });
 

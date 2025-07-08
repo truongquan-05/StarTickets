@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Form,
   Input,
@@ -8,6 +7,7 @@ import {
   Col,
   Divider,
   Checkbox,
+  message,
 } from "antd";
 import {
   UserOutlined,
@@ -17,14 +17,79 @@ import {
   RightOutlined,
   GoogleOutlined,
   SolutionOutlined,
+  SafetyCertificateOutlined,
 } from "@ant-design/icons";
 import { useGoogleAuth } from "./GoogleAuth";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const { Text, Link } = Typography;
 
 const Register = () => {
   const [form] = Form.useForm();
-  const { loginWithGoogle } = useGoogleAuth(); // hook đăng nhập với Google
+  const navigate = useNavigate();
+  const { loginWithGoogle } = useGoogleAuth();
+
+  const [countdown, setCountdown] = useState(0);
+
+  const handleSendCode = async () => {
+    const email = form.getFieldValue("email");
+
+    if (!email) {
+      message.warning("Vui lòng nhập email trước!");
+      return;
+    }
+
+    if (countdown > 0) return;
+
+    try {
+      await axios.post(
+        `http://localhost:8000/api/auth/create-ma-dang-ky/${email}`
+      );
+      message.success(`Mã xác nhận đã gửi đến ${email}`);
+      setCountdown(120);
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (error) {
+      console.error(error);
+      message.error("Gửi mã thất bại!");
+    }
+  };
+
+  const handleSubmit = async (values: any) => {
+    try {
+      const payload = {
+        ten: values.ten,
+        email: values.email,
+        password: values.password,
+        so_dien_thoai: values.so_dien_thoai,
+        ma_xac_nhan: values.ma_xac_nhan,
+      };
+
+      await axios.post("http://127.0.0.1:8000/api/auth/register", payload);
+      message.success("Đăng ký thành công!");
+      navigate("/login");
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors;
+      if (errors) {
+        Object.values(errors).forEach((fieldErrors: any) => {
+          fieldErrors.forEach((msg: string) => {
+            message.error(msg);
+          });
+        });
+      } if(error.response.data.message) {
+        message.error(error.response.data.message);
+      }
+    }
+  };
 
   return (
     <div className="login-background">
@@ -38,6 +103,7 @@ const Register = () => {
             layout="vertical"
             className="login-form"
             scrollToFirstError
+            onFinish={handleSubmit}
           >
             <Row gutter={30}>
               {/* Cột trái */}
@@ -45,7 +111,7 @@ const Register = () => {
                 <Form.Item
                   label={
                     <span style={{ color: "white", fontWeight: 600 }}>
-                      Họ và tên{" "}
+                      Họ và tên
                     </span>
                   }
                   name="ten"
@@ -77,6 +143,54 @@ const Register = () => {
                     size="large"
                     style={{ borderRadius: "1px" }}
                   />
+                </Form.Item>
+
+                {/* Mã xác nhận */}
+                <Form.Item
+                  label={
+                    <span style={{ color: "white", fontWeight: 600 }}>
+                      Mã xác nhận
+                    </span>
+                  }
+                  required
+                >
+                  <Row gutter={10}>
+                    <Col span={16}>
+                      <Form.Item
+                        name="ma_xac_nhan"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Vui lòng nhập mã xác nhận!",
+                          },
+                        ]}
+                        noStyle
+                      >
+                        <Input
+                          prefix={<SafetyCertificateOutlined />}
+                          placeholder="Nhập mã xác nhận"
+                          size="large"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Button
+                        block
+                        size="large"
+                        onClick={handleSendCode}
+                        disabled={countdown > 0}
+                        style={{
+                          backgroundColor:
+                            countdown > 0 ? "#f5f5f5" : "#1890ff",
+                          color: countdown > 0 ? "#999" : "#fff",
+                          borderColor: countdown > 0 ? "#d9d9d9" : "#1890ff",
+                          opacity: 1,
+                        }}
+                      >
+                        {countdown > 0 ? `Gửi lại (${countdown}s)` : "Gửi mã"}
+                      </Button>
+                    </Col>
+                  </Row>
                 </Form.Item>
               </Col>
 
@@ -169,15 +283,13 @@ const Register = () => {
               </Col>
             </Row>
 
-            {/* Chính sách và điều khoản */}
             <Form.Item style={{ textAlign: "left" }}>
               <Link
                 href="/privacy-policy"
                 target="_blank"
                 style={{ color: "yellow" }}
               >
-                <RightOutlined />
-                ㅤXem chính sách bảo mật
+                <RightOutlined /> Xem chính sách bảo mật
               </Link>
             </Form.Item>
 
@@ -190,7 +302,9 @@ const Register = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                          new Error("Vui lòng chấp nhận với các điều khoản của chúng tôi!")
+                          new Error(
+                            "Vui lòng chấp nhận với các điều khoản của chúng tôi!"
+                          )
                         ),
                 },
               ]}
@@ -201,7 +315,6 @@ const Register = () => {
               </Checkbox>
             </Form.Item>
 
-            {/* Nút đăng ký */}
             <Row gutter={30}>
               <Col span={12}>
                 <Form.Item>
