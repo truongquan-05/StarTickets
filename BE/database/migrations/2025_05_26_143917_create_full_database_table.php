@@ -62,11 +62,18 @@ return new class extends Migration {
             $table->date('ngay_ket_thuc')->nullable();
             $table->string('do_tuoi_gioi_han', 50);
             $table->enum('loai_suat_chieu', ['Thường', 'Đặc biệt', 'Sớm']);
-            $table->enum('trang_thai', ['Nháp', 'Xuất bản']);
+            $table->enum('trang_thai_phim', ['Nháp', 'Xuất bản']);
             $table->json('chuyen_ngu')->nullable();
             $table->json('the_loai_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        Schema::create('xac_nhan', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('ma_xac_nhan', 100);
+            $table->timestamps();
         });
 
         Schema::create('chuyen_ngu', function (Blueprint $table) {

@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
+use App\Models\NguoiDung;
 
 // Route::get('/user', function (Request $request) {
 //     return 'Quan';
@@ -164,8 +165,8 @@ Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
 
-
-
+Route::post('ma_xac_thuc/{id}', [NguoiDungController::class , 'TaoMaXacNhan']); // Tạo mã xác nhận cho người dùng
+Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class , 'getMaXacNhan']);
 //-------------------CLIENT-------------------//
 
 //trang chu
@@ -215,14 +216,8 @@ Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'log
 //Check ghế đặt vé
 Route::apiResource('check_ghe',CheckGheController::class);
 
-Route::apiResource('voucher',MaGiamGiaClient::class);
-
-
-
-
-
-
-
+Route::get('voucher',[MaGiamGiaClient::class, 'index']);
+Route::post('voucher/check/{id}', [MaGiamGiaClient::class, 'checkVoucher']);
 
 
 

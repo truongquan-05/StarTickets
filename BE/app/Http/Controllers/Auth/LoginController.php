@@ -38,19 +38,20 @@ class LoginController extends Controller
             $provider = Socialite::driver('google');
             $googleUser = $provider->stateless()->user();
 
-            $user = NguoiDung::updateOrCreate(
+            $user = NguoiDung::firstOrCreate(
                 ['google_id' => $googleUser->getId()],
                 [
                     'ten' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
                     'google_token' => $googleUser->token,
-                    'vai_tro_id' => 1,
+                    'vai_tro_id' => 2,
                     'anh_dai_dien' => $googleUser->getAvatar(),
                     'email_da_xac_thuc' => now(),
                     'password' => bcrypt(Str::random(16)),
                     'so_dien_thoai' => substr(bin2hex(random_bytes(5)), 0, 10),
                 ]
             );
+
 
             $token = $user->createToken('google-api')->plainTextToken;
 
@@ -62,7 +63,7 @@ class LoginController extends Controller
                     'user' => urlencode(json_encode([
                         'id' => $user->id,
                     ]))
-                ]) 
+                ])
             );
         } catch (\Throwable $th) {
             // Có thể redirect sang FE với thông báo lỗi cũng được
