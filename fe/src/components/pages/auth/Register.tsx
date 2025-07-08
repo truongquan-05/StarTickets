@@ -91,6 +91,7 @@ const Register = () => {
     }
   };
 
+  
   return (
     <div className="login-background">
       <Row justify="center" align="middle" className="login-container">
