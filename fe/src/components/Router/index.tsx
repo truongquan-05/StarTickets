@@ -36,10 +36,19 @@ import NewsDetail from '../pages/Users/TinTuc/NewsDetail';
 import GoogleCallback from '../pages/auth/GoogleCallback';
 import AddVoucher from '../pages/Voucher/Add';
 import SearchPage from '../pages/Users/SearchPage';
-import Commet from '../pages/Admin/CommentPage/Comment';
 import MovieDetailUser from '../pages/Users/MovieDetail';
 import EditLichChieu from '../pages/Admin/LichChieu/EditLichChieu';
+import Comment from '../pages/Admin/CommentPage/Comment';
+import ProfilePage from '../pages/Users/Profile';
+import TimKiemPhim from '../pages/Users/Timkiemphim';
 import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
+import TrashMovies from '../pages/Admin/MoviesPage/TrashMovies';
+import ThanhToan from '../pages/Users/DatVe/ThanhToan';
+import LichSuDatVe from '../pages/Users/DatVe/LichSuDatVe';
+import BannerList from '../pages/Admin/Banner/BannerList';
+import BannerForm from '../pages/Admin/Banner/BannerForm';
+import DonVeList from '../pages/Admin/Donve/DonveList';
+import DonVeDetail from '../pages/Admin/Donve/DonveDetail';
 
 
 
@@ -55,6 +64,7 @@ const Routermain = () => {
       children: [
         { path: '', element: <Home /> },
         { path: 'phim/:id', element:<MovieDetailUser/>  },
+        { path: 'check-out', element: <ThanhToan /> },
         { path: 'search', element:<SearchPage/>  },
         { path: 'about', element: <GioiThieu /> },
         { path: 'news', element: <NewsUser /> },
@@ -62,6 +72,11 @@ const Routermain = () => {
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
         { path: 'auth/google/callback', element: <GoogleCallback /> },
+        { path: 'profile', element: <ProfilePage /> },
+        { path: 'history', element: <LichSuDatVe /> },
+        { path: '/tim-kiem-phim', element: <TimKiemPhim /> },
+
+
       ],
     },
     {
@@ -73,6 +88,14 @@ const Routermain = () => {
          { path: 'movies/detail/:id', element: <MovieDetail /> },
         { path: 'movies/add', element: <AddMoviesPage /> },
         { path: 'category_chair/list', element: <ListCategoryChair /> },
+        { path: 'movies/trash', element: <TrashMovies /> },
+
+        { path: 'banner', element: <BannerList /> },
+        { path: 'banner/create', element: <BannerForm /> },
+        { path: 'don-ve', element: <DonVeList /> },
+        { path: 'don-ve/:id', element: <DonVeDetail /> },
+
+
         { path: 'chair/list', element: <Chair /> },
         { path: 'lichchieu/list', element: <LichChieu /> },
         { path: 'lichchieucu/list', element: <LichChieuCu /> },
@@ -86,7 +109,7 @@ const Routermain = () => {
         { path: 'room/add', element: <AddPhongChieu /> },
 
         { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
-        { path: 'comment/list', element: <Commet /> },
+        { path: 'comment/list', element: <Comment /> },
 
 
 

@@ -16,7 +16,25 @@ class PhimController extends Controller
     // Lấy danh sách phim (kèm lọc, tìm kiếm, phân trang)
     public function index(Request $request)
     {
-        $query = Phim::with('theLoai');
+        $query = Phim::with('theLoai')->whereNot('trang_thai_phim', 'Nháp');
+
+        if ($request->has('search')) {
+            $query->where('ten_phim', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->has('tinh_trang')) {
+            $query->where('tinh_trang', $request->tinh_trang);
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $phims = $query->orderBy('id', 'desc')->paginate($perPage);
+
+        return response()->json($phims);
+    }
+
+    public function PhimChuaXuatBan(Request $request)
+    {
+        $query = Phim::with('theLoai')->where('trang_thai_phim', 'Nháp');
 
         if ($request->has('search')) {
             $query->where('ten_phim', 'like', '%' . $request->search . '%');
@@ -80,21 +98,22 @@ class PhimController extends Controller
             $data['anh_poster'] = $request->file('anh_poster')->store('posters', 'public');
         }
 
+        $data['trang_thai_phim'] = $request->input('trang_thai_phim');
+
         $phim = Phim::create($data);
         // $phim->load('theLoai');
+
 
         return response()->json([
             'message' => 'Thêm phim thành công',
             'data' => $phim
-        ], 201);
+        ], 200);
     }
-
-
 
     // Chi tiết phim theo ID
     public function show($id)
     {
-        $phim = Phim::with('theLoai')->findOrFail($id);
+        $phim = Phim::withTrashed()->findOrFail($id);
         return response()->json($phim);
     }
 
@@ -139,24 +158,41 @@ class PhimController extends Controller
     // Xóa phim
     public function delete($id)
     {
-        $phim = Phim::findOrFail($id);
+        // Cho phép tìm luôn cả phim đã bị xóa mềm
+        $phim = Phim::withTrashed()->findOrFail($id);
 
+        // Xóa ảnh nếu có
         if ($phim->anh_poster) {
             Storage::disk('public')->delete($phim->anh_poster);
         }
 
-        $phim->delete();
+        // Xóa vĩnh viễn
+        $phim->forceDelete();
 
         return response()->json(['message' => 'Xóa phim thành công']);
     }
+
     // Xóa mềm phim
     public function softDelete($id)
     {
-        $phim = Phim::findOrFail($id);
+        $phim = Phim::find($id);
+
+        if (!$phim) {
+            return response()->json(['message' => 'Phim không tồn tại hoặc đã bị xóa'], 200); // Không 404
+        }
+
         $phim->delete();
 
         return response()->json(['message' => 'Phim đã được xóa mềm']);
     }
+
+    // Lấy phim đã xóa mềm
+    public function trashed()
+    {
+        $trashed = Phim::onlyTrashed()->get();
+        return response()->json(['data' => $trashed]);
+    }
+
 
     // Khôi phục phim đã xóa mềm
 
@@ -168,7 +204,6 @@ class PhimController extends Controller
             $phim->restore();
             return response()->json(['message' => 'Phim đã được khôi phục']);
         }
-
         return response()->json(['message' => 'Phim chưa bị xóa hoặc không tồn tại'], 404);
     }
 }

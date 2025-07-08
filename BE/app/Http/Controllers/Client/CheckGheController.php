@@ -40,6 +40,11 @@ class CheckGheController extends Controller
     public function update(Request $request, string $id)
     {
         $dataGhe = CheckGhe::find($id);
+        if ($dataGhe['trang_thai'] == $request->trang_thai) {
+            return response()->json([
+                'message' => 'Ghế đã có người chọn'
+            ], 422);
+        }
         if (!$dataGhe) {
             return response()->json([
                 'message' => 'Ghế không tồn tại'

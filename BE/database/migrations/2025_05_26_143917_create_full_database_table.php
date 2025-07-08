@@ -30,9 +30,15 @@ return new class extends Migration {
 
         Schema::create('quyen_han', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vai_tro_id')->constrained('vai_tro')->onUpdate('cascade')->onDelete('cascade');
             $table->string('quyen', 100);
             $table->text('mo_ta')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('quyen_truy_cap', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('vai_tro_id')->constrained('vai_tro')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('quyen_han_id')->constrained('quyen_han')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -54,7 +60,6 @@ return new class extends Migration {
             $table->string('anh_poster', 255)->nullable();
             $table->date('ngay_cong_chieu');
             $table->date('ngay_ket_thuc')->nullable();
-            $table->string('trang_thai_phim', 100);
             $table->string('do_tuoi_gioi_han', 50);
             $table->enum('loai_suat_chieu', ['Thường', 'Đặc biệt', 'Sớm']);
             $table->json('chuyen_ngu')->nullable();
@@ -142,7 +147,6 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->decimal('tong_tien', 10, 2);
-            $table->string('trang_thai', 20);
             $table->timestamps();
         });
 
@@ -185,7 +189,8 @@ return new class extends Migration {
             $table->string('ten_do_an', 100);
             $table->string('image', 150);
             $table->text('mo_ta')->nullable();
-            $table->decimal('gia', 10, 2);
+            $table->decimal('gia_nhap', 10, 2);
+            $table->decimal('gia_ban', 10, 2);
             $table->integer('so_luong_ton');
             $table->timestamps();
             $table->softDeletes();
@@ -195,6 +200,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('dat_ve_id')->constrained('dat_ve')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('do_an_id')->constrained('do_an')->onUpdate('cascade')->onDelete('cascade');
+            $table->decimal('gia_ban', 10, 2);
             $table->integer('so_luong');
             $table->timestamps();
         });
@@ -236,8 +242,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->float('diem');
-            $table->float('tong_diem');
-            $table->string('cap_do', 50);
             $table->timestamps();
         });
 

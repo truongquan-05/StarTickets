@@ -304,22 +304,6 @@ const AddMoviesPage = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="Tình trạng phim"
-                  name="trang_thai_phim"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng chọn tình trạng phim",
-                    },
-                  ]}
-                >
-                  <Select placeholder="Chọn tình trạng">
-                    <Option value="Nháp">Nháp</Option>
-                    <Option value="Xuất bản">Xuất bản</Option>
-                  </Select>
-                </Form.Item>
-
-                <Form.Item
                   label="Phiên bản phim"
                   name="chuyen_ngu" // ✅ KHÔNG có []
                   rules={[
@@ -332,6 +316,21 @@ const AddMoviesPage = () => {
                         {item.the_loai}
                       </Select.Option>
                     ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label="Tình trạng phim"
+                  name="trang_thai_phim"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn tình trạng phim",
+                    },
+                  ]}
+                >
+                  <Select placeholder="Chọn tình trạng">
+                    <Option value="Nháp">Nháp</Option>
+                    <Option value="Xuất bản">Xuất bản</Option>
                   </Select>
                 </Form.Item>
                 <Form.Item style={{ textAlign: "right" }}>

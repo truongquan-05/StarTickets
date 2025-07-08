@@ -1,9 +1,18 @@
-import React from 'react';
-import { Form, Input, Button, Checkbox, Typography, Row, Col, Divider } from 'antd';
-import { GoogleOutlined, FacebookOutlined, UserOutlined, LockOutlined } from '@ant-design/icons';
-import { useGoogleAuth } from './GoogleAuth';
+import React from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Checkbox,
+  Typography,
+  Row,
+  Col,
+  Divider,
+} from "antd";
+import { GoogleOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
+import { useGoogleAuth } from "./GoogleAuth";
 
-const { Title, Text, Link } = Typography;
+const { Text, Link } = Typography;
 
 const Login = () => {
   // const onFinish = (values) => {
@@ -13,23 +22,9 @@ const Login = () => {
   const { loginWithGoogle } = useGoogleAuth();
   return (
     <div className="login-background">
-      <Row
-        justify="center"
-        align="middle"
-        className="login-container"
-      >
-        <Col
-          xs={22}
-          sm={20}
-          md={16}
-          lg={12}
-          xl={10}
-          className="login-box"
-        >
-          <Title level={3} style={{ marginBottom: 24 }}>
-            Đăng nhập
-          </Title>
-
+      <Row justify="center" align="middle" className="login-container">
+        <Col xs={22} sm={20} md={16} lg={12} xl={10} className="login-box">
+          <h2 className="login-title">Đăng nhập</h2>
           <Form
             name="loginForm"
             initialValues={{ remember: true }}
@@ -38,29 +33,41 @@ const Login = () => {
             className="login-form"
           >
             <Form.Item
-              label="Email"
+              label={
+                <span style={{ color: "white", fontWeight: 600 }}>Email</span>
+              }
               name="email"
               rules={[
-                { required: true, message: 'Vui lòng nhập email!' },
-                { type: 'email', message: 'Email không hợp lệ!' },
+                { required: true, message: "Vui lòng nhập email!" },
+                { type: "email", message: "Email không hợp lệ!" },
               ]}
             >
               <Input
                 prefix={<UserOutlined />}
                 placeholder="Nhập email của bạn"
                 size="large"
+                style={{
+                  borderRadius: "1px",
+                }}
               />
             </Form.Item>
 
             <Form.Item
-              label="Mật khẩu"
+              label={
+                <span style={{ color: "white", fontWeight: 600 }}>
+                  Mật khẩu
+                </span>
+              }
               name="password"
-              rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
             >
               <Input.Password
                 prefix={<LockOutlined />}
                 placeholder="Nhập mật khẩu"
                 size="large"
+                style={{
+                  borderRadius: "1px",
+                }}
               />
             </Form.Item>
 
@@ -68,11 +75,21 @@ const Login = () => {
               <Row justify="space-between" align="middle">
                 <Col>
                   <Form.Item name="remember" valuePropName="checked" noStyle>
-                    <Checkbox>Ghi nhớ đăng nhập</Checkbox>
+                    <Checkbox
+                      className="custom-checkboxx"
+                      style={{ color: "white" }}
+                    >
+                      Ghi nhớ đăng nhập
+                    </Checkbox>
                   </Form.Item>
                 </Col>
                 <Col>
-                  <Link href="/forgot-password">Quên mật khẩu?</Link>
+                  <Link
+                    href="/forgot-password"
+                    style={{ color: "white", textDecoration: "underline" }}
+                  >
+                    Quên mật khẩu?
+                  </Link>
                 </Col>
               </Row>
             </Form.Item>
@@ -83,26 +100,28 @@ const Login = () => {
                 htmlType="submit"
                 block
                 size="large"
-                style={{ fontWeight: 'bold' }}
+                className="btn-submit-login-effect"
               >
                 Đăng nhập
               </Button>
             </Form.Item>
 
-            <Divider />
+            <Divider style={{ backgroundColor: "yellow" }} />
 
-            <Form.Item style={{ textAlign: 'center' }}>
-              <Text>
-                Bạn chưa có tài khoản? <Link href="/register">Đăng ký ngay</Link>
+            <Form.Item style={{ textAlign: "center" }}>
+              <Text style={{ color: "white" }}>
+                Bạn chưa có tài khoản?{" "}
+                <Link href="/register" style={{ color: "yellow", textDecoration: "underline" }}>Đăng ký ngay</Link>
               </Text>
             </Form.Item>
 
             {/* Nút đăng nhập nhanh */}
             <Form.Item>
               <Button
-                icon={<GoogleOutlined />}
+                type="primary"
+                icon={<GoogleOutlined style={{ marginRight: 5, fontSize: 20 }} />}
                 size="large"
-                className="btn-google"
+                className="btn-submit-gg-effect"
                 block
                 onClick={loginWithGoogle}
               >

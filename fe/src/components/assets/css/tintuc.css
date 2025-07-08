@@ -1,6 +1,13 @@
+.tintuc{
+  width: 100%;
+  background-color: #1a0933;
+  padding: 15px 10%;
+  box-sizing: border-box;
+}
+
+
 .news-wrapper {
   padding: 40px 20px;
-  max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
   box-sizing: border-box;
@@ -18,11 +25,15 @@
 
 .news-card {
   margin-bottom: 30px;
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
-  background-color: #2c1b4f;
-  border: 1px solid #3c2b6f;
-  box-shadow: 0 12px 25px 0 rgba(243, 234, 40, .5);
+  background: transparent;
+  border: 0;
+  transition: box-shadow 0.4s ease-in-out; /* <- thêm dòng này */
+}
+
+.news-card:hover {
+  box-shadow: 0 12px 32px rgb(149 157 165 / 30%);
 }
 
 
@@ -50,7 +61,7 @@
   background-color: #FFEB3B;
   color: #000;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
   transition: color 0.4s ease;
