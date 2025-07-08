@@ -159,6 +159,12 @@ Route::prefix('auth/google')->group(function () {
     Route::get('redirect', [LoginController::class, 'redirect']); //Dùng cái này
     Route::get('callback', [LoginController::class, 'callback']);
 });
+//XỬ LÝ ĐĂNG NHẬP VỚI TÀI KHOẢN THƯỜNG
+Route::prefix('auth')->group(function () {
+    Route::post('login', [LoginController::class, 'login']); 
+    Route::post('register', [LoginController::class, 'register']);
+    Route::post('create-ma-dang-ky/{email}', [LoginController::class, 'createMaDangKy']); // Tạo mã đăng ký
+});
 
 //XỬ LÝ THANH TOÁN
 Route::apiResource('dat_ve', DatVeController::class);

@@ -185,7 +185,7 @@ const ProfilePage = () => {
             name="mat_khau_cu"
             rules={[
               { required: true, message: "Vui lòng nhập mật khẩu cũ!" },
-              { min: 6, message: "Mật khẩu tối thiểu 6 ký tự!" },
+              { min: 8, message: "Mật khẩu tối thiểu 8 ký tự!" },
             ]}
           >
             <Input.Password />
@@ -196,7 +196,7 @@ const ProfilePage = () => {
             name="mat_khau_moi"
             rules={[
               { required: true, message: "Vui lòng nhập mật khẩu mới!" },
-              { min: 6, message: "Mật khẩu tối thiểu 6 ký tự!" },
+              { min: 8, message: "Mật khẩu tối thiểu 8 ký tự!" },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("mat_khau_cu") !== value) {

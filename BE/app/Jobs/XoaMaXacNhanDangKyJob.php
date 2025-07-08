@@ -2,14 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Models\XacNhan;
+use App\Models\XacNhanDangKy;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable; 
 
-class XoaMaXacNhanJob implements ShouldQueue
+class XoaMaXacNhanDangKyJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels; 
 
@@ -22,7 +22,6 @@ class XoaMaXacNhanJob implements ShouldQueue
 
     public function handle()
     {
-        XacNhan::where('id', $this->id)->delete();
+        XacNhanDangKy::where('id', $this->id)->delete();
     }
 }
-

@@ -76,6 +76,13 @@ return new class extends Migration {
             $table->timestamps();
         });
 
+         Schema::create('xac_nhan_dang_ky', function (Blueprint $table) {
+            $table->id();
+            $table->string('email', 100);
+            $table->string('ma_xac_nhan', 100);
+            $table->timestamps();
+        });
+
         Schema::create('chuyen_ngu', function (Blueprint $table) {
             $table->id();
             $table->string('the_loai', 100);

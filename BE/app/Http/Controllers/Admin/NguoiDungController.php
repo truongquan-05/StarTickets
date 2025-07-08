@@ -257,7 +257,6 @@ class NguoiDungController extends Controller
             XoaMaXacNhanJob::dispatch($xacNhan->id)->delay(now()->addSeconds(60));
             return response()->json([
                 'message' => 'Mã xác nhận đã được tạo và gửi email',
-                'ma_xac_nhan' => $maXacNhan
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -276,7 +275,6 @@ class NguoiDungController extends Controller
         }
         return response()->json([
             'message' => 'Mã xác nhận đã được tìm thấy',
-            'ma_xac_nhan' => $xacNhan->ma_xac_nhan
         ]);
     }
 }
