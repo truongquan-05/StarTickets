@@ -49,6 +49,7 @@ import BannerList from '../pages/Admin/Banner/BannerList';
 import BannerForm from '../pages/Admin/Banner/BannerForm';
 import DonVeList from '../pages/Admin/Donve/DonveList';
 import DonVeDetail from '../pages/Admin/Donve/DonveDetail';
+import LichSuTatCaVe from '../pages/Users/DatVe/LichSuTatCaVe';
 
 
 
@@ -74,6 +75,7 @@ const Routermain = () => {
         { path: 'auth/google/callback', element: <GoogleCallback /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'history', element: <LichSuDatVe /> },
+        { path: 'history-all', element: <LichSuTatCaVe /> },
         { path: '/tim-kiem-phim', element: <TimKiemPhim /> },
 
 
