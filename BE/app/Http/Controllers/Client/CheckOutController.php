@@ -41,136 +41,236 @@ class CheckOutController extends Controller
 
     public function momo_payment(Request $request)
     {
+        //Xử lý thanh toán bằng MOMO
+        if ($request->input('phuong_thuc_thanh_toan_id') == 1) {
+            $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+            $partnerCode = 'MOMOBKUN20180529';
+            $accessKey = 'klm05TvNBzhg7h7j';
+            $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+            $orderInfo = "Thanh toán qua ATM MoMo";
+            $amount = $request->input('tong_tien');
+            $dat_ve_id = $request->input('dat_ve_id');
+            $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
+            $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
+            $nguoi_dung_id = $request->input('nguoi_dung_id');
+            $orderId = time() . "";
+            $redirectUrl = "http://localhost:8000/api/momo-ipn";
+            $ipnUrl = "http://localhost:8000/api/momo-ipn";
 
-        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
-        $partnerCode = 'MOMOBKUN20180529';
-        $accessKey = 'klm05TvNBzhg7h7j';
-        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
-        $orderInfo = "Thanh toán qua ATM MoMo";
-        $amount = $request->input('tong_tien');
-        $dat_ve_id = $request->input('dat_ve_id');
-        $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
-        $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
-        $nguoi_dung_id = $request->input('nguoi_dung_id');
-        $orderId = time() . "";
-        $redirectUrl = "http://localhost:8000/api/momo-ipn";
-        $ipnUrl = "http://localhost:8000/api/momo-ipn";
 
+            $requestId = time() . "";
+            $requestType = "payWithATM";
+            $extraData = json_encode([
+                'dat_ve_id' => $dat_ve_id,
+                'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
+                'nguoi_dung_id' => $nguoi_dung_id,
+                'ma_giam_gia_id' => $ma_giam_gia_id,
+            ]);
 
-        $requestId = time() . "";
-        $requestType = "payWithATM";
-        $extraData = json_encode([
-            'dat_ve_id' => $dat_ve_id,
-            'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
-            'nguoi_dung_id' => $nguoi_dung_id,
-            'ma_giam_gia_id' => $ma_giam_gia_id,
-        ]);
+            // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
+            //before sign HMAC SHA256 signature
+            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+            $signature = hash_hmac("sha256", $rawHash, $secretKey);
+            $data = array(
+                'dat_ve_id' => $dat_ve_id,
+                'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
+                'nguoi_dung_id' => $nguoi_dung_id,
+                'partnerCode' => $partnerCode,
+                'partnerName' => "Test",
+                "storeId" => "MomoTestStore",
+                'requestId' => $requestId,
+                'amount' => $amount,
+                'orderId' => $orderId,
+                'orderInfo' => $orderInfo,
+                'redirectUrl' => $redirectUrl,
+                'ipnUrl' => $ipnUrl,
+                'lang' => 'vi',
+                'extraData' => $extraData,
+                'requestType' => $requestType,
+                'signature' => $signature
+            );
+            $result = $this->execPostRequest($endpoint, json_encode($data));
+            $jsonResult = json_decode($result, true);  // decode json
 
-        // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
-        //before sign HMAC SHA256 signature
-        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
-        $signature = hash_hmac("sha256", $rawHash, $secretKey);
-        $data = array(
-            'dat_ve_id' => $dat_ve_id,
-            'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
-            'nguoi_dung_id' => $nguoi_dung_id,
-            'partnerCode' => $partnerCode,
-            'partnerName' => "Test",
-            "storeId" => "MomoTestStore",
-            'requestId' => $requestId,
-            'amount' => $amount,
-            'orderId' => $orderId,
-            'orderInfo' => $orderInfo,
-            'redirectUrl' => $redirectUrl,
-            'ipnUrl' => $ipnUrl,
-            'lang' => 'vi',
-            'extraData' => $extraData,
-            'requestType' => $requestType,
-            'signature' => $signature
-        );
-        $result = $this->execPostRequest($endpoint, json_encode($data));
-        $jsonResult = json_decode($result, true);  // decode json
+            return response()->json([
+                'data' => $jsonResult,
+                'message' => 'Payment request sent successfully',
+                'status' => 200
+            ]);
+        }
+        // Xử lý thanh toán bằng VNPAY
+        if ($request->input('phuong_thuc_thanh_toan_id') == 2) {
+            $data = $request->all();
+            $code_cart = time(); // Mã đơn hàng
 
-        return response()->json([
-            'data' => $jsonResult,
-            'message' => 'Payment request sent successfully',
-            'status' => 200
-        ]);
+            $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+            $dat_ve_id = $request->input('dat_ve_id');
+            $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
+            $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
+            $nguoi_dung_id = $request->input('nguoi_dung_id');
+
+            $vnp_Returnurl = "http://localhost:8000/api/momo-ipn?"
+                . "dat_ve_id={$dat_ve_id}"
+                . "&phuong_thuc_thanh_toan_id={$phuong_thuc_thanh_toan_id}"
+                . "&nguoi_dung_id={$nguoi_dung_id}"
+                . "&ma_giam_gia_id=" . ($ma_giam_gia_id ?? 'null');
+
+            // if (!is_null($ma_giam_gia_id)) {
+            //     $vnp_Returnurl .= "&ma_giam_gia_id={$ma_giam_gia_id}";
+            // }
+
+            $vnp_TmnCode = "BRIPD10R";
+            $vnp_HashSecret = "MXJDN4WW0M516FX3L2JQKQPDUF3XDQS6";
+
+            $vnp_TxnRef = $code_cart;
+            $vnp_OrderInfo = 'Thanh toán đơn hàng ';
+            $vnp_OrderType = 'billpayment';
+            $vnp_Amount = $request->input('tong_tien'); // ví dụ: 100000
+
+            $vnp_Locale = 'vn';
+            $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+
+            $inputData = array(
+                "vnp_Version" => "2.1.0",
+                "vnp_TmnCode" => $vnp_TmnCode,
+                "vnp_Amount" => $vnp_Amount * 100, // nhân 100
+                "vnp_Command" => "pay",
+                "vnp_CreateDate" => date('YmdHis'),
+                "vnp_CurrCode" => "VND",
+                "vnp_IpAddr" => $vnp_IpAddr,
+                "vnp_Locale" => $vnp_Locale,
+                "vnp_OrderInfo" => $vnp_OrderInfo,
+                "vnp_OrderType" => $vnp_OrderType,
+                "vnp_ReturnUrl" => $vnp_Returnurl,
+                "vnp_TxnRef" => $vnp_TxnRef,
+            );
+
+            // Nếu muốn thêm bank
+            // $inputData['vnp_BankCode'] = 'NCB';
+
+            ksort($inputData);
+            $hashdata = "";
+            $query = "";
+            $i = 0;
+            foreach ($inputData as $key => $value) {
+                if ($i == 1) {
+                    $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+                } else {
+                    $hashdata .= urlencode($key) . "=" . urlencode($value);
+                    $i = 1;
+                }
+                $query .= urlencode($key) . "=" . urlencode($value) . '&';
+            }
+
+            $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+            $vnp_Url = $vnp_Url . "?" . $query . "vnp_SecureHash=" . $vnpSecureHash;
+
+            $returnData = array(
+                'code' => '01',
+                'message' => 'success',
+                'data' => $vnp_Url
+            );
+
+            return response()->json([
+                'data' => $returnData,
+                'message' => 'Payment request sent successfully',
+                'status' => 200
+            ]);
+        }
     }
 
     public function handleIpn(Request $request)
     {
-        $data = $request->all();
+        try {
+            $data = $request->all();
+            if ($request->phuong_thuc_thanh_toan_id == 1) {
 
-        if (!isset($data['extraData']) || !isset($data['orderId'])) {
-            return response()->json(['message' => 'Dữ liệu không hợp lệ'], 400);
-        }
+                $extraData = json_decode($data['extraData'], true);
+                $extraData['ma_giao_dich'] = $data['orderId'];
 
-        $extraData = json_decode($data['extraData'], true);
-        $extraData['ma_giao_dich'] = $data['orderId'];
+                if ($data['resultCode'] == 0) {
 
-        if ($data['resultCode'] == 0) {
-            $thanhToan = ThanhToan::create($extraData);
-            $DatVe = DatVe::find($thanhToan->dat_ve_id);
+                    if ($extraData['ma_giam_gia_id']) {
+                        $voucher = MaGiamGia::find($extraData['ma_giam_gia_id']);
+                        $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
+                    }
+                    $thanhToan = ThanhToan::create($extraData);
+                    $DatVe = DatVe::find($thanhToan->dat_ve_id);
 
-            $diemCong = $DatVe->tong_tien * 0.001;
+                    $diemCong = $DatVe->tong_tien * 0.001;
 
-            $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
+                    $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
-            if ($DiemThanhVien) {
-                $DiemThanhVien->diem += $diemCong;
-                $DiemThanhVien->save();
-            } else {
-                DiemThanhVien::create([
-                    'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
-                    'diem' => $diemCong
-                ]);
-            }
+                    if ($DiemThanhVien) {
+                        $DiemThanhVien->diem += $diemCong;
+                        $DiemThanhVien->save();
+                    } else {
+                        DiemThanhVien::create([
+                            'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+                            'diem' => $diemCong
+                        ]);
+                    }
 
-            // Redirect về trang history với dữ liệu truyền qua query string
-            $queryParams = http_build_query([
-                'dat_ve_id' => $thanhToan->dat_ve_id,
-                'phuong_thuc_thanh_toan_id' => $thanhToan->phuong_thuc_thanh_toan_id,
-                'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
-                'ma_giao_dich' => $thanhToan->ma_giao_dich,
-            ]);
-            if ($extraData['ma_giam_gia_id']) {
-                $voucher = MaGiamGia::find($extraData['ma_giam_gia_id']);
-                $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
+                    // Redirect về trang history với dữ liệu truyền qua query string
+                    $queryParams = http_build_query([
+                        'dat_ve_id' => $thanhToan->dat_ve_id,
+                        'phuong_thuc_thanh_toan_id' => $thanhToan->phuong_thuc_thanh_toan_id,
+                        'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+                        'ma_giao_dich' => $thanhToan->ma_giao_dich,
+                    ]);
 
-            }
-
-            return redirect("http://localhost:5173/history?$queryParams");
-        } else {
-            if (isset($data['extraData'])) {
-                $dataVe = json_decode($data['extraData'], true);
-                $dataVeId = $dataVe['dat_ve_id'];
-                $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
-                $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
-                $don_do_an = $dataVe->DonDoAn ?? null;
-                if ($dat_ve_chi_tiet->isNotEmpty()) {
-                    $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
-                        $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
-                            ->where('lich_chieu_id', $dataVe->lich_chieu_id)
-                            ->first();
-                        if ($checkGhe) {
-                            $checkGhe->update(['trang_thai' => 'trong']);
+                    return redirect("http://localhost:5173/history?$queryParams");
+                } else {
+                    if (isset($data['extraData'])) {
+                        $dataVe = json_decode($data['extraData'], true);
+                        $dataVeId = $dataVe['dat_ve_id'];
+                        $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
+                        $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
+                        $don_do_an = $dataVe->DonDoAn ?? null;
+                        if ($dat_ve_chi_tiet->isNotEmpty()) {
+                            $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
+                                $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
+                                    ->where('lich_chieu_id', $dataVe->lich_chieu_id)
+                                    ->first();
+                                if ($checkGhe) {
+                                    $checkGhe->update(['trang_thai' => 'trong']);
+                                }
+                            });
                         }
-                    });
-                }
-                if ($don_do_an->isNotEmpty()) {
-                    $don_do_an->each(function ($item) {
-                        $doAn = DoAn::find($item->do_an_id);
-                        if ($doAn) {
-                            $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
+                        if ($don_do_an->isNotEmpty()) {
+                            $don_do_an->each(function ($item) {
+                                $doAn = DoAn::find($item->do_an_id);
+                                if ($doAn) {
+                                    $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
+                                }
+                            });
                         }
-                    });
+                        $dataVe->delete();
+                    } else {
+                        $dataVe = null;
+                    }
+                    return redirect("http://localhost:5173/history?error=1");
                 }
-                $dataVe->delete();
-            } else {
-                $dataVe = null;
             }
-            return redirect("http://localhost:5173/history?error=1");
+            if ($request->phuong_thuc_thanh_toan_id == 2) {
+
+                // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
+                
+                if ($data['vnp_TransactionStatus'] == "00") {
+                    return response()->json([
+                        'data' => $data,
+                    ], 200);
+                }else{
+                     return response()->json([
+                        'message' => 'Thanh toán không thành công',
+                        'data' => $data,
+                    ], 422);
+                }
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'data' => $th->getMessage(),
+            ], 422);
         }
     }
 
