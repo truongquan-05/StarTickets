@@ -46,25 +46,25 @@ function convertYouTubeUrlToEmbed(url: string) {
 }
 
 // Hàm kiểm tra ghế cách quãng
-function checkGapSeats(selectedSeats: string[]): boolean {
-  if (selectedSeats.length <= 1) return false;
-  const rowMap: Record<string, number[]> = {};
-  selectedSeats.forEach((seat) => {
-    const row = seat[0];
-    const col = parseInt(seat.slice(1), 10);
-    if (!rowMap[row]) rowMap[row] = [];
-    rowMap[row].push(col);
-  });
-  for (const row in rowMap) {
-    const cols = rowMap[row].sort((a, b) => a - b);
-    for (let i = 0; i < cols.length - 1; i++) {
-      if (cols[i + 1] - cols[i] > 1) {
-        return true; // Có ghế cách quãng
-      }
-    }
-  }
-  return false; // Không cách quãng
-}
+// function checkGapSeats(selectedSeats: string[]): boolean {
+//   if (selectedSeats.length <= 1) return false;
+//   const rowMap: Record<string, number[]> = {};
+//   selectedSeats.forEach((seat) => {
+//     const row = seat[0];
+//     const col = parseInt(seat.slice(1), 10);
+//     if (!rowMap[row]) rowMap[row] = [];
+//     rowMap[row].push(col);
+//   });
+//   for (const row in rowMap) {
+//     const cols = rowMap[row].sort((a, b) => a - b);
+//     for (let i = 0; i < cols.length - 1; i++) {
+//       if (cols[i + 1] - cols[i] > 1) {
+//         return true; // Có ghế cách quãng
+//       }
+//     }
+//   }
+//   return false; // Không cách quãng
+// }
 
 const MovieDetailUser = () => {
   const TIMEOUT_MINUTES = 5;
@@ -90,7 +90,7 @@ const MovieDetailUser = () => {
     SelectedSeatWithPrice[]
   >([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-  const [hasGap, setHasGap] = useState(false);
+  // const [hasGap, setHasGap] = useState(false);
   const { data: checkGheList = [], isLoading: loadingCheckGhe } =
     useListCheckGhe({
       id: selectedLichChieuId ?? undefined,
@@ -406,7 +406,7 @@ const MovieDetailUser = () => {
   //   clearTimer,
   //   selectedSeats,
   //   selectedLichChieuId,
-  // ]); // Thêm selectedSeats và selectedLichChieuId để re-run khi thay đổi
+  // ]);
 
   useEffect(() => {
     if (selectedLichChieuId !== null && lichChieuList.length > 0) {
@@ -433,24 +433,24 @@ const MovieDetailUser = () => {
     fetchMovie();
   }, [id]);
 
-  useEffect(() => {
-    if (selectedSeats.length > 0 && danhSachGhe.length > 0) {
-      const seatsToCheckForGaps = selectedSeats.filter((seatNumber) => {
-        const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
-        return ghe && (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2);
-      });
+  // useEffect(() => {
+  //   if (selectedSeats.length > 0 && danhSachGhe.length > 0) {
+  //     const seatsToCheckForGaps = selectedSeats.filter((seatNumber) => {
+  //       const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
+  //       return ghe && (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2);
+  //     });
 
-      const gap = checkGapSeats(seatsToCheckForGaps);
-      setHasGap(gap);
-      if (gap) {
-        message.warning(
-          "Bạn đang chọn ghế cách quãng, vui lòng chọn ghế liền nhau!"
-        );
-      }
-    } else {
-      setHasGap(false);
-    }
-  }, [selectedSeats, danhSachGhe]);
+  //     const gap = checkGapSeats(seatsToCheckForGaps);
+  //     setHasGap(gap);
+  //     if (gap) {
+  //       message.warning(
+  //         "Bạn đang chọn ghế cách quãng, vui lòng chọn ghế liền nhau!"
+  //       );
+  //     }
+  //   } else {
+  //     setHasGap(false);
+  //   }
+  // }, [selectedSeats, danhSachGhe]);
 
   useEffect(() => {
     if (
@@ -540,10 +540,10 @@ const MovieDetailUser = () => {
       return;
     }
 
-    if (displaySelectedSeats.length !== selectedSeats.length) {
-      message.error("Lỗi dữ liệu ghế hoặc giá vé. Vui lòng thử lại.");
-      return;
-    }
+    // if (displaySelectedSeats.length !== selectedSeats.length) {
+    //   message.warning("Một số ghế chưa được định giá. Vui lòng thử lại sau.");
+    //   return;
+    // }
 
     clearTimer(); // Dừng bộ đếm thời gian
     setIsProcessingPayment(true); // Đặt cờ đang xử lý thanh toán
@@ -621,125 +621,83 @@ const MovieDetailUser = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-  const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
-    if (!selectedLichChieuId) {
-      message.warning("Vui lòng chọn lịch chiếu trước!");
-      return;
-    }
+const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
+  if (!selectedLichChieuId) {
+    message.warning("Vui lòng chọn lịch chiếu trước!");
+    return;
+  }
 
-    const ghe = danhSachGhe.find((g: any) => g.id === gheId);
-    if (!ghe) return;
+  const ghe = danhSachGhe.find((g: any) => g.id === gheId);
+  if (!ghe) return;
 
-    let seatsToToggle: IGhe[] = [ghe];
+  let seatsToToggle: IGhe[] = [ghe];
 
-    // ✅ Ghế đôi
-    if (ghe.loai_ghe_id === 3) {
-      const row = ghe.so_ghe[0];
-      const col = parseInt(ghe.so_ghe.slice(1));
-      const pairCol = col % 2 === 0 ? col - 1 : col + 1;
-      const pairSoGhe = `${row}${pairCol}`;
-      const pair = danhSachGhe.find(
-        (g: any) => g.so_ghe === pairSoGhe && g.loai_ghe_id === 3
-      );
-      if (!pair) {
-        message.warning("Không tìm thấy ghế đôi còn lại.");
-        return;
-      }
-      seatsToToggle.push(pair);
-    }
-
-    // ✅ Không cho chọn nếu đã bán
-    const anySeatSold = seatsToToggle.some((st) =>
-      checkGheList.some(
-        (item: any) =>
-          item.ghe_id === st.id &&
-          item.lich_chieu_id === selectedLichChieuId &&
-          item.trang_thai === "da_dat"
-      )
-    );
-    if (anySeatSold) {
-      message.info("Một hoặc cả hai ghế đã được bán.");
-      return;
-    }
-
-    const newTrangThai =
-      currentTrangThai === "trong"
-        ? "dang_dat"
-        : currentTrangThai === "dang_dat"
-        ? "trong"
-        : "";
-
-    if (!newTrangThai) return;
-
-    let newSelectedSeats = [...selectedSeats];
-    const toggleSoGhe = seatsToToggle.map((s) => s.so_ghe);
-
-    if (newTrangThai === "dang_dat") {
-      toggleSoGhe.forEach((s) => {
-        if (!newSelectedSeats.includes(s)) newSelectedSeats.push(s);
-      });
-    } else {
-      newSelectedSeats = newSelectedSeats.filter(
-        (s) => !toggleSoGhe.includes(s)
-      );
-    }
-
-    // ✅ CHẶN CHỌN GHẾ KỀ RÌA NẾU RÌA CHƯA CHỌN HOẶC ĐÃ TRỐNG
-    if (
-      newTrangThai === "dang_dat" &&
-      (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
-    ) {
-      const row = ghe.so_ghe[0];
-      const num = parseInt(ghe.so_ghe.slice(1));
-
-      const rowSeats = danhSachGhe
-        .filter(
-          (g: any) =>
-            g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
-        )
-        .sort(
-          (a: any, b: any) =>
-            parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
-        );
-
-      const min = parseInt(rowSeats[0].so_ghe.slice(1));
-      const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
-
-      const seatLeft = `${row}${min}`;
-      const seatRight = `${row}${max}`;
-
-      const isSecondFromLeft = num === min + 1;
-      const isSecondFromRight = num === max - 1;
-
-      const leftIsTrống =
-        !newSelectedSeats.includes(seatLeft) &&
-        !checkGheList.some(
-          (x: any) =>
-            x.ghe.so_ghe === seatLeft &&
-            x.lich_chieu_id === selectedLichChieuId &&
-            x.trang_thai !== "trong"
-        );
-
-      const rightIsTrống =
-        !newSelectedSeats.includes(seatRight) &&
-        !checkGheList.some(
-          (x: any) =>
-            x.ghe.so_ghe === seatRight &&
-            x.lich_chieu_id === selectedLichChieuId &&
-            x.trang_thai !== "trong"
-        );
-
-      if (
-        (isSecondFromLeft && leftIsTrống) ||
-        (isSecondFromRight && rightIsTrống)
-      ) {
-        message.warning("Không được chọn ghế cạnh rìa nếu rìa đang trống!");
-        return;
-      }
-    }
-
-    // ✅ CHẶN TRỐNG 1 GHẾ GIỮA 2 GHẾ KHÁC
+  if (ghe.loai_ghe_id === 3) {
     const row = ghe.so_ghe[0];
+    const col = parseInt(ghe.so_ghe.slice(1));
+    const pairCol = col % 2 === 0 ? col - 1 : col + 1;
+    const pairSoGhe = `${row}${pairCol}`;
+    const pair = danhSachGhe.find(
+      (g: any) => g.so_ghe === pairSoGhe && g.loai_ghe_id === 3
+    );
+    if (!pair) {
+      message.warning("Không tìm thấy ghế đôi còn lại.");
+      return;
+    }
+    seatsToToggle.push(pair);
+  }
+
+  const anySeatSold = seatsToToggle.some((st) =>
+    checkGheList.some(
+      (item: any) =>
+        item.ghe_id === st.id &&
+        item.lich_chieu_id === selectedLichChieuId &&
+        item.trang_thai === "da_dat"
+    )
+  );
+  if (anySeatSold) {
+    message.info("Một hoặc cả hai ghế đã được bán.");
+    return;
+  }
+
+  const newTrangThai =
+    currentTrangThai === "trong"
+      ? "dang_dat"
+      : currentTrangThai === "dang_dat"
+      ? "trong"
+      : "";
+
+  if (!newTrangThai) return;
+
+  let newSelectedSeats = [...selectedSeats];
+  const toggleSoGhe = seatsToToggle.map((s) => s.so_ghe);
+
+  if (newTrangThai === "dang_dat") {
+    toggleSoGhe.forEach((s) => {
+      if (!newSelectedSeats.includes(s)) newSelectedSeats.push(s);
+    });
+  } else {
+    newSelectedSeats = newSelectedSeats.filter(
+      (s) => !toggleSoGhe.includes(s)
+    );
+  }
+
+  const getTrangThai = (soGhe: string): string => {
+    if (newSelectedSeats.includes(soGhe)) return "dang_dat";
+    const inDb = checkGheList.find(
+      (x: any) =>
+        x.ghe.so_ghe === soGhe && x.lich_chieu_id === selectedLichChieuId
+    );
+    return inDb?.trang_thai || "trong";
+  };
+
+  if (
+    newTrangThai === "dang_dat" &&
+    (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
+  ) {
+    const row = ghe.so_ghe[0];
+    const num = parseInt(ghe.so_ghe.slice(1));
+
     const rowSeats = danhSachGhe
       .filter(
         (g: any) =>
@@ -750,56 +708,149 @@ const MovieDetailUser = () => {
           parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
       );
 
-    const getTrangThai = (soGhe: string): string => {
-      if (newSelectedSeats.includes(soGhe)) return "dang_dat";
-      const inDb = checkGheList.find(
-        (x: any) =>
-          x.ghe.so_ghe === soGhe && x.lich_chieu_id === selectedLichChieuId
-      );
-      return inDb?.trang_thai || "trong";
-    };
+    const min = parseInt(rowSeats[0].so_ghe.slice(1));
+    const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
 
-    const emptySeats = rowSeats.filter(
-      (g: any) => getTrangThai(g.so_ghe) === "trong"
-    );
+    const isSecondFromLeft = num === min + 1;
+    const isSecondFromRight = num === max - 1;
 
-    if (emptySeats.length > 2) {
-      const hasGap = rowSeats.some((g: any, i: any) => {
-        const prev = rowSeats[i - 1]?.so_ghe;
-        const next = rowSeats[i + 1]?.so_ghe;
-        if (!prev || !next) return false;
+    const ghe3FromLeft = `${row}${min + 2}`;
+    const ghe3FromRight = `${row}${max - 2}`;
+    const tGhe3Left = getTrangThai(ghe3FromLeft);
+    const tGhe3Right = getTrangThai(ghe3FromRight);
 
-        const tPrev = getTrangThai(prev);
-        const tNext = getTrangThai(next);
-        const tCur = getTrangThai(g.so_ghe);
-
-        return tPrev !== "trong" && tNext !== "trong" && tCur === "trong";
-      });
-
-      if (hasGap) {
-        message.error(
-          "Không được để trống 1 ghế giữa hai ghế đã chọn hoặc bán!"
-        );
+    if (isSecondFromLeft && tGhe3Left !== "da_dat") {
+      const ghe1 = `${row}${min}`;
+      const ghe3 = `${row}${min + 2}`;
+      const t1 = getTrangThai(ghe1);
+      const t3 = getTrangThai(ghe3);
+      if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
+        message.warning("Không được để lại 1 ghế trống đơn lẻ ở đầu hàng!");
         return;
       }
     }
 
-    // ✅ Cập nhật trạng thái
-    setSelectedSeats(newSelectedSeats);
-    seatsToToggle.forEach((gheToggle) => {
-      const found = checkGheList.find(
-        (x: any) =>
-          x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
-      );
-      if (found) {
-        updateCheckGhe({
-          id: found.id,
-          values: { trang_thai: newTrangThai },
-          lichChieuId: selectedLichChieuId,
-        });
+    if (isSecondFromRight && tGhe3Right !== "da_dat") {
+      const ghe1 = `${row}${max}`;
+      const ghe3 = `${row}${max - 2}`;
+      const t1 = getTrangThai(ghe1);
+      const t3 = getTrangThai(ghe3);
+      if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
+        message.warning("Không được để lại 1 ghế trống đơn lẻ ở cuối hàng!");
+        return;
       }
+    }
+
+    // ❌ THÊM TRƯỜNG HỢP: A3 đã mua, A4-A6 đều trống, cấm chọn A5
+    const gheIndex = rowSeats.findIndex((g) => g.id === ghe.id);
+    const prev2 = rowSeats[gheIndex - 2];
+    const prev1 = rowSeats[gheIndex - 1];
+    const next1 = rowSeats[gheIndex + 1];
+
+    if (
+      prev2 &&
+      prev1 &&
+      next1 &&
+      getTrangThai(prev2.so_ghe) === "da_dat" &&
+      getTrangThai(prev1.so_ghe) === "trong" &&
+      getTrangThai(ghe.so_ghe) === "trong" &&
+      getTrangThai(next1.so_ghe) === "trong"
+    ) {
+      message.warning("Không được chọn ghế nếu phía trước đã bán và kèm 2 ghế trống liên tiếp.");
+      return;
+    }
+  }
+
+  const row = ghe.so_ghe[0];
+  const rowSeats = danhSachGhe
+    .filter(
+      (g: any) =>
+        g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
+    )
+    .sort(
+      (a: any, b: any) =>
+        parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
+    );
+
+  const emptySeats = rowSeats.filter(
+    (g: any) => getTrangThai(g.so_ghe) === "trong"
+  );
+
+  if (emptySeats.length > 2) {
+    const hasFloatingMiddle = rowSeats.some((g: any, i: number) => {
+      const cur = g;
+      const prev = rowSeats[i - 1];
+      const next = rowSeats[i + 1];
+
+      if (!prev || !next) return false;
+
+      const tPrev = getTrangThai(prev.so_ghe);
+      const tCur = getTrangThai(cur.so_ghe);
+      const tNext = getTrangThai(next.so_ghe);
+
+      if (tPrev === "dang_dat" && tNext === "dang_dat" && tCur === "trong") {
+        const tPrev2 = i - 2 >= 0 ? getTrangThai(rowSeats[i - 2].so_ghe) : null;
+        const tNext2 =
+          i + 2 < rowSeats.length ? getTrangThai(rowSeats[i + 2].so_ghe) : null;
+
+        if (
+          (!tPrev2 || tPrev2 === "trong") &&
+          (!tNext2 || tNext2 === "trong")
+        ) {
+          return true;
+        }
+      }
+      return false;
     });
-  };
+
+    if (hasFloatingMiddle) {
+      message.warning(
+        "Không được để 1 ghế trống bị kẹp giữa 2 ghế chọn, xung quanh cũng trống."
+      );
+      return;
+    }
+  }
+const isInvalidSoldGapSelectedGap = rowSeats.some((g: any, i: number) => {
+  const g1 = g;
+  const g2 = rowSeats[i + 1];
+  const g3 = rowSeats[i + 2];
+  const g4 = rowSeats[i + 3];
+
+  if (!g1 || !g2 || !g3 || !g4) return false;
+
+  const t1 = getTrangThai(g1.so_ghe);
+  const t2 = getTrangThai(g2.so_ghe);
+  const t3 = getTrangThai(g3.so_ghe);
+  const t4 = getTrangThai(g4.so_ghe);
+
+  return t1 === "da_dat" && t2 === "trong" && t3 === "dang_dat" && t4 === "trong";
+});
+
+if (isInvalidSoldGapSelectedGap) {
+  message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
+  return;
+}
+
+  setSelectedSeats(newSelectedSeats);
+  seatsToToggle.forEach((gheToggle) => {
+    const found = checkGheList.find(
+      (x: any) =>
+        x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
+    );
+    if (found) {
+      updateCheckGhe({
+        id: found.id,
+        values: { trang_thai: newTrangThai },
+        lichChieuId: selectedLichChieuId,
+      });
+    }
+  });
+};
+
+
+
+
+
 
   return (
     <div className="movie-detail-wrapper">
@@ -1062,9 +1113,7 @@ const MovieDetailUser = () => {
                   cursor: "pointer",
                   opacity: selectedSeats.length > 0 ? 1 : 0.6,
                 }}
-                disabled={
-                  selectedSeats.length === 0 || hasGap || isProcessingPayment
-                }
+                disabled={selectedSeats.length === 0 || isProcessingPayment}
               >
                 Thanh toán {totalPrice.toLocaleString("vi-VN")} VNĐ
               </button>
