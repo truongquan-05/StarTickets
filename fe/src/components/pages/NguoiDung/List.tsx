@@ -85,7 +85,6 @@ const UserList = () => {
     if (!editingItem) {
       createUser(values, {
         onSuccess: () => {
-          message.success("Thêm mới thành công");
           setModalOpen(false);
           form.resetFields();
           refetch();

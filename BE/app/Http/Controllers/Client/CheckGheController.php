@@ -28,7 +28,7 @@ class CheckGheController extends Controller
     //ID LỊCH CHIẾU
     public function show(string $id)
     {
-        $dataGhe = CheckGhe::where('lich_chieu_id', $id)->get();
+        $dataGhe = CheckGhe::with('Ghe')->where('lich_chieu_id', $id)->get();
         return response()->json([
             'message' => 'Lấy danh sách ghế thành công',
             'data' => $dataGhe
