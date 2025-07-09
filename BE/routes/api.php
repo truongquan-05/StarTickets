@@ -68,10 +68,6 @@ Route::get('/phim/trashed/list', [PhimController::class, 'trashed']);
 
 
 
-
-
-
-
 Route::get('do_an', [DoAnController::class, 'index']);
 Route::post('do_an', [DoAnController::class, 'store']);
 Route::get('do_an/{id}', [DoAnController::class, 'show']);
@@ -225,9 +221,9 @@ Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'log
 Route::apiResource('check_ghe', CheckGheController::class);
 
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
-Route::post('voucher/check/{id}', [MaGiamGiaClient::class, 'checkVoucher']);
+Route::post('voucher/check', [MaGiamGiaClient::class, 'checkVoucher']);
 
-
+Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
 
 
 

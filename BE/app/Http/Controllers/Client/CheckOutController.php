@@ -168,7 +168,7 @@ class CheckOutController extends Controller
             $returnData = array(
                 'code' => '01',
                 'message' => 'success',
-                'data' => $vnp_Url
+                'payUrl' => $vnp_Url
             );
 
             return response()->json([
@@ -255,16 +255,65 @@ class CheckOutController extends Controller
             if ($request->phuong_thuc_thanh_toan_id == 2) {
 
                 // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
-                
+
                 if ($data['vnp_TransactionStatus'] == "00") {
-                    return response()->json([
-                        'data' => $data,
-                    ], 200);
-                }else{
-                     return response()->json([
-                        'message' => 'Thanh toán không thành công',
-                        'data' => $data,
-                    ], 422);
+                    $data['ma_giao_dich'] = $data['vnp_TxnRef'];
+
+                    if ($data['ma_giam_gia_id'] != "null") {
+                        $voucher = MaGiamGia::find($data['ma_giam_gia_id']);
+                        $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
+                    }
+                    $thanhToan = ThanhToan::create($data);
+                    $DatVe = DatVe::find($thanhToan->dat_ve_id);
+
+                    $diemCong = $DatVe->tong_tien * 0.001;
+
+                    $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
+
+                    if ($DiemThanhVien) {
+                        $DiemThanhVien->diem += $diemCong;
+                        $DiemThanhVien->save();
+                    } else {
+                        DiemThanhVien::create([
+                            'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+                            'diem' => $diemCong
+                        ]);
+                    }
+
+                    // Redirect về trang history với dữ liệu truyền qua query string
+                    $queryParams = http_build_query([
+                        'dat_ve_id' => $thanhToan->dat_ve_id,
+                        'phuong_thuc_thanh_toan_id' => $thanhToan->phuong_thuc_thanh_toan_id,
+                        'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+                        'ma_giao_dich' => $thanhToan->ma_giao_dich,
+                    ]);
+
+                    return redirect("http://localhost:5173/history?$queryParams");
+                } else {
+                    $dataVeId = $data['dat_ve_id'];
+                    $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
+                    $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
+                    $don_do_an = $dataVe->DonDoAn ?? null;
+                    if ($dat_ve_chi_tiet->isNotEmpty()) {
+                        $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
+                            $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
+                                ->where('lich_chieu_id', $dataVe->lich_chieu_id)
+                                ->first();
+                            if ($checkGhe) {
+                                $checkGhe->update(['trang_thai' => 'trong']);
+                            }
+                        });
+                    }
+                    if ($don_do_an->isNotEmpty()) {
+                        $don_do_an->each(function ($item) {
+                            $doAn = DoAn::find($item->do_an_id);
+                            if ($doAn) {
+                                $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
+                            }
+                        });
+                    }
+                    $dataVe->delete();
+                    return redirect("http://localhost:5173/history?error=1");
                 }
             }
         } catch (\Throwable $th) {
