@@ -22,6 +22,7 @@ import { IGhe } from "../Admin/interface/ghe";
 import { ICheckGhe } from "../Admin/interface/checkghe";
 import { useBookingTimer } from "./DatVe/useBookingTimer";
 import { IDatVeChiTietPayload } from "../Admin/interface/datve";
+import { useBackConfirm } from "../../hook/useConfirmBack";
 
 interface IRap {
   id: number;
@@ -44,27 +45,6 @@ function convertYouTubeUrlToEmbed(url: string) {
     ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` // Sửa lại URL nhúng cho đúng chuẩn YouTube
     : url;
 }
-
-// Hàm kiểm tra ghế cách quãng
-// function checkGapSeats(selectedSeats: string[]): boolean {
-//   if (selectedSeats.length <= 1) return false;
-//   const rowMap: Record<string, number[]> = {};
-//   selectedSeats.forEach((seat) => {
-//     const row = seat[0];
-//     const col = parseInt(seat.slice(1), 10);
-//     if (!rowMap[row]) rowMap[row] = [];
-//     rowMap[row].push(col);
-//   });
-//   for (const row in rowMap) {
-//     const cols = rowMap[row].sort((a, b) => a - b);
-//     for (let i = 0; i < cols.length - 1; i++) {
-//       if (cols[i + 1] - cols[i] > 1) {
-//         return true; // Có ghế cách quãng
-//       }
-//     }
-//   }
-//   return false; // Không cách quãng
-// }
 
 const MovieDetailUser = () => {
   const TIMEOUT_MINUTES = 5;
@@ -132,9 +112,7 @@ const MovieDetailUser = () => {
   useEffect(() => {
     checkGheListRef.current = checkGheList;
   }, [checkGheList]);
-  useEffect(() => {
-    console.log("✅ Danh sách ghế:", checkGheList);
-  }, [checkGheList]);
+  useEffect(() => {}, [checkGheList]);
   // Hàm core để giải phóng ghế trên API
   const releaseSeatsApiCore = useCallback(
     async (seatsToProcess: string[], lichChieuIdToProcess: number | null) => {
@@ -263,150 +241,16 @@ const MovieDetailUser = () => {
     selectedSeats.length, // Để có thể kiểm tra selectedSeatsRef.current.length
     selectedLichChieuId, // Để có thể kiểm tra selectedLichChieuIdRef.current
   ]);
-  // --- Logic xử lý giải phóng ghế khi điều hướng/tải lại/đóng tab ---
 
-  // useEffect(() => {
-  //   // 1. Logic xử lý khi component mount (tải trang hoặc quay lại bằng nút back/forward trình duyệt)
-  //   const storedSelectedSeats = sessionStorage.getItem("selectedSeats");
-  //   const storedLichChieuId = sessionStorage.getItem("selectedLichChieuId");
-  //   const cameFromThanhToan = sessionStorage.getItem(
-  //     "justNavigatedFromThanhToan"
-  //   );
+  const selectedCheckGhe = checkGheList.filter(
+    (item: any) =>
+      selectedSeats.includes(item.ghe.so_ghe) &&
+      item.lich_chieu_id === selectedLichChieuId &&
+      item.trang_thai === "dang_dat"
+  );
 
-  //   // Nếu vừa quay lại từ trang thanh toán (qua navigate của react-router-dom)
-  //   // Hoặc tải lại trang check-out sau khi thanh toán thành công
-  //   // KHÔNG giải phóng ghế. Ghế đã được "bán" hoặc sẽ được xử lý ở trang thanh toán.
-  //   if (cameFromThanhToan === "true") {
-  //     console.log("[Mount] Vừa từ thanh toán quay lại, KHÔNG giải phóng ghế.");
-  //     sessionStorage.removeItem("justNavigatedFromThanhToan"); // Xóa cờ ngay sau khi kiểm tra
-  //   } else if (storedSelectedSeats && storedLichChieuId) {
-  //     // Nếu có ghế trong sessionStorage VÀ KHÔNG phải từ thanh toán quay lại
-  //     // Điều này có nghĩa là người dùng đã đóng trình duyệt, tải lại trang, hoặc điều hướng ra khỏi SPA
-  //     // mà không hoàn tất thanh toán.
-  //     console.log(
-  //       "[Mount] Ghế chưa thanh toán còn trong sessionStorage, tiến hành giải phóng."
-  //     );
-  //     const seatsToRelease = JSON.parse(storedSelectedSeats);
-  //     const lichChieuIdToRelease = parseInt(storedLichChieuId, 10);
-
-  //     // Gọi API giải phóng ghế ngay lập tức
-  //     (async () => {
-  //       await releaseSeatsApiCore(seatsToRelease, lichChieuIdToRelease);
-  //       message.info("Ghế đã chọn của phiên trước đã được giải phóng.");
-  //       // Sau khi giải phóng, xóa dữ liệu ghế khỏi sessionStorage
-  //       sessionStorage.removeItem("selectedSeats");
-  //       sessionStorage.removeItem("selectedLichChieuId");
-  //       // Reset state cục bộ
-  //       setSelectedSeats([]);
-  //       setDisplaySelectedSeats([]);
-  //       setTotalPrice(0);
-  //       clearTimer();
-  //     })();
-  //   } else {
-  //     console.log(
-  //       "[Mount] Không có ghế trong sessionStorage hoặc đã được thanh toán."
-  //     );
-  //   }
-
-  //   // 2. Logic xử lý khi component unmount (người dùng rời khỏi trang chi tiết phim)
-  //   const handleUnmount = async () => {
-  //     // Kiểm tra lại cờ `justNavigatedFromThanhToan` bằng cách đọc trực tiếp từ sessionStorage
-  //     // (Vì đây là hàm cleanup, nó có thể chạy sau khi navigate đã được gọi và cờ đã được set)
-  //     const currentCameFromThanhToan = sessionStorage.getItem(
-  //       "justNavigatedFromThanhToan"
-  //     );
-
-  //     // Nếu KHÔNG phải đang trong quá trình thanh toán và có ghế đang được chọn
-  //     // (tức là người dùng điều hướng nội bộ SPA sang một trang khác KHÔNG phải /check-out)
-  //     if (
-  //       currentCameFromThanhToan !== "true" &&
-  //       selectedSeatsRef.current.length > 0 &&
-  //       selectedLichChieuIdRef.current !== null
-  //     ) {
-  //       console.log(
-  //         "[Unmount] Component unmounting (điều hướng trong SPA không phải checkout), giải phóng ghế."
-  //       );
-  //       await releaseSeatsApiCore(
-  //         selectedSeatsRef.current,
-  //         selectedLichChieuIdRef.current
-  //       );
-  //       sessionStorage.removeItem("selectedSeats");
-  //       sessionStorage.removeItem("selectedLichChieuId");
-  //     } else {
-  //       console.log(
-  //         "[Unmount] Không giải phóng ghế (đã thanh toán hoặc không có ghế được chọn)."
-  //       );
-  //     }
-  //     // Đảm bảo cờ luôn được reset về 'false' khi rời trang, trừ khi đó là chuyển sang trang thanh toán.
-  //     // Dòng này cần đặt cẩn thận để không ghi đè cờ 'true' khi navigate.
-  //     // Tốt nhất là nó sẽ được xử lý ở đầu useEffect (khi mount) hoặc trong handleThanhToanClick
-  //   };
-
-  //   // 3. Logic xử lý khi người dùng đóng tab/trình duyệt hoặc tải lại trang
-  //   const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-  //     const currentCameFromThanhToan = sessionStorage.getItem(
-  //       "justNavigatedFromThanhToan"
-  //     );
-
-  //     if (currentCameFromThanhToan === "true") {
-  //       console.log(
-  //         "[beforeunload] Vừa chuyển từ thanh toán, không giải phóng ghế."
-  //       );
-  //       return; // Không làm gì nếu đang trong quá trình chuyển hướng đến trang thanh toán
-  //     }
-
-  //     if (
-  //       selectedSeatsRef.current.length > 0 &&
-  //       selectedLichChieuIdRef.current !== null
-  //     ) {
-  //       const data = {
-  //         lich_chieu_id: selectedLichChieuIdRef.current,
-  //         ghe_so: selectedSeatsRef.current,
-  //       };
-  //       const blob = new Blob([JSON.stringify(data)], {
-  //         type: "application/json",
-  //       });
-  //       try {
-  //         console.log("[beforeunload] Sending beacon to release seats.");
-  //         navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
-  //       } catch (error) {
-  //         console.error("sendBeacon error:", error);
-  //       }
-  //       // Hiển thị cảnh báo cho người dùng
-  //       event.preventDefault();
-  //       event.returnValue = "";
-  //     }
-  //     // Dù có gửi beacon hay không, nếu không phải từ thanh toán, reset cờ
-  //     sessionStorage.setItem("justNavigatedFromThanhToan", "false");
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   // Lưu trạng thái ghế vào sessionStorage mỗi khi selectedSeats hoặc selectedLichChieuId thay đổi
-  //   if (selectedSeats.length > 0 && selectedLichChieuId !== null) {
-  //     sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
-  //     sessionStorage.setItem(
-  //       "selectedLichChieuId",
-  //       String(selectedLichChieuId)
-  //     );
-  //   } else {
-  //     sessionStorage.removeItem("selectedSeats");
-  //     sessionStorage.removeItem("selectedLichChieuId");
-  //   }
-
-  //   // Hàm cleanup chạy khi component unmount
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //     handleUnmount(); // Gọi hàm xử lý unmount trong SPA
-  //   };
-  // }, [
-  //   id,
-  //   location.pathname,
-  //   releaseSeatsApiCore,
-  //   clearTimer,
-  //   selectedSeats,
-  //   selectedLichChieuId,
-  // ]);
+  //XỬ LÝ LOAD TRANG
+  useBackConfirm(selectedCheckGhe);
 
   useEffect(() => {
     if (selectedLichChieuId !== null && lichChieuList.length > 0) {
@@ -432,25 +276,6 @@ const MovieDetailUser = () => {
     };
     fetchMovie();
   }, [id]);
-
-  // useEffect(() => {
-  //   if (selectedSeats.length > 0 && danhSachGhe.length > 0) {
-  //     const seatsToCheckForGaps = selectedSeats.filter((seatNumber) => {
-  //       const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
-  //       return ghe && (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2);
-  //     });
-
-  //     const gap = checkGapSeats(seatsToCheckForGaps);
-  //     setHasGap(gap);
-  //     if (gap) {
-  //       message.warning(
-  //         "Bạn đang chọn ghế cách quãng, vui lòng chọn ghế liền nhau!"
-  //       );
-  //     }
-  //   } else {
-  //     setHasGap(false);
-  //   }
-  // }, [selectedSeats, danhSachGhe]);
 
   useEffect(() => {
     if (
@@ -621,83 +446,151 @@ const MovieDetailUser = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
-  if (!selectedLichChieuId) {
-    message.warning("Vui lòng chọn lịch chiếu trước!");
-    return;
-  }
 
-  const ghe = danhSachGhe.find((g: any) => g.id === gheId);
-  if (!ghe) return;
-
-  let seatsToToggle: IGhe[] = [ghe];
-
-  if (ghe.loai_ghe_id === 3) {
-    const row = ghe.so_ghe[0];
-    const col = parseInt(ghe.so_ghe.slice(1));
-    const pairCol = col % 2 === 0 ? col - 1 : col + 1;
-    const pairSoGhe = `${row}${pairCol}`;
-    const pair = danhSachGhe.find(
-      (g: any) => g.so_ghe === pairSoGhe && g.loai_ghe_id === 3
-    );
-    if (!pair) {
-      message.warning("Không tìm thấy ghế đôi còn lại.");
+  const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
+    if (!selectedLichChieuId) {
+      message.warning("Vui lòng chọn lịch chiếu trước!");
       return;
     }
-    seatsToToggle.push(pair);
-  }
 
-  const anySeatSold = seatsToToggle.some((st) =>
-    checkGheList.some(
-      (item: any) =>
-        item.ghe_id === st.id &&
-        item.lich_chieu_id === selectedLichChieuId &&
-        item.trang_thai === "da_dat"
-    )
-  );
-  if (anySeatSold) {
-    message.info("Một hoặc cả hai ghế đã được bán.");
-    return;
-  }
+    const ghe = danhSachGhe.find((g: any) => g.id === gheId);
 
-  const newTrangThai =
-    currentTrangThai === "trong"
-      ? "dang_dat"
-      : currentTrangThai === "dang_dat"
-      ? "trong"
-      : "";
+    if (!ghe) return;
 
-  if (!newTrangThai) return;
+    let seatsToToggle: IGhe[] = [ghe];
 
-  let newSelectedSeats = [...selectedSeats];
-  const toggleSoGhe = seatsToToggle.map((s) => s.so_ghe);
+    if (ghe.loai_ghe_id === 3) {
+      const row = ghe.so_ghe[0];
+      const col = parseInt(ghe.so_ghe.slice(1));
+      const pairCol = col % 2 === 0 ? col - 1 : col + 1;
+      const pairSoGhe = `${row}${pairCol}`;
+      const pair = danhSachGhe.find(
+        (g: any) => g.so_ghe === pairSoGhe && g.loai_ghe_id === 3
+      );
+      if (!pair) {
+        message.warning("Không tìm thấy ghế đôi còn lại.");
+        return;
+      }
+      seatsToToggle.push(pair);
+    }
 
-  if (newTrangThai === "dang_dat") {
-    toggleSoGhe.forEach((s) => {
-      if (!newSelectedSeats.includes(s)) newSelectedSeats.push(s);
-    });
-  } else {
-    newSelectedSeats = newSelectedSeats.filter(
-      (s) => !toggleSoGhe.includes(s)
+    const anySeatSold = seatsToToggle.some((st) =>
+      checkGheList.some(
+        (item: any) =>
+          item.ghe_id === st.id &&
+          item.lich_chieu_id === selectedLichChieuId &&
+          item.trang_thai === "da_dat"
+      )
     );
-  }
+    if (anySeatSold) {
+      message.info("Một hoặc cả hai ghế đã được bán.");
+      return;
+    }
 
-  const getTrangThai = (soGhe: string): string => {
-    if (newSelectedSeats.includes(soGhe)) return "dang_dat";
-    const inDb = checkGheList.find(
-      (x: any) =>
-        x.ghe.so_ghe === soGhe && x.lich_chieu_id === selectedLichChieuId
-    );
-    return inDb?.trang_thai || "trong";
-  };
+    const newTrangThai =
+      currentTrangThai === "trong"
+        ? "dang_dat"
+        : currentTrangThai === "dang_dat"
+        ? "trong"
+        : "";
 
-  if (
-    newTrangThai === "dang_dat" &&
-    (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
-  ) {
+    if (!newTrangThai) return;
+
+    let newSelectedSeats = [...selectedSeats];
+    const toggleSoGhe = seatsToToggle.map((s) => s.so_ghe);
+
+    if (newTrangThai === "dang_dat") {
+      toggleSoGhe.forEach((s) => {
+        if (!newSelectedSeats.includes(s)) newSelectedSeats.push(s);
+      });
+    } else {
+      newSelectedSeats = newSelectedSeats.filter(
+        (s) => !toggleSoGhe.includes(s)
+      );
+    }
+
+    const getTrangThai = (soGhe: string): string => {
+      if (newSelectedSeats.includes(soGhe)) return "dang_dat";
+      const inDb = checkGheList.find(
+        (x: any) =>
+          x.ghe.so_ghe === soGhe && x.lich_chieu_id === selectedLichChieuId
+      );
+      return inDb?.trang_thai || "trong";
+    };
+
+    if (
+      newTrangThai === "dang_dat" &&
+      (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
+    ) {
+      const row = ghe.so_ghe[0];
+      const num = parseInt(ghe.so_ghe.slice(1));
+
+      const rowSeats = danhSachGhe
+        .filter(
+          (g: any) =>
+            g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
+        )
+        .sort(
+          (a: any, b: any) =>
+            parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
+        );
+
+      const min = parseInt(rowSeats[0].so_ghe.slice(1));
+      const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
+
+      const isSecondFromLeft = num === min + 1;
+      const isSecondFromRight = num === max - 1;
+
+      const ghe3FromLeft = `${row}${min + 2}`;
+      const ghe3FromRight = `${row}${max - 2}`;
+      const tGhe3Left = getTrangThai(ghe3FromLeft);
+      const tGhe3Right = getTrangThai(ghe3FromRight);
+
+      if (isSecondFromLeft && tGhe3Left !== "da_dat") {
+        const ghe1 = `${row}${min}`;
+        const ghe3 = `${row}${min + 2}`;
+        const t1 = getTrangThai(ghe1);
+        const t3 = getTrangThai(ghe3);
+        if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
+          message.warning("Không được để lại 1 ghế trống đơn lẻ ở đầu hàng!");
+          return;
+        }
+      }
+
+      if (isSecondFromRight && tGhe3Right !== "da_dat") {
+        const ghe1 = `${row}${max}`;
+        const ghe3 = `${row}${max - 2}`;
+        const t1 = getTrangThai(ghe1);
+        const t3 = getTrangThai(ghe3);
+        if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
+          message.warning("Không được để lại 1 ghế trống đơn lẻ ở cuối hàng!");
+          return;
+        }
+      }
+
+      // ❌ THÊM TRƯỜNG HỢP: A3 đã mua, A4-A6 đều trống, cấm chọn A5
+      const gheIndex = rowSeats.findIndex((g: any) => g.id === ghe.id);
+      const prev2 = rowSeats[gheIndex - 2];
+      const prev1 = rowSeats[gheIndex - 1];
+      const next1 = rowSeats[gheIndex + 1];
+
+      if (
+        prev2 &&
+        prev1 &&
+        next1 &&
+        getTrangThai(prev2.so_ghe) === "da_dat" &&
+        getTrangThai(prev1.so_ghe) === "trong" &&
+        getTrangThai(ghe.so_ghe) === "trong" &&
+        getTrangThai(next1.so_ghe) === "trong"
+      ) {
+        message.warning(
+          "Không được chọn ghế nếu phía trước đã bán và kèm 2 ghế trống liên tiếp."
+        );
+        return;
+      }
+    }
+
     const row = ghe.so_ghe[0];
-    const num = parseInt(ghe.so_ghe.slice(1));
-
     const rowSeats = danhSachGhe
       .filter(
         (g: any) =>
@@ -708,149 +601,85 @@ const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
           parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
       );
 
-    const min = parseInt(rowSeats[0].so_ghe.slice(1));
-    const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
-
-    const isSecondFromLeft = num === min + 1;
-    const isSecondFromRight = num === max - 1;
-
-    const ghe3FromLeft = `${row}${min + 2}`;
-    const ghe3FromRight = `${row}${max - 2}`;
-    const tGhe3Left = getTrangThai(ghe3FromLeft);
-    const tGhe3Right = getTrangThai(ghe3FromRight);
-
-    if (isSecondFromLeft && tGhe3Left !== "da_dat") {
-      const ghe1 = `${row}${min}`;
-      const ghe3 = `${row}${min + 2}`;
-      const t1 = getTrangThai(ghe1);
-      const t3 = getTrangThai(ghe3);
-      if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
-        message.warning("Không được để lại 1 ghế trống đơn lẻ ở đầu hàng!");
-        return;
-      }
-    }
-
-    if (isSecondFromRight && tGhe3Right !== "da_dat") {
-      const ghe1 = `${row}${max}`;
-      const ghe3 = `${row}${max - 2}`;
-      const t1 = getTrangThai(ghe1);
-      const t3 = getTrangThai(ghe3);
-      if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
-        message.warning("Không được để lại 1 ghế trống đơn lẻ ở cuối hàng!");
-        return;
-      }
-    }
-
-    // ❌ THÊM TRƯỜNG HỢP: A3 đã mua, A4-A6 đều trống, cấm chọn A5
-    const gheIndex = rowSeats.findIndex((g) => g.id === ghe.id);
-    const prev2 = rowSeats[gheIndex - 2];
-    const prev1 = rowSeats[gheIndex - 1];
-    const next1 = rowSeats[gheIndex + 1];
-
-    if (
-      prev2 &&
-      prev1 &&
-      next1 &&
-      getTrangThai(prev2.so_ghe) === "da_dat" &&
-      getTrangThai(prev1.so_ghe) === "trong" &&
-      getTrangThai(ghe.so_ghe) === "trong" &&
-      getTrangThai(next1.so_ghe) === "trong"
-    ) {
-      message.warning("Không được chọn ghế nếu phía trước đã bán và kèm 2 ghế trống liên tiếp.");
-      return;
-    }
-  }
-
-  const row = ghe.so_ghe[0];
-  const rowSeats = danhSachGhe
-    .filter(
-      (g: any) =>
-        g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
-    )
-    .sort(
-      (a: any, b: any) =>
-        parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
+    const emptySeats = rowSeats.filter(
+      (g: any) => getTrangThai(g.so_ghe) === "trong"
     );
 
-  const emptySeats = rowSeats.filter(
-    (g: any) => getTrangThai(g.so_ghe) === "trong"
-  );
+    if (emptySeats.length > 2) {
+      const hasFloatingMiddle = rowSeats.some((g: any, i: number) => {
+        const cur = g;
+        const prev = rowSeats[i - 1];
+        const next = rowSeats[i + 1];
 
-  if (emptySeats.length > 2) {
-    const hasFloatingMiddle = rowSeats.some((g: any, i: number) => {
-      const cur = g;
-      const prev = rowSeats[i - 1];
-      const next = rowSeats[i + 1];
+        if (!prev || !next) return false;
 
-      if (!prev || !next) return false;
+        const tPrev = getTrangThai(prev.so_ghe);
+        const tCur = getTrangThai(cur.so_ghe);
+        const tNext = getTrangThai(next.so_ghe);
 
-      const tPrev = getTrangThai(prev.so_ghe);
-      const tCur = getTrangThai(cur.so_ghe);
-      const tNext = getTrangThai(next.so_ghe);
+        if (tPrev === "dang_dat" && tNext === "dang_dat" && tCur === "trong") {
+          const tPrev2 =
+            i - 2 >= 0 ? getTrangThai(rowSeats[i - 2].so_ghe) : null;
+          const tNext2 =
+            i + 2 < rowSeats.length
+              ? getTrangThai(rowSeats[i + 2].so_ghe)
+              : null;
 
-      if (tPrev === "dang_dat" && tNext === "dang_dat" && tCur === "trong") {
-        const tPrev2 = i - 2 >= 0 ? getTrangThai(rowSeats[i - 2].so_ghe) : null;
-        const tNext2 =
-          i + 2 < rowSeats.length ? getTrangThai(rowSeats[i + 2].so_ghe) : null;
-
-        if (
-          (!tPrev2 || tPrev2 === "trong") &&
-          (!tNext2 || tNext2 === "trong")
-        ) {
-          return true;
+          if (
+            (!tPrev2 || tPrev2 === "trong") &&
+            (!tNext2 || tNext2 === "trong")
+          ) {
+            return true;
+          }
         }
+        return false;
+      });
+
+      if (hasFloatingMiddle) {
+        message.warning(
+          "Không được để 1 ghế trống bị kẹp giữa 2 ghế chọn, xung quanh cũng trống."
+        );
+        return;
       }
-      return false;
+    }
+    const isInvalidSoldGapSelectedGap = rowSeats.some((g: any, i: number) => {
+      const g1 = g;
+      const g2 = rowSeats[i + 1];
+      const g3 = rowSeats[i + 2];
+      const g4 = rowSeats[i + 3];
+
+      if (!g1 || !g2 || !g3 || !g4) return false;
+
+      const t1 = getTrangThai(g1.so_ghe);
+      const t2 = getTrangThai(g2.so_ghe);
+      const t3 = getTrangThai(g3.so_ghe);
+      const t4 = getTrangThai(g4.so_ghe);
+
+      return (
+        t1 === "da_dat" && t2 === "trong" && t3 === "dang_dat" && t4 === "trong"
+      );
     });
 
-    if (hasFloatingMiddle) {
-      message.warning(
-        "Không được để 1 ghế trống bị kẹp giữa 2 ghế chọn, xung quanh cũng trống."
-      );
+    if (isInvalidSoldGapSelectedGap) {
+      message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
       return;
     }
-  }
-const isInvalidSoldGapSelectedGap = rowSeats.some((g: any, i: number) => {
-  const g1 = g;
-  const g2 = rowSeats[i + 1];
-  const g3 = rowSeats[i + 2];
-  const g4 = rowSeats[i + 3];
 
-  if (!g1 || !g2 || !g3 || !g4) return false;
-
-  const t1 = getTrangThai(g1.so_ghe);
-  const t2 = getTrangThai(g2.so_ghe);
-  const t3 = getTrangThai(g3.so_ghe);
-  const t4 = getTrangThai(g4.so_ghe);
-
-  return t1 === "da_dat" && t2 === "trong" && t3 === "dang_dat" && t4 === "trong";
-});
-
-if (isInvalidSoldGapSelectedGap) {
-  message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
-  return;
-}
-
-  setSelectedSeats(newSelectedSeats);
-  seatsToToggle.forEach((gheToggle) => {
-    const found = checkGheList.find(
-      (x: any) =>
-        x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
-    );
-    if (found) {
-      updateCheckGhe({
-        id: found.id,
-        values: { trang_thai: newTrangThai },
-        lichChieuId: selectedLichChieuId,
-      });
-    }
-  });
-};
-
-
-
-
-
+    setSelectedSeats(newSelectedSeats);
+    seatsToToggle.forEach((gheToggle) => {
+      const found = checkGheList.find(
+        (x: any) =>
+          x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
+      );
+      if (found) {
+        updateCheckGhe({
+          id: found.id,
+          values: { trang_thai: newTrangThai },
+          lichChieuId: selectedLichChieuId,
+        });
+      }
+    });
+  };
 
   return (
     <div className="movie-detail-wrapper">
