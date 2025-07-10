@@ -166,7 +166,7 @@ return new class extends Migration {
             $table->string('ten', 100);
             $table->string('nha_cung_cap', 100);
             $table->text('mo_ta')->nullable();
-            $table->timestamps();
+            $table->timestamps(); 
         });
 
         Schema::create('thanh_toan', function (Blueprint $table) {
