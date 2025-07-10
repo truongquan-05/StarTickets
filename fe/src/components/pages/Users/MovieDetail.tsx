@@ -587,7 +587,24 @@ const MovieDetailUser = () => {
         (a: any, b: any) =>
           parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
       );
+    const gheIndex = rowSeats.findIndex((g: any) => g.id === ghe.id);
+    const prev = rowSeats[gheIndex - 1];
+    const next = rowSeats[gheIndex + 1];
 
+    const tPrev = prev ? getTrangThai(prev.so_ghe) : null;
+    const tNext = next ? getTrangThai(next.so_ghe) : null;
+
+    // ❌ Trường hợp không được huỷ: [da_dat][dang_dat-1][dang_dat-2]
+    if (
+      tPrev === "da_dat" &&
+      tNext === "dang_dat" &&
+      toggleSoGhe.includes(ghe.so_ghe)
+    ) {
+      message.warning(
+        "Không thể huỷ ghế đang chọn vì sẽ để ghế đã bán kẹp giữa ghế đang chọn!"
+      );
+      return;
+    }
     const emptySeats = rowSeats.filter(
       (g: any) => getTrangThai(g.so_ghe) === "trong"
     );
