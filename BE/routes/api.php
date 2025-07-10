@@ -219,6 +219,8 @@ Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'log
 
 //Check ghế đặt vé
 Route::apiResource('check_ghe', CheckGheController::class);
+Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
+
 
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
 Route::post('voucher/check', [MaGiamGiaClient::class, 'checkVoucher']);
