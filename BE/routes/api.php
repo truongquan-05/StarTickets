@@ -222,10 +222,19 @@ Route::apiResource('check_ghe', CheckGheController::class);
 Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
 
 
+
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
 Route::post('voucher/check', [MaGiamGiaClient::class, 'checkVoucher']);
 
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
+
+
+//phân quyền người dùng
+Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung', [NguoiDungController::class, 'index']);
+Route::middleware(['auth:sanctum', 'permission:User-create'])->post('nguoi_dung', [NguoiDungController::class, 'store']);
+Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung/{id}', [NguoiDungController::class, 'show']);
+Route::middleware(['auth:sanctum', 'permission:User-update'])->put('nguoi_dung/{id}', [NguoiDungController::class, 'update']);
+Route::middleware(['auth:sanctum', 'permission:User-delete'])->delete('nguoi_dung/{id}', [NguoiDungController::class, 'destroy']);
 
 
 
