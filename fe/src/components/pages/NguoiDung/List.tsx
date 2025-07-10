@@ -85,7 +85,6 @@ const UserList = () => {
     if (!editingItem) {
       createUser(values, {
         onSuccess: () => {
-          message.success("Thêm mới thành công");
           setModalOpen(false);
           form.resetFields();
           refetch();
@@ -99,7 +98,7 @@ const UserList = () => {
             description: (
               <div>
                 {messages.map((msg, index) => (
-                  <div key={index}>• {msg}</div>
+                  <div key={index}>• {String(msg)}</div>
                 ))}
               </div>
             ),

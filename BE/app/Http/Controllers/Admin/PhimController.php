@@ -16,7 +16,22 @@ class PhimController extends Controller
     // Lấy danh sách phim (kèm lọc, tìm kiếm, phân trang)
     public function index(Request $request)
     {
-        $query = Phim::with('theLoai');
+        $query = Phim::with('theLoai')->whereNot('trang_thai_phim', 'Nháp');
+
+        if ($request->has('search')) {
+            $query->where('ten_phim', 'like', '%' . $request->search . '%');
+        }
+
+
+        $perPage = $request->get('per_page', 10);
+        $phims = $query->orderBy('id', 'desc')->paginate($perPage);
+
+        return response()->json($phims);
+    }
+
+    public function PhimChuaXuatBan(Request $request)
+    {
+        $query = Phim::with('theLoai')->where('trang_thai_phim', 'Nháp');
 
         if ($request->has('search')) {
             $query->where('ten_phim', 'like', '%' . $request->search . '%');
@@ -80,16 +95,17 @@ class PhimController extends Controller
             $data['anh_poster'] = $request->file('anh_poster')->store('posters', 'public');
         }
 
+        $data['trang_thai_phim'] = $request->input('trang_thai_phim');
+
         $phim = Phim::create($data);
         // $phim->load('theLoai');
+
 
         return response()->json([
             'message' => 'Thêm phim thành công',
             'data' => $phim
-        ], 201);
+        ], 200);
     }
-
-
 
     // Chi tiết phim theo ID
     public function show($id)

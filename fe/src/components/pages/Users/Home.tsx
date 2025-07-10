@@ -35,8 +35,6 @@ const Home = () => {
           getCurrentMovies(),
           getUpcomingMovies(),
         ]);
-        console.log("Phim đang chiếu:", current);
-        console.log("Phim sắp chiếu:", upcoming);
         setCurrentMovies(current);
         setUpcomingMovies(upcoming);
       } catch (error) {
@@ -124,12 +122,7 @@ const Home = () => {
                       />
                     </Link>
                     <h4>{movie.title || movie.ten_phim}</h4>
-                    <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
-                      Ngày chiếu:{" "}
-                      {movie.ngay_cong_chieu
-                        ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
-                        : "Chưa cập nhật"}
-                    </p>
+                  
                     <Link to={`/phim/${movie.slug || movie.id}`}>
                       <Button type="primary">Mua vé</Button>
                     </Link>
@@ -163,12 +156,7 @@ const Home = () => {
                     />
                   </Link>
                   <h4>{movie.title || movie.ten_phim}</h4>
-                  <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
-                    Ngày chiếu:{" "}
-                    {movie.ngay_cong_chieu
-                      ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
-                      : "Chưa cập nhật"}
-                  </p>
+                
                   <Link to={`/phim/${movie.slug || movie.id}`}>
                     <Button type="primary">Xem chi tiết</Button>
                   </Link>

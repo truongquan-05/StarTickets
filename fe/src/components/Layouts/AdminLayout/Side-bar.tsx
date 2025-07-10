@@ -190,8 +190,8 @@ const SideBar: React.FC<SideBarProps> = ({
         <Link to="/admin/bookings">Bookings</Link>
       </Menu.Item>
 
-      <Menu.Item key="/admin/orders" icon={<FileTextOutlined />}>
-        <Link to="/admin/orders">Orders</Link>
+      <Menu.Item key="/admin/banner" icon={<FileTextOutlined />}>
+        <Link to="/admin/banner">Banner</Link>
       </Menu.Item>
     </Menu>
   );

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Card, Typography, Tag, Divider } from "antd";
 
 const { Title, Text } = Typography;
 
 const LichSuDatVe = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
 
   const [data, setData] = useState<null | {
@@ -28,12 +29,17 @@ const LichSuDatVe = () => {
         nguoi_dung_id,
         ma_giao_dich,
       });
+    } else {
+      // Nếu thiếu dữ liệu thì redirect về trang chủ
+      navigate("/", { replace: true });
     }
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   return (
-    <div style={{ padding: 24, maxWidth: 700, margin: "0 auto",  }}>
-      <Title level={2} style={{color:"white"}}>Chi tiết đơn đặt vé</Title>
+    <div style={{ padding: 24, maxWidth: 700, margin: "0 auto" }}>
+      <Title level={2} style={{ color: "white" }}>
+        Chi tiết đơn đặt vé
+      </Title>
       <Divider />
       {data ? (
         <Card bordered style={{ fontSize: 16 }}>
@@ -42,9 +48,7 @@ const LichSuDatVe = () => {
           </p>
           <p>
             <Text strong>Phương thức thanh toán:</Text>{" "}
-            {data.phuong_thuc_thanh_toan_id === "1"
-              ? "MoMo"
-              : data.phuong_thuc_thanh_toan_id}
+            {data.phuong_thuc_thanh_toan_id === "1" ? "MoMo" : data.phuong_thuc_thanh_toan_id}
           </p>
           <p>
             <Text strong>Người dùng ID:</Text> {data.nguoi_dung_id}
