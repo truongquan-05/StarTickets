@@ -23,6 +23,8 @@ import { ICheckGhe } from "../Admin/interface/checkghe";
 import { useBookingTimer } from "./DatVe/useBookingTimer";
 import { IDatVeChiTietPayload } from "../Admin/interface/datve";
 import { useBackConfirm } from "../../hook/useConfirmBack";
+import ModalFood, { SelectedFoodItem } from "./DatVe/DonDoAn";
+import FoodSelectionDisplay from "./DatVe/DonDoAn";
 
 interface IRap {
   id: number;
@@ -47,7 +49,7 @@ function convertYouTubeUrlToEmbed(url: string) {
 }
 
 const MovieDetailUser = () => {
-  const TIMEOUT_MINUTES = 5;
+  const TIMEOUT_MINUTES = 500;
   const location = useLocation();
   const previousPathnameRef = useRef<string>(location.pathname);
   const { id } = useParams();
@@ -62,6 +64,7 @@ const MovieDetailUser = () => {
   const [selectedLichChieu, setSelectedLichChieu] = useState<ILichChieu | null>(
     null
   );
+  const [selectedFoods, setSelectedFoods] = useState<SelectedFoodItem[]>([]);
   const { mutate: updateCheckGhe } = useUpdateCheckGhe({
     resource: "check_ghe",
   });
@@ -95,7 +98,35 @@ const MovieDetailUser = () => {
   const selectedLichChieuIdRef = useRef<number | null>(null);
   const danhSachGheRef = useRef<IGhe[]>([]);
   const checkGheListRef = useRef<ICheckGhe[]>([]);
+  const handleFoodQuantityChange = (updatedFoodItem: SelectedFoodItem) => {
+    setSelectedFoods((prevFoods) => {
+      const existingFoodIndex = prevFoods.findIndex(
+        (item) => item.id === updatedFoodItem.id
+      );
 
+      // Nếu số lượng mới <= 0, nghĩa là người dùng muốn xóa món ăn hoặc giảm về 0
+      if (updatedFoodItem.quantity <= 0) {
+        if (existingFoodIndex > -1) {
+          // Nếu món ăn tồn tại trong danh sách, xóa nó đi
+          const newFoods = [...prevFoods];
+          newFoods.splice(existingFoodIndex, 1);
+          return newFoods;
+        }
+        return prevFoods; // Không làm gì nếu không tìm thấy món ăn và số lượng <= 0
+      } else {
+        // Nếu số lượng mới > 0
+        if (existingFoodIndex > -1) {
+          // Nếu món ăn đã tồn tại, cập nhật số lượng của nó
+          const newFoods = [...prevFoods];
+          newFoods[existingFoodIndex] = updatedFoodItem;
+          return newFoods;
+        } else {
+          // Nếu món ăn chưa tồn tại, thêm nó vào danh sách
+          return [...prevFoods, updatedFoodItem];
+        }
+      }
+    });
+  };
   // Cập nhật refs mỗi khi state thay đổi
   useEffect(() => {
     selectedSeatsRef.current = selectedSeats;
@@ -270,7 +301,8 @@ const MovieDetailUser = () => {
     if (
       !selectedLichChieu ||
       !selectedLichChieu.gia_ve ||
-      selectedSeats.length === 0 ||
+      // THAY ĐỔI DÒNG NÀY: KIỂM TRA CẢ selectedSeats VÀ selectedFoods
+      (selectedSeats.length === 0 && selectedFoods.length === 0) ||
       danhSachGhe.length === 0
     ) {
       if (totalPrice !== 0) {
@@ -310,6 +342,14 @@ const MovieDetailUser = () => {
         });
       }
     });
+
+    // THÊM PHẦN TÍNH TỔNG TIỀN TỪ ĐỒ ĂN VÀO ĐÂY
+    const foodTotalPrice = selectedFoods.reduce((sum, foodItem) => {
+      return sum + foodItem.gia_ban * foodItem.quantity;
+    }, 0);
+
+    currentTotalPrice += foodTotalPrice; // Cộng tổng tiền đồ ăn vào
+
     if (totalPrice !== currentTotalPrice) {
       setTotalPrice(currentTotalPrice);
     }
@@ -325,6 +365,7 @@ const MovieDetailUser = () => {
     danhSachGhe,
     totalPrice,
     displaySelectedSeats,
+    selectedFoods, // <-- THÊM selectedFoods VÀO DEPENDENCY ARRAY NÀY
   ]);
 
   if (
@@ -349,15 +390,17 @@ const MovieDetailUser = () => {
       return;
     }
 
-    if (!selectedLichChieuId || selectedSeats.length === 0) {
-      message.warning("Vui lòng chọn ghế trước khi thanh toán.");
+    // Chỉnh sửa điều kiện kiểm tra để bao gồm cả đồ ăn
+    if (selectedLichChieuId === null && selectedFoods.length === 0) {
+      message.warning("Vui lòng chọn ghế hoặc đồ ăn trước khi thanh toán.");
       return;
     }
 
-    // if (displaySelectedSeats.length !== selectedSeats.length) {
-    //   message.warning("Một số ghế chưa được định giá. Vui lòng thử lại sau.");
-    //   return;
-    // }
+    // Nếu không có ghế nào được chọn nhưng có đồ ăn, thì vẫn cho phép thanh toán đồ ăn
+    if (selectedSeats.length === 0 && selectedFoods.length === 0) {
+      message.warning("Vui lòng chọn ghế hoặc đồ ăn trước khi thanh toán.");
+      return;
+    }
 
     clearTimer(); // Dừng bộ đếm thời gian
     setIsProcessingPayment(true); // Đặt cờ đang xử lý thanh toán
@@ -368,19 +411,27 @@ const MovieDetailUser = () => {
     const dat_ve_chi_tiet: IDatVeChiTietPayload[] = displaySelectedSeats.map(
       (seatInfo) => ({
         ghe_id: seatInfo.ghe_id,
-        gia_ve: seatInfo.gia,
+        gia_ve: seatInfo.gia, // Đảm bảo rằng seatInfo.gia đã được định nghĩa và có giá trị đúng
       })
     );
+
+    // CHUẨN BỊ DỮ LIỆU ĐỒ ĂN TỪ selectedFoods STATE
+    const don_do_an_payload = selectedFoods.map((foodItem) => ({
+      do_an_id: foodItem.id, // ID của món ăn
+      so_luong: foodItem.quantity, // Số lượng món ăn
+      gia_ban: foodItem.gia_ban, // Giá bán của món ăn (đảm bảo foodItem.gia_ban có trong SelectedFoodItem)
+    }));
 
     const payload = {
       dat_ve: [
         {
-          lich_chieu_id: selectedLichChieuId,
+          lich_chieu_id: selectedLichChieuId, // Có thể null nếu chỉ đặt đồ ăn, backend cần xử lý
           nguoi_dung_id: user.id,
           tong_tien: Number(totalPrice),
         },
       ],
       dat_ve_chi_tiet: dat_ve_chi_tiet,
+      don_do_an: don_do_an_payload, // <-- ĐÃ THÊM DỮ LIỆU ĐỒ ĂN VÀO ĐÂY!
     };
 
     createDatVe(payload, {
@@ -389,6 +440,7 @@ const MovieDetailUser = () => {
         // Xóa thông tin ghế đã chọn khỏi sessionStorage sau khi đã đặt vé thành công
         sessionStorage.removeItem("selectedSeats");
         sessionStorage.removeItem("selectedLichChieuId");
+        setSelectedFoods([]); // RẤT QUAN TRỌNG: reset state đồ ăn sau khi đặt thành công
         // Cờ justNavigatedFromThanhToan đã được set true trước navigate, sẽ được xóa ở trang check-out hoặc khi quay lại
         navigate("/check-out", {
           state: { bookingData: response.data },
@@ -396,6 +448,7 @@ const MovieDetailUser = () => {
         setIsProcessingPayment(false);
       },
       onError: (error) => {
+        console.error("Lỗi thanh toán:", error); // Log lỗi chi tiết để debug
         message.error(
           "Thanh toán thất bại: " + (error.message || "Lỗi không xác định")
         );
@@ -505,6 +558,8 @@ const MovieDetailUser = () => {
       return inDb?.trang_thai || "trong";
     };
 
+    // HÀNG LOẠT LOGIC KIỂM TRA GHẾ RẤT CHẶT CHẼ CỦA BẠN (GIỮ NGUYÊN)
+    // ... (giữ nguyên toàn bộ logic kiểm tra ghế của bạn từ đây trở xuống) ...
     if (
       newTrangThai === "dang_dat" &&
       (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
@@ -591,7 +646,6 @@ const MovieDetailUser = () => {
     const prev = rowSeats[gheIndex - 1];
     const next = rowSeats[gheIndex + 1];
 
-    
     const tPrev = prev ? getTrangThai(prev.so_ghe) : null;
     const tNext = next ? getTrangThai(next.so_ghe) : null;
 
@@ -723,6 +777,12 @@ const MovieDetailUser = () => {
     }
 
     setSelectedSeats(newSelectedSeats);
+    // THÊM ĐOẠN NÀY NGAY SAU setSelectedSeats(newSelectedSeats);
+    if (newSelectedSeats.length === 0) {
+      setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
+    }
+    // KẾT THÚC ĐOẠN THÊM
+
     seatsToToggle.forEach((gheToggle) => {
       const found = checkGheList.find(
         (x: any) =>
@@ -822,9 +882,8 @@ const MovieDetailUser = () => {
         rapList={rapList}
         onLichChieuClick={(lichChieu) => {
           if (selectedLichChieuId !== lichChieu.id) {
-            // Chỉ giải phóng nếu thực sự là lịch chiếu mới
             releaseOccupiedSeatsForUI();
-            clearTimer(); // Reset timer của lịch chiếu cũ
+            clearTimer();
           }
           const phong = phongList.find(
             (p: IPhongChieu) => p.id === lichChieu.phong_id
@@ -834,6 +893,7 @@ const MovieDetailUser = () => {
           setSelectedSeats([]);
           setDisplaySelectedSeats([]);
           setTotalPrice(0);
+          setSelectedFoods([]); // Reset foods when changing lich chieu
         }}
         selectedLichChieuId={selectedLichChieuId}
       />
@@ -844,102 +904,169 @@ const MovieDetailUser = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "flex-start",
-            padding: 20,
             flexDirection: "column",
-            width: "auto",
-            margin: "auto",
+            width: "auto", // Giữ nguyên auto width
+            margin: "auto", // Vẫn để auto margin để căn giữa tổng thể
             paddingTop: 50,
             marginTop: 30,
             borderRadius: 8,
+            // THAY ĐỔI LỚN TẠI ĐÂY:
+            // Thay vì padding cố định, hãy dùng maxWidth và padding/margin linh hoạt hơn
+            maxWidth: selectedSeats.length > 0 ? 1200 : "fit-content", // Giới hạn max-width khi chia 2 cột, fit-content khi 1 cột
+            paddingLeft: selectedSeats.length > 0 ? 170 : 0, // Padding chỉ khi chia 2 cột
+            paddingRight: selectedSeats.length > 0 ? 170 : 0, // Padding chỉ khi chia 2 cột
+            boxSizing: "border-box",
           }}
         >
           <h3 style={{ margin: "auto", fontSize: 25 }}>
             Chọn ghế: {selectedPhong.ten_phong} - {tenRap}
           </h3>
-          <div className="sodoghe" style={{ margin: "auto", paddingTop: 30 }}>
-            <SoDoGhe
-              phongId={selectedPhong.id}
-              loaiSoDo={selectedPhong.loai_so_do}
-              danhSachGhe={danhSachGhe}
-              isLoadingGhe={isLoadingGhe}
-              isErrorGhe={isErrorGhe}
-              trangThaiPhong={3}
-              danhSachCheckGhe={checkGheList}
-              onClickCheckGhe={handleClickCheckGhe}
-            />
+          {/* CONTAINER CHO SƠ ĐỒ GHẾ VÀ CHỌN ĐỒ ĂN */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+              gap: selectedSeats.length > 0 ? "20px" : "0px", // Giữ nguyên gap đã điều chỉnh
+              marginTop: "30px",
+              flexWrap: "wrap",
+            }}
+          >
+            {/* CỘT BÊN TRÁI: SƠ ĐỒ GHẾ VÀ CHÚ THÍCH */}
             <div
-              className="chuthich"
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                maxWidth: 600,
-                margin: "0 auto",
-                fontWeight: "600",
-                fontSize: 18,
-                userSelect: "none",
+                flex: selectedSeats.length > 0 ? 1 : "none",
+                minWidth: selectedSeats.length > 0 ? "400px" : "fit-content", // Fit-content để sơ đồ ghế tự co lại
+                maxWidth: selectedSeats.length > 0 ? "650px" : "fit-content", // Fit-content để sơ đồ ghế tự co lại
+                width: selectedSeats.length === 0 ? "fit-content" : "auto", // Điều kiện này vẫn đúng
+                margin: selectedSeats.length === 0 ? "auto" : "0", // Điều kiện này vẫn đúng
               }}
             >
               <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  flex: 1,
-                }}
+                className="sodoghe"
+                style={{ margin: "auto", paddingTop: 0 }} // margin: auto ở đây là quan trọng nhất để căn giữa sơ đồ ghế
               >
-                <div
-                  style={{
-                    width: 45,
-                    height: 30,
-                    backgroundColor: "black",
-                    borderRadius: 6,
-                  }}
+                <SoDoGhe
+                  phongId={selectedPhong.id}
+                  loaiSoDo={selectedPhong.loai_so_do}
+                  danhSachGhe={danhSachGhe}
+                  isLoadingGhe={isLoadingGhe}
+                  isErrorGhe={isErrorGhe}
+                  trangThaiPhong={3}
+                  danhSachCheckGhe={checkGheList}
+                  onClickCheckGhe={handleClickCheckGhe}
+                  
                 />
-                <span>Ghế thường</span>
-              </div>
+                <div
+                  className="chuthich"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    maxWidth: 600,
+                    margin: "20px auto 0 auto", // Vẫn giữ margin: auto cho chú thích
+                    fontWeight: "600",
+                    fontSize: 18,
+                    userSelect: "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      flex: 1,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 45,
+                        height: 30,
+                        backgroundColor: "black",
+                        borderRadius: 6,
+                      }}
+                    />
+                    <span>Ghế thường</span>
+                  </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  flex: 1,
-                }}
-              >
-                <div
-                  style={{
-                    width: 45,
-                    height: 30,
-                    backgroundColor: "red",
-                    borderRadius: 6,
-                  }}
-                />
-                <span>Ghế VIP</span>
-              </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      flex: 1,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 45,
+                        height: 30,
+                        backgroundColor: "red",
+                        borderRadius: 6,
+                      }}
+                    />
+                    <span>Ghế VIP</span>
+                  </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  flex: 1,
-                }}
-              >
-                <div
-                  style={{
-                    width: 50,
-                    height: 30,
-                    backgroundColor: "blue",
-                    borderRadius: 6,
-                  }}
-                />
-                <span>Ghế đôi</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      flex: 1,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 50,
+                        height: 30,
+                        backgroundColor: "blue",
+                        borderRadius: 6,
+                      }}
+                    />
+                    <span>Ghế đôi</span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </div>{" "}
+            {/* KẾT THÚC CỘT SƠ ĐỒ GHẾ */}
+            {/* CỘT BÊN PHẢI: FOOD SELECTION DISPLAY (HIỂN THỊ KHI CÓ GHẾ ĐƯỢC CHỌN) */}
+            {selectedSeats.length > 0 && (
+              <div
+                className="food-selection-area"
+                style={{ flex: 1, minWidth: "300px", maxWidth: "450px" }}
+              >
+                <FoodSelectionDisplay
+                  onFoodQuantityChange={handleFoodQuantityChange}
+                />
+                {selectedFoods.length > 0 && ( // Tóm tắt đồ ăn trong cột này, chỉ hiển thị nếu có đồ ăn
+                  <div
+                    className="selected-foods-summary"
+                    style={{
+                      marginTop: "20px",
+                      borderTop: "1px solid #333",
+                      paddingTop: "20px",
+                    }}
+                  >
+                    <h4>Đồ ăn đã chọn:</h4>
+                    <ul>
+                      {selectedFoods.map((food) => (
+                        <li key={food.id}>
+                          {food.ten_do_an} x {food.quantity} (
+                          {food.gia_ban * food.quantity} VNĐ)
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>{" "}
+          {/* KẾT THÚC CONTAINER CHÍNH */}
         </div>
       )}
-      {selectedSeats.length > 0 && (
+
+      {/* PHẦN FOOTER CỐ ĐỊNH Ở DƯỚI CÙNG */}
+      {(selectedSeats.length > 0 || selectedFoods.length > 0) && ( // Footer hiển thị nếu có ghế HOẶC đồ ăn
         <div
           style={{
             position: "fixed",
@@ -996,9 +1123,15 @@ const MovieDetailUser = () => {
                   border: "none",
                   borderRadius: 8,
                   cursor: "pointer",
-                  opacity: selectedSeats.length > 0 ? 1 : 0.6,
+                  opacity:
+                    selectedSeats.length > 0 || selectedFoods.length > 0
+                      ? 1
+                      : 0.6,
                 }}
-                disabled={selectedSeats.length === 0 || isProcessingPayment}
+                disabled={
+                  (selectedSeats.length === 0 && selectedFoods.length === 0) ||
+                  isProcessingPayment
+                }
               >
                 Thanh toán {totalPrice.toLocaleString("vi-VN")} VNĐ
               </button>
