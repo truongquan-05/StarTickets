@@ -591,6 +591,7 @@ const MovieDetailUser = () => {
     const prev = rowSeats[gheIndex - 1];
     const next = rowSeats[gheIndex + 1];
 
+    
     const tPrev = prev ? getTrangThai(prev.so_ghe) : null;
     const tNext = next ? getTrangThai(next.so_ghe) : null;
 
