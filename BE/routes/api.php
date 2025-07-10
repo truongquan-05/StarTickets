@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\NguoiDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
@@ -22,11 +23,11 @@ use App\Http\Controllers\Client\CheckGheController;
 use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\QuanLyDonVeController;
+use App\Http\Controllers\Client\LichSuMuaHangController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
+use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
-use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
-use App\Models\NguoiDung;
 
 // Route::get('/user', function (Request $request) {
 //     return 'Quan';
@@ -236,7 +237,10 @@ Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung/{id
 Route::middleware(['auth:sanctum', 'permission:User-update'])->put('nguoi_dung/{id}', [NguoiDungController::class, 'update']);
 Route::middleware(['auth:sanctum', 'permission:User-delete'])->delete('nguoi_dung/{id}', [NguoiDungController::class, 'destroy']);
 
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/lich-su-mua-hang', [LichSuMuaHangController::class, 'lichSu']);
+    Route::get('/lich-su-mua-hang/{id}', [LichSuMuaHangController::class, 'show']);
+});
 
 
 // http://127.0.0.1:8000/api/....
