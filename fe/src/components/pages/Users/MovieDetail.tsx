@@ -122,12 +122,6 @@ const MovieDetailUser = () => {
       const currentDanhSachGhe = danhSachGheRef.current;
       const currentCheckGheList = checkGheListRef.current;
 
-      console.log(
-        `[releaseSeatsApiCore] Releasing seats for LC ID: ${lichChieuIdToProcess}, Seats: ${seatsToProcess.join(
-          ", "
-        )}`
-      );
-
       for (const seatNumber of seatsToProcess) {
         const ghe = currentDanhSachGhe.find(
           (g: IGhe) => g.so_ghe === seatNumber
@@ -147,7 +141,6 @@ const MovieDetailUser = () => {
               values: { trang_thai: "trong" },
               lichChieuId: lichChieuIdToProcess,
             });
-            console.log(`- Released seat: ${seatNumber}`);
           }
         }
       }
@@ -157,7 +150,6 @@ const MovieDetailUser = () => {
 
   // Hàm giải phóng ghế và reset UI (dùng cho timeout hoặc chuyển lịch chiếu)
   const releaseOccupiedSeatsForUI = useCallback(async () => {
-    console.log("[releaseOccupiedSeatsForUI] Releasing seats for UI reset.");
     await releaseSeatsApiCore(
       selectedSeatsRef.current,
       selectedLichChieuIdRef.current
@@ -200,9 +192,7 @@ const MovieDetailUser = () => {
       selectedSeatsRef.current.length > 0 && // Có ghế đang chọn
       selectedLichChieuIdRef.current !== null // Có lịch chiếu đã chọn
     ) {
-      console.log(
-        "[Route Change] User navigating away from MovieDetailUser (internal SPA). Releasing seats."
-      );
+     
       (async () => {
         await releaseSeatsApiCore(
           selectedSeatsRef.current,
@@ -394,7 +384,6 @@ const MovieDetailUser = () => {
       dat_ve_chi_tiet: dat_ve_chi_tiet,
     };
 
-    console.log("Dữ liệu gửi đi:", payload);
 
     createDatVe(payload, {
       onSuccess: (response) => {
@@ -664,6 +653,24 @@ const MovieDetailUser = () => {
       message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
       return;
     }
+const isGapBetweenDangDat = rowSeats.some((g: any, i: number) => {
+  const t1 = getTrangThai(rowSeats[i]?.so_ghe);
+  const t2 = getTrangThai(rowSeats[i + 1]?.so_ghe);
+  const t3 = getTrangThai(rowSeats[i + 2]?.so_ghe);
+  const t4 = getTrangThai(rowSeats[i + 3]?.so_ghe);
+
+  return (
+    t1 === "dang_dat" &&
+    t2 === "dang_dat" &&
+    t3 === "trong" &&
+    t4 === "dang_dat"
+  );
+});
+
+if (isGapBetweenDangDat) {
+  message.warning("Không được để trống ghế giữa các ghế đang đặt.");
+  return;
+}
 
     setSelectedSeats(newSelectedSeats);
     seatsToToggle.forEach((gheToggle) => {

@@ -14,7 +14,6 @@ export function useBackConfirm(selectedCheckGhe: any[]) {
 
     const handlePopState = () => {
       if (confirmedRef.current) {
-        console.log("🛑 Đã xác nhận, bỏ qua xử lý popstate");
         return;
       }
 
@@ -48,7 +47,6 @@ export function useBackConfirm(selectedCheckGhe: any[]) {
       if (dataUpdate.length === 0) return;
 
       const data = JSON.stringify({ data: dataUpdate });
-      console.log("📤 Gửi API bằng sendBeacon...", data);
       navigator.sendBeacon("http://127.0.0.1:8000/api/check_ghe/bulk-update", data);
     };
 
@@ -56,7 +54,6 @@ export function useBackConfirm(selectedCheckGhe: any[]) {
     if (!hasFakeState.current) {
       window.history.pushState({ __keep: true }, "", window.location.pathname);
       hasFakeState.current = true;
-      console.log("🧱 Push giữ chân sau reload");
     }
 
     window.addEventListener("popstate", handlePopState);
