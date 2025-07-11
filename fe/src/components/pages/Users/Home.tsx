@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Typography, Spin } from "antd";
+import { Button, Spin, Modal } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Link } from "react-router-dom";
@@ -12,21 +12,112 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  PlayCircleFilled,
+  PlayCircleOutlined,
+  TagOutlined,
+  StarOutlined,
+} from "@ant-design/icons";
 
-const { Title } = Typography;
 const BASE_URL = "http://127.0.0.1:8000";
 
-// Hàm xử lý ảnh
 const getImageUrl = (path: string | null | undefined) => {
   if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
   if (path.startsWith("http")) return path;
   return `${BASE_URL}/storage/${path}`;
 };
 
+const convertYouTubeUrlToEmbed = (url: string): string => {
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+};
+
 const Home = () => {
   const [currentMovies, setCurrentMovies] = useState<any[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<any[]>([]);
+  const [specialMovies, setSpecialMovies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"now" | "upcoming" | "special">(
+    "now"
+  );
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState("");
+  const [trailerTitle, setTrailerTitle] = useState("");
+
+  const handleShowTrailer = (url: string, title: string) => {
+    setTrailerUrl(url);
+    setTrailerTitle(title);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setTrailerUrl("");
+  };
+
+  // Hàm lọc phim đặc biệt dựa trên loai_suat_chieu
+  const filterSpecialMovies = (movies: any[]) => {
+    return movies.filter(
+      (movie) =>
+        movie.loai_suat_chieu === "Đặc biệt" ||
+        movie.loai_suat_chieu === "Dac biet" ||
+        movie.loai_suat_chieu?.toLowerCase().includes("đặc biệt") ||
+        movie.loai_suat_chieu?.toLowerCase().includes("dac biet")
+    );
+  };
+
+  // Hàm lọc phim đang chiếu (ngày công chiếu <= hôm nay và ngày kết thúc >= hôm nay)
+  const filterCurrentMovies = (movies: any[]) => {
+    const today = moment().startOf("day");
+    return movies.filter((movie) => {
+      const ngayChieu = moment(movie.ngay_cong_chieu);
+      const ngayKetThuc = moment(movie.ngay_ket_thuc);
+
+      // Phim đang chiếu nếu: ngày công chiếu <= hôm nay <= ngày kết thúc
+      return (
+        ngayChieu.isSameOrBefore(today) &&
+        ngayKetThuc.isSameOrAfter(today) &&
+        movie.trang_thai_phim === "Xuất bản"
+      );
+    });
+  };
+
+  // Hàm lọc phim sắp chiếu (ngày công chiếu > hôm nay)
+  const filterUpcomingMovies = (movies: any[]) => {
+    const today = moment().startOf("day");
+    return movies.filter((movie) => {
+      const ngayChieu = moment(movie.ngay_cong_chieu);
+
+      // Phim sắp chiếu nếu: ngày công chiếu > hôm nay
+      return ngayChieu.isAfter(today) && movie.trang_thai_phim === "Xuất bản";
+    });
+  };
+
+  // Hàm parse thể loại an toàn
+  const parseGenres = (movie: any) => {
+    try {
+      if (movie.the_loai_id) {
+        const genres = JSON.parse(movie.the_loai_id);
+        if (Array.isArray(genres)) {
+          return genres.map((genre: any) => genre.ten_the_loai).join(", ");
+        }
+      }
+
+      if (movie.the_loai && Array.isArray(movie.the_loai)) {
+        return movie.the_loai.join(", ");
+      }
+
+      return "Chưa cập nhật";
+    } catch (error) {
+      console.error("Error parsing genres:", error);
+      return "Chưa cập nhật";
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,8 +126,18 @@ const Home = () => {
           getCurrentMovies(),
           getUpcomingMovies(),
         ]);
-        setCurrentMovies(current);
-        setUpcomingMovies(upcoming);
+
+        // Tổng hợp tất cả phim từ cả hai nguồn
+        const allMovies = [...current, ...upcoming];
+
+        // Lọc phim theo logic mới
+        const filteredCurrentMovies = filterCurrentMovies(allMovies);
+        const filteredUpcomingMovies = filterUpcomingMovies(allMovies);
+        const filteredSpecialMovies = filterSpecialMovies(allMovies);
+
+        setCurrentMovies(filteredCurrentMovies);
+        setUpcomingMovies(filteredUpcomingMovies);
+        setSpecialMovies(filteredSpecialMovies);
       } catch (error) {
         console.error("Lỗi khi fetch danh sách phim:", error);
       } finally {
@@ -46,11 +147,279 @@ const Home = () => {
 
     fetchData();
   }, []);
-  const [activeTab, setActiveTab] = useState<"now" | "upcoming">("now");
+
+  // Hàm render movie card cho phim đang chiếu
+  const renderCurrentMovieCard = (movie: any, index: number) => (
+    <SwiperSlide key={index}>
+      <div className="movie-card">
+        <Link to={`/phim/${movie.slug || movie.id}`}>
+          <img
+            src={getImageUrl(movie.hinh_anh || movie.image || movie.anh_poster)}
+            alt={movie.title || movie.ten_phim}
+            onError={(e) => {
+              e.currentTarget.src =
+                "https://via.placeholder.com/220x280?text=No+Image";
+            }}
+          />
+        </Link>
+        <h4>{movie.title || movie.ten_phim}</h4>
+        <p style={{ fontSize: 12, color: "#888", marginTop: 0 }}>
+          <CalendarOutlined /> Ngày chiếu:{" "}
+          {movie.ngay_cong_chieu
+            ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+            : "Chưa cập nhật"}
+        </p>
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <TagOutlined /> Thể loại: {parseGenres(movie)}
+        </p>
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <ClockCircleOutlined /> Thời lượng:{" "}
+          {movie.thoi_luong ? `${movie.thoi_luong} phút` : "Chưa cập nhật"}
+        </p>
+        <div className="movie-buttons">
+          <Button
+            icon={<PlayCircleOutlined />}
+            onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
+          >
+            Trailer
+          </Button>
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <Button type="primary">Mua vé</Button>
+          </Link>
+        </div>
+      </div>
+    </SwiperSlide>
+  );
+
+  // Hàm render movie card cho phim sắp chiếu
+  const renderUpcomingMovieCard = (movie: any, index: number) => (
+    <SwiperSlide key={index}>
+      <div className="movie-card">
+        <div className="movie-poster-wrapper">
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <img
+              src={getImageUrl(
+                movie.image || movie.hinh_anh || movie.anh_poster
+              )}
+              alt={movie.title || movie.ten_phim}
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://via.placeholder.com/220x280?text=No+Image";
+              }}
+            />
+          </Link>
+          <div className="movie-overlay">
+            <button
+              className="play-overlay-button"
+              onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
+            >
+              <PlayCircleFilled style={{ fontSize: 70 }} />
+            </button>
+          </div>
+        </div>
+
+        <Link to={`/phim/${movie.slug || movie.id}`}>
+          <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
+        </Link>
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <CalendarOutlined /> Ngày chiếu:{" "}
+          {movie.ngay_cong_chieu
+            ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+            : "Chưa cập nhật"}
+        </p>
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <TagOutlined /> Thể loại: {parseGenres(movie)}
+        </p>
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <ClockCircleOutlined /> Thời lượng:{" "}
+          {movie.thoi_luong ? `${movie.thoi_luong} phút` : "Chưa cập nhật"}
+        </p>
+        <div className="movie-buttons">
+          <button
+            className="play-button"
+            onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
+          >
+            <PlayCircleOutlined style={{ marginRight: 8 }} />
+            <span>Trailer</span>
+          </button>
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <button className="book-button">
+              <span>ĐẶT VÉ NGAY</span>
+            </button>
+          </Link>
+        </div>
+      </div>
+    </SwiperSlide>
+  );
+
+  // Hàm render movie card cho suất chiếu đặc biệt
+  const renderSpecialMovieCard = (movie: any, index: number) => (
+    <SwiperSlide key={index}>
+      <div className="movie-card special-card">
+        <div className="movie-poster-wrapper">
+          <div className="special-badge">
+            <StarOutlined style={{ color: "#gold" }} />
+            <span>ĐẶC BIỆT</span>
+          </div>
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <img
+              src={getImageUrl(
+                movie.image || movie.hinh_anh || movie.anh_poster
+              )}
+              alt={movie.title || movie.ten_phim}
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://via.placeholder.com/220x280?text=No+Image";
+              }}
+            />
+          </Link>
+          <div className="movie-overlay">
+            <button
+              className="play-overlay-button"
+              onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
+            >
+              <PlayCircleFilled style={{ fontSize: 70 }} />
+            </button>
+          </div>
+        </div>
+
+        <Link to={`/phim/${movie.slug || movie.id}`}>
+          <h4 className="movie-title special-title">
+            {movie.title || movie.ten_phim}
+          </h4>
+        </Link>
+
+        <p style={{ fontSize: 12, color: "#ff6b35", fontWeight: "bold" }}>
+          <StarOutlined /> {movie.loai_suat_chieu}
+        </p>
+
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <CalendarOutlined /> :{" "}
+          {movie.ngay_cong_chieu
+            ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+            : "Chưa cập nhật"}
+        </p>
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <TagOutlined /> :{" "}
+          {movie.the_loai_id
+            ? JSON.parse(movie.the_loai_id)
+                .map((genre: any) => genre.ten_the_loai)
+                .join(", ")
+            : movie.the_loai
+            ? movie.the_loai.join(", ")
+            : "Chưa cập nhật"}
+        </p>
+        <p style={{ fontSize: 12, color: "#888" }}>
+          <ClockCircleOutlined /> :{" "}
+          {movie.thoi_luong ? `${movie.thoi_luong}'` : "Chưa cập nhật"}
+        </p>
+        <div className="movie-buttons">
+          <button
+            className="play-button special-play-button"
+            onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
+          >
+            <PlayCircleOutlined style={{ marginRight: 8 }} />
+            <span>Trailer</span>
+          </button>
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <button className="book-button special-book-button">
+              <span>ĐẶT VÉ NGAY</span>
+            </button>
+          </Link>
+        </div>
+      </div>
+    </SwiperSlide>
+  );
+
+  // Hàm render nội dung theo tab
+  const renderTabContent = () => {
+    if (loading) {
+      return <Spin />;
+    }
+
+    switch (activeTab) {
+      case "now":
+        return Array.isArray(currentMovies) && currentMovies.length > 0 ? (
+          <>
+            <Swiper
+              spaceBetween={24}
+              slidesPerView={4}
+              navigation
+              modules={[Navigation]}
+            >
+              {currentMovies.map((movie: any, i: number) =>
+                renderCurrentMovieCard(movie, i)
+              )}
+            </Swiper>
+            <div className="loadmorebox">
+              <Link to="/phim-dang-chieu">
+                <button className="load-more-button">
+                  <span>Xem tất cả</span>
+                </button>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <p>Không có phim đang chiếu.</p>
+        );
+
+      case "upcoming":
+        return Array.isArray(upcomingMovies) && upcomingMovies.length > 0 ? (
+          <>
+            <Swiper
+              spaceBetween={24}
+              slidesPerView={4}
+              navigation
+              modules={[Navigation]}
+            >
+              {upcomingMovies.map((movie: any, i: number) =>
+                renderUpcomingMovieCard(movie, i)
+              )}
+            </Swiper>
+            <div className="loadmorebox">
+              <Link to="/phim-sap-chieu">
+                <button className="load-more-button">
+                  <span>Xem tất cả</span>
+                </button>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <p>Không có phim sắp chiếu.</p>
+        );
+
+      case "special":
+        return Array.isArray(specialMovies) && specialMovies.length > 0 ? (
+          <>
+            <Swiper
+              spaceBetween={24}
+              slidesPerView={4}
+              navigation
+              modules={[Navigation]}
+            >
+              {specialMovies.map((movie: any, i: number) =>
+                renderSpecialMovieCard(movie, i)
+              )}
+            </Swiper>
+            <div className="loadmorebox">
+              <Link to="/suat-chieu-dac-biet">
+                <button className="load-more-button">
+                  <span>Xem tất cả</span>
+                </button>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <p>Không có suất chiếu đặc biệt.</p>
+        );
+
+      default:
+        return <p>Không tìm thấy nội dung.</p>;
+    }
+  };
 
   return (
     <div className="home-wrapper">
-      {/* Banner bằng Swiper */}
       <Swiper
         modules={[Navigation, Autoplay]}
         navigation
@@ -76,9 +445,10 @@ const Home = () => {
           </div>
         </SwiperSlide>
       </Swiper>
+
       <QuickBooking />
-      {/* Tabs chọn phim */}
-      <div className=" movie-tabs">
+
+      <div className="movie-tabs">
         <button
           className={`tab-btn ${activeTab === "now" ? "active" : ""}`}
           onClick={() => setActiveTab("now")}
@@ -91,85 +461,41 @@ const Home = () => {
         >
           PHIM SẮP CHIẾU
         </button>
+        <button
+          className={`tab-btn ${activeTab === "special" ? "active" : ""}`}
+          onClick={() => setActiveTab("special")}
+        >
+          SUẤT CHIẾU ĐẶC BIỆT
+        </button>
       </div>
 
-      {/* Nội dung phim dựa theo tab */}
-      <div className="section">
-        {loading ? (
-          <Spin />
-        ) : activeTab === "now" ? (
-          Array.isArray(currentMovies) && currentMovies.length > 0 ? (
-            <Swiper
-              spaceBetween={24}
-              slidesPerView={4}
-              navigation
-              modules={[Navigation]}
-            >
-              {currentMovies.map((movie: any, i: number) => (
-                <SwiperSlide key={i}>
-                  <div className="movie-card">
-                    <Link to={`/phim/${movie.slug || movie.id}`}>
-                      <img
-                        src={getImageUrl(
-                          movie.hinh_anh || movie.image || movie.anh_poster
-                        )}
-                        alt={movie.title || movie.ten_phim}
+      <div className="section">{renderTabContent()}</div>
 
-                        onError={(e) => {
-                          e.currentTarget.src =
-                            "https://via.placeholder.com/220x280?text=No+Image";
-                        }}
-                      />
-                    </Link>
-                    <h4>{movie.title || movie.ten_phim}</h4>
-                  
-                    <Link to={`/phim/${movie.slug || movie.id}`}>
-                      <Button type="primary">Mua vé</Button>
-                    </Link>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          ) : (
-            <p>Không có phim đang chiếu.</p>
-          )
-        ) : Array.isArray(upcomingMovies) && upcomingMovies.length > 0 ? (
-          <Swiper
-            spaceBetween={24}
-            slidesPerView={4}
-            navigation
-            modules={[Navigation]}
-          >
-            {upcomingMovies.map((movie: any, i: number) => (
-              <SwiperSlide key={i}>
-                <div className="movie-card">
-                  <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <img
-                      src={getImageUrl(
-                        movie.image || movie.hinh_anh || movie.anh_poster
-                      )}
-                      alt={movie.title || movie.ten_phim}
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          "https://via.placeholder.com/220x280?text=No+Image";
-                      }}
-                    />
-                  </Link>
-                  <h4>{movie.title || movie.ten_phim}</h4>
-                
-                  <Link to={`/phim/${movie.slug || movie.id}`}>
-                    <Button type="primary">Xem chi tiết</Button>
-                  </Link>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+      <Modal
+        title={`Trailer - ${trailerTitle}`}
+        open={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={800}
+        bodyStyle={{ padding: 0, height: 450 }}
+        destroyOnClose
+        centered
+      >
+        {trailerUrl ? (
+          <iframe
+            width="100%"
+            height="100%"
+            src={convertYouTubeUrlToEmbed(trailerUrl)}
+            title="Trailer"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         ) : (
-          <p>Không có phim sắp chiếu.</p>
+          <p style={{ padding: 20, textAlign: "center" }}>Không có trailer</p>
         )}
-      </div>
+      </Modal>
 
-      {/* Phim nổi bật */}
       <div className="featured-movie">
         <img src={featuredImage} alt="phim nổi bật" className="featured-img" />
         <div className="featured-overlay">
@@ -203,7 +529,7 @@ const Home = () => {
             <a href="#">
               <span>ZALO CHAT</span>
               <img
-                src="	https://cinestar.com.vn/assets/images/ct-2.webp"
+                src="https://cinestar.com.vn/assets/images/ct-2.webp"
                 alt="ZALO CHAT"
               />
             </a>
@@ -213,15 +539,15 @@ const Home = () => {
         <div className="contact-right">
           <h2>THÔNG TIN LIÊN HỆ</h2>
           <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-1.svg" alt="" />{" "}
+            <img src="https://cinestar.com.vn/assets/images/ct-1.svg" alt="" />
             cskh@movigo.com
           </p>
           <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-2.svg" alt="" />{" "}
+            <img src="https://cinestar.com.vn/assets/images/ct-2.svg" alt="" />
             1900.0085
           </p>
           <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />{" "}
+            <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />
             135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
           </p>
           <input type="text" placeholder="Họ và tên" />
