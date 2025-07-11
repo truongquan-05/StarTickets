@@ -493,7 +493,7 @@ export const useDeleteCheckGhe = ({ resource = "check_ghe" }: { resource?: strin
 
 interface UpdateCheckGheVariables {
   id: number | string; // Đây là ID của bản ghi check_ghe cụ thể (ví dụ: 1, 2, 3...)
-  values: { trang_thai: string }; // Các giá trị muốn cập nhật (ví dụ: { trang_thai: "dang_dat" })
+  values: { trang_thai: string , nguoi_dung_id:any}; // Các giá trị muốn cập nhật (ví dụ: { trang_thai: "dang_dat" })
   lichChieuId: number | null; // Đây là ID của lịch chiếu, quan trọng cho việc làm mất hiệu lực cache
 }
 // ✅ UPDATE

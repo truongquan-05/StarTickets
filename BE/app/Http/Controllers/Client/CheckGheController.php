@@ -10,21 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class CheckGheController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     //LẤY DANH SÁCH GHẾ THEO LỊCH CHIẾU
     //ID LỊCH CHIẾU
@@ -33,6 +19,18 @@ class CheckGheController extends Controller
         $dataGhe = CheckGhe::with('Ghe')->where('lich_chieu_id', $id)->get();
         return response()->json([
             'message' => 'Lấy danh sách ghế thành công',
+            'data' => $dataGhe
+        ]);
+    }
+
+
+    //LẤY DANH SÁCH CHECK GHẾ THEO ID GHẾ
+    //ID GHẾ
+    public function showAllCheckGhe(string $id)
+    {
+        $dataGhe = CheckGhe::where('ghe_id', $id)->get();
+        return response()->json([
+            'message' => 'Lấy danh sách check ghế thành công',
             'data' => $dataGhe
         ]);
     }
@@ -53,13 +51,21 @@ class CheckGheController extends Controller
             ], 404);
         }
         $dataGhe->update([
-            'trang_thai' => $request->trang_thai
+            'trang_thai' => $request->trang_thai,
         ]);
+        if ($request->trang_thai == 'trong') {
+            $dataGhe->update(['nguoi_dung_id' => null]);
+        } else {
+            $dataGhe->update(['nguoi_dung_id' => $request->nguoi_dung_id]);
+        }
+
         return response()->json([
             'message' => 'Lấy danh sách ghế thành công',
             'data' => $dataGhe
         ]);
     }
+
+    //CẬP NHẬT KHI OUT TRANG
     public function bulkUpdate(Request $request)
     {
         // $data = $request->all();
@@ -87,8 +93,6 @@ class CheckGheController extends Controller
             ], 422);
         }
     }
-
-
 
 
     //ID LỊCH CHIẾU

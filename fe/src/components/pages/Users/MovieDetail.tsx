@@ -25,6 +25,7 @@ import { IDatVeChiTietPayload } from "../Admin/interface/datve";
 import { useBackConfirm } from "../../hook/useConfirmBack";
 import ModalFood, { SelectedFoodItem } from "./DatVe/DonDoAn";
 import FoodSelectionDisplay from "./DatVe/DonDoAn";
+import DuongCongManHinh from "./DuongCongManHinh";
 
 interface IRap {
   id: number;
@@ -169,7 +170,7 @@ const MovieDetailUser = () => {
           ) {
             updateCheckGhe({
               id: correspondingCheckGhe.id,
-              values: { trang_thai: "trong" },
+              values: { trang_thai: "trong", nguoi_dung_id: null }, // Giải phóng ghế
               lichChieuId: lichChieuIdToProcess,
             });
           }
@@ -558,8 +559,6 @@ const MovieDetailUser = () => {
       return inDb?.trang_thai || "trong";
     };
 
-    // HÀNG LOẠT LOGIC KIỂM TRA GHẾ RẤT CHẶT CHẼ CỦA BẠN (GIỮ NGUYÊN)
-    // ... (giữ nguyên toàn bộ logic kiểm tra ghế của bạn từ đây trở xuống) ...
     if (
       newTrangThai === "dang_dat" &&
       (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
@@ -782,7 +781,8 @@ const MovieDetailUser = () => {
       setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
     }
     // KẾT THÚC ĐOẠN THÊM
-
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
     seatsToToggle.forEach((gheToggle) => {
       const found = checkGheList.find(
         (x: any) =>
@@ -791,7 +791,7 @@ const MovieDetailUser = () => {
       if (found) {
         updateCheckGhe({
           id: found.id,
-          values: { trang_thai: newTrangThai },
+          values: { trang_thai: newTrangThai, nguoi_dung_id: user?.id || null },
           lichChieuId: selectedLichChieuId,
         });
       }
@@ -910,8 +910,6 @@ const MovieDetailUser = () => {
             paddingTop: 50,
             marginTop: 30,
             borderRadius: 8,
-            // THAY ĐỔI LỚN TẠI ĐÂY:
-            // Thay vì padding cố định, hãy dùng maxWidth và padding/margin linh hoạt hơn
             maxWidth: selectedSeats.length > 0 ? 1200 : "fit-content", // Giới hạn max-width khi chia 2 cột, fit-content khi 1 cột
             paddingLeft: selectedSeats.length > 0 ? 170 : 0, // Padding chỉ khi chia 2 cột
             paddingRight: selectedSeats.length > 0 ? 170 : 0, // Padding chỉ khi chia 2 cột
@@ -922,6 +920,9 @@ const MovieDetailUser = () => {
             Chọn ghế: {selectedPhong.ten_phong} - {tenRap}
           </h3>
           {/* CONTAINER CHO SƠ ĐỒ GHẾ VÀ CHỌN ĐỒ ĂN */}
+          <div style={{ position: "relative" }}>
+            <DuongCongManHinh />
+          </div>
           <div
             style={{
               display: "flex",
@@ -955,7 +956,6 @@ const MovieDetailUser = () => {
                   trangThaiPhong={3}
                   danhSachCheckGhe={checkGheList}
                   onClickCheckGhe={handleClickCheckGhe}
-                  
                 />
                 <div
                   className="chuthich"

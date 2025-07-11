@@ -76,7 +76,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-         Schema::create('xac_nhan_dang_ky', function (Blueprint $table) {
+        Schema::create('xac_nhan_dang_ky', function (Blueprint $table) {
             $table->id();
             $table->string('email', 100);
             $table->string('ma_xac_nhan', 100);
@@ -176,6 +176,7 @@ return new class extends Migration {
         Schema::create('check_ghes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('nguoi_dung_id', 100)->nullable();
             $table->foreignId('ghe_id')->constrained('ghe')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('trang_thai', ['trong', 'da_dat', 'dang_dat']);
 
@@ -187,7 +188,7 @@ return new class extends Migration {
             $table->string('ten', 100);
             $table->string('nha_cung_cap', 100);
             $table->text('mo_ta')->nullable();
-            $table->timestamps(); 
+            $table->timestamps();
         });
 
         Schema::create('thanh_toan', function (Blueprint $table) {
@@ -196,6 +197,10 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phuong_thuc_thanh_toan_id')->constrained('phuong_thuc_thanh_toan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ma_giao_dich', 255);
+            $table->string('email', 255);
+            $table->string('so_dien_thoai', 255);
+            $table->text('qr_code')->nullable(); // base64
+            $table->boolean('da_quet')->default(false);
             $table->timestamps();
         });
 

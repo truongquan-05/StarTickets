@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { IGhe } from "../interface/ghe"; // Đảm bảo đường dẫn này đúng
 import { ICheckGhe } from "../interface/checkghe";
 import { useUpdateLoaiGhe, useUpdateTrangThaiGhe } from "../../../hook/hungHook"; // Đảm bảo đường dẫn này đúng
+import { color } from "framer-motion";
 
 interface SoDoGheProps {
   phongId: number | null;
@@ -285,6 +286,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
         display: trangThaiPhong === 0 ? "flex" : "inline-block",
       }}
     >
+      
       <div
         className="seat-map"
         style={{
@@ -352,7 +354,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               const tt2 = getTrangThaiCheckGhe(gheDoi.ghe_doi[1]);
 
               if (tt1 === "da_dat" || tt2 === "da_dat") {
-                bgColor = "black";
+                bgColor = "#47566B";
                 opacity = 0.5;
                 isBookedGlobal = true; // Đánh dấu là đã đặt
               } else if (tt1 === "dang_dat" || tt2 === "dang_dat") {
@@ -390,10 +392,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                   onDoubleClick={() => handleDoubleClick(ghe.so_ghe)}
                   title={`${ghe.so_ghe} - Loại: Ghế đôi - Trạng thái API: ${gheDoi.ghe_doi[0].trang_thai ? 'Bật' : 'Tắt'} - Trạng thái đặt: ${tt1}, ${tt2}`}
                   style={{
-                    width: 40 * 2 + 6,
+                    width: 75 * 2 + 6,
                     height: 40,
                     backgroundColor: isHidden ? "lightgray" : bgColor,
-                    borderRadius: 4,
+                    borderRadius: 8,
                     border: `2px solid ${borderColor}`,
                     display: "flex",
                     alignItems: "center",
@@ -427,7 +429,8 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
             const trangThaiCheck = getTrangThaiCheckGhe(ghe as IGhe);
 
             if (trangThaiCheck === "da_dat") {
-              bgColor = "black";
+              bgColor = "#47566B";
+              fontColor = "#FFFFFF";
               opacity = 0.5;
               isBookedGlobal = true; // Đánh dấu là đã đặt
             } else if (trangThaiCheck === "dang_dat") {
@@ -460,10 +463,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 onDoubleClick={() => handleDoubleClick(ghe.so_ghe)}
                 title={`${ghe.so_ghe} - Loại: ${ghe.loai_ghe_id === 1 ? 'Thường' : ghe.loai_ghe_id === 2 ? 'VIP' : 'Đôi'} - Trạng thái API: ${ghe.trang_thai ? 'Bật' : 'Tắt'} - Trạng thái đặt: ${trangThaiCheck}`}
                 style={{
-                  width: 40,
-                  height: 40,
+                  width: 75,
+                  height: 35,
                   backgroundColor: isHidden ? "lightgray" : bgColor,
-                  borderRadius: 4,
+                  borderRadius: 8,
                   border: `2px solid ${borderColor}`,
                   display: "flex",
                   alignItems: "center",
@@ -510,7 +513,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           className="legend"
           style={{
             marginTop: 24,
-            maxWidth: 700,
+            maxWidth: 800,
             marginLeft: "auto",
             marginRight: "auto",
             display: "flex",
@@ -527,11 +530,11 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
-                width: 20,
+                width: 40,
                 height: 20,
                 backgroundColor: "white",
-                borderRadius: 4,
-                border: '2px solid black'
+                borderRadius: 5,
+                border: '3px solid black'
               }}
             />
             <span>Ghế thường</span>
@@ -539,11 +542,11 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
-                width: 20,
+                width: 40,
                 height: 20,
                 backgroundColor: "white",
-                borderRadius: 4,
-                border: '2px solid red'
+                borderRadius: 5,
+                border: '3px solid red'
               }}
             />
             <span>Ghế VIP</span>
@@ -551,11 +554,11 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
-                width: 20,
+                width: 50,
                 height: 20,
                 backgroundColor: "white",
-                borderRadius: 4,
-                border: '2px solid blue'
+                borderRadius: 5,
+                border: '3px solid blue'
               }}
             />
             <span>Ghế đôi</span>
@@ -596,10 +599,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
             userSelect: "none",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          {/* <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
-                width: 20,
+                width: 40,
                 height: 20,
                 backgroundColor: "white",
                 borderRadius: 4,
@@ -607,11 +610,11 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               }}
             />
             <span>Ghế trống</span>
-          </div>
+          </div> */}
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
-                width: 20,
+                width: 40,
                 height: 20,
                 backgroundColor: "yellow",
                 borderRadius: 4,
@@ -623,9 +626,9 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
-                width: 20,
+                width: 40,
                 height: 20,
-                backgroundColor: "black",
+                backgroundColor: "#47566B",
                 opacity: 0.5,
                 borderRadius: 4,
               }}

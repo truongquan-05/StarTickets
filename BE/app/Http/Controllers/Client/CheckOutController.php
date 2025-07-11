@@ -6,11 +6,12 @@ use App\Models\DoAn;
 use App\Models\DatVe;
 use App\Models\DonDoAn;
 use App\Models\CheckGhe;
+use App\Models\MaGiamGia;
 use App\Models\ThanhToan;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\DiemThanhVien;
-use App\Models\MaGiamGia;
+use App\Http\Controllers\Controller;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CheckOutController extends Controller
 {
@@ -194,6 +195,9 @@ class CheckOutController extends Controller
                         $voucher = MaGiamGia::find($extraData['ma_giam_gia_id']);
                         $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
                     }
+                    //TẠO QR MÃ GIAO DỊCH
+                    $qrSvg = QrCode::format('svg')->size(250)->generate($data['ma_giao_dich']);
+                    $data['qr_code'] = "'data:image/svg+xml;base64,' . base64_encode($qrSvg)";
                     $thanhToan = ThanhToan::create($extraData);
                     $DatVe = DatVe::find($thanhToan->dat_ve_id);
 
@@ -263,6 +267,10 @@ class CheckOutController extends Controller
                         $voucher = MaGiamGia::find($data['ma_giam_gia_id']);
                         $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
                     }
+                    //TẠO QR MÃ GIAO DỊCH
+                    $qrSvg = QrCode::format('svg')->size(250)->generate($data['ma_giao_dich']);
+                    $data['qr_code'] = "'data:image/svg+xml;base64,' . base64_encode($qrSvg)";
+
                     $thanhToan = ThanhToan::create($data);
                     $DatVe = DatVe::find($thanhToan->dat_ve_id);
 
@@ -279,6 +287,9 @@ class CheckOutController extends Controller
                             'diem' => $diemCong
                         ]);
                     }
+
+
+
 
                     // Redirect về trang history với dữ liệu truyền qua query string
                     $queryParams = http_build_query([
@@ -328,32 +339,9 @@ class CheckOutController extends Controller
 
 
 
-
-
-
-
-    public function index() {}
-
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-
     public function show(string $id)
     {
         //
     }
 
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-
-    public function destroy(string $id)
-    {
-        //
-    }
 }

@@ -11,6 +11,7 @@ class CheckGhe extends Model
     protected $fillable = [
         'lich_chieu_id',
         'ghe_id',
+        'nguoi_dung_id', // NULL DEFAULT
         'trang_thai',
     ];
 

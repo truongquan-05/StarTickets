@@ -12,14 +12,22 @@ class ThanhToan extends Model
         'phuong_thuc_thanh_toan_id',
         'nguoi_dung_id',
         'ma_giao_dich',
+        'qr_code',
+        'da_quet',
+        'email',
+        'so_dien_thoai'
+
     ];
-    public function nguoiDung(){
-        return $this ->belongsTo(NguoiDung::class,'nguoi_dung_id');
+    public function nguoiDung()
+    {
+        return $this->belongsTo(NguoiDung::class, 'nguoi_dung_id');
     }
-    public function phuongThuc(){
-        return $this ->belongsTo(PhuongThucThanhToan::class,'phuong_thuc_thanh_toan_id');
+    public function phuongThuc()
+    {
+        return $this->belongsTo(PhuongThucThanhToan::class, 'phuong_thuc_thanh_toan_id');
     }
-    public function datVe(){
-        return $this ->belongsTo(DatVe::class,'dat_ve_id');
+    public function datVe()
+    {
+        return $this->belongsTo(DatVe::class, 'dat_ve_id');
     }
 }

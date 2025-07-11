@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
             LoaiGheSeeder::class,
             RapSeeder::class,
             ChuyenNguSeeder::class,
-            PhuongThucThanhToan::class
+            PhuongThucThanhToan::class,
+            QuyenHanSeeder::class,
+            QuyenTruyCapSeeder::class
         ]);
     }
 }

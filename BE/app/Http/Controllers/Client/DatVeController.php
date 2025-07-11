@@ -14,17 +14,7 @@ use App\Models\PhuongThucThanhToan;
 
 class DatVeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $dat_ve = $request->only('dat_ve');
@@ -120,32 +110,15 @@ class DatVeController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(DatVe $datVe)
+    public function getPhuongThucThanhToan()
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, DatVe $datVe)
-    {
-        //
-    }
-
-    public function getPhuongThucThanhToan(){
         $phuongThucThanhToan = PhuongThucThanhToan::all();
         return response()->json([
             'data' => $phuongThucThanhToan
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy($id)
     {
         $data = DatVe::find($id);
@@ -154,7 +127,7 @@ class DatVeController extends Controller
                 "message" => "Không tìm thấy dữ liệu đặt vé",
             ], 404);
         }
-        $dataThanhToan = DatVe::with(['donDoAn.doAn', 'datVeChiTiet.gheDat'])->find($id);
+        $dataThanhToan = DatVe::with(['donDoAn.doAn', 'datVeChiTiet'])->find($id);
 
         $DonDoAn = $dataThanhToan->donDoAn;
         $DatVeChiTiet = $dataThanhToan->datVeChiTiet;
@@ -162,7 +135,7 @@ class DatVeController extends Controller
         foreach ($DatVeChiTiet as $item) {
             CheckGhe::where('ghe_id', $item->ghe_id)
                 ->where('lich_chieu_id', $dataThanhToan->lich_chieu_id)
-                ->update(['trang_thai' => 'trong']);
+                ->update(['trang_thai' => 'trong','nguoi_dung_id' => null]);
         }
         foreach ($DonDoAn as $item) {
             $DoAn = DoAn::find($item->do_an_id);
@@ -175,6 +148,7 @@ class DatVeController extends Controller
         DatVe::find($id)->delete();
         return response()->json([
             "message" => "Hủy đặt vé thành công",
+            
         ]);
     }
 }
