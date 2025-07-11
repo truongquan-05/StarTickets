@@ -40,7 +40,7 @@ export interface Phim {
   mo_ta: string;
   hinh_anh: string;
   ngay_cong_chieu: string;
-   the_loai_id: TheLoaiObject[]; // ✅ phải là mảng object
+  the_loai_id: TheLoaiObject[]; // ✅ phải là mảng object
   thoi_luong?: number; // nếu bạn dùng
   anh_poster?: string;
 }

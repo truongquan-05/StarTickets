@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\QuanLyDonVeController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
+use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
+use App\Models\NguoiDung;
 
 // Route::get('/user', function (Request $request) {
 //     return 'Quan';
@@ -157,14 +159,20 @@ Route::prefix('auth/google')->group(function () {
     Route::get('redirect', [LoginController::class, 'redirect']); //Dùng cái này
     Route::get('callback', [LoginController::class, 'callback']);
 });
+//XỬ LÝ ĐĂNG NHẬP VỚI TÀI KHOẢN THƯỜNG
+Route::prefix('auth')->group(function () {
+    Route::post('login', [LoginController::class, 'login']); 
+    Route::post('register', [LoginController::class, 'register']);
+    Route::post('create-ma-dang-ky/{email}', [LoginController::class, 'createMaDangKy']); // Tạo mã đăng ký
+});
 
 //XỬ LÝ THANH TOÁN
 Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
 
-
-
+Route::post('ma_xac_thuc/{id}', [NguoiDungController::class , 'TaoMaXacNhan']); // Tạo mã xác nhận cho người dùng
+Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class , 'getMaXacNhan']);
 //-------------------CLIENT-------------------//
 
 //trang chu
@@ -193,22 +201,16 @@ Route::get('/danh-gia/all', [ClientDanhGiaController::class, 'getAllDanhGia']);
 
 // Lấy tất cả đánh giá của 1 phim
 Route::get('/phim/{phimId}/danh-gia', [ClientDanhGiaController::class, 'getByPhim']);
-
 // Lấy điểm trung bình của phim
 Route::get('/phim/{phimId}/danh-gia/average', [ClientDanhGiaController::class, 'getAverageRating']);
-
 // Lấy đánh giá của user hiện tại cho 1 phim (không có auth thì dùng tạm id test)
 Route::get('/phim/{phimId}/danh-gia/my', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']);
-
 // Lấy tất cả đánh giá của chính người dùng hiện tại
 Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']);
-
 // Thêm đánh giá mới
 Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']);
-
 // Cập nhật đánh giá
 Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']);
-
 // Xoá đánh giá
 Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']);
 
@@ -220,14 +222,8 @@ Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'log
 //Check ghế đặt vé
 Route::apiResource('check_ghe',CheckGheController::class);
 
-
-
-
-
-
-
-
-
+Route::get('voucher',[MaGiamGiaClient::class, 'index']);
+Route::post('voucher/check/{id}', [MaGiamGiaClient::class, 'checkVoucher']);
 
 
 

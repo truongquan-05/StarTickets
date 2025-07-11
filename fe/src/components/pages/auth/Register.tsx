@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Form,
   Input,
@@ -18,9 +17,12 @@ import {
   RightOutlined,
   GoogleOutlined,
   SolutionOutlined,
+  SafetyCertificateOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import { useGoogleAuth } from "./GoogleAuth";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const { Text, Link } = Typography;
 
@@ -29,38 +31,67 @@ const Register = () => {
   const navigate = useNavigate();
   const { loginWithGoogle } = useGoogleAuth();
 
-  const onFinish = async (values) => {
-    const { confirm, remember, ...submitValues } = values;
+  const [countdown, setCountdown] = useState(0);
+
+  const handleSendCode = async () => {
+    const email = form.getFieldValue("email");
+
+    if (!email) {
+      message.warning("Vui lòng nhập email trước!");
+      return;
+    }
+
+    if (countdown > 0) return;
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(submitValues),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 422 && data.errors) {
-          const firstError = Object.values(data.errors)[0][0];
-          message.error(firstError || "Đăng ký không thành công.");
-        } else {
-          message.error(data.message || "Đăng ký thất bại.");
-        }
-      } else {
-        message.success("Đăng ký thành công!");
-        navigate("/login");
-      }
+      await axios.post(
+        `http://localhost:8000/api/auth/create-ma-dang-ky/${email}`
+      );
+      message.success(`Mã xác nhận đã gửi đến ${email}`);
+      setCountdown(120);
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     } catch (error) {
-      console.error("Lỗi kết nối:", error);
-      message.error("Không thể kết nối đến máy chủ.");
+      console.error(error);
+      message.error("Gửi mã thất bại!");
     }
   };
 
+  const handleSubmit = async (values: any) => {
+    try {
+      const payload = {
+        ten: values.ten,
+        email: values.email,
+        password: values.password,
+        so_dien_thoai: values.so_dien_thoai,
+        ma_xac_nhan: values.ma_xac_nhan,
+      };
+
+      await axios.post("http://127.0.0.1:8000/api/auth/register", payload);
+      message.success("Đăng ký thành công!");
+      navigate("/login");
+    } catch (error: any) {
+      const errors = error?.response?.data?.errors;
+      if (errors) {
+        Object.values(errors).forEach((fieldErrors: any) => {
+          fieldErrors.forEach((msg: string) => {
+            message.error(msg);
+          });
+        });
+      } if(error.response.data.message) {
+        message.error(error.response.data.message);
+      }
+    }
+  };
+
+  
   return (
     <div className="login-background">
       <Row justify="center" align="middle" className="login-container">
@@ -73,13 +104,17 @@ const Register = () => {
             layout="vertical"
             className="login-form"
             scrollToFirstError
-            onFinish={onFinish}
+            onFinish={handleSubmit}
           >
-            <Row gutter={24}>
+            <Row gutter={30}>
               {/* Cột trái */}
               <Col xs={24} md={12}>
                 <Form.Item
-                  label={<span style={{ color: "white", fontWeight: 600 }}>Họ và tên</span>}
+                  label={
+                    <span style={{ color: "white", fontWeight: 600 }}>
+                      Họ và tên
+                    </span>
+                  }
                   name="ten"
                   rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
                 >
@@ -92,7 +127,11 @@ const Register = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label={<span style={{ color: "white", fontWeight: 600 }}>Email</span>}
+                  label={
+                    <span style={{ color: "white", fontWeight: 600 }}>
+                      Email
+                    </span>
+                  }
                   name="email"
                   rules={[
                     { required: true, message: "Vui lòng nhập email!" },
@@ -106,12 +145,64 @@ const Register = () => {
                     style={{ borderRadius: "1px" }}
                   />
                 </Form.Item>
+
+                {/* Mã xác nhận */}
+                <Form.Item
+                  label={
+                    <span style={{ color: "white", fontWeight: 600 }}>
+                      Mã xác nhận
+                    </span>
+                  }
+                  required
+                >
+                  <Row gutter={10}>
+                    <Col span={16}>
+                      <Form.Item
+                        name="ma_xac_nhan"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Vui lòng nhập mã xác nhận!",
+                          },
+                        ]}
+                        noStyle
+                      >
+                        <Input
+                          prefix={<SafetyCertificateOutlined />}
+                          placeholder="Nhập mã xác nhận"
+                          size="large"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Button
+                        block
+                        size="large"
+                        onClick={handleSendCode}
+                        disabled={countdown > 0}
+                        style={{
+                          backgroundColor:
+                            countdown > 0 ? "#f5f5f5" : "#1890ff",
+                          color: countdown > 0 ? "#999" : "#fff",
+                          borderColor: countdown > 0 ? "#d9d9d9" : "#1890ff",
+                          opacity: 1,
+                        }}
+                      >
+                        {countdown > 0 ? `Gửi lại (${countdown}s)` : "Gửi mã"}
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
               </Col>
 
               {/* Cột phải */}
               <Col xs={24} md={12}>
                 <Form.Item
-                  label={<span style={{ color: "white", fontWeight: 600 }}>Số điện thoại</span>}
+                  label={
+                    <span style={{ color: "white", fontWeight: 600 }}>
+                      Số điện thoại
+                    </span>
+                  }
                   name="so_dien_thoai"
                   rules={[
                     { required: true, message: "Vui lòng nhập số điện thoại!" },
@@ -130,10 +221,14 @@ const Register = () => {
                   />
                 </Form.Item>
 
-                <Row gutter={16}>
+                <Row gutter={20}>
                   <Col span={12}>
                     <Form.Item
-                      label={<span style={{ color: "white", fontWeight: 600 }}>Mật khẩu</span>}
+                      label={
+                        <span style={{ color: "white", fontWeight: 600 }}>
+                          Mật khẩu
+                        </span>
+                      }
                       name="password"
                       rules={[
                         { required: true, message: "Vui lòng nhập mật khẩu!" },
@@ -152,28 +247,34 @@ const Register = () => {
 
                   <Col span={12}>
                     <Form.Item
-                      label={<span style={{ color: "white", fontWeight: 600 }}>Xác thực mật khẩu</span>}
+                      label={
+                        <span style={{ color: "white", fontWeight: 600 }}>
+                          Xác thực mật khẩu
+                        </span>
+                      }
                       name="confirm"
                       dependencies={["password"]}
                       hasFeedback
                       rules={[
                         {
                           required: true,
-                          message: "Vui lòng xác nhận mật khẩu!",
+                          message: "Vui lòng xác thực mật khẩu!",
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
                             if (!value || getFieldValue("password") === value) {
                               return Promise.resolve();
                             }
-                            return Promise.reject(new Error("Mật khẩu xác nhận không khớp!"));
+                            return Promise.reject(
+                              new Error("Mật khẩu xác thực không khớp!")
+                            );
                           },
                         }),
                       ]}
                     >
                       <Input.Password
                         prefix={<LockOutlined />}
-                        placeholder="Xác nhận mật khẩu"
+                        placeholder="Xác thực mật khẩu"
                         size="large"
                         style={{ borderRadius: "1px" }}
                       />
@@ -183,15 +284,13 @@ const Register = () => {
               </Col>
             </Row>
 
-            {/* Chính sách và điều khoản */}
             <Form.Item style={{ textAlign: "left" }}>
               <Link
                 href="/privacy-policy"
                 target="_blank"
                 style={{ color: "yellow" }}
               >
-                <RightOutlined />
-                ㅤXem chính sách bảo mật
+                <RightOutlined /> Xem chính sách bảo mật
               </Link>
             </Form.Item>
 
@@ -204,23 +303,29 @@ const Register = () => {
                     value
                       ? Promise.resolve()
                       : Promise.reject(
-                          new Error("Bạn phải đồng ý với các điều khoản!")
+                          new Error(
+                            "Vui lòng chấp nhận với các điều khoản của chúng tôi!"
+                          )
                         ),
                 },
               ]}
             >
-              <Checkbox className="custom-checkbox" style={{ color: "white" }}>
-                Tôi cam kết tuân theo chính sách bảo mật và điều khoản sử dụng của StarTickets.
+              <Checkbox className="custom-checkboxx" style={{ color: "white" }}>
+                Tôi cam kết tuân theo chính sách bảo mật và điều khoản sử dụng
+                của StarTickets.
               </Checkbox>
             </Form.Item>
 
-            {/* Nút đăng ký và Google */}
-            <Row gutter={16}>
+            <Row gutter={30}>
               <Col span={12}>
                 <Form.Item>
                   <Button
                     type="primary"
-                    icon={<SolutionOutlined style={{ marginRight: 5, fontSize: 20 }} />}
+                    icon={
+                      <SolutionOutlined
+                        style={{ marginRight: 5, fontSize: 20 }}
+                      />
+                    }
                     htmlType="submit"
                     block
                     size="large"
@@ -235,7 +340,11 @@ const Register = () => {
                 <Form.Item>
                   <Button
                     type="primary"
-                    icon={<GoogleOutlined style={{ marginRight: 5, fontSize: 20 }} />}
+                    icon={
+                      <GoogleOutlined
+                        style={{ marginRight: 5, fontSize: 20 }}
+                      />
+                    }
                     size="large"
                     className="btn-submit-gg-effect"
                     block
@@ -252,7 +361,10 @@ const Register = () => {
             <Form.Item style={{ textAlign: "center" }}>
               <Text style={{ color: "white" }}>
                 Bạn đã có tài khoản?{" "}
-                <Link href="/login" style={{ color: "yellow", textDecoration: "underline" }}>
+                <Link
+                  href="/login"
+                  style={{ color: "yellow", textDecoration: "underline" }}
+                >
                   Đăng nhập ngay
                 </Link>
               </Text>

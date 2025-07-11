@@ -1,8 +1,8 @@
 // MovieDetailUser.tsx
-import React, { useCallback, useEffect, useState, useRef } from "react"; // <-- Import useRef
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Button, Spin, Image, Modal, message } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../../provider/duProvider";
 import {
   useListLichChieu,
@@ -34,15 +34,18 @@ interface SelectedSeatWithPrice {
   gia: number;
 }
 
+// Hàm chuyển đổi URL YouTube sang định dạng nhúng
 function convertYouTubeUrlToEmbed(url: string) {
   if (!url) return "";
   const regExp =
     /^.*(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([a-zA-Z0-9_-]{11})(?:(?:\?|&).*)?$/;
   const match = url.match(regExp);
   return match && match[1]
-    ? `https://www.youtube.com/embed/${match[1]}?autoplay=1`
+    ? `https://www.youtube.com/embed/${match[1]}?autoplay=1` // Sửa lại URL nhúng cho đúng chuẩn YouTube
     : url;
 }
+
+// Hàm kiểm tra ghế cách quãng
 function checkGapSeats(selectedSeats: string[]): boolean {
   if (selectedSeats.length <= 1) return false;
   const rowMap: Record<string, number[]> = {};
@@ -56,17 +59,18 @@ function checkGapSeats(selectedSeats: string[]): boolean {
     const cols = rowMap[row].sort((a, b) => a - b);
     for (let i = 0; i < cols.length - 1; i++) {
       if (cols[i + 1] - cols[i] > 1) {
-        return true; // có ghế cách quãng
+        return true; // Có ghế cách quãng
       }
     }
   }
-  return false; // không cách quãng
+  return false; // Không cách quãng
 }
 
 const MovieDetailUser = () => {
   const TIMEOUT_MINUTES = 5;
+  const location = useLocation();
+  const previousPathnameRef = useRef<string>(location.pathname);
   const { id } = useParams();
-  const [isNavigatingFromPayment, setIsNavigatingFromPayment] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [movie, setMovie] = useState<any>(null);
   const [loadingMovie, setLoadingMovie] = useState(true);
@@ -105,32 +109,14 @@ const MovieDetailUser = () => {
   } = useListGhe({ resource: "ghe", phong_id: selectedPhong?.id });
   const BASE_URL = "http://127.0.0.1:8000";
   const navigate = useNavigate();
-  // 1. Tạo Refs để lưu trữ giá trị state/data mới nhất
+
+  // Refs để lưu trữ giá trị state/data mới nhất cho các hàm callback ổn định
   const selectedSeatsRef = useRef<string[]>([]);
   const selectedLichChieuIdRef = useRef<number | null>(null);
   const danhSachGheRef = useRef<IGhe[]>([]);
   const checkGheListRef = useRef<ICheckGhe[]>([]);
-  useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      const selectedSeats = sessionStorage.getItem("selectedSeats");
-      if (selectedSeats && selectedSeats.length > 0) {
-        event.preventDefault();
-        event.returnValue = ""; // Bắt buộc có để hiện cảnh báo trên Chrome
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // 2. Khi trang được load lại, kiểm tra ghế trong sessionStorage
-    const selectedSeatsOnLoad = sessionStorage.getItem("selectedSeats");
-    if (selectedSeatsOnLoad && selectedSeatsOnLoad.length > 0) {
-      // Đẩy về trang chủ nếu có ghế chưa thanh toán
-      navigate("/", { replace: true });
-    }
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [navigate]);
+  // Cập nhật refs mỗi khi state thay đổi
   useEffect(() => {
     selectedSeatsRef.current = selectedSeats;
   }, [selectedSeats]);
@@ -146,6 +132,8 @@ const MovieDetailUser = () => {
   useEffect(() => {
     checkGheListRef.current = checkGheList;
   }, [checkGheList]);
+
+  // Hàm core để giải phóng ghế trên API
   const releaseSeatsApiCore = useCallback(
     async (seatsToProcess: string[], lichChieuIdToProcess: number | null) => {
       if (!lichChieuIdToProcess || seatsToProcess.length === 0) {
@@ -153,6 +141,13 @@ const MovieDetailUser = () => {
       }
       const currentDanhSachGhe = danhSachGheRef.current;
       const currentCheckGheList = checkGheListRef.current;
+
+      console.log(
+        `[releaseSeatsApiCore] Releasing seats for LC ID: ${lichChieuIdToProcess}, Seats: ${seatsToProcess.join(
+          ", "
+        )}`
+      );
+
       for (const seatNumber of seatsToProcess) {
         const ghe = currentDanhSachGhe.find(
           (g: IGhe) => g.so_ghe === seatNumber
@@ -172,44 +167,36 @@ const MovieDetailUser = () => {
               values: { trang_thai: "trong" },
               lichChieuId: lichChieuIdToProcess,
             });
+            console.log(`- Released seat: ${seatNumber}`);
           }
         }
       }
     },
     [updateCheckGhe]
-  ); // Dependencies của hàm core: chỉ là mutation function
+  );
+
+  // Hàm giải phóng ghế và reset UI (dùng cho timeout hoặc chuyển lịch chiếu)
   const releaseOccupiedSeatsForUI = useCallback(async () => {
-    await releaseSeatsApiCore([...selectedSeats], selectedLichChieuId);
-    setSelectedSeats([]);
-    setDisplaySelectedSeats([]);
-    setTotalPrice(0);
-  }, [
-    selectedSeats,
-    selectedLichChieuId,
-    releaseSeatsApiCore,
-    isProcessingPayment,
-  ]);
-
-  const releaseOccupiedSeatsOnUnmount = useCallback(async () => {
-    const cameFromThanhToan = sessionStorage.getItem("justNavigatedFromThanhToan");
-
-    if (cameFromThanhToan === "true") {
-      console.log("Vừa chuyển từ thanh toán, không giải phóng ghế.");
-      return;
-    }
-
+    console.log("[releaseOccupiedSeatsForUI] Releasing seats for UI reset.");
     await releaseSeatsApiCore(
       selectedSeatsRef.current,
       selectedLichChieuIdRef.current
     );
-  }, [releaseSeatsApiCore]);
+    setSelectedSeats([]);
+    setDisplaySelectedSeats([]);
+    setTotalPrice(0);
+    sessionStorage.removeItem("selectedSeats");
+    sessionStorage.removeItem("selectedLichChieuId");
+  }, [releaseSeatsApiCore]); // Dependencies: chỉ cần releaseSeatsApiCore
 
+  // Hook quản lý timer đặt vé
   const { clearTimer, remainingTime } = useBookingTimer({
     selectedSeatsCount: selectedSeats.length,
     selectedLichChieuId: selectedLichChieuId,
-    onTimerEndCallback: releaseOccupiedSeatsForUI, // <-- Đã đổi sang hàm mới
+    onTimerEndCallback: releaseOccupiedSeatsForUI,
     timeoutMinutes: TIMEOUT_MINUTES,
   });
+
   const formatTime = (totalSeconds: number) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -217,18 +204,213 @@ const MovieDetailUser = () => {
       seconds < 10 ? "0" : ""
     }${seconds}`;
   };
+  // THÊM KHỐI useEffect NÀY
+  useEffect(() => {
+    const currentPathname = location.pathname;
+    const prevPathname = previousPathnameRef.current;
+    const currentCameFromThanhToan = sessionStorage.getItem(
+      "justNavigatedFromThanhToan"
+    );
+
+    // Chỉ thực hiện hành động nếu đường dẫn đã thay đổi VÀ không phải là đang đi tới trang thanh toán
+    // và có ghế đang được chọn
+    if (
+      currentPathname !== prevPathname && // Đảm bảo URL đã thực sự thay đổi
+      currentCameFromThanhToan !== "true" && // Không phải đang đi tới trang thanh toán
+      selectedSeatsRef.current.length > 0 && // Có ghế đang chọn
+      selectedLichChieuIdRef.current !== null // Có lịch chiếu đã chọn
+    ) {
+      console.log(
+        "[Route Change] User navigating away from MovieDetailUser (internal SPA). Releasing seats."
+      );
+      (async () => {
+        await releaseSeatsApiCore(
+          selectedSeatsRef.current,
+          selectedLichChieuIdRef.current
+        );
+        // Sau khi giải phóng, xóa dữ liệu ghế khỏi sessionStorage và reset state cục bộ
+        sessionStorage.removeItem("selectedSeats");
+        sessionStorage.removeItem("selectedLichChieuId");
+        setSelectedSeats([]);
+        setDisplaySelectedSeats([]);
+        setTotalPrice(0);
+        clearTimer();
+        message.info("Ghế đã chọn đã được giải phóng do chuyển trang.");
+      })();
+    }
+
+    // Cập nhật ref với pathname hiện tại cho lần render tiếp theo
+    previousPathnameRef.current = currentPathname;
+
+    // Luôn đặt lại cờ thanh toán sau khi kiểm tra để tránh chặn các lần chuyển trang sau
+    // Điều này xử lý trường hợp người dùng nhấn nút back từ trang thanh toán
+    if (currentCameFromThanhToan === "true") {
+      sessionStorage.removeItem("justNavigatedFromThanhToan");
+    }
+    // Đảm bảo cờ luôn được thiết lập là 'false' nếu không phải đang chuyển đến thanh toán
+    // Điều này cần được đặt sau khi kiểm tra `currentCameFromThanhToan === "true"`
+    // để tránh ghi đè cờ khi nó vừa được đặt thành true trước navigate.
+    if (!location.pathname.includes("/thanh-toan")) {
+      // Nếu không phải trang thanh toán
+      sessionStorage.setItem("justNavigatedFromThanhToan", "false");
+    }
+  }, [
+    location.pathname, // Dependency chính: theo dõi thay đổi đường dẫn
+    releaseSeatsApiCore,
+    clearTimer,
+    selectedSeats.length, // Để có thể kiểm tra selectedSeatsRef.current.length
+    selectedLichChieuId, // Để có thể kiểm tra selectedLichChieuIdRef.current
+  ]);
+  // --- Logic xử lý giải phóng ghế khi điều hướng/tải lại/đóng tab ---
+  useEffect(() => {
+    // 1. Logic xử lý khi component mount (tải trang hoặc quay lại bằng nút back/forward trình duyệt)
+    const storedSelectedSeats = sessionStorage.getItem("selectedSeats");
+    const storedLichChieuId = sessionStorage.getItem("selectedLichChieuId");
+    const cameFromThanhToan = sessionStorage.getItem(
+      "justNavigatedFromThanhToan"
+    );
+
+    // Nếu vừa quay lại từ trang thanh toán (qua navigate của react-router-dom)
+    // Hoặc tải lại trang check-out sau khi thanh toán thành công
+    // KHÔNG giải phóng ghế. Ghế đã được "bán" hoặc sẽ được xử lý ở trang thanh toán.
+    if (cameFromThanhToan === "true") {
+      console.log("[Mount] Vừa từ thanh toán quay lại, KHÔNG giải phóng ghế.");
+      sessionStorage.removeItem("justNavigatedFromThanhToan"); // Xóa cờ ngay sau khi kiểm tra
+    } else if (storedSelectedSeats && storedLichChieuId) {
+      // Nếu có ghế trong sessionStorage VÀ KHÔNG phải từ thanh toán quay lại
+      // Điều này có nghĩa là người dùng đã đóng trình duyệt, tải lại trang, hoặc điều hướng ra khỏi SPA
+      // mà không hoàn tất thanh toán.
+      console.log(
+        "[Mount] Ghế chưa thanh toán còn trong sessionStorage, tiến hành giải phóng."
+      );
+      const seatsToRelease = JSON.parse(storedSelectedSeats);
+      const lichChieuIdToRelease = parseInt(storedLichChieuId, 10);
+
+      // Gọi API giải phóng ghế ngay lập tức
+      (async () => {
+        await releaseSeatsApiCore(seatsToRelease, lichChieuIdToRelease);
+        message.info("Ghế đã chọn của phiên trước đã được giải phóng.");
+        // Sau khi giải phóng, xóa dữ liệu ghế khỏi sessionStorage
+        sessionStorage.removeItem("selectedSeats");
+        sessionStorage.removeItem("selectedLichChieuId");
+        // Reset state cục bộ
+        setSelectedSeats([]);
+        setDisplaySelectedSeats([]);
+        setTotalPrice(0);
+        clearTimer();
+      })();
+    } else {
+      console.log(
+        "[Mount] Không có ghế trong sessionStorage hoặc đã được thanh toán."
+      );
+    }
+
+    // 2. Logic xử lý khi component unmount (người dùng rời khỏi trang chi tiết phim)
+    const handleUnmount = async () => {
+      // Kiểm tra lại cờ `justNavigatedFromThanhToan` bằng cách đọc trực tiếp từ sessionStorage
+      // (Vì đây là hàm cleanup, nó có thể chạy sau khi navigate đã được gọi và cờ đã được set)
+      const currentCameFromThanhToan = sessionStorage.getItem(
+        "justNavigatedFromThanhToan"
+      );
+
+      // Nếu KHÔNG phải đang trong quá trình thanh toán và có ghế đang được chọn
+      // (tức là người dùng điều hướng nội bộ SPA sang một trang khác KHÔNG phải /check-out)
+      if (
+        currentCameFromThanhToan !== "true" &&
+        selectedSeatsRef.current.length > 0 &&
+        selectedLichChieuIdRef.current !== null
+      ) {
+        console.log(
+          "[Unmount] Component unmounting (điều hướng trong SPA không phải checkout), giải phóng ghế."
+        );
+        await releaseSeatsApiCore(
+          selectedSeatsRef.current,
+          selectedLichChieuIdRef.current
+        );
+        sessionStorage.removeItem("selectedSeats");
+        sessionStorage.removeItem("selectedLichChieuId");
+      } else {
+        console.log(
+          "[Unmount] Không giải phóng ghế (đã thanh toán hoặc không có ghế được chọn)."
+        );
+      }
+      // Đảm bảo cờ luôn được reset về 'false' khi rời trang, trừ khi đó là chuyển sang trang thanh toán.
+      // Dòng này cần đặt cẩn thận để không ghi đè cờ 'true' khi navigate.
+      // Tốt nhất là nó sẽ được xử lý ở đầu useEffect (khi mount) hoặc trong handleThanhToanClick
+    };
+
+    // 3. Logic xử lý khi người dùng đóng tab/trình duyệt hoặc tải lại trang
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      const currentCameFromThanhToan = sessionStorage.getItem(
+        "justNavigatedFromThanhToan"
+      );
+
+      if (currentCameFromThanhToan === "true") {
+        console.log(
+          "[beforeunload] Vừa chuyển từ thanh toán, không giải phóng ghế."
+        );
+        return; // Không làm gì nếu đang trong quá trình chuyển hướng đến trang thanh toán
+      }
+
+      if (
+        selectedSeatsRef.current.length > 0 &&
+        selectedLichChieuIdRef.current !== null
+      ) {
+        const data = {
+          lich_chieu_id: selectedLichChieuIdRef.current,
+          ghe_so: selectedSeatsRef.current,
+        };
+        const blob = new Blob([JSON.stringify(data)], {
+          type: "application/json",
+        });
+        try {
+          console.log("[beforeunload] Sending beacon to release seats.");
+          navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
+        } catch (error) {
+          console.error("sendBeacon error:", error);
+        }
+        // Hiển thị cảnh báo cho người dùng
+        event.preventDefault();
+        event.returnValue = "";
+      }
+      // Dù có gửi beacon hay không, nếu không phải từ thanh toán, reset cờ
+      sessionStorage.setItem("justNavigatedFromThanhToan", "false");
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Lưu trạng thái ghế vào sessionStorage mỗi khi selectedSeats hoặc selectedLichChieuId thay đổi
+    if (selectedSeats.length > 0 && selectedLichChieuId !== null) {
+      sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
+      sessionStorage.setItem(
+        "selectedLichChieuId",
+        String(selectedLichChieuId)
+      );
+    } else {
+      sessionStorage.removeItem("selectedSeats");
+      sessionStorage.removeItem("selectedLichChieuId");
+    }
+
+    // Hàm cleanup chạy khi component unmount
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      handleUnmount(); // Gọi hàm xử lý unmount trong SPA
+    };
+  }, [
+    id,
+    location.pathname,
+    releaseSeatsApiCore,
+    clearTimer,
+    selectedSeats,
+    selectedLichChieuId,
+  ]); // Thêm selectedSeats và selectedLichChieuId để re-run khi thay đổi
+
   useEffect(() => {
     if (selectedLichChieuId !== null && lichChieuList.length > 0) {
       const foundLichChieu = (lichChieuList as ILichChieu[]).find(
         (lc) => lc.id === selectedLichChieuId
       );
       setSelectedLichChieu(foundLichChieu || null);
-      if (foundLichChieu) {
-      } else {
-        console.warn(
-          `Không tìm thấy lịch chiếu với ID: ${selectedLichChieuId} trong danh sách.`
-        );
-      }
     } else {
       setSelectedLichChieu(null);
     }
@@ -268,23 +450,6 @@ const MovieDetailUser = () => {
   }, [selectedSeats, danhSachGhe]);
 
   useEffect(() => {
-    if (selectedLichChieuId !== null && lichChieuList.length > 0) {
-      const foundLichChieu = (lichChieuList as ILichChieu[]).find(
-        (lc) => lc.id === selectedLichChieuId
-      );
-      if (foundLichChieu && selectedLichChieu?.id !== foundLichChieu.id) {
-        setSelectedLichChieu(foundLichChieu);
-      } else if (!foundLichChieu && selectedLichChieu !== null) {
-        setSelectedLichChieu(null);
-      }
-    } else {
-      if (selectedLichChieu !== null) {
-        setSelectedLichChieu(null);
-      }
-    }
-  }, [selectedLichChieuId, lichChieuList, selectedLichChieu]); // Thêm selectedLichChieu vào dependencies để tránh loop
-
-  useEffect(() => {
     if (
       !selectedLichChieu ||
       !selectedLichChieu.gia_ve ||
@@ -321,7 +486,7 @@ const MovieDetailUser = () => {
         }
         currentTotalPrice += price;
         seatsToCalculateDisplay.push({
-          ghe_id: ghe.id, // <-- Đã thêm ghe.id vào đây
+          ghe_id: ghe.id,
           so_ghe: ghe.so_ghe,
           loai_ghe: tenLoaiGhe,
           gia: price,
@@ -331,7 +496,6 @@ const MovieDetailUser = () => {
     if (totalPrice !== currentTotalPrice) {
       setTotalPrice(currentTotalPrice);
     }
-    // So sánh chuỗi JSON để tránh re-render không cần thiết nếu dữ liệu không thay đổi
     if (
       JSON.stringify(displaySelectedSeats) !==
       JSON.stringify(seatsToCalculateDisplay)
@@ -343,51 +507,22 @@ const MovieDetailUser = () => {
     selectedLichChieu,
     danhSachGhe,
     totalPrice,
-    displaySelectedSeats, // Dependencies: đảm bảo chạy lại khi các giá trị này thay đổi
+    displaySelectedSeats,
   ]);
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (
-        selectedSeatsRef.current.length > 0 &&
-        selectedLichChieuIdRef.current !== null
-      ) {
-        const data = {
-          lich_chieu_id: selectedLichChieuIdRef.current,
-          ghe_so: selectedSeatsRef.current,
-        };
-        const blob = new Blob([JSON.stringify(data)], {
-          type: "application/json",
-        });
-        try {
-          navigator.sendBeacon(`${BASE_URL}/api/release-seats-on-exit`, blob);
-        } catch (error) {}
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload); // Loại bỏ listener để tránh rò rỉ bộ nhớ
-      releaseOccupiedSeatsOnUnmount();
-    };
-  }, [releaseOccupiedSeatsOnUnmount]); // <-- Dependency duy nhất là hàm cleanup cụ thể này
-  useEffect(() => {
-    if (selectedSeats.length > 0) {
-      sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
-    } else {
-      sessionStorage.removeItem("selectedSeats");
-    }
-  }, [selectedSeats]);
+
   if (
     loadingMovie ||
     loadingLichChieu ||
     phongQuery.isLoading ||
     rapQuery.isLoading ||
-    loadingCheckGhe || // Thêm loadingCheckGhe
-    isLoadingGhe // Thêm isLoadingGhe
+    loadingCheckGhe ||
+    isLoadingGhe
   )
     return <Spin />;
   if (!movie) return <p>Không tìm thấy phim</p>;
+
+  // --- Logic xử lý thanh toán ---
   const handleThanhToanClick = () => {
-    setIsNavigatingFromPayment(true);
     const userStr = localStorage.getItem("user");
     const user = userStr ? JSON.parse(userStr) : null;
 
@@ -402,20 +537,21 @@ const MovieDetailUser = () => {
       return;
     }
 
-    // Không cần kiểm tra selectedLichChieu.gia_ve hay danhSachGhe ở đây nữa
-    // vì displaySelectedSeats đã chứa đầy đủ thông tin về ghế và giá.
     if (displaySelectedSeats.length !== selectedSeats.length) {
       message.error("Lỗi dữ liệu ghế hoặc giá vé. Vui lòng thử lại.");
       return;
     }
 
     clearTimer(); // Dừng bộ đếm thời gian
+    setIsProcessingPayment(true); // Đặt cờ đang xử lý thanh toán
 
-    // Sử dụng trực tiếp displaySelectedSeats để tạo dat_ve_chi_tiet
+    // Rất quan trọng: Thiết lập cờ này TRƯỚC KHI navigate
+    sessionStorage.setItem("justNavigatedFromThanhToan", "true");
+
     const dat_ve_chi_tiet: IDatVeChiTietPayload[] = displaySelectedSeats.map(
       (seatInfo) => ({
-        ghe_id: seatInfo.ghe_id, // Lấy ghe_id trực tiếp từ displaySelectedSeats
-        gia_ve: seatInfo.gia, // Lấy gia trực tiếp từ displaySelectedSeats
+        ghe_id: seatInfo.ghe_id,
+        gia_ve: seatInfo.gia,
       })
     );
 
@@ -424,30 +560,33 @@ const MovieDetailUser = () => {
         {
           lich_chieu_id: selectedLichChieuId,
           nguoi_dung_id: user.id,
-          tong_tien: Number(totalPrice), // totalPrice đã được tính toán và cập nhật
+          tong_tien: Number(totalPrice),
         },
       ],
       dat_ve_chi_tiet: dat_ve_chi_tiet,
     };
 
-    // --- LOG DỮ LIỆU ĐI ---
     console.log("Dữ liệu gửi đi:", payload);
-    // ----------------------
 
-    // Gọi hàm API để gửi payload
     createDatVe(payload, {
       onSuccess: (response) => {
         message.success("Đặt vé thành công!");
+        // Xóa thông tin ghế đã chọn khỏi sessionStorage sau khi đã đặt vé thành công
+        sessionStorage.removeItem("selectedSeats");
+        sessionStorage.removeItem("selectedLichChieuId");
+        // Cờ justNavigatedFromThanhToan đã được set true trước navigate, sẽ được xóa ở trang check-out hoặc khi quay lại
         navigate("/check-out", {
           state: { bookingData: response.data },
         });
-        setIsProcessingPayment(false); // reset sau thành công
+        setIsProcessingPayment(false);
       },
       onError: (error) => {
         message.error(
           "Thanh toán thất bại: " + (error.message || "Lỗi không xác định")
         );
-        setIsProcessingPayment(false); // reset sau lỗi
+        setIsProcessingPayment(false);
+        // Nếu thanh toán thất bại, quan trọng là đặt lại cờ để cho phép giải phóng ghế nếu người dùng thoát
+        sessionStorage.setItem("justNavigatedFromThanhToan", "false");
       },
     });
   };
@@ -555,8 +694,8 @@ const MovieDetailUser = () => {
     }
 
     /* ------------------------------------------------------------------ */
-    /* 4️⃣ RÀNG BUỘC A. KHÔNG CHO CHỌN GHẾ CÁCH QUÃNG                     */
-    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                               */
+    /* 4️⃣ RÀNG BUỘC A. KHÔNG CHO CHỌN GHẾ CÁCH QUÃNG                    */
+    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                                */
     /* ------------------------------------------------------------------ */
     const seatsForGapCheck = newSelectedSeats.filter((seatNumber) => {
       const seatObj = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
@@ -573,8 +712,8 @@ const MovieDetailUser = () => {
     }
 
     /* ------------------------------------------------------------------ */
-    /* 5️⃣ RÀNG BUỘC B. KHÔNG CHỌN GHẾ KẾ RÌA NẾU GHẾ RÌA CHƯA CHỌN       */
-    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                               */
+    /* 5️⃣ RÀNG BUỘC B. KHÔNG CHỌN GHẾ KẾ RÌA NẾU GHẾ RÌA CHƯA CHỌN        */
+    /* Chỉ áp dụng cho loai_ghe_id 1 và 2                                */
     /* ------------------------------------------------------------------ */
     if (
       newTrangThai === "dang_dat" &&
@@ -617,7 +756,7 @@ const MovieDetailUser = () => {
     }
 
     /* ------------------------------------------------------------------ */
-    /* 6️⃣ HỢP LỆ → CẬP NHẬT STATE VÀ GỌI API                             */
+    /* 6️⃣ HỢP LỆ → CẬP NHẬT STATE VÀ GỌI API                            */
     /* ------------------------------------------------------------------ */
     setSelectedSeats(newSelectedSeats); // Cập nhật state với danh sách ghế đã chọn mới
 
@@ -636,6 +775,7 @@ const MovieDetailUser = () => {
       }
     });
   };
+
   return (
     <div className="movie-detail-wrapper">
       <div className="movie-detail-container">
@@ -721,7 +861,7 @@ const MovieDetailUser = () => {
         onLichChieuClick={(lichChieu) => {
           if (selectedLichChieuId !== lichChieu.id) {
             // Chỉ giải phóng nếu thực sự là lịch chiếu mới
-            releaseOccupiedSeatsForUI(); // <-- Đã đổi sang hàm mới
+            releaseOccupiedSeatsForUI();
             clearTimer(); // Reset timer của lịch chiếu cũ
           }
           const phong = phongList.find(
@@ -897,7 +1037,9 @@ const MovieDetailUser = () => {
                   cursor: "pointer",
                   opacity: selectedSeats.length > 0 ? 1 : 0.6,
                 }}
-                disabled={selectedSeats.length === 0 || hasGap}
+                disabled={
+                  selectedSeats.length === 0 || hasGap || isProcessingPayment
+                }
               >
                 Thanh toán {totalPrice.toLocaleString("vi-VN")} VNĐ
               </button>

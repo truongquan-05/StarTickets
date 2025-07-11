@@ -39,11 +39,11 @@ export const useCreateUser = ({resource = "nguoi_dung"} : Props) => {
       queryClient.invalidateQueries({queryKey:[resource]});
     },
     onError: (error: any) => {
-  if (error.response?.data?.errors) {
-    console.error("Validation errors:", error.response.data.errors);
-  } else {
-    message.error("Thêm thất bại");
-  }
+  // if (error.response?.data?.errors) {
+  //   console.error("Validation errors:", error.response.data.errors);
+  // } else {
+  //   message.error("Thêm thất bại");
+  // }
 }
   })
 }

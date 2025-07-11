@@ -9,6 +9,8 @@ use App\Models\CheckGhe;
 use App\Models\ThanhToan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\DiemThanhVien;
+use App\Models\MaGiamGia;
 
 class CheckOutController extends Controller
 {
@@ -48,6 +50,7 @@ class CheckOutController extends Controller
         $amount = $request->input('tong_tien');
         $dat_ve_id = $request->input('dat_ve_id');
         $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
+        $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
         $nguoi_dung_id = $request->input('nguoi_dung_id');
         $orderId = time() . "";
         $redirectUrl = "http://localhost:8000/api/momo-ipn";
@@ -60,6 +63,7 @@ class CheckOutController extends Controller
             'dat_ve_id' => $dat_ve_id,
             'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
             'nguoi_dung_id' => $nguoi_dung_id,
+            'ma_giam_gia_id' => $ma_giam_gia_id,
         ]);
 
         // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
@@ -107,6 +111,21 @@ class CheckOutController extends Controller
 
         if ($data['resultCode'] == 0) {
             $thanhToan = ThanhToan::create($extraData);
+            $DatVe = DatVe::find($thanhToan->dat_ve_id);
+
+            $diemCong = $DatVe->tong_tien * 0.001;
+
+            $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
+
+            if ($DiemThanhVien) {
+                $DiemThanhVien->diem += $diemCong;
+                $DiemThanhVien->save();
+            } else {
+                DiemThanhVien::create([
+                    'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
+                    'diem' => $diemCong
+                ]);
+            }
 
             // Redirect về trang history với dữ liệu truyền qua query string
             $queryParams = http_build_query([
@@ -115,6 +134,11 @@ class CheckOutController extends Controller
                 'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
                 'ma_giao_dich' => $thanhToan->ma_giao_dich,
             ]);
+            if ($extraData['ma_giam_gia_id']) {
+                $voucher = MaGiamGia::find($extraData['ma_giam_gia_id']);
+                $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
+
+            }
 
             return redirect("http://localhost:5173/history?$queryParams");
         } else {
@@ -142,6 +166,7 @@ class CheckOutController extends Controller
                         }
                     });
                 }
+                $dataVe->delete();
             } else {
                 $dataVe = null;
             }

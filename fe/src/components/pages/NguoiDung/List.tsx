@@ -99,7 +99,7 @@ const UserList = () => {
             description: (
               <div>
                 {messages.map((msg, index) => (
-                  <div key={index}>• {msg}</div>
+                  <div key={index}>• {String(msg)}</div>
                 ))}
               </div>
             ),
