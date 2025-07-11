@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\NguoiDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
@@ -22,11 +23,11 @@ use App\Http\Controllers\Client\CheckGheController;
 use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\QuanLyDonVeController;
+use App\Http\Controllers\Client\LichSuMuaHangController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
+use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
-use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
-use App\Models\NguoiDung;
 
 // Route::get('/user', function (Request $request) {
 //     return 'Quan';
@@ -65,10 +66,6 @@ Route::delete('phim/{id}', [PhimController::class, 'delete']);
 Route::delete('/phim/soft-delete/{id}', [PhimController::class, 'softDelete']);
 Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
 Route::get('/phim/trashed/list', [PhimController::class, 'trashed']);
-
-
-
-
 
 
 
@@ -120,11 +117,11 @@ Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenN
 
 //trang chu
 
-    Route::get('/home', [HomeController::class, 'index']);
-    Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
-    Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
-    Route::get('/search', [HomeController::class, 'search']);
-    Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
+Route::get('/home', [HomeController::class, 'index']);
+Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
+Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
+Route::get('/search', [HomeController::class, 'search']);
+Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 
 
 
@@ -161,7 +158,7 @@ Route::prefix('auth/google')->group(function () {
 });
 //XỬ LÝ ĐĂNG NHẬP VỚI TÀI KHOẢN THƯỜNG
 Route::prefix('auth')->group(function () {
-    Route::post('login', [LoginController::class, 'login']); 
+    Route::post('login', [LoginController::class, 'login']);
     Route::post('register', [LoginController::class, 'register']);
     Route::post('create-ma-dang-ky/{email}', [LoginController::class, 'createMaDangKy']); // Tạo mã đăng ký
 });
@@ -171,8 +168,10 @@ Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
 
-Route::post('ma_xac_thuc/{id}', [NguoiDungController::class , 'TaoMaXacNhan']); // Tạo mã xác nhận cho người dùng
-Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class , 'getMaXacNhan']);
+Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']); // Tạo mã xác nhận cho người dùng
+Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
+
+
 //-------------------CLIENT-------------------//
 
 //trang chu
@@ -220,14 +219,28 @@ Route::post('login', [LoginController::class, 'login']);
 Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
 
 //Check ghế đặt vé
-Route::apiResource('check_ghe',CheckGheController::class);
-
-Route::get('voucher',[MaGiamGiaClient::class, 'index']);
-Route::post('voucher/check/{id}', [MaGiamGiaClient::class, 'checkVoucher']);
+Route::apiResource('check_ghe', CheckGheController::class);
+Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
 
 
 
+Route::get('voucher', [MaGiamGiaClient::class, 'index']);
+Route::post('voucher/check', [MaGiamGiaClient::class, 'checkVoucher']);
 
+Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
+
+
+//phân quyền người dùng
+Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung', [NguoiDungController::class, 'index']);
+Route::middleware(['auth:sanctum', 'permission:User-create'])->post('nguoi_dung', [NguoiDungController::class, 'store']);
+Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung/{id}', [NguoiDungController::class, 'show']);
+Route::middleware(['auth:sanctum', 'permission:User-update'])->put('nguoi_dung/{id}', [NguoiDungController::class, 'update']);
+Route::middleware(['auth:sanctum', 'permission:User-delete'])->delete('nguoi_dung/{id}', [NguoiDungController::class, 'destroy']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/lich-su-mua-hang', [LichSuMuaHangController::class, 'lichSu']);
+    Route::get('/lich-su-mua-hang/{id}', [LichSuMuaHangController::class, 'show']);
+});
 
 
 // http://127.0.0.1:8000/api/....

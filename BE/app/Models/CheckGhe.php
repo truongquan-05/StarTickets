@@ -14,5 +14,7 @@ class CheckGhe extends Model
         'trang_thai',
     ];
 
-
+    public function Ghe(){
+        return $this->belongsTo(Ghe::class, 'ghe_id', 'id');
+    }
 }

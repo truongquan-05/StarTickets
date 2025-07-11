@@ -14,6 +14,14 @@ export interface User {
   isActive: boolean;
   trang_thai: boolean;
 }
+export interface DonDoAn{
+  id:number,
+  do_an_id:number,
+  dat_ve_id:number,
+  gia_ban:number,
+  so_luong:number
+}
+
 export interface Food {
   id: number;
   ten_do_an: string;

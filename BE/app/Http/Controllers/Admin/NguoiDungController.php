@@ -10,6 +10,7 @@ use App\Mail\MaXacNhanMail;
 use Illuminate\Http\Request;
 use App\Jobs\XoaMaXacNhanJob;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -49,7 +50,7 @@ class NguoiDungController extends Controller
             'email_da_xac_thuc',
             'vai_tro_id' => 'required|exists:vai_tro,id',
 
-        ],   [ // 👉 Thêm custom message ở đây
+        ],   [ //  Thêm custom message ở đây
             'ten.required' => 'Vui lòng nhập tên.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không hợp lệ.',
@@ -207,6 +208,14 @@ class NguoiDungController extends Controller
             ], 422);
         }
 
+        // CHẶN gán quyền Admin nếu không phải SuperAdmin
+        if ($request->has('vai_tro_id') && $request->vai_tro_id == 1 && Auth::user()->vai_tro_id !== 0) {
+            return response()->json([
+                'message' => 'Chỉ SuperAdmin mới có quyền gán vai trò Admin'
+            ], 403);
+        }
+
+        //  Nếu hợp lệ thì cập nhật
         $nguoiDung->update($request->all());
 
         return response()->json([

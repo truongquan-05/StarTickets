@@ -10,6 +10,7 @@ use App\Models\DatVeChiTiet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\PhuongThucThanhToan;
 
 class DatVeController extends Controller
 {
@@ -133,6 +134,13 @@ class DatVeController extends Controller
     public function update(Request $request, DatVe $datVe)
     {
         //
+    }
+
+    public function getPhuongThucThanhToan(){
+        $phuongThucThanhToan = PhuongThucThanhToan::all();
+        return response()->json([
+            'data' => $phuongThucThanhToan
+        ]);
     }
 
     /**
