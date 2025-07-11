@@ -225,7 +225,7 @@ Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
 //MÃ GIẢM GIÁ
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
 Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'update']);
-Route::post('voucher/check', [MaGiamGiaClient::class, 'checkVoucher']);
+Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
 

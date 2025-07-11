@@ -357,3 +357,20 @@ export const getListThanhToan = async ({resource = "thanh_toan"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data;
 }
+
+export const getListCheckGheByGhe = async ({resource = "show-all-checkghe",id} : Props) => {
+  const {data} = await axiosClient.get(`${resource}/${id}`);
+  return data;
+}
+
+export const getUseVoucher = async ({resource = "voucher-check" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getDestroyVoucher = async ({resource = "voucher", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/destroy/${id}`,values);
+  return data
+}
+
