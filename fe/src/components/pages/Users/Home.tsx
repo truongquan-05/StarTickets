@@ -14,9 +14,7 @@ import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
 import {
   CalendarOutlined,
-  CaretRightOutlined,
   ClockCircleOutlined,
-  DoubleRightOutlined,
   PlayCircleFilled,
   PlayCircleOutlined,
   TagOutlined,
