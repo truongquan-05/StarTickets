@@ -199,19 +199,16 @@ const ThanhToan: React.FC = () => {
       dat_ve_id: bookingData.id,
       nguoi_dung_id: user.id,
       phuong_thuc_thanh_toan_id: phuongThucThanhToanId.current,
-      fullName: values.fullName,
+      ho_ten: values.fullName,
       email: values.email,
       ma_giam_gia_id: selectedVoucherId,
     };
-    console.log("đơn vé:", payload);
-
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
       onSuccess: (response) => {
         window.location.href = response.data.payUrl;
       },
       onError: (error) => {
-        console.error("Lỗi thanh toán Momo:", error);
         message.error("Thanh toán thất bại. Vui lòng thử lại!");
         // Không còn logic giải phóng ghế ở đây
       },
