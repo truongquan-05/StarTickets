@@ -487,12 +487,14 @@ const MovieDetailUser = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-
   const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
-    if (!selectedLichChieuId) {
-      message.warning("Vui lòng chọn lịch chiếu trước!");
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
+    if(!user){
+      message.error("Bạn chưa đăng nhập!");
       return;
     }
+    
 
     const ghe = danhSachGhe.find((g: any) => g.id === gheId);
 
@@ -781,8 +783,7 @@ const MovieDetailUser = () => {
       setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
     }
     // KẾT THÚC ĐOẠN THÊM
-    const userStr = localStorage.getItem("user");
-    const user = userStr ? JSON.parse(userStr) : null;
+    
     seatsToToggle.forEach((gheToggle) => {
       const found = checkGheList.find(
         (x: any) =>
