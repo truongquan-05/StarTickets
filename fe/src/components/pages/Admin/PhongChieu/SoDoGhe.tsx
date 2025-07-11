@@ -663,6 +663,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
             userSelect: "none",
           }}
         >
+          
           {/* <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
