@@ -198,7 +198,7 @@ return new class extends Migration {
             $table->foreignId('phuong_thuc_thanh_toan_id')->constrained('phuong_thuc_thanh_toan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ma_giao_dich', 255);
             $table->string('email', 255);
-            $table->string('so_dien_thoai', 255);
+            $table->string('ho_ten', 255);
             $table->text('qr_code')->nullable(); // base64
             $table->boolean('da_quet')->default(false);
             $table->timestamps();
