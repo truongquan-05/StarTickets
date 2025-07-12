@@ -133,10 +133,13 @@ const ThanhToan: React.FC = () => {
       });
     }
   }, [user, form]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+    number | undefined
+  >(undefined);
 
-  if (bookingData?.id !== undefined) {
-    useBackDelete(bookingData.id);
-  }
+  // Gọi luôn hook, không cần điều kiện
+  useBackDelete(bookingData?.id, selectedPaymentMethod === undefined);
+
   // eslint-disable-next-line
 
   // Đếm ngược thời gian
@@ -501,6 +504,7 @@ const ThanhToan: React.FC = () => {
                     }}
                     onClick={() => {
                       phuongThucThanhToanId.current = 1;
+                      setSelectedPaymentMethod(2);
                       form.submit();
                     }}
                   >
@@ -527,6 +531,7 @@ const ThanhToan: React.FC = () => {
                     }}
                     onClick={() => {
                       phuongThucThanhToanId.current = 2;
+                      setSelectedPaymentMethod(2);
                       form.submit();
                     }}
                   >
