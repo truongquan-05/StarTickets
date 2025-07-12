@@ -238,7 +238,7 @@ class CheckOutController extends Controller
                             'ma_giao_dich' => $thanhToan->ma_giao_dich,
                         ]);
 
-                        return redirect("http://localhost:5173/history?$queryParams");
+                        return redirect("http://localhost:5173/check?$queryParams");
                     } else {
                         if (isset($data['extraData'])) {
                             $dataVe = json_decode($data['extraData'], true);
@@ -269,7 +269,7 @@ class CheckOutController extends Controller
                             $dataVe = null;
                         }
 
-                        return redirect("http://localhost:5173/history?error=1");
+                        return redirect("http://localhost:5173/check?error=1");
                     }
                 }
             }
@@ -314,7 +314,7 @@ class CheckOutController extends Controller
                         'ma_giao_dich' => $thanhToan->ma_giao_dich,
                     ]);
 
-                    return redirect("http://localhost:5173/history?$queryParams");
+                    return redirect("http://localhost:5173/check?$queryParams");
                 } else {
                     $dataVeId = $data['dat_ve_id'];
                     $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
@@ -340,7 +340,7 @@ class CheckOutController extends Controller
                     }
 
                     $dataVe->delete();
-                    return redirect("http://localhost:5173/history?error=1");
+                    return redirect("http://localhost:5173/check?error=1");
                 }
             }
         } catch (\Throwable $th) {

@@ -1,25 +1,26 @@
+import { Button } from 'antd';
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const CheckDatVe = () => {
   const [searchParams] = useSearchParams();
-
+  const navigate = useNavigate();
   const error = searchParams.get('error');
   const datVeId = searchParams.get('dat_ve_id');
   const maGiaoDich = searchParams.get('ma_giao_dich');
 
-  const containerStyle = {
-    minHeight: '80vh',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    background: 'linear-gradient(180deg, #12112B 0%, #1E1B45 80%)',
-    color: 'white',
-    textAlign: 'center',
-    padding: '2rem',
-    fontFamily: "'Roboto', sans-serif",
-  };
+  const containerStyle: React.CSSProperties = {
+  minHeight: '80vh',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  background: 'linear-gradient(180deg, #12112B 0%, #1E1B45 80%)',
+  color: 'white',
+  textAlign: 'center',
+  padding: '2rem',
+  fontFamily: "'Roboto', sans-serif",
+};
 
   const titleStyle = {
     fontSize: '2.5rem',
@@ -37,38 +38,36 @@ const CheckDatVe = () => {
 
   if (error) {
     return (
-      <div>
+      <div style={containerStyle}>
         <div style={titleStyle}>GIAO DỊCH THẤT BẠI</div>
         <div style={messageStyle}>
           Giao dịch không thành công, vui lòng kiểm tra lại thông tin thanh toán của bạn
           <br />
           Xin chân thành cảm ơn!
         </div>
+        <Button onClick={()=>navigate("/")}>Quay lại trang chủ</Button>
       </div>
     );
   }
 
   if (datVeId && maGiaoDich) {
     return (
-      <div>
-        <div style={{ ...titleStyle, color: '#FFD700' /* vàng nổi bật */ }}>
-          MUA VÉ HOÀN TẤT
+      <div style={containerStyle}>
+        <div style={{ ...titleStyle, color: 'white', textAlign:"center" /* vàng nổi bật */ }}>
+          Giao dịch thành công 
         </div>
         <div style={messageStyle}>
-          Cảm ơn bạn đã mua vé.
-          <br />
-          Mã vé: <strong>#{datVeId}</strong>
-          <br />
-          Mã giao dịch: <strong>{maGiaoDich}</strong>
-          <br />
           Vui lòng kiểm tra email để nhận vé và thông tin chi tiết.
+          <br />
+          Cảm ơn bạn đã mua vé.
         </div>
+        <Button onClick={()=>navigate("/")}>Quay lại trang chủ</Button>
       </div>
     );
   }
 
   return (
-    <div>
+    <div style={containerStyle}>
       <div style={titleStyle}>KHÔNG CÓ DỮ LIỆU ĐẶT VÉ</div>
       <div style={messageStyle}>
         Vui lòng thực hiện đặt vé để xem thông báo ở đây.
