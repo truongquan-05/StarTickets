@@ -302,58 +302,71 @@ const MovieDetailUser = () => {
     if (
       !selectedLichChieu ||
       !selectedLichChieu.gia_ve ||
-      // THAY ĐỔI DÒNG NÀY: KIỂM TRA CẢ selectedSeats VÀ selectedFoods
       (selectedSeats.length === 0 && selectedFoods.length === 0) ||
       danhSachGhe.length === 0
     ) {
-      if (totalPrice !== 0) {
-        setTotalPrice(0);
-      }
-      if (displaySelectedSeats.length > 0) {
-        setDisplaySelectedSeats([]);
-      }
+      if (totalPrice !== 0) setTotalPrice(0);
+      if (displaySelectedSeats.length > 0) setDisplaySelectedSeats([]);
       return;
     }
+
     let currentTotalPrice = 0;
     const seatsToCalculateDisplay: SelectedSeatWithPrice[] = [];
+
     selectedSeats.forEach((seatNumber) => {
       const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
 
-      if (ghe) {
-        const loaiGheIdCuaGhe = ghe.loai_ghe_id;
-        const giaVeItem = selectedLichChieu.gia_ve.find(
-          (gv) => gv.pivot.loai_ghe_id === loaiGheIdCuaGhe
-        );
-        let price = 0;
-        let tenLoaiGhe = "Không xác định";
-        if (giaVeItem) {
-          price = parseFloat(giaVeItem.pivot.gia_ve);
-          tenLoaiGhe = giaVeItem.ten_loai_ghe;
-        } else {
-          console.warn(
-            `Không tìm thấy giá cho loai_ghe_id: ${loaiGheIdCuaGhe} trong lịch chiếu ID ${selectedLichChieu.id}.`
-          );
+      if (!ghe) return;
+
+      const loaiGheIdCuaGhe = ghe.loai_ghe_id;
+      const giaVeItem = selectedLichChieu.gia_ve.find(
+        (gv) => gv.pivot.loai_ghe_id === loaiGheIdCuaGhe
+      );
+
+      let price = 0;
+      let tenLoaiGhe = "Không xác định";
+
+      if (giaVeItem) {
+        price = parseFloat(giaVeItem.pivot.gia_ve);
+        tenLoaiGhe = giaVeItem.ten_loai_ghe;
+
+        // Nếu ghế đôi thì chia đôi giá
+        if (
+          loaiGheIdCuaGhe === 3 ||
+          tenLoaiGhe.toLowerCase() === "đôi" ||
+          tenLoaiGhe.toLowerCase() === "doi"
+        ) {
+          price = price / 2;
         }
-        currentTotalPrice += price;
-        seatsToCalculateDisplay.push({
-          ghe_id: ghe.id,
-          so_ghe: ghe.so_ghe,
-          loai_ghe: tenLoaiGhe,
-          gia: price,
-        });
+      } else {
+        console.warn(
+          `Không tìm thấy giá cho loai_ghe_id: ${loaiGheIdCuaGhe} trong lịch chiếu ID ${selectedLichChieu.id}.`
+        );
       }
+
+      currentTotalPrice += price;
+
+      seatsToCalculateDisplay.push({
+        ghe_id: ghe.id,
+        so_ghe: ghe.so_ghe,
+        loai_ghe: tenLoaiGhe,
+        gia: price,
+      });
     });
 
-    // THÊM PHẦN TÍNH TỔNG TIỀN TỪ ĐỒ ĂN VÀO ĐÂY
+    // Tính tổng tiền đồ ăn
     const foodTotalPrice = selectedFoods.reduce((sum, foodItem) => {
       return sum + foodItem.gia_ban * foodItem.quantity;
     }, 0);
 
-    currentTotalPrice += foodTotalPrice; // Cộng tổng tiền đồ ăn vào
+    currentTotalPrice += foodTotalPrice;
 
+    // Cập nhật totalPrice nếu thay đổi
     if (totalPrice !== currentTotalPrice) {
       setTotalPrice(currentTotalPrice);
     }
+
+    // Cập nhật displaySelectedSeats nếu thay đổi
     if (
       JSON.stringify(displaySelectedSeats) !==
       JSON.stringify(seatsToCalculateDisplay)
@@ -366,7 +379,7 @@ const MovieDetailUser = () => {
     danhSachGhe,
     totalPrice,
     displaySelectedSeats,
-    selectedFoods, // <-- THÊM selectedFoods VÀO DEPENDENCY ARRAY NÀY
+    selectedFoods,
   ]);
 
   if (

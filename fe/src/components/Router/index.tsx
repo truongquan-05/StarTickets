@@ -50,6 +50,7 @@ import BannerForm from '../pages/Admin/Banner/BannerForm';
 import DonVeList from '../pages/Admin/Donve/DonveList';
 import DonVeDetail from '../pages/Admin/Donve/DonveDetail';
 import LichSuTatCaVe from '../pages/Users/DatVe/LichSuTatCaVe';
+import CheckDatVe from '../pages/Users/DatVe/CheckDatVe';
 
 
 
@@ -74,9 +75,10 @@ const Routermain = () => {
         { path: 'register', element: <Register /> },
         { path: 'auth/google/callback', element: <GoogleCallback /> },
         { path: 'profile', element: <ProfilePage /> },
-        { path: 'history', element: <LichSuDatVe /> },
         { path: 'history-all', element: <LichSuTatCaVe /> },
         { path: '/tim-kiem-phim', element: <TimKiemPhim /> },
+        { path: 'check', element: <CheckDatVe /> },
+
 
 
       ],

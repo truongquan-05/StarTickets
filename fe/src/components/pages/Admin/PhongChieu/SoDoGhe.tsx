@@ -204,20 +204,25 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
   };
 
   const handleDoubleClick = async (soGhe: string) => {
-    if (trangThaiPhong === 3) return;
-    if (trangThaiPhong !== 0 && trangThaiPhong !== 1) return;
+    // Chỉ cho phép thao tác khi phòng ở trạng thái 0 hoặc 1
+    if (trangThaiPhong === 3 || (trangThaiPhong !== 0 && trangThaiPhong !== 1))
+      return;
 
+    // Tìm ghế được click
     const gheHienTai = localDanhSachGhe.find((g) => g.so_ghe === soGhe);
     if (!gheHienTai) return;
 
+    /*----------------------------------------------------
+    Xác định nhóm ghế (ghế đơn / ghế đôi) & trạng thái
+  ----------------------------------------------------*/
     let targetGheIds: number[] = [];
     let currentTrangThai: boolean;
-    let soGheLog: string = soGhe;
+    let soGheLog = soGhe;
 
     if ((gheHienTai as IGheDoi).ghe_doi) {
       const gheDoi = gheHienTai as IGheDoi;
       targetGheIds = gheDoi.ghe_doi.map((g) => g.id);
-      currentTrangThai = gheDoi.ghe_doi[0].trang_thai;
+      currentTrangThai = gheDoi.ghe_doi[0].trang_thai; // hai ghế đôi luôn cùng trạng thái
       soGheLog = `${gheDoi.ghe_doi[0].so_ghe} và ${gheDoi.ghe_doi[1].so_ghe}`;
     } else {
       const gheDon = gheHienTai as IGhe;
@@ -225,26 +230,30 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
       currentTrangThai = gheDon.trang_thai;
     }
 
-    const newTrangThai = !currentTrangThai;
+    const newTrangThai = !currentTrangThai; // true = hiện, false = ẩn
 
-    // Nếu muốn ẩn ghế (tức newTrangThai = false), thì kiểm tra check_ghe
+    /*----------------------------------------------------
+    Muốn ẩn ghế (newTrangThai === false) → kiểm tra check_ghe
+  ----------------------------------------------------*/
     if (!newTrangThai) {
       try {
         const allCheckData = await Promise.all(
           targetGheIds.map((id) =>
             getListCheckGheByGhe({ resource: "show-all-checkghe", id })
+              .then((res) => res.data)
           )
         );
-
         const flatCheckList = allCheckData.flat();
-        const hasDat = flatCheckList.some(
-          (check) => check.trang_thai !== "trong"
+        const allTrong = flatCheckList.every(
+          (check) => check.trang_thai === "trong"
         );
 
-        // if (hasDat) {
-        //   alert(`Ghế ${soGheLog} đang có người đặt hoặc đã mua, không thể ẩn.`);
-        //   return;
-        // }
+        // Nếu có ÍT NHẤT 1 bản ghi khác "trong" → không cho ẩn
+        if (!allTrong) {
+          alert(`Ghế ${soGheLog} đang có người đặt hoặc đã mua, không thể ẩn.`);
+          return;
+        }
+        /* allTrong === true  ->  tiếp tục cho ẩn */
       } catch (error) {
         console.error("Lỗi khi kiểm tra trạng thái check_ghe:", error);
         alert("Không thể kiểm tra trạng thái đặt ghế. Vui lòng thử lại.");
@@ -252,48 +261,54 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
       }
     }
 
-    const confirmMessage = `Bạn có chắc chắn muốn ${
-      newTrangThai ? "hiện" : "ẩn"
-    } ghế ${soGheLog} không?`;
-    const confirmed = window.confirm(confirmMessage);
-
+    /*----------------------------------------------------
+    Xác nhận từ người dùng
+  ----------------------------------------------------*/
+    const confirmed = window.confirm(
+      `Bạn có chắc chắn muốn ${
+        newTrangThai ? "hiện" : "ẩn"
+      } ghế ${soGheLog} không?`
+    );
     if (!confirmed) return;
 
+    /*----------------------------------------------------
+    Gọi API cập nhật & cập nhật state cục bộ
+  ----------------------------------------------------*/
     targetGheIds.forEach((gheId) => {
       updateTrangThaiGheAPI(
-        {
-          id: gheId,
-          values: { trang_thai: newTrangThai },
-        },
+        { id: gheId, values: { trang_thai: newTrangThai } },
         {
           onSuccess: () => {
             updateGheState(soGhe, (ghe) => {
+              // Ghế đôi
               if ((ghe as IGheDoi).ghe_doi) {
                 const gheDoi = ghe as IGheDoi;
-                const updatedGheCon = gheDoi.ghe_doi.map((g) =>
-                  g.id === gheId ? { ...g, trang_thai: newTrangThai } : g
-                ) as [IGhe, IGhe];
-                return { ...gheDoi, ghe_doi: updatedGheCon };
+                return {
+                  ...gheDoi,
+                  ghe_doi: gheDoi.ghe_doi.map((g) =>
+                    g.id === gheId ? { ...g, trang_thai: newTrangThai } : g
+                  ) as [IGhe, IGhe],
+                };
               }
-              if (ghe.id === gheId) {
-                return { ...ghe, trang_thai: newTrangThai };
-              }
-              return ghe;
+              // Ghế đơn
+              return ghe.id === gheId
+                ? { ...ghe, trang_thai: newTrangThai }
+                : ghe;
             });
 
             console.log(
-              `Đã cập nhật trạng thái của ghế ${soGheLog} (ID: ${gheId}) thành ${
+              `Đã cập nhật trạng thái ghế ${soGheLog} (ID: ${gheId}) thành ${
                 newTrangThai ? "hiện" : "ẩn"
-              }`
+              }.`
             );
           },
           onError: (error) => {
             console.error(
-              `Lỗi khi cập nhật trạng thái ghế ${soGheLog} (ID: ${gheId}):`,
+              `Lỗi khi cập nhật ghế ${soGheLog} (ID: ${gheId}):`,
               error
             );
             alert(
-              `Có lỗi xảy ra khi cập nhật trạng thái ghế: ${
+              `Có lỗi xảy ra khi cập nhật ghế: ${
                 error.message || "Không rõ lỗi"
               }`
             );
@@ -342,7 +357,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
         style={{
           display: "inline-block",
           width: "auto",
-          maxWidth:1200,
+          maxWidth: 1200,
           margin: "0 auto",
         }}
       >
@@ -548,8 +563,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                   ghe.trang_thai ? "Bật" : "Tắt"
                 } - Trạng thái đặt: ${trangThaiCheck}`}
                 style={{
-                  width:
-                  ghe.loai_ghe_id === 3 ? 0 : 40,
+                  width: ghe.loai_ghe_id === 3 ? 0 : 40,
                   height: ghe.loai_ghe_id === 3 ? 0 : 29,
                   opacity: ghe.loai_ghe_id === 3 ? 0 : isHidden ? 0.7 : opacity,
                   visibility: ghe.loai_ghe_id === 3 ? "hidden" : "visible",
@@ -557,7 +571,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                   backgroundColor: isHidden ? "lightgray" : bgColor,
                   borderRadius: 8,
                   border: `1.5px solid ${borderColor}`,
-                  display: ghe.loai_ghe_id === 3 ? "none" : "flex",
+                  display: trangThaiPhong === 3 && isHidden ? "none" : "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   userSelect: "none",
@@ -587,7 +601,11 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           return (
             <div
               key={`row-${hang}`}
-              style={{ display: "flex", marginBottom: 8, justifyContent:"center" }}
+              style={{
+                display: "flex",
+                marginBottom: 8,
+                justifyContent: "center",
+              }}
             >
               {cols}
             </div>
