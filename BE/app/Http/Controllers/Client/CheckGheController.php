@@ -48,11 +48,17 @@ class CheckGheController extends Controller
             ], 404);
         }
 
-        if ($dataGhe->trang_thai === $request->trang_thai) {
+        if (
+            $dataGhe->nguoi_dung_id !== null &&
+            (int) $dataGhe->nguoi_dung_id !== (int) $request->input('nguoi_dung_id') &&
+            (int) $dataGhe->id === (int) $id
+        ) {
             return response()->json([
-                'message' => 'Ghế đã có người chọn'
+                'message' => 'Ghế đã có người chọn'                
             ], 422);
         }
+
+
 
         $dataGhe->update([
             'trang_thai' => $request->trang_thai,

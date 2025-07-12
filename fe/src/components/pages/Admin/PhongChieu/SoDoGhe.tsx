@@ -331,10 +331,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     <div
       style={{
         userSelect: "none",
-        maxWidth: trangThaiPhong === 0 ? "75%" : "100%",
+        // maxWidth: trangThaiPhong === 0 ? "75%" : "100%",
         margin: "0 auto",
         padding: "0 12px",
-        display: trangThaiPhong === 0 ? "flex" : "inline-block",
+        // display: trangThaiPhong === 0 ? "flex" : "inline-block",
       }}
     >
       <div
