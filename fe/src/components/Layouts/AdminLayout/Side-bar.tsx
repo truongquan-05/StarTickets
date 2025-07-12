@@ -82,11 +82,11 @@ const SideBar: React.FC<SideBarProps> = ({
       </Menu.Item>
 
       <Menu.Item key="/admin/thongke/list" icon={<BarChartOutlined />}>
-        <Link to="/admin/thongke/list">Thống Kê</Link>
+        <Link to="/admin/">Thống Kê</Link>
       </Menu.Item>
 
-      <Menu.Item key="/admin/bookings" icon={<ShoppingOutlined />}>
-        <Link to="/admin/bookings">Đơn vé</Link>
+      <Menu.Item key="/admin/don-ve" icon={<ShoppingOutlined />}>
+        <Link to="/admin/don-ve">Đơn vé</Link>
       </Menu.Item>
 
       <Menu.SubMenu
