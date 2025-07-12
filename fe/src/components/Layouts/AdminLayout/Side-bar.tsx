@@ -98,9 +98,6 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/movies/list">Danh Sách Phim</Link>
         </Menu.Item>
         {/*  */}
-        <Menu.Item key="/admin/12" icon={<WindowsOutlined />}>
-          <Link to="/admin/12">Phim chưa xuất</Link>
-        </Menu.Item>
 
         <Menu.Item key="/admin/movies/trash" icon={<DeleteOutlined />}>
           <Link to="/admin/movies/trash">Thùng rác</Link>
