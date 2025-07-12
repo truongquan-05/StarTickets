@@ -331,7 +331,6 @@ export const deleteForeverMovie = async ({ resource = "phim", id }: Props) => {
 };
 
 export const getCreateDatVe = async ({resource = "dat_ve" , values} : Props) => {
-  console.log("👉 Dữ liệu gửi đi:", values);
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
@@ -348,7 +347,6 @@ export const getListDatVe = async ({ resource = "dat_ve" }: Props) => {
 };
 
 export const getCreateThanhToanMoMo = async ({resource = "momo-pay" , values} : Props) => {
-  console.log("👉 Dữ liệu gửi đi:", values);
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }

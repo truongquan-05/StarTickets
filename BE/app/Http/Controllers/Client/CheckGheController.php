@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Client;
 use App\Models\CheckGhe;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\UpdateGheJob;
 use Illuminate\Support\Facades\Log;
 
 class CheckGheController extends Controller
@@ -40,20 +41,26 @@ class CheckGheController extends Controller
     public function update(Request $request, string $id)
     {
         $dataGhe = CheckGhe::find($id);
-        if ($dataGhe['trang_thai'] == $request->trang_thai) {
-            return response()->json([
-                'message' => 'Ghế đã có người chọn'
-            ], 422);
-        }
+
         if (!$dataGhe) {
             return response()->json([
                 'message' => 'Ghế không tồn tại'
             ], 404);
         }
+
+        if ($dataGhe->trang_thai === $request->trang_thai) {
+            return response()->json([
+                'message' => 'Ghế đã có người chọn'
+            ], 422);
+        }
+
         $dataGhe->update([
             'trang_thai' => $request->trang_thai,
         ]);
-        if ($request->trang_thai == 'trong') {
+
+        UpdateGheJob::dispatch($id)->delay(now()->addSeconds(300));
+
+        if ($request->trang_thai === 'trong') {
             $dataGhe->update(['nguoi_dung_id' => null]);
         } else {
             $dataGhe->update(['nguoi_dung_id' => $request->nguoi_dung_id]);
@@ -64,6 +71,7 @@ class CheckGheController extends Controller
             'data' => $dataGhe
         ]);
     }
+
 
     //CẬP NHẬT KHI OUT TRANG
     public function bulkUpdate(Request $request)

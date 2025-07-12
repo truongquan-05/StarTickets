@@ -23,7 +23,7 @@ import { ICheckGhe } from "../Admin/interface/checkghe";
 import { useBookingTimer } from "./DatVe/useBookingTimer";
 import { IDatVeChiTietPayload } from "../Admin/interface/datve";
 import { useBackConfirm } from "../../hook/useConfirmBack";
-import ModalFood, { SelectedFoodItem } from "./DatVe/DonDoAn";
+import  { SelectedFoodItem } from "./DatVe/DonDoAn";
 import FoodSelectionDisplay from "./DatVe/DonDoAn";
 import DuongCongManHinh from "./DuongCongManHinh";
 
@@ -270,7 +270,7 @@ const MovieDetailUser = () => {
       item.trang_thai === "dang_dat"
   );
 
-  //XỬ LÝ LOAD TRANG
+  //-------XỬ LÝ LOAD TRANG-------------
   useBackConfirm(selectedCheckGhe);
 
   useEffect(() => {

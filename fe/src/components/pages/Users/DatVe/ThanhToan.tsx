@@ -24,6 +24,7 @@ import {
 import { useListVouchers } from "../../../hook/thinhHook";
 import { IVoucher } from "../../Admin/interface/vouchers";
 import { DonDoAn, Food } from "../../../types/Uses";
+import { useBackDelete } from "../../../hook/useConfirmBack";
 // IMPORT CÁC INTERFACE CỦA BẠN TẠI ĐÂY
 
 const { Title, Text } = Typography;
@@ -115,7 +116,6 @@ const ThanhToan: React.FC = () => {
   const [tongTienSauVoucher, setTongTienSauVoucher] = useState<number | null>(
     tongTienGoc
   );
-  
 
   // Lấy user từ localStorage (chỉ lấy ten và email)
   const userStr = localStorage.getItem("user");
@@ -133,6 +133,11 @@ const ThanhToan: React.FC = () => {
       });
     }
   }, [user, form]);
+
+  if (bookingData?.id !== undefined) {
+    useBackDelete(bookingData.id);
+  }
+  // eslint-disable-next-line
 
   // Đếm ngược thời gian
   useEffect(() => {
@@ -189,33 +194,37 @@ const ThanhToan: React.FC = () => {
     return `${m} : ${s}`;
   };
 
+  const [formStep1Data, setFormStep1Data] = useState<any>(null); // LƯU THÔNG TIN Ở STEP 1
+
   const onFinishStep1 = (values: any) => {
+    setFormStep1Data(values);
     setStep(2);
   };
 
   const onBackStep2 = () => {
     setStep(1);
   };
-  const onFinishStep2 = (values: any) => {
+
+  const onFinishStep2 = () => {
     if (!bookingData || !user) {
       message.error("Thiếu thông tin đặt vé hoặc người dùng.");
       return;
     }
-
     const payload = {
       tong_tien: Number(tongTienSauVoucher),
       dat_ve_id: bookingData.id,
       nguoi_dung_id: user.id,
       phuong_thuc_thanh_toan_id: phuongThucThanhToanId.current,
-      ho_ten: values.fullName,
-      email: values.email,
+      ho_ten: formStep1Data.fullName,
+      email: formStep1Data.email,
+      ma_giam_gia_id: formStep1Data.ma_giam_gia_id,
     };
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
       onSuccess: (response) => {
         window.location.href = response.data.payUrl;
       },
-      onError: (error) => {
+      onError: () => {
         message.error("Thanh toán thất bại. Vui lòng thử lại!");
         // Không còn logic giải phóng ghế ở đây
       },
@@ -331,7 +340,7 @@ const ThanhToan: React.FC = () => {
                 >
                   <Input placeholder="Email" style={{ color: "black" }} />
                 </Form.Item>
-                <Form.Item label="Mã giảm giá">
+                <Form.Item label="Mã giảm giá" name="ma_giam_gia_id">
                   <Select
                     showSearch
                     placeholder="Chọn mã giảm giá"
@@ -339,11 +348,11 @@ const ThanhToan: React.FC = () => {
                     value={selectedVoucherId ?? undefined}
                     onChange={(value) => {
                       if (value === undefined) {
-                        // 👉 Người dùng click nút "X" để bỏ chọn
+                        form.setFieldsValue({ ma_giam_gia_id: null }); // <- thêm dòng này
                         if (selectedVoucherId) {
                           destroyVoucher(
                             {
-                              id: selectedVoucherId,
+                              id: bookingData.id,
                               values: {
                                 dat_ve_id: bookingData.id,
                                 tong_tien: bookingData.tong_tien,
@@ -358,13 +367,12 @@ const ThanhToan: React.FC = () => {
                             }
                           );
                         }
-
                         setSelectedVoucherId(null);
                       } else {
-                        // 👉 Người dùng chọn một voucher mới
                         setSelectedVoucherId(value);
+                        form.setFieldsValue({ ma_giam_gia_id: value }); // <- đảm bảo form có giá trị đúng
                         const selected = voucherList.find(
-                          (v:IVoucher) => v.id === value
+                          (v: IVoucher) => v.id === value
                         );
                         if (selected) {
                           usevoucher(
