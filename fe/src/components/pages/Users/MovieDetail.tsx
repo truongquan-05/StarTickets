@@ -23,7 +23,7 @@ import { ICheckGhe } from "../Admin/interface/checkghe";
 import { useBookingTimer } from "./DatVe/useBookingTimer";
 import { IDatVeChiTietPayload } from "../Admin/interface/datve";
 import { useBackConfirm } from "../../hook/useConfirmBack";
-import  { SelectedFoodItem } from "./DatVe/DonDoAn";
+import { SelectedFoodItem } from "./DatVe/DonDoAn";
 import FoodSelectionDisplay from "./DatVe/DonDoAn";
 import DuongCongManHinh from "./DuongCongManHinh";
 
@@ -490,11 +490,10 @@ const MovieDetailUser = () => {
   const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
     const userStr = localStorage.getItem("user");
     const user = userStr ? JSON.parse(userStr) : null;
-    if(!user){
+    if (!user) {
       message.error("Bạn chưa đăng nhập!");
       return;
     }
-    
 
     const ghe = danhSachGhe.find((g: any) => g.id === gheId);
 
@@ -783,7 +782,7 @@ const MovieDetailUser = () => {
       setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
     }
     // KẾT THÚC ĐOẠN THÊM
-    
+
     seatsToToggle.forEach((gheToggle) => {
       const found = checkGheList.find(
         (x: any) =>
@@ -920,10 +919,12 @@ const MovieDetailUser = () => {
           <h3 style={{ margin: "auto", fontSize: 25 }}>
             Chọn ghế: {selectedPhong.ten_phong} - {tenRap}
           </h3>
+          <br /> <br />
           {/* CONTAINER CHO SƠ ĐỒ GHẾ VÀ CHỌN ĐỒ ĂN */}
-          <div style={{ position: "relative" }}>
+          <div style={{ position: "relative", width: "100%" }}>
             <DuongCongManHinh />
           </div>
+          <br /> <br />
           <div
             style={{
               display: "flex",
@@ -980,13 +981,13 @@ const MovieDetailUser = () => {
                   >
                     <div
                       style={{
-                        width: 45,
-                        height: 30,
+                        width: 40,
+                        height: 20,
                         backgroundColor: "black",
                         borderRadius: 6,
                       }}
                     />
-                    <span>Ghế thường</span>
+                    <span style={{ marginRight: 8 }}> THƯỜNG</span>
                   </div>
 
                   <div
@@ -999,13 +1000,13 @@ const MovieDetailUser = () => {
                   >
                     <div
                       style={{
-                        width: 45,
-                        height: 30,
+                        width: 40,
+                        height: 20,
                         backgroundColor: "red",
                         borderRadius: 6,
                       }}
                     />
-                    <span>Ghế VIP</span>
+                    <span> VIP</span>
                   </div>
 
                   <div
@@ -1018,13 +1019,13 @@ const MovieDetailUser = () => {
                   >
                     <div
                       style={{
-                        width: 50,
-                        height: 30,
+                        width: 40,
+                        height: 20,
                         backgroundColor: "blue",
                         borderRadius: 6,
                       }}
                     />
-                    <span>Ghế đôi</span>
+                    <span>ĐÔI</span>
                   </div>
                 </div>
               </div>

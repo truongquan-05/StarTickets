@@ -5,7 +5,6 @@ import {
   useUpdateLoaiGhe,
   useUpdateTrangThaiGhe,
 } from "../../../hook/hungHook"; // Đảm bảo đường dẫn này đúng
-import { color } from "framer-motion";
 import { getListCheckGheByGhe } from "../../../provider/hungProvider";
 
 interface SoDoGheProps {
@@ -232,7 +231,9 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     if (!newTrangThai) {
       try {
         const allCheckData = await Promise.all(
-          targetGheIds.map((id) => getListCheckGheByGhe({resource:"show-all-checkghe" ,id }))
+          targetGheIds.map((id) =>
+            getListCheckGheByGhe({ resource: "show-all-checkghe", id })
+          )
         );
 
         const flatCheckList = allCheckData.flat();
@@ -240,10 +241,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           (check) => check.trang_thai !== "trong"
         );
 
-        if (hasDat) {
-          alert(`Ghế ${soGheLog} đang có người đặt hoặc đã mua, không thể ẩn.`);
-          return;
-        }
+        // if (hasDat) {
+        //   alert(`Ghế ${soGheLog} đang có người đặt hoặc đã mua, không thể ẩn.`);
+        //   return;
+        // }
       } catch (error) {
         console.error("Lỗi khi kiểm tra trạng thái check_ghe:", error);
         alert("Không thể kiểm tra trạng thái đặt ghế. Vui lòng thử lại.");
@@ -340,8 +341,8 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
         className="seat-map"
         style={{
           display: "inline-block",
-          width: "100%",
-          maxWidth: 700,
+          width: "auto",
+          maxWidth:1200,
           margin: "0 auto",
         }}
       >
@@ -460,18 +461,18 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                     gheDoi.ghe_doi[0].trang_thai ? "Bật" : "Tắt"
                   } - Trạng thái đặt: ${tt1}, ${tt2}`}
                   style={{
-                    width: 75 * 2 + 6,
-                    height: 40,
+                    width: 40 * 2 + 6,
+                    height: 29,
                     backgroundColor: isHidden ? "lightgray" : bgColor,
                     borderRadius: 8,
-                    border: `2px solid ${borderColor}`,
+                    border: `1px solid ${borderColor}`,
                     display: trangThaiPhong === 3 && isHidden ? "none" : "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     userSelect: "none",
                     cursor: cursor,
                     opacity: isHidden ? 0.7 : opacity,
-                    marginRight: 6,
+                    margin: "5px 13.5px",
                     position: "relative",
                   }}
                 >
@@ -548,23 +549,20 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 } - Trạng thái đặt: ${trangThaiCheck}`}
                 style={{
                   width:
-                    ghe.loai_ghe_id === 1 ? 75 : ghe.loai_ghe_id === 3 ? 0 : 75,
-                  height: ghe.loai_ghe_id === 3 ? 0 : 35,
+                  ghe.loai_ghe_id === 3 ? 0 : 40,
+                  height: ghe.loai_ghe_id === 3 ? 0 : 29,
                   opacity: ghe.loai_ghe_id === 3 ? 0 : isHidden ? 0.7 : opacity,
                   visibility: ghe.loai_ghe_id === 3 ? "hidden" : "visible",
                   pointerEvents: ghe.loai_ghe_id === 3 ? "none" : "auto",
                   backgroundColor: isHidden ? "lightgray" : bgColor,
                   borderRadius: 8,
-                  border: `2px solid ${borderColor}`,
-                  display:
-                    ghe.loai_ghe_id === 3 || (trangThaiPhong === 3 && isHidden)
-                      ? "none"
-                      : "flex",
+                  border: `1.5px solid ${borderColor}`,
+                  display: ghe.loai_ghe_id === 3 ? "none" : "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   userSelect: "none",
                   cursor: cursor,
-                  marginRight: 6,
+                  margin: "3px 8px",
                   position: "relative",
                 }}
               >
@@ -589,7 +587,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
           return (
             <div
               key={`row-${hang}`}
-              style={{ display: "flex", marginBottom: 8 }}
+              style={{ display: "flex", marginBottom: 8, justifyContent:"center" }}
             >
               {cols}
             </div>
@@ -689,7 +687,6 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
             userSelect: "none",
           }}
         >
-          
           {/* <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
               style={{
