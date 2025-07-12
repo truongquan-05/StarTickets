@@ -101,9 +101,10 @@ export default function DonVeList() {
     },
     {
       title: "Rạp",
-      render: (r: any) => r.dat_ve?.lich_chieu?.rap?.ten_rap || "CGV Vincom",
+      render: (r: any) => r.dat_ve?.lich_chieu?.rap?.ten_rap || "",
       width: 150,
     },
+    
     {
       title: "Tổng tiền",
       render: (r: any) => (
