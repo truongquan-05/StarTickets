@@ -788,7 +788,6 @@ const MovieDetailUser = () => {
         return;
       }
     }
-
     setSelectedSeats(newSelectedSeats);
     // THÊM ĐOẠN NÀY NGAY SAU setSelectedSeats(newSelectedSeats);
     if (newSelectedSeats.length === 0) {
@@ -810,7 +809,6 @@ const MovieDetailUser = () => {
       }
     });
   };
-
   return (
     <div className="movie-detail-wrapper">
       <div className="movie-detail-container">
@@ -1015,7 +1013,7 @@ const MovieDetailUser = () => {
                       style={{
                         width: 40,
                         height: 20,
-                        backgroundColor: "red",
+                        backgroundColor: "blue",
                         borderRadius: 6,
                       }}
                     />
@@ -1024,20 +1022,43 @@ const MovieDetailUser = () => {
 
                   <div
                     style={{
+                      width: 90,
+                      height: 20,
                       display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      flex: 1,
+                      position: "relative",
                     }}
                   >
+                    {/* Nửa trái */}
                     <div
                       style={{
-                        width: 40,
-                        height: 20,
-                        backgroundColor: "blue",
-                        borderRadius: 6,
+                        width: "50%",
+                        height: "100%",
+                        backgroundColor: "white",
+                        borderTop: "1.5px solid black",
+                        borderBottom: "1.5px solid black",
+                        borderLeft: "1.5px solid black",
+                        borderRight: "none",
+                        borderRadius: 5,
+                        boxSizing: "border-box",
                       }}
                     />
+
+                    {/* Nửa phải */}
+                    <div
+                      style={{
+                        width: "50%",
+                        height: "100%",
+                        backgroundColor: "white",
+                        borderTop: "1.5px solid black",
+                        borderBottom: "1.5px solid black",
+                        borderRight: "1.5px solid black",
+                        borderLeft: "none",
+                        borderRadius: 5,
+                        boxSizing: "border-box",
+                        marginRight: 5,
+                      }}
+                    />
+
                     <span>ĐÔI</span>
                   </div>
                 </div>
@@ -1099,6 +1120,7 @@ const MovieDetailUser = () => {
             fontWeight: 500,
           }}
         >
+          
           <div style={{ display: "flex", gap: 40 }}>
             <div>
               <div style={{ fontWeight: "bold" }}>

@@ -239,8 +239,9 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
       try {
         const allCheckData = await Promise.all(
           targetGheIds.map((id) =>
-            getListCheckGheByGhe({ resource: "show-all-checkghe", id })
-              .then((res) => res.data)
+            getListCheckGheByGhe({ resource: "show-all-checkghe", id }).then(
+              (res) => res.data
+            )
           )
         );
         const flatCheckList = allCheckData.flat();
@@ -410,7 +411,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               ghe.loai_ghe_id === 1
                 ? "#000"
                 : ghe.loai_ghe_id === 2
-                ? "red"
+                ? "blue"
                 : "blue";
             let fontColor = borderColor;
             let opacity = 1;
@@ -461,7 +462,6 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                   key={`${hang}-${colIndex}`}
                   onClick={() => {
                     if (trangThaiPhong === 3 && (isHidden || isBookedGlobal)) {
-                      // Xử lý click cho ghế ẩn hoặc đã đặt trong chế độ mua
                       alert(
                         isHidden
                           ? "Ghế đang hỏng, vui lòng chọn ghế khác."
@@ -469,39 +469,71 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       );
                       return;
                     }
-                    handleClick(ghe.so_ghe); // Gọi hàm handleClick chung
+                    handleClick(ghe.so_ghe);
                   }}
                   onDoubleClick={() => handleDoubleClick(ghe.so_ghe)}
                   title={`${ghe.so_ghe} - Loại: Ghế đôi - Trạng thái API: ${
                     gheDoi.ghe_doi[0].trang_thai ? "Bật" : "Tắt"
                   } - Trạng thái đặt: ${tt1}, ${tt2}`}
                   style={{
-                    width: 40 * 2 + 6,
-                    height: 29,
-                    backgroundColor: isHidden ? "lightgray" : bgColor,
-                    borderRadius: 8,
-                    border: `1px solid ${borderColor}`,
+                    width: 86,
+                    height: 32,
                     display: trangThaiPhong === 3 && isHidden ? "none" : "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    userSelect: "none",
-                    cursor: cursor,
-                    opacity: isHidden ? 0.7 : opacity,
-                    margin: "5px 13.5px",
                     position: "relative",
+                    margin: "5px 13.5px",
+                    opacity: isHidden ? 0.7 : opacity,
+                    cursor: cursor,
+                    userSelect: "none",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    alignItems: "center",
+                    padding: 0,
                   }}
                 >
+                  {/* Nửa trái */}
+                  <div
+                    style={{
+                      width: "50%",
+                      height: "100%",
+                      backgroundColor: isHidden ? "lightgray" : bgColor,
+                      borderTop: "1.5px solid black",
+                      borderBottom: "1.5px solid black",
+                      borderLeft: "1.5px solid black",
+                      borderRight: "none",
+                      borderRadius: 5,
+                      boxSizing: "border-box",
+                    }}
+                  />
+
+                  {/* Nửa phải */}
+                  <div
+                    style={{
+                      width: "50%",
+                      height: "100%",
+                      backgroundColor: isHidden ? "lightgray" : bgColor,
+                      borderTop: "1.5px solid black",
+                      borderBottom: "1.5px solid black",
+                      borderRight: "1.5px solid black",
+                      borderLeft: "none",
+                      borderRadius: 5,
+                      boxSizing: "border-box",
+                    }}
+                  />
+
+                  {/* Số ghế */}
                   <span
                     style={{
                       position: "absolute",
-                      color: isHidden ? "#666" : fontColor,
+                      color: isHidden ? "#666" : "black",
                       fontWeight: "bold",
-                      fontSize: isHidden ? 24 : 14,
+                      fontSize: isHidden ? 24 : 11,
                       pointerEvents: "none",
-                      lineHeight: isHidden ? "40px" : "normal",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
                     }}
                   >
-                    {isHidden ? "X" : ghe.so_ghe}
+                    {isHidden ? "X" : ghe.so_ghe.split("-")[0]}
                   </span>
                 </div>
               );
@@ -585,7 +617,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                     position: "absolute",
                     color: isHidden ? "#666" : fontColor,
                     fontWeight: "bold",
-                    fontSize: isHidden ? 24 : 14,
+                    fontSize: isHidden ? 24 : 11,
                     pointerEvents: "none",
                     lineHeight: isHidden ? "40px" : "normal",
                   }}
@@ -604,7 +636,6 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               style={{
                 display: "flex",
                 marginBottom: 8,
-                justifyContent: "center",
               }}
             >
               {cols}
@@ -652,22 +683,52 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 height: 20,
                 backgroundColor: "white",
                 borderRadius: 5,
-                border: "3px solid red",
+                border: "3px solid blue",
               }}
             />
             <span>Ghế VIP</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div
+            style={{
+              width: 90,
+              height: 20,
+              display: "flex",
+              position: "relative",
+         
+            }}
+          >
+            {/* Nửa trái */}
             <div
               style={{
-                width: 50,
-                height: 20,
+                width: "50%",
+                height: "100%",
                 backgroundColor: "white",
+                borderTop: "1.5px solid black",
+                borderBottom: "1.5px solid black",
+                borderLeft: "1.5px solid black",
+                borderRight: "none",
                 borderRadius: 5,
-                border: "3px solid blue",
+                boxSizing: "border-box",
               }}
             />
-            <span>Ghế đôi</span>
+
+            {/* Nửa phải */}
+            <div
+              style={{
+                width: "50%",
+                height: "100%",
+                backgroundColor: "white",
+                borderTop: "1.5px solid black",
+                borderBottom: "1.5px solid black",
+                borderRight: "1.5px solid black",
+                borderLeft: "none",
+                borderRadius: 5,
+                boxSizing: "border-box",
+                marginRight:5,
+              }}
+            />
+
+            <span>ĐÔI</span>
           </div>
           {trangThaiPhong === 0 && (
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
