@@ -211,7 +211,7 @@ class CheckOutController extends Controller
                             $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
                         }
                         //TẠO QR MÃ GIAO DỊCH
-                        $qrSvg = QrCode::format('svg')->size(250)->generate($data['ma_giao_dich']);
+                        $qrSvg = QrCode::format('svg')->size(250)->generate($extraData['ma_giao_dich']);
                         $data['qr_code'] = "'data:image/svg+xml;base64,' . base64_encode($qrSvg)";
                         $thanhToan = ThanhToan::create($extraData);
                         $DatVe = DatVe::find($thanhToan->dat_ve_id);
