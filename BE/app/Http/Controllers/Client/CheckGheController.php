@@ -64,7 +64,7 @@ class CheckGheController extends Controller
             'trang_thai' => $request->trang_thai,
         ]);
 
-        UpdateGheJob::dispatch($id)->delay(now()->addSeconds(300));
+        UpdateGheJob::dispatch($id)->delay(now()->addMinutes(5));
 
         if ($request->trang_thai === 'trong') {
             $dataGhe->update(['nguoi_dung_id' => null]);

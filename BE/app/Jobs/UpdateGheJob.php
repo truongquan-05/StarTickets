@@ -33,6 +33,6 @@ class UpdateGheJob implements ShouldQueue
                 'trang_thai' => 'trong'
             ]);
         }
-
+        Log::info('[UpdateGheJob] Kết thúc job cho ghế ' . $data);
     }
 }

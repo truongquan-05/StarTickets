@@ -11,6 +11,7 @@ use App\Models\ThanhToan;
 use Illuminate\Http\Request;
 use App\Models\DiemThanhVien;
 use App\Http\Controllers\Controller;
+use App\Jobs\XoaDonHang;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CheckOutController extends Controller
@@ -42,6 +43,7 @@ class CheckOutController extends Controller
 
     public function momo_payment(Request $request)
     {
+        XoaDonHang::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
         //Xử lý thanh toán bằng MOMO
         if ($request->input('phuong_thuc_thanh_toan_id') == 1) {
             $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -105,7 +107,7 @@ class CheckOutController extends Controller
         }
         // Xử lý thanh toán bằng VNPAY
         if ($request->input('phuong_thuc_thanh_toan_id') == 2) {
-            $data = $request->all();           
+            $data = $request->all();
             $code_cart = time(); // Mã đơn hàng
 
             $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -120,13 +122,11 @@ class CheckOutController extends Controller
                 . "dat_ve_id={$dat_ve_id}"
                 . "&phuong_thuc_thanh_toan_id={$phuong_thuc_thanh_toan_id}"
                 . "&nguoi_dung_id={$nguoi_dung_id}"
-                . "&ma_giam_gia_id=" . ($ma_giam_gia_id ?? 'null')
+                . "&ma_giam_gia_id=" . ($ma_giam_gia_id ?? null)
                 . "&email={$email}"
                 . "&ho_ten=" . ($ho_ten);
 
-            // if (!is_null($ma_giam_gia_id)) {
-            //     $vnp_Returnurl .= "&ma_giam_gia_id={$ma_giam_gia_id}";
-            // }
+
 
             $vnp_TmnCode = "BRIPD10R";
             $vnp_HashSecret = "MXJDN4WW0M516FX3L2JQKQPDUF3XDQS6";
@@ -138,6 +138,9 @@ class CheckOutController extends Controller
 
             $vnp_Locale = 'vn';
             $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+
+            $startTime = date("YmdHis");
+            $expire = date('YmdHis', strtotime('+10 minutes', strtotime($startTime)));
 
             $inputData = array(
                 "vnp_Version" => "2.1.0",
@@ -152,6 +155,7 @@ class CheckOutController extends Controller
                 "vnp_OrderType" => $vnp_OrderType,
                 "vnp_ReturnUrl" => $vnp_Returnurl,
                 "vnp_TxnRef" => $vnp_TxnRef,
+                "vnp_ExpireDate" => $expire
             );
 
             // Nếu muốn thêm bank
@@ -306,7 +310,7 @@ class CheckOutController extends Controller
                         'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
                         'ma_giao_dich' => $thanhToan->ma_giao_dich,
                     ]);
-                 
+
                     return redirect("http://localhost:5173/history?$queryParams");
                 } else {
                     $dataVeId = $data['dat_ve_id'];
