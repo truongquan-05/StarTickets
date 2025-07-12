@@ -151,4 +151,39 @@ class DatVeController extends Controller
             
         ]);
     }
+
+    // XÓA KHI BACK TRANG
+   public function BackDelete($id)
+    {
+        $data = DatVe::find($id);
+        if (!$data) {
+            return response()->json([
+                "message" => "Không tìm thấy dữ liệu đặt vé",
+            ], 404);
+        }
+        $dataThanhToan = DatVe::with(['donDoAn.doAn', 'datVeChiTiet'])->find($id);
+
+        $DonDoAn = $dataThanhToan->donDoAn;
+        $DatVeChiTiet = $dataThanhToan->datVeChiTiet;
+
+        foreach ($DatVeChiTiet as $item) {
+            CheckGhe::where('ghe_id', $item->ghe_id)
+                ->where('lich_chieu_id', $dataThanhToan->lich_chieu_id)
+                ->update(['trang_thai' => 'trong','nguoi_dung_id' => null]);
+        }
+        foreach ($DonDoAn as $item) {
+            $DoAn = DoAn::find($item->do_an_id);
+            if ($DoAn) {
+                $DoAn->update([
+                    'so_luong_ton' => $DoAn->so_luong_ton + $item->so_luong
+                ]);
+            }
+        }
+        DatVe::find($id)->delete();
+        return response()->json([
+            "message" => "Hủy đặt vé thành công",
+            
+        ]);
+    }
+
 }

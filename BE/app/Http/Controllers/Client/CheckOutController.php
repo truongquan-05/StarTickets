@@ -54,6 +54,8 @@ class CheckOutController extends Controller
             $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
             $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
             $nguoi_dung_id = $request->input('nguoi_dung_id');
+            $email = $request->input('email');
+            $ho_ten = $request->input('ho_ten');
             $orderId = time() . "";
             $redirectUrl = "http://localhost:8000/api/momo-ipn";
             $ipnUrl = "http://localhost:8000/api/momo-ipn";
@@ -66,6 +68,8 @@ class CheckOutController extends Controller
                 'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
                 'nguoi_dung_id' => $nguoi_dung_id,
                 'ma_giam_gia_id' => $ma_giam_gia_id,
+                'email' => $email,
+                'ho_ten' => $ho_ten,
             ]);
 
             // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
@@ -101,7 +105,7 @@ class CheckOutController extends Controller
         }
         // Xử lý thanh toán bằng VNPAY
         if ($request->input('phuong_thuc_thanh_toan_id') == 2) {
-            $data = $request->all();
+            $data = $request->all();           
             $code_cart = time(); // Mã đơn hàng
 
             $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -109,12 +113,16 @@ class CheckOutController extends Controller
             $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
             $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
             $nguoi_dung_id = $request->input('nguoi_dung_id');
+            $email = $request->input('email');
+            $ho_ten = $request->input('ho_ten');
 
             $vnp_Returnurl = "http://localhost:8000/api/momo-ipn?"
                 . "dat_ve_id={$dat_ve_id}"
                 . "&phuong_thuc_thanh_toan_id={$phuong_thuc_thanh_toan_id}"
                 . "&nguoi_dung_id={$nguoi_dung_id}"
-                . "&ma_giam_gia_id=" . ($ma_giam_gia_id ?? 'null');
+                . "&ma_giam_gia_id=" . ($ma_giam_gia_id ?? 'null')
+                . "&email={$email}"
+                . "&ho_ten=" . ($ho_ten);
 
             // if (!is_null($ma_giam_gia_id)) {
             //     $vnp_Returnurl .= "&ma_giam_gia_id={$ma_giam_gia_id}";
@@ -298,7 +306,7 @@ class CheckOutController extends Controller
                         'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
                         'ma_giao_dich' => $thanhToan->ma_giao_dich,
                     ]);
-
+                 
                     return redirect("http://localhost:5173/history?$queryParams");
                 } else {
                     $dataVeId = $data['dat_ve_id'];
@@ -343,5 +351,4 @@ class CheckOutController extends Controller
     {
         //
     }
-
 }

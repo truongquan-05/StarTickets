@@ -165,6 +165,7 @@ Route::prefix('auth')->group(function () {
 Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
+Route::POST('delete-dat-ve/{id}', [DatVeController::class,'BackDelete']);
 
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']); // Tạo mã xác nhận cho người dùng
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
@@ -225,7 +226,7 @@ Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
 //MÃ GIẢM GIÁ
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
 Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'update']);
-Route::post('voucher/check', [MaGiamGiaClient::class, 'checkVoucher']);
+Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
 

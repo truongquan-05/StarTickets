@@ -23,7 +23,7 @@ import { ICheckGhe } from "../Admin/interface/checkghe";
 import { useBookingTimer } from "./DatVe/useBookingTimer";
 import { IDatVeChiTietPayload } from "../Admin/interface/datve";
 import { useBackConfirm } from "../../hook/useConfirmBack";
-import ModalFood, { SelectedFoodItem } from "./DatVe/DonDoAn";
+import  { SelectedFoodItem } from "./DatVe/DonDoAn";
 import FoodSelectionDisplay from "./DatVe/DonDoAn";
 import DuongCongManHinh from "./DuongCongManHinh";
 
@@ -270,7 +270,7 @@ const MovieDetailUser = () => {
       item.trang_thai === "dang_dat"
   );
 
-  //XỬ LÝ LOAD TRANG
+  //-------XỬ LÝ LOAD TRANG-------------
   useBackConfirm(selectedCheckGhe);
 
   useEffect(() => {
@@ -487,12 +487,14 @@ const MovieDetailUser = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-
   const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
-    if (!selectedLichChieuId) {
-      message.warning("Vui lòng chọn lịch chiếu trước!");
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
+    if(!user){
+      message.error("Bạn chưa đăng nhập!");
       return;
     }
+    
 
     const ghe = danhSachGhe.find((g: any) => g.id === gheId);
 
@@ -781,8 +783,7 @@ const MovieDetailUser = () => {
       setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
     }
     // KẾT THÚC ĐOẠN THÊM
-    const userStr = localStorage.getItem("user");
-    const user = userStr ? JSON.parse(userStr) : null;
+    
     seatsToToggle.forEach((gheToggle) => {
       const found = checkGheList.find(
         (x: any) =>

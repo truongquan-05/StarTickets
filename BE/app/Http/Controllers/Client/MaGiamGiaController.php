@@ -57,8 +57,11 @@ class MaGiamGiaController extends Controller
                 'status' => 422
             ], 422);
         }
-
-        $datVe->update(['tong_tien' => $request->input('tong_tien')]);
+        $tongTienNew = $request->input('tong_tien') - $data->phan_tram_giam / 100 * $request->input('tong_tien');
+        if ($data->phan_tram_giam / 100 * $request->input('tong_tien') > $data->giam_toi_da) {
+            $tongTienNew = $data->giam_toi_da;
+        }
+        $datVe->update(['tong_tien' => $tongTienNew]);
 
         return response()->json([
             'data' => $datVe,
@@ -70,15 +73,21 @@ class MaGiamGiaController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $datVe = DatVe::find($id);
-        $datVe->update([
-            'tong_tien' => $request->input('tong_tien')
-        ]);
+        try {
+            $datVe = DatVe::find($id);
+            $datVe->update([
+                'tong_tien' => $request->input('tong_tien')
+            ]);
 
-        return response()->json([
-            'data' => $datVe,
-            'message' => 'Voucher đang hoạt động',
-            'status' => 200
-        ], 200);
+            return response()->json([
+                'data' => $datVe,
+                'message' => 'Voucher đang hoạt động',
+                'status' => 200
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage()
+            ], 404);
+        }
     }
 }

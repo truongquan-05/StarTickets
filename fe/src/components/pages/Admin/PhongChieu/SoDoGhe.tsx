@@ -6,6 +6,7 @@ import {
   useUpdateTrangThaiGhe,
 } from "../../../hook/hungHook"; // Đảm bảo đường dẫn này đúng
 import { color } from "framer-motion";
+import { getListCheckGheByGhe } from "../../../provider/hungProvider";
 
 interface SoDoGheProps {
   phongId: number | null;
@@ -203,10 +204,8 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     );
   };
 
-  const handleDoubleClick = (soGhe: string) => {
-    // Không cho double click ẩn/hiện trong chế độ mua (trangThaiPhong === 3)
+  const handleDoubleClick = async (soGhe: string) => {
     if (trangThaiPhong === 3) return;
-
     if (trangThaiPhong !== 0 && trangThaiPhong !== 1) return;
 
     const gheHienTai = localDanhSachGhe.find((g) => g.so_ghe === soGhe);
@@ -228,54 +227,79 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     }
 
     const newTrangThai = !currentTrangThai;
+
+    // Nếu muốn ẩn ghế (tức newTrangThai = false), thì kiểm tra check_ghe
+    if (!newTrangThai) {
+      try {
+        const allCheckData = await Promise.all(
+          targetGheIds.map((id) => getListCheckGheByGhe({resource:"show-all-checkghe" ,id }))
+        );
+
+        const flatCheckList = allCheckData.flat();
+        const hasDat = flatCheckList.some(
+          (check) => check.trang_thai !== "trong"
+        );
+
+        if (hasDat) {
+          alert(`Ghế ${soGheLog} đang có người đặt hoặc đã mua, không thể ẩn.`);
+          return;
+        }
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra trạng thái check_ghe:", error);
+        alert("Không thể kiểm tra trạng thái đặt ghế. Vui lòng thử lại.");
+        return;
+      }
+    }
+
     const confirmMessage = `Bạn có chắc chắn muốn ${
       newTrangThai ? "hiện" : "ẩn"
     } ghế ${soGheLog} không?`;
     const confirmed = window.confirm(confirmMessage);
 
-    if (confirmed) {
-      targetGheIds.forEach((gheId) => {
-        updateTrangThaiGheAPI(
-          {
-            id: gheId,
-            values: { trang_thai: newTrangThai },
+    if (!confirmed) return;
+
+    targetGheIds.forEach((gheId) => {
+      updateTrangThaiGheAPI(
+        {
+          id: gheId,
+          values: { trang_thai: newTrangThai },
+        },
+        {
+          onSuccess: () => {
+            updateGheState(soGhe, (ghe) => {
+              if ((ghe as IGheDoi).ghe_doi) {
+                const gheDoi = ghe as IGheDoi;
+                const updatedGheCon = gheDoi.ghe_doi.map((g) =>
+                  g.id === gheId ? { ...g, trang_thai: newTrangThai } : g
+                ) as [IGhe, IGhe];
+                return { ...gheDoi, ghe_doi: updatedGheCon };
+              }
+              if (ghe.id === gheId) {
+                return { ...ghe, trang_thai: newTrangThai };
+              }
+              return ghe;
+            });
+
+            console.log(
+              `Đã cập nhật trạng thái của ghế ${soGheLog} (ID: ${gheId}) thành ${
+                newTrangThai ? "hiện" : "ẩn"
+              }`
+            );
           },
-          {
-            onSuccess: () => {
-              updateGheState(soGhe, (ghe) => {
-                if ((ghe as IGheDoi).ghe_doi) {
-                  const gheDoi = ghe as IGheDoi;
-                  const updatedGheCon = gheDoi.ghe_doi.map((g) =>
-                    g.id === gheId ? { ...g, trang_thai: newTrangThai } : g
-                  ) as [IGhe, IGhe];
-                  return { ...gheDoi, ghe_doi: updatedGheCon };
-                }
-                if (ghe.id === gheId) {
-                  return { ...ghe, trang_thai: newTrangThai };
-                }
-                return ghe;
-              });
-              console.log(
-                `Đã cập nhật trạng thái của ghế ${soGheLog} (ID: ${gheId}) thành ${
-                  newTrangThai ? "hiện" : "ẩn"
-                }`
-              );
-            },
-            onError: (error) => {
-              console.error(
-                `Lỗi khi cập nhật trạng thái ghế ${soGheLog} (ID: ${gheId}):`,
-                error
-              );
-              alert(
-                `Có lỗi xảy ra khi cập nhật trạng thái ghế: ${
-                  error.message || "Không rõ lỗi"
-                }`
-              );
-            },
-          }
-        );
-      });
-    }
+          onError: (error) => {
+            console.error(
+              `Lỗi khi cập nhật trạng thái ghế ${soGheLog} (ID: ${gheId}):`,
+              error
+            );
+            alert(
+              `Có lỗi xảy ra khi cập nhật trạng thái ghế: ${
+                error.message || "Không rõ lỗi"
+              }`
+            );
+          },
+        }
+      );
+    });
   };
 
   if (isLoadingGhe) {
@@ -441,7 +465,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                     backgroundColor: isHidden ? "lightgray" : bgColor,
                     borderRadius: 8,
                     border: `2px solid ${borderColor}`,
-                    display: "flex",
+                    display: trangThaiPhong === 3 && isHidden ? "none" : "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     userSelect: "none",
@@ -532,8 +556,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                   backgroundColor: isHidden ? "lightgray" : bgColor,
                   borderRadius: 8,
                   border: `2px solid ${borderColor}`,
-                 display: ghe.loai_ghe_id === 3 ? "none" : "flex",
-
+                  display:
+                    ghe.loai_ghe_id === 3 || (trangThaiPhong === 3 && isHidden)
+                      ? "none"
+                      : "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   userSelect: "none",
