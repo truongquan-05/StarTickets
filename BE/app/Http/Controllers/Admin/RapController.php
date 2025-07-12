@@ -165,16 +165,18 @@ class RapController extends Controller
         }
 
         foreach ($rap->phongChieus as $phong) {
-            $phong->ghes()->delete();  // Xóa mềm ghế
-            $phong->delete();         // Xóa mềm phòng
+            $phong->ghes()->delete();  
+            $phong->delete();        
         }
 
-        $rap->delete(); // Xóa mềm rạp
+        $rap->forceDelete(); // Xóa  rạp
 
         return response()->json([
             'success' => true,
             'message' => 'Xóa mềm rạp và các phòng, ghế liên quan thành công'
         ], 200);
+
+  
     }
 
 

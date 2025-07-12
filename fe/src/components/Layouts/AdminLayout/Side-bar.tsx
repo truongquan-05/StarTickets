@@ -82,7 +82,11 @@ const SideBar: React.FC<SideBarProps> = ({
       </Menu.Item>
 
       <Menu.Item key="/admin/thongke/list" icon={<BarChartOutlined />}>
-        <Link to="/admin/thongke/list">Thống Kê</Link>
+        <Link to="/admin/">Thống Kê</Link>
+      </Menu.Item>
+
+      <Menu.Item key="/admin/don-ve" icon={<ShoppingOutlined />}>
+        <Link to="/admin/don-ve">Đơn vé</Link>
       </Menu.Item>
 
       <Menu.SubMenu
@@ -93,6 +97,11 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/movies/list" icon={<UnorderedListOutlined />}>
           <Link to="/admin/movies/list">Danh Sách Phim</Link>
         </Menu.Item>
+        {/*  */}
+        <Menu.Item key="/admin/12" icon={<WindowsOutlined />}>
+          <Link to="/admin/12">Phim chưa xuất</Link>
+        </Menu.Item>
+
         <Menu.Item key="/admin/movies/trash" icon={<DeleteOutlined />}>
           <Link to="/admin/movies/trash">Thùng rác</Link>
         </Menu.Item>
@@ -186,9 +195,6 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/comment/phanhoinguoidung">Quản lý bình luận</Link>
         </Menu.Item>
       </Menu.SubMenu>
-      <Menu.Item key="/admin/bookings" icon={<ShoppingOutlined />}>
-        <Link to="/admin/bookings">Bookings</Link>
-      </Menu.Item>
 
       <Menu.Item key="/admin/banner" icon={<FileTextOutlined />}>
         <Link to="/admin/banner">Banner</Link>

@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class MaGiamGiaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $data = MaGiamGia::where('trang_thai', '=', 'KÍCH HOẠT')
@@ -26,6 +24,7 @@ class MaGiamGiaController extends Controller
             ]
         );
     }
+
 
     public function checkVoucher(Request $request)
     {
@@ -52,7 +51,17 @@ class MaGiamGiaController extends Controller
             ], 422);
         }
 
-        $datVe->update(['tong_tien' => $request->input('tong_tien')]);
+        if ($data->gia_tri_don_hang_toi_thieu > $datVe->tong_tien) {
+            return response()->json([
+                'message' => 'Voucher không đủ điều kiện sử dụng',
+                'status' => 422
+            ], 422);
+        }
+        $tongTienNew = $request->input('tong_tien') - $data->phan_tram_giam / 100 * $request->input('tong_tien');
+        if ($data->phan_tram_giam / 100 * $request->input('tong_tien') > $data->giam_toi_da) {
+            $tongTienNew = $data->giam_toi_da;
+        }
+        $datVe->update(['tong_tien' => $tongTienNew]);
 
         return response()->json([
             'data' => $datVe,
@@ -60,35 +69,25 @@ class MaGiamGiaController extends Controller
             'status' => 200
         ], 200);
     }
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
-    }
+        try {
+            $datVe = DatVe::find($id);
+            $datVe->update([
+                'tong_tien' => $request->input('tong_tien')
+            ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            return response()->json([
+                'data' => $datVe,
+                'message' => 'Voucher đang hoạt động',
+                'status' => 200
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage()
+            ], 404);
+        }
     }
 }

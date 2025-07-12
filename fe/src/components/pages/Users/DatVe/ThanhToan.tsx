@@ -16,12 +16,15 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   useCreateThanhToanMoMo,
+  useDestroyVoucher,
   useListCinemas,
+  useVoucher,
   // useUpdateCheckGhe // Đã bỏ import này
 } from "../../../hook/hungHook";
 import { useListVouchers } from "../../../hook/thinhHook";
 import { IVoucher } from "../../Admin/interface/vouchers";
 import { DonDoAn, Food } from "../../../types/Uses";
+import { useBackDelete } from "../../../hook/useConfirmBack";
 // IMPORT CÁC INTERFACE CỦA BẠN TẠI ĐÂY
 
 const { Title, Text } = Typography;
@@ -81,7 +84,7 @@ interface RapInfo {
 
 const ThanhToan: React.FC = () => {
   const [step, setStep] = useState<1 | 2>(1);
-  const [countdown, setCountdown] = useState(300); // 5 phút = 300 giây
+  const [countdown, setCountdown] = useState(30000); // 5 phút = 300 giây
   const [lichChieuInfo, setLichChieuInfo] = useState<LichChieuInfo | null>(
     null
   );
@@ -94,6 +97,8 @@ const ThanhToan: React.FC = () => {
   const [selectedVoucherId, setSelectedVoucherId] = useState<number | null>(
     null
   );
+  const { mutate: usevoucher } = useVoucher({ resource: "voucher-check" });
+  const { mutate: destroyVoucher } = useDestroyVoucher({ resource: "voucher" });
   const { data } = useListVouchers({
     resource: "ma_giam_gia",
   });
@@ -107,6 +112,10 @@ const ThanhToan: React.FC = () => {
   const { data: rapList, isLoading: loadingRap } = useListCinemas({
     resource: "rap",
   });
+  const tongTienGoc = Number(bookingData?.tong_tien ?? 0);
+  const [tongTienSauVoucher, setTongTienSauVoucher] = useState<number | null>(
+    tongTienGoc
+  );
 
   // Lấy user từ localStorage (chỉ lấy ten và email)
   const userStr = localStorage.getItem("user");
@@ -124,6 +133,14 @@ const ThanhToan: React.FC = () => {
       });
     }
   }, [user, form]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
+    number | undefined
+  >(undefined);
+
+  // Gọi luôn hook, không cần điều kiện
+  useBackDelete(bookingData?.id, selectedPaymentMethod === undefined);
+
+  // eslint-disable-next-line
 
   // Đếm ngược thời gian
   useEffect(() => {
@@ -180,7 +197,10 @@ const ThanhToan: React.FC = () => {
     return `${m} : ${s}`;
   };
 
+  const [formStep1Data, setFormStep1Data] = useState<any>(null); // LƯU THÔNG TIN Ở STEP 1
+
   const onFinishStep1 = (values: any) => {
+    setFormStep1Data(values);
     setStep(2);
   };
 
@@ -188,30 +208,26 @@ const ThanhToan: React.FC = () => {
     setStep(1);
   };
 
-  const onFinishStep2 = (values: any) => {
+  const onFinishStep2 = () => {
     if (!bookingData || !user) {
       message.error("Thiếu thông tin đặt vé hoặc người dùng.");
       return;
     }
-
     const payload = {
-      tong_tien: Number(bookingData.tong_tien),
+      tong_tien: Number(tongTienSauVoucher),
       dat_ve_id: bookingData.id,
       nguoi_dung_id: user.id,
       phuong_thuc_thanh_toan_id: phuongThucThanhToanId.current,
-      fullName: values.fullName,
-      email: values.email,
-      ma_giam_gia_id: selectedVoucherId,
+      ho_ten: formStep1Data.fullName,
+      email: formStep1Data.email,
+      ma_giam_gia_id: formStep1Data.ma_giam_gia_id,
     };
-    console.log("đơn vé:", payload);
-
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
       onSuccess: (response) => {
         window.location.href = response.data.payUrl;
       },
-      onError: (error) => {
-        console.error("Lỗi thanh toán Momo:", error);
+      onError: () => {
         message.error("Thanh toán thất bại. Vui lòng thử lại!");
         // Không còn logic giải phóng ghế ở đây
       },
@@ -244,7 +260,6 @@ const ThanhToan: React.FC = () => {
       </div>
     );
   }
-
   const movieTitle = lichChieuInfo?.phim?.ten_phim || "Đồ Ăn & Thức Uống";
   const ageRestriction = lichChieuInfo?.phim?.do_tuoi_gioi_han;
   const cinemaName = rapInfo?.ten_rap || "Online";
@@ -328,21 +343,56 @@ const ThanhToan: React.FC = () => {
                 >
                   <Input placeholder="Email" style={{ color: "black" }} />
                 </Form.Item>
-                <Form.Item label="Mã giảm giá">
+                <Form.Item label="Mã giảm giá" name="ma_giam_gia_id">
                   <Select
                     showSearch
                     placeholder="Chọn mã giảm giá"
                     allowClear
                     value={selectedVoucherId ?? undefined}
                     onChange={(value) => {
-                      setSelectedVoucherId(value || null);
-                      if (value) {
+                      if (value === undefined) {
+                        form.setFieldsValue({ ma_giam_gia_id: null }); // <- thêm dòng này
+                        if (selectedVoucherId) {
+                          destroyVoucher(
+                            {
+                              id: bookingData.id,
+                              values: {
+                                dat_ve_id: bookingData.id,
+                                tong_tien: bookingData.tong_tien,
+                              },
+                            },
+                            {
+                              onSuccess: (res) => {
+                                const newTongTien = res?.data?.tong_tien;
+                                setTongTienSauVoucher(newTongTien);
+                                message.info("Đã hủy áp dụng mã giảm giá.");
+                              },
+                            }
+                          );
+                        }
+                        setSelectedVoucherId(null);
+                      } else {
+                        setSelectedVoucherId(value);
+                        form.setFieldsValue({ ma_giam_gia_id: value }); // <- đảm bảo form có giá trị đúng
                         const selected = voucherList.find(
                           (v: IVoucher) => v.id === value
                         );
                         if (selected) {
-                          message.success(
-                            `Mã "${selected.ma}" đã được áp dụng!`
+                          usevoucher(
+                            {
+                              id: selected.id,
+                              dat_ve_id: bookingData.id,
+                              tong_tien: bookingData.tong_tien,
+                            },
+                            {
+                              onSuccess: (res) => {
+                                const newTongTien = res?.data?.tong_tien;
+                                setTongTienSauVoucher(newTongTien);
+                                message.success(
+                                  `Mã "${selected.ma}" đã được áp dụng!`
+                                );
+                              },
+                            }
                           );
                         }
                       }
@@ -454,6 +504,7 @@ const ThanhToan: React.FC = () => {
                     }}
                     onClick={() => {
                       phuongThucThanhToanId.current = 1;
+                      setSelectedPaymentMethod(2);
                       form.submit();
                     }}
                   >
@@ -480,6 +531,7 @@ const ThanhToan: React.FC = () => {
                     }}
                     onClick={() => {
                       phuongThucThanhToanId.current = 2;
+                      setSelectedPaymentMethod(2);
                       form.submit();
                     }}
                   >
@@ -622,7 +674,7 @@ const ThanhToan: React.FC = () => {
             >
               <Text>SỐ TIỀN CẦN THANH TOÁN</Text>
               <Text style={{ fontSize: 20 }}>
-                {totalPrice.toLocaleString("vi-VN")} VND
+                {(tongTienSauVoucher ?? 0).toLocaleString("vi-VN")} VND
               </Text>
             </div>
           </Card>

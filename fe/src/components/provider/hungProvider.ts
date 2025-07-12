@@ -331,7 +331,6 @@ export const deleteForeverMovie = async ({ resource = "phim", id }: Props) => {
 };
 
 export const getCreateDatVe = async ({resource = "dat_ve" , values} : Props) => {
-  console.log("👉 Dữ liệu gửi đi:", values);
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
@@ -348,7 +347,6 @@ export const getListDatVe = async ({ resource = "dat_ve" }: Props) => {
 };
 
 export const getCreateThanhToanMoMo = async ({resource = "momo-pay" , values} : Props) => {
-  console.log("👉 Dữ liệu gửi đi:", values);
   const {data} = await  axiosClient.post(resource,values);
   return data;
 }
@@ -357,3 +355,20 @@ export const getListThanhToan = async ({resource = "thanh_toan"} : Props) => {
   const {data} = await axiosClient.get(resource);
   return data;
 }
+
+export const getListCheckGheByGhe = async ({resource = "show-all-checkghe",id} : Props) => {
+  const {data} = await axiosClient.get(`${resource}/${id}`);
+  return data;
+}
+
+export const getUseVoucher = async ({resource = "voucher-check" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getDestroyVoucher = async ({resource = "voucher", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/destroy/${id}`,values);
+  return data
+}
+

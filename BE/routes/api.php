@@ -94,7 +94,7 @@ Route::apiResource('rap', RapController::class);
 // Các route tùy chỉnh cho soft delete
 Route::prefix('rap')->group(function () {
     Route::get('/trashed/list', [RapController::class, 'trashed']);   // Danh sách đã xóa mềm
-    Route::post('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
+    Route::delete('/{id}/soft-delete', [RapController::class, 'softDelete']); // Xóa mềm rạp
     Route::post('/{id}/restore', [RapController::class, 'restore']);  // Khôi phục
     Route::delete('/{id}/force', [RapController::class, 'destroy']);  // Xóa vĩnh viễn
 });
@@ -122,8 +122,6 @@ Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
 Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
 Route::get('/search', [HomeController::class, 'search']);
 Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
-
-
 
 
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
@@ -167,6 +165,7 @@ Route::prefix('auth')->group(function () {
 Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
+Route::POST('delete-dat-ve/{id}', [DatVeController::class,'BackDelete']);
 
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']); // Tạo mã xác nhận cho người dùng
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
@@ -220,22 +219,24 @@ Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'log
 
 //Check ghế đặt vé
 Route::apiResource('check_ghe', CheckGheController::class);
+Route::get('show-all-checkghe/{id}', [CheckGheController::class, 'showAllCheckGhe']);
 Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
 
 
-
+//MÃ GIẢM GIÁ
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
-Route::post('voucher/check', [MaGiamGiaClient::class, 'checkVoucher']);
+Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'update']);
+Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
 
 
 //phân quyền người dùng
-Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung', [NguoiDungController::class, 'index']);
-Route::middleware(['auth:sanctum', 'permission:User-create'])->post('nguoi_dung', [NguoiDungController::class, 'store']);
-Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung/{id}', [NguoiDungController::class, 'show']);
-Route::middleware(['auth:sanctum', 'permission:User-update'])->put('nguoi_dung/{id}', [NguoiDungController::class, 'update']);
-Route::middleware(['auth:sanctum', 'permission:User-delete'])->delete('nguoi_dung/{id}', [NguoiDungController::class, 'destroy']);
+// Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung', [NguoiDungController::class, 'index']);
+// Route::middleware(['auth:sanctum', 'permission:User-create'])->post('nguoi_dung', [NguoiDungController::class, 'store']);
+// Route::middleware(['auth:sanctum', 'permission:User-view'])->get('nguoi_dung/{id}', [NguoiDungController::class, 'show']);
+// Route::middleware(['auth:sanctum', 'permission:User-update'])->put('nguoi_dung/{id}', [NguoiDungController::class, 'update']);
+// Route::middleware(['auth:sanctum', 'permission:User-delete'])->delete('nguoi_dung/{id}', [NguoiDungController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/lich-su-mua-hang', [LichSuMuaHangController::class, 'lichSu']);

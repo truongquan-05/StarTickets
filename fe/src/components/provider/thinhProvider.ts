@@ -25,7 +25,7 @@ export const getListCinemas = async ({ resource = "rap" }: Props) => {
 // Xóa một rạp chiếu
 export const getDeleteCinemas = async ({ resource = "rap", id }: Props) => {
   if (!id) return;
-  const { data } = await axiosClient.patch(`${resource}/${id}/soft-delete`);
+  const { data } = await axiosClient.delete(`${resource}/${id}/soft-delete`);
   return data;
 };
 

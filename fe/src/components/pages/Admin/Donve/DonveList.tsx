@@ -1,6 +1,5 @@
-// pages/Admin/DonVe/DonVeList.tsx
 import { useEffect, useState } from "react";
-import { Table, Button, message, Card, Row, Col, Tag, Space, Typography, Input, Tooltip } from "antd";
+import { Table, Button, message, Card, Tag, Space, Typography, Input, Tooltip } from "antd";
 import { getListDonVe } from "../../../provider/duProvider";
 import { useNavigate } from "react-router-dom";
 import { SearchOutlined, FileSearchOutlined, MailOutlined, PhoneOutlined, UserOutlined } from "@ant-design/icons";
@@ -37,13 +36,13 @@ export default function DonVeList() {
       item.dat_ve?.lich_chieu?.phim?.ten_phim,
       item.phuong_thuc?.ten
     ].join(" ").toLowerCase();
-    
+
     return searchContent.includes(searchText.toLowerCase());
   });
 
   const renderPaymentMethod = (method: string) => {
-    const color = method === "Tiền mặt" ? "blue" : 
-                  method === "Chuyển khoản" ? "green" : 
+    const color = method === "Tiền mặt" ? "blue" :
+                  method === "Chuyển khoản" ? "green" :
                   method === "Ví điện tử" ? "orange" : "default";
     return <Tag color={color}>{method || "—"}</Tag>;
   };
@@ -104,7 +103,6 @@ export default function DonVeList() {
       render: (r: any) => r.dat_ve?.lich_chieu?.rap?.ten_rap || "",
       width: 150,
     },
-    
     {
       title: "Tổng tiền",
       render: (r: any) => (
