@@ -42,6 +42,16 @@ class QuyenHanSeeder extends Seeder
             ['quyen' => 'DanhGia-create', 'mo_ta' => 'Tạo đánh giá'],
             ['quyen' => 'DanhGia-update', 'mo_ta' => 'Sửa đánh giá'],
             ['quyen' => 'DanhGia-delete', 'mo_ta' => 'Xóa đánh giá'],
+
+            //Tài khoản
+            ['quyen' => 'TaiKhoan-create', 'mo_ta' => 'Tạo tài khoản'],
+            ['quyen' => 'TaiKhoan-update', 'mo_ta' => 'Sửa tài khoản'],
+            ['quyen' => 'TaiKhoan-delete', 'mo_ta' => 'Xóa tài khoản'],
+
+            //Đồ ăn
+            ['quyen' => 'DoAn-create', 'mo_ta' => 'Tạo đồ ăn'],
+            ['quyen' => 'DoAn-update', 'mo_ta' => 'Sửa đồ ăn'],
+            ['quyen' => 'DoAn-delete', 'mo_ta' => 'Xóa đồ ăn'],
         ];
 
         DB::table('quyen_han')->insert($permissions);

@@ -843,7 +843,10 @@ const MovieDetailUser = () => {
           <div className="movie-age-warning">🔞 {movie.do_tuoi_gioi_han}</div>
           <div className="movie-section">
             <h3>MÔ TẢ</h3>
-            <p>{movie.mo_ta}</p>
+            <div
+              style={{ color: "white" }}
+              dangerouslySetInnerHTML={{ __html: movie.mo_ta }}
+            />
           </div>
           <Button
             icon={<PlayCircleOutlined />}
@@ -1007,6 +1010,7 @@ const MovieDetailUser = () => {
                       alignItems: "center",
                       gap: 12,
                       flex: 1,
+                      marginRight: 10,
                     }}
                   >
                     <div
@@ -1120,7 +1124,6 @@ const MovieDetailUser = () => {
             fontWeight: 500,
           }}
         >
-          
           <div style={{ display: "flex", gap: 40 }}>
             <div>
               <div style={{ fontWeight: "bold" }}>

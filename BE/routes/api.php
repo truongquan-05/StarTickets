@@ -131,7 +131,7 @@ Route::apiResource('tin_tuc', TinTucController::class);
 Route::prefix('tin_tuc')->group(function () {
     Route::get('/trashed/list', [TinTucController::class, 'trashed']); // lấy danh sách xóa mềm
     Route::post('/{id}/restore', [TinTucController::class, 'restore']); // khôi phục tin tức
-    Route::delete('/{id}/force', [TinTucController::class, 'forceDelete']); //xóa cứng tin tức
+    Route::delete('/force/{id}', [TinTucController::class, 'forceDelete']); //xóa cứng tin tức
 });
 
 // qli đánh giá cho admin

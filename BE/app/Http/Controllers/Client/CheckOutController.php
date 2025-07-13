@@ -278,10 +278,10 @@ class CheckOutController extends Controller
 
                 // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
 
-                if ($data['vnp_TransactionStatus'] == "00") {
+                if ($data['vnp_ResponseCode'] == "00") {
                     $data['ma_giao_dich'] = $data['vnp_TxnRef'];
 
-                    if ($data['ma_giam_gia_id'] != "null") {
+                    if ($data['ma_giam_gia_id'] != null) {
                         $voucher = MaGiamGia::find($data['ma_giam_gia_id']);
                         $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
                     }
@@ -344,8 +344,32 @@ class CheckOutController extends Controller
                 }
             }
         } catch (\Throwable $th) {
+               $dataVeId = $data['dat_ve_id'];
+                    $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
+                    $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
+                    $don_do_an = $dataVe->DonDoAn ?? null;
+                    if ($dat_ve_chi_tiet->isNotEmpty()) {
+                        $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
+                            $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
+                                ->where('lich_chieu_id', $dataVe->lich_chieu_id)
+                                ->first();
+                            if ($checkGhe) {
+                                $checkGhe->update(['trang_thai' => 'trong']);
+                            }
+                        });
+                    }
+                    if ($don_do_an->isNotEmpty()) {
+                        $don_do_an->each(function ($item) {
+                            $doAn = DoAn::find($item->do_an_id);
+                            if ($doAn) {
+                                $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
+                            }
+                        });
+                    }
+
+                    $dataVe->delete();
             return response()->json([
-                'data' => $th->getMessage(),
+                'data' => $data,
             ], 422);
         }
     }
