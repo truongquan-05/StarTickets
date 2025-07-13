@@ -26,6 +26,7 @@ import { useBackConfirm } from "../../hook/useConfirmBack";
 import { SelectedFoodItem } from "./DatVe/DonDoAn";
 import FoodSelectionDisplay from "./DatVe/DonDoAn";
 import DuongCongManHinh from "./DuongCongManHinh";
+import DanhGiaForm from "./DanhGia";
 
 interface IRap {
   id: number;
@@ -809,6 +810,7 @@ const MovieDetailUser = () => {
       }
     });
   };
+
   return (
     <div className="movie-detail-wrapper">
       <div className="movie-detail-container">
@@ -831,8 +833,10 @@ const MovieDetailUser = () => {
               {movie.the_loai?.ten_the_loai || "Đang cập nhật"}
             </li>
             <li>
-              <span>⏱ Thời lượng:</span> {movie.thoi_luong}'
+              <span style={{ marginLeft: 4 }}> ⏱ Thời lượng:</span>{" "}
+              {movie.thoi_luong}'
             </li>
+
             <li>
               <span>💿 Định dạng:</span> 2D
             </li>
@@ -911,7 +915,6 @@ const MovieDetailUser = () => {
         }}
         selectedLichChieuId={selectedLichChieuId}
       />
-
       {selectedPhong && (
         <div
           style={{
@@ -1102,9 +1105,24 @@ const MovieDetailUser = () => {
             )}
           </div>{" "}
           {/* KẾT THÚC CONTAINER CHÍNH */}
+          <div>Đồ ăn</div>
         </div>
       )}
+      <br />
+      <br />
+      <br /> <br />
+      <br />
+      <br />
+      <div>
+       <DanhGiaForm
+         id={movie.id}
+         phim={movie}
+         onSubmit={() => {
+           message.success("Đánh giá đã được gửi!");
+         }}
+       />
 
+      </div>
       {/* PHẦN FOOTER CỐ ĐỊNH Ở DƯỚI CÙNG */}
       {(selectedSeats.length > 0 || selectedFoods.length > 0) && ( // Footer hiển thị nếu có ghế HOẶC đồ ăn
         <div

@@ -165,7 +165,7 @@ Route::prefix('auth')->group(function () {
 Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
-Route::POST('delete-dat-ve/{id}', [DatVeController::class,'BackDelete']);
+Route::POST('delete-dat-ve/{id}', [DatVeController::class, 'BackDelete']);
 
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']); // Tạo mã xác nhận cho người dùng
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
@@ -188,33 +188,35 @@ Route::get('/the-loai', [HomeController::class, 'getAllTheLoai']);
 // Route::get('/phim/{phim}/danh-gia',           [ClientDanhGiaController::class, 'getByPhim']); // Lấy đánh giá theo phim
 // Route::get('/phim/{phim}/danh-gia/average',   [ClientDanhGiaController::class, 'getAverageRating']); // Lấy điểm trung bình
 
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']); // Lấy tất cả đánh giá của user
-//     Route::get('/phim/{phim}/danh-gia/me', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']); // Lấy đánh giá của user cho phim
-//     Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']); // Thêm đánh giá
-//     Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']); // Sửa đánh giá
-//     Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
-// });
+Route::middleware("auth:sanctum")->group(function () {
+    Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']); // Lấy tất cả đánh giá của user
+    Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']); // Thêm đánh giá
+    Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']); // Sửa đánh giá
+    Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']); // Xóa đánh giá
+    Route::get('/phim/{phim}/danh-gia/me', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']); // Lấy đánh giá của user cho phim
+});
+Route::get('/phim/{phim}/danh-gia', [ClientDanhGiaController::class, 'getDanhGiaByPhim']); 
 Route::get('/danh-gia/all', [ClientDanhGiaController::class, 'getAllDanhGia']);
 
-// Lấy tất cả đánh giá của 1 phim
-Route::get('/phim/{phimId}/danh-gia', [ClientDanhGiaController::class, 'getByPhim']);
-// Lấy điểm trung bình của phim
-Route::get('/phim/{phimId}/danh-gia/average', [ClientDanhGiaController::class, 'getAverageRating']);
-// Lấy đánh giá của user hiện tại cho 1 phim (không có auth thì dùng tạm id test)
-Route::get('/phim/{phimId}/danh-gia/my', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']);
-// Lấy tất cả đánh giá của chính người dùng hiện tại
-Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']);
-// Thêm đánh giá mới
-Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']);
-// Cập nhật đánh giá
-Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']);
-// Xoá đánh giá
-Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']);
+
+// // Lấy tất cả đánh giá của 1 phim
+// Route::get('/phim/{phimId}/danh-gia', [ClientDanhGiaController::class, 'getByPhim']);
+// // Lấy điểm trung bình của phim
+// Route::get('/phim/{phimId}/danh-gia/average', [ClientDanhGiaController::class, 'getAverageRating']);
+// // Lấy đánh giá của user hiện tại cho 1 phim (không có auth thì dùng tạm id test)
+// Route::get('/phim/{phimId}/danh-gia/my', [ClientDanhGiaController::class, 'getMyDanhGiaByPhim']);
+// // Lấy tất cả đánh giá của chính người dùng hiện tại
+// Route::get('/danh-gia', [ClientDanhGiaController::class, 'index']);
+// // Thêm đánh giá mới
+// Route::post('/danh-gia', [ClientDanhGiaController::class, 'store']);
+// // Cập nhật đánh giá
+// Route::put('/danh-gia/{id}', [ClientDanhGiaController::class, 'update']);
+// // Xoá đánh giá
+// Route::delete('/danh-gia/{id}', [ClientDanhGiaController::class, 'destroy']);
 
 
 //Đăng nhập và đăng xuất
-Route::post('login', [LoginController::class, 'login']);
+// Route::post('login', [LoginController::class, 'login']);
 Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
 
 //Check ghế đặt vé

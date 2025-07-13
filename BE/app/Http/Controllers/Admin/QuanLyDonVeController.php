@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -6,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ThanhToan;
 use App\Models\LichChieu;
 use App\Models\Phim;
+
 
 class QuanLyDonVeController extends Controller
 {
@@ -16,8 +18,9 @@ class QuanLyDonVeController extends Controller
             'nguoiDung:id,ten,email',
             'phuongThuc:id,ten',
             'datVe:id,lich_chieu_id,tong_tien',
-            'datVe.lichChieu:id,phim_id,gio_chieu',
-            'datVe.lichChieu.phim:id,ten_phim'
+            'datVe.lichChieu',
+            'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
         ])->latest()->get();
 
         return response()->json([
@@ -33,8 +36,12 @@ class QuanLyDonVeController extends Controller
             'nguoiDung:id,ten,email,so_dien_thoai',
             'phuongThuc:id,ten',
             'datVe:id,lich_chieu_id,tong_tien',
-            'datVe.lichChieu:id,phim_id,gio_chieu',
-            'datVe.lichChieu.phim:id,ten_phim'
+            'datVe.lichChieu',
+            'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
+            'datVe.DatVeChiTiet.GheDat',
+            'datVe.DonDoAn',
+            'datVe.DonDoAn.DoAn'
         ])->find($id);
 
         if (!$donVe) {
@@ -94,8 +101,8 @@ class QuanLyDonVeController extends Controller
         $phimIds = LichChieu::distinct()->pluck('phim_id');
 
         $phim = Phim::whereIn('id', $phimIds)
-                    ->select('id', 'ten_phim')
-                    ->get();
+            ->select('id', 'ten_phim')
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -103,4 +110,3 @@ class QuanLyDonVeController extends Controller
         ]);
     }
 }
-

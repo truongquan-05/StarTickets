@@ -112,13 +112,11 @@ export const searchMovies = async (keyword: string) => {
 // duProvider.ts
 export const getRaps = () =>
   axiosClient.get("/rap").then((res) => {
-    console.log(">>> getRaps:", res.data); 
     return res.data.data || [];
   });
 
 export const getTheLoais = () =>
   axiosClient.get("/the_loai").then((res) => {
-    console.log(">>> getTheLoais:", res.data); 
     return res.data.data || [];
   });
 

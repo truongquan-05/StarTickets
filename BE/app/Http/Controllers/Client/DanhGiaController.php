@@ -72,11 +72,30 @@ class DanhGiaController extends Controller
         if (!$danhGia) {
             return response()->json([
                 'message' => 'Bạn chưa đánh giá phim này'
-            ], 404);
+            ], 422);
         }
 
         return response()->json([
             'message' => 'Đánh giá của bạn cho phim',
+            'data' => $danhGia
+        ]);
+    }
+
+    public function getDanhGiaByPhim($phimId)
+    {
+        $danhGia = DanhGia::where('phim_id', $phimId)
+            ->with(['nguoiDung', 'phim'])
+            ->orderBy('id','desc')
+            ->get();
+
+        if (!$danhGia) {
+            return response()->json([
+                'message' => 'Chưa có đánh giá nào'
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Đánh giá phim',
             'data' => $danhGia
         ]);
     }
@@ -86,7 +105,9 @@ class DanhGiaController extends Controller
     {
         $userId = Auth::id();
         $data = $request->validated();
-
+        if ($request['nguoi_dung_id'] != $userId) {
+            return response()->json(['message' => 'Lỗi đăng nhập']);
+        }
         $oldDanhGia = DanhGia::where('nguoi_dung_id', $userId)
             ->where('phim_id', $data['phim_id'])
             ->with(['nguoiDung', 'phim'])
@@ -96,7 +117,7 @@ class DanhGiaController extends Controller
             return response()->json([
                 'message' => 'Bạn đã đánh giá phim này!',
                 'data' => $oldDanhGia
-            ], 409);
+            ], 422);
         }
 
         $data['nguoi_dung_id'] = $userId;

@@ -16,7 +16,7 @@ class PhimController extends Controller
     // Lấy danh sách phim (kèm lọc, tìm kiếm, phân trang)
     public function index(Request $request)
     {
-        $query = Phim::with('theLoai')->all();
+        $query = Phim::with('theLoai');
 
         if ($request->has('search')) {
             $query->where('ten_phim', 'like', '%' . $request->search . '%');
