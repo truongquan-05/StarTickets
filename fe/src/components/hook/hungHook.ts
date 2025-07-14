@@ -33,6 +33,8 @@ import {
   getListDatVe,
   getListGhe,
   getListLichChieu,
+  getListLichSuDonHang,
+  getListLichSuDonHangChiTiet,
   getListMovies,
   getListNews,
   getListPhanHoiNguoiDung,
@@ -712,5 +714,23 @@ export const useDestroyVoucher = ({ resource = "voucher" }: Props) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [resource] });
     },
+  });
+};
+
+
+export const useListLichSuDonHangChiTiet = ({
+  resource = "lich-su-mua-hang",
+  id,
+}: Props) => {
+  return useQuery({
+    queryKey: [resource, id],
+    queryFn: () => getListLichSuDonHangChiTiet({ resource, id }),
+  });
+};
+
+export const useListLichSuDonHang = ({ resource = "lich-su-mua-hang" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getListLichSuDonHang({ resource }),
   });
 };

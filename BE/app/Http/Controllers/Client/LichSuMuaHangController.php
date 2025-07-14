@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Models\ThanhToan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class LichSuMuaHangController extends Controller
 
@@ -12,16 +13,10 @@ class LichSuMuaHangController extends Controller
 
     public function lichSu(Request $request)
     {
-        $userId = $request->user()->id;
+        $userId = Auth::id();
 
-        $lichSu = ThanhToan::with([
-            'datVe.lichChieu.phim',
-            'datVe.DatVeChiTiet.GheDat',
-            'phuongThucThanhToan',
-        ])
-        ->where('nguoi_dung_id',$userId )
-        ->orderByDesc('created_at')
-        ->get();
+
+        $lichSu = ThanhToan::where('nguoi_dung_id', $userId)->get();
 
         return response()->json([
             'status' => true,
