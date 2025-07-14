@@ -145,7 +145,6 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
       } else {
         console.error("Lỗi khi lấy đánh giá của bạn:", err);
       }
-      return null;
     }
   };
 
@@ -238,7 +237,7 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
         <Button
           type="primary"
           onClick={handleSubmit}
-          disabled={!soSao || !noiDung.trim()}
+          disabled={!soSao || !noiDung?.trim()}
           style={{
             background: "#6c5ce7",
             borderColor: "#6c5ce7",

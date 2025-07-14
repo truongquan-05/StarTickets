@@ -286,4 +286,38 @@ class NguoiDungController extends Controller
             'message' => 'Mã xác nhận đã được tìm thấy',
         ]);
     }
+// Cấp quyền cho người dùng
+public function capQuyen(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'vai_tro_id' => 'required|exists:vai_tro,id',
+    ]);
+
+    $actingUser = $request->user();
+    $targetUser = NguoiDung::findOrFail($request->user_id);
+
+    // Không được thay đổi vai trò của SuperAdmin
+    if ($targetUser->vai_tro_id == 99) {
+        return response()->json(['message' => 'Không thể thay đổi vai trò của SuperAdmin'], 403);
+    }
+
+    // Nếu là Admin, chỉ được cấp vai trò Nhân viên hoặc Nhân viên rạp
+    if ($actingUser->vai_tro_id == 1 && in_array($request->vai_tro_id, [1, 99])) {
+        return response()->json(['message' => 'Admin không được gán vai trò Admin hoặc SuperAdmin'], 403);
+    }
+
+    // Nếu không phải Admin hoặc SuperAdmin thì từ chối
+    if (!in_array($actingUser->vai_tro_id, [1, 99])) {
+        return response()->json(['message' => 'Bạn không có quyền thực hiện thao tác này'], 403);
+    }
+
+    $targetUser->vai_tro_id = $request->vai_tro_id;
+    $targetUser->save();
+
+    return response()->json(['message' => 'Cập nhật vai trò thành công']);
+}
+
+
+    
 }

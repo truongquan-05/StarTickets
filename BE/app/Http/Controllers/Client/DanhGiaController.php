@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDanhGiaRequest;
 use App\Http\Requests\UpdateDanhGiaRequest;
 use App\Models\DanhGia;
+use App\Models\ThanhToan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -72,7 +73,7 @@ class DanhGiaController extends Controller
         if (!$danhGia) {
             return response()->json([
                 'message' => 'Bạn chưa đánh giá phim này'
-            ], 422);
+            ], 200);
         }
 
         return response()->json([
@@ -85,7 +86,7 @@ class DanhGiaController extends Controller
     {
         $danhGia = DanhGia::where('phim_id', $phimId)
             ->with(['nguoiDung', 'phim'])
-            ->orderBy('id','desc')
+            ->orderBy('id', 'desc')
             ->get();
 
         if (!$danhGia) {
@@ -105,6 +106,18 @@ class DanhGiaController extends Controller
     {
         $userId = Auth::id();
         $data = $request->validated();
+        $thanhToan = ThanhToan::with(['datVe.lichChieu.phim'])->where('nguoi_dung_id',  $userId)
+            ->whereHas('datVe.lichChieu.phim', function ($query) use ($data) {
+                $query->where('id', $data['phim_id']);
+            })
+            ->get();
+        if ($thanhToan->isEmpty()) {
+            return response()->json([
+                'message' => 'Bạn chưa mua phim này',
+            ], 422);
+        }
+
+
         if ($request['nguoi_dung_id'] != $userId) {
             return response()->json(['message' => 'Lỗi đăng nhập']);
         }
