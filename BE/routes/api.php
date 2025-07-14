@@ -246,4 +246,65 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-// http://127.0.0.1:8000/api/....
+//Route phân quyền admin và nhân viên  
+Route::middleware(['auth:sanctum', 'is.admin.area'])->group(function () {
+
+    // SUPERADMIN + ADMIN (vai_tro_id = 99, 1)
+    Route::middleware('check.permission:All')->group(function () {
+        Route::apiResource('vai_tro', VaiTroController::class);
+        Route::apiResource('nguoi_dung', NguoiDungController::class);
+        Route::apiResource('phan_hoi', PhanHoiKhachHangController::class);
+        Route::apiResource('loai_ghe', LoaiGheController::class);
+        Route::apiResource('chuyen_ngu', ChuyenNguController::class);
+        Route::apiResource('tin_tuc', TinTucController::class);
+        Route::prefix('tin_tuc')->group(function () {
+            Route::get('/trashed/list', [TinTucController::class, 'trashed']);
+            Route::post('/{id}/restore', [TinTucController::class, 'restore']);
+            Route::delete('/force/{id}', [TinTucController::class, 'forceDelete']);
+        });
+
+        // API cấp quyền - SuperAdmin và Admin có thể gán quyền dưới quyền họ
+        Route::post('/cap-quyen', [NguoiDungController::class, 'capQuyen'])->middleware('check.permission:CapQuyen');
+    });
+
+    // ADMIN + STAFF (vai_tro_id = 1, 3)
+    Route::middleware('check.permission:Phim-create')->post('phim', [PhimController::class, 'store']);
+    Route::middleware('check.permission:Phim-update')->put('phim/{id}', [PhimController::class, 'update']);
+    Route::middleware('check.permission:Phim-delete')->delete('phim/{id}', [PhimController::class, 'delete']);
+    Route::get('phim', [PhimController::class, 'index']);
+    Route::get('phim/{id}', [PhimController::class, 'show']);
+
+    Route::middleware('check.permission:Rap-create')->post('rap', [RapController::class, 'store']);
+    Route::middleware('check.permission:Rap-update')->put('rap/{id}', [RapController::class, 'update']);
+    Route::middleware('check.permission:Rap-delete')->delete('rap/{id}', [RapController::class, 'destroy']);
+    Route::apiResource('rap', RapController::class)->only(['index', 'show']);
+
+    Route::middleware('check.permission:DoAn-create')->post('do_an', [DoAnController::class, 'store']);
+    Route::middleware('check.permission:DoAn-update')->put('do_an/{id}', [DoAnController::class, 'update']);
+    Route::middleware('check.permission:DoAn-delete')->delete('do_an/{id}', [DoAnController::class, 'delete']);
+    Route::apiResource('do_an', DoAnController::class)->only(['index', 'show']);
+
+    Route::middleware('check.permission:PhongChieu-manage')->apiResource('phong_chieu', PhongChieuController::class);
+
+    // STAFF RAP (vai_tro_id = 4)
+    Route::middleware('check.permission:LichChieu-create')->post('lich_chieu', [LichChieuController::class, 'store']);
+    Route::middleware('check.permission:LichChieu-update')->put('lich_chieu/{id}', [LichChieuController::class, 'update']);
+    Route::middleware('check.permission:LichChieu-delete')->delete('lich_chieu/{id}', [LichChieuController::class, 'destroy']);
+    Route::apiResource('lich_chieu', LichChieuController::class)->only(['index', 'show']);
+
+    // Đánh giá & đơn vé (admin)
+    Route::prefix('admin')->group(function () {
+        Route::middleware('check.permission:DanhGia-manage')->group(function () {
+            Route::get('/danh-gia', [AdminDanhGiaController::class, 'index']);
+            Route::get('/danh-gia/{id}', [AdminDanhGiaController::class, 'show']);
+            Route::delete('/danh-gia/{id}', [AdminDanhGiaController::class, 'destroy']);
+        });
+
+        Route::middleware('check.permission:DonVe-manage')->group(function () {
+            Route::get('don-ve', [QuanLyDonVeController::class, 'index']);
+            Route::get('don-ve/{id}', [QuanLyDonVeController::class, 'show']);
+            Route::post('don-ve/loc', [QuanLyDonVeController::class, 'loc']);
+            Route::get('don-ve-phim', [QuanLyDonVeController::class, 'phimCoLichChieu']);
+        });
+    });
+});

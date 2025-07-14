@@ -32,7 +32,8 @@ class QuyenTruyCapSeeder extends Seeder
             'Phim-create', 'Phim-update', 'Phim-delete',
             'Rap-create', 'Rap-update', 'Rap-delete',
             'PhongChieu-create', 'PhongChieu-update', 'PhongChieu-delete',
-            'Ve-update', 'Ve-delete'
+            'Ve-update', 'Ve-delete',
+             'DoAn-create', 'DoAn-update', 'DoAn-delete' // Thêm quản lý đồ ăn
         ];
         foreach ($staffPermissions as $perm) {
             DB::table('quyen_truy_cap')->insert([
