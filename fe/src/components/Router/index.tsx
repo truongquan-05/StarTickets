@@ -44,7 +44,6 @@ import TimKiemPhim from '../pages/Users/Timkiemphim';
 import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
 import TrashMovies from '../pages/Admin/MoviesPage/TrashMovies';
 import ThanhToan from '../pages/Users/DatVe/ThanhToan';
-import LichSuDatVe from '../pages/Users/DatVe/LichSuDatVe';
 import BannerList from '../pages/Admin/Banner/BannerList';
 import BannerForm from '../pages/Admin/Banner/BannerForm';
 import DonVeList from '../pages/Admin/Donve/DonveList';

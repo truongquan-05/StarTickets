@@ -252,7 +252,7 @@ Route::middleware(['auth:sanctum', 'is.admin.area'])->group(function () {
     // SUPERADMIN + ADMIN (vai_tro_id = 99, 1)
     Route::middleware('check.permission:All')->group(function () {
         Route::apiResource('vai_tro', VaiTroController::class);
-        Route::apiResource('nguoi_dung', NguoiDungController::class);
+        // Route::apiResource('nguoi_dung', NguoiDungController::class);
         Route::apiResource('phan_hoi', PhanHoiKhachHangController::class);
         Route::apiResource('loai_ghe', LoaiGheController::class);
         Route::apiResource('chuyen_ngu', ChuyenNguController::class);

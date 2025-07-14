@@ -1,13 +1,26 @@
 import axios from "axios";
 
 
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+
+// const axiosClient = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL,
+//   headers: {
+//     Authorization: token ? `Bearer ${token}` : "",
+//   },
+// });
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    Authorization: token ? `Bearer ${token}` : "",
-  },
+});
+
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export type Props = {
