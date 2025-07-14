@@ -526,14 +526,16 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       position: "absolute",
                       color: isHidden ? "#666" : "black",
                       fontWeight: "bold",
-                      fontSize: isHidden ? 24 : 11,
+                      fontSize: isHidden ? 24 : 9,
                       pointerEvents: "none",
                       top: "50%",
                       left: "50%",
+                      width: "80%",
+                      textAlign:"center",
                       transform: "translate(-50%, -50%)",
                     }}
                   >
-                    {isHidden ? "X" : ghe.so_ghe.split("-")[0]}
+                    {isHidden ? "X" : ghe.so_ghe.split("-")[0] +' - '+ ghe.so_ghe.split("-")[1] }
                   </span>
                 </div>
               );
