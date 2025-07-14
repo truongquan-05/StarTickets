@@ -48,7 +48,7 @@ const QuickBooking = () => {
 
     if (query.the_loai_id.length > 0) {
       query.the_loai_id.forEach((id) =>
-        searchParams.append("the_loai_id[]", id.toString())
+        searchParams.append("the_loai_id", id.toString())
       );
     }
 

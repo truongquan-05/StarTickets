@@ -1,24 +1,39 @@
-import React from "react";
 import {
   Form,
   Input,
   Button,
-  Checkbox,
+  // Checkbox,
   Typography,
   Row,
   Col,
   Divider,
+  message,
 } from "antd";
 import { GoogleOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useGoogleAuth } from "./GoogleAuth";
-
+import axios from "axios";
 const { Text, Link } = Typography;
 
 const Login = () => {
-  // const onFinish = (values) => {
-  //   console.log('Login form values:', values);
-  //   // TODO: xử lý đăng nhập
-  // };
+  const onFinish = async (values: any) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/auth/login",
+        {
+          email: values.email,
+          password: values.password,
+        }
+      );
+
+      const { user, access_token } = response.data;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", access_token);
+      window.location.href = "/";
+    } catch (err: any) {
+      message.error(err?.response?.data?.message || "Đăng nhập thất bại!");
+    }
+  };
+
   const { loginWithGoogle } = useGoogleAuth();
   return (
     <div className="login-background">
@@ -28,7 +43,7 @@ const Login = () => {
           <Form
             name="loginForm"
             initialValues={{ remember: true }}
-            // onFinish={onFinish}
+            onFinish={onFinish}
             layout="vertical"
             className="login-form"
           >
@@ -74,14 +89,14 @@ const Login = () => {
             <Form.Item>
               <Row justify="space-between" align="middle">
                 <Col>
-                  <Form.Item name="remember" valuePropName="checked" noStyle>
+                  {/* <Form.Item name="remember" valuePropName="checked" noStyle>
                     <Checkbox
                       className="custom-checkboxx"
                       style={{ color: "white" }}
                     >
                       Ghi nhớ đăng nhập
                     </Checkbox>
-                  </Form.Item>
+                  </Form.Item> */}
                 </Col>
                 <Col>
                   <Link
@@ -111,7 +126,12 @@ const Login = () => {
             <Form.Item style={{ textAlign: "center" }}>
               <Text style={{ color: "white" }}>
                 Bạn chưa có tài khoản?{" "}
-                <Link href="/register" style={{ color: "yellow", textDecoration: "underline" }}>Đăng ký ngay</Link>
+                <Link
+                  href="/register"
+                  style={{ color: "yellow", textDecoration: "underline" }}
+                >
+                  Đăng ký ngay
+                </Link>
               </Text>
             </Form.Item>
 
@@ -119,7 +139,9 @@ const Login = () => {
             <Form.Item>
               <Button
                 type="primary"
-                icon={<GoogleOutlined style={{ marginRight: 5, fontSize: 20 }} />}
+                icon={
+                  <GoogleOutlined style={{ marginRight: 5, fontSize: 20 }} />
+                }
                 size="large"
                 className="btn-submit-gg-effect"
                 block

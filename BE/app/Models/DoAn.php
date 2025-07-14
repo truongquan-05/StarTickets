@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DoAn extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $table = 'do_an';
 
     protected $fillable = [

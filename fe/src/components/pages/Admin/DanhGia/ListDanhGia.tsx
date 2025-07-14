@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Table,
-  Typography,
+  // Typography,
   Space,
   Rate,
   Button,
   Modal,
   Select,
-  Image,
   Card,
-} from 'antd';
-import axios from 'axios';
-import type { ColumnsType } from 'antd/es/table';
+} from "antd";
+import axios from "axios";
+import type { ColumnsType } from "antd/es/table";
+import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 
-const { Title } = Typography;
+// const { Title } = Typography;
 const { Option } = Select;
 
 interface NguoiDung {
@@ -56,14 +56,17 @@ const ListDanhGia: React.FC = () => {
   const fetchDanhGia = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://127.0.0.1:8000/api/admin/danh-gia', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/admin/danh-gia",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       setData(response.data.data);
     } catch (error) {
-      console.error('Lỗi khi tải đánh giá:', error);
+      console.error("Lỗi khi tải đánh giá:", error);
     } finally {
       setLoading(false);
     }
@@ -71,17 +74,12 @@ const ListDanhGia: React.FC = () => {
 
   const fetchPhimList = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/phim', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      const response = await axios.get("http://127.0.0.1:8000/api/phim", {});
       setPhimOptions(response.data.data);
     } catch (error) {
-      console.error('Lỗi khi tải danh sách phim:', error);
+      console.error("Lỗi khi tải danh sách phim:", error);
     }
   };
-
   const handleViewDetail = (record: DanhGia) => {
     setSelectedDanhGia(record);
     setModalVisible(true);
@@ -89,76 +87,112 @@ const ListDanhGia: React.FC = () => {
 
   const filteredData = data.filter((item) => {
     if (soSaoFilter !== null && item.so_sao !== soSaoFilter) return false;
-    if (selectedPhimId !== null && item.phim.id !== selectedPhimId) return false;
+    if (selectedPhimId !== null && item.phim.id !== selectedPhimId)
+      return false;
     return true;
   });
 
   const columns: ColumnsType<DanhGia> = [
     {
-      title: 'Mã',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Mã",
+      dataIndex: "id",
+      key: "id",
       width: 80,
       sorter: (a, b) => a.id - b.id,
     },
     {
-      title: 'Tài khoản đánh giá',
-      dataIndex: 'nguoi_dung',
-      key: 'nguoi_dung',
+      title: "Tài khoản đánh giá",
+      dataIndex: "nguoi_dung",
+      key: "nguoi_dung",
+      width: 280,
       render: (nguoi_dung: NguoiDung) => (
         <Space direction="vertical" size={0}>
           <strong>{nguoi_dung.ten}</strong>
-          <span style={{ fontSize: 12, color: '#999' }}>{nguoi_dung.email}</span>
+          <span style={{ fontSize: 12, color: "#999" }}>
+            {nguoi_dung.email}
+          </span>
         </Space>
       ),
     },
     {
-      title: (
-        <Space direction="vertical">
-          <span>Phim được đánh giá</span>
+      title: "Phim được đánh giá",
+      width: 280,
+      dataIndex: "phim",
+      key: "phim",
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
           <Select
-            placeholder="Chọn phim"
+            showSearch
+            placeholder="Chọn hoặc nhập tên phim"
+            style={{ width: 200 }}
+            value={selectedKeys[0]}
+            onChange={(value) => setSelectedKeys(value ? [value] : [])}
+            filterOption={(input, option) =>
+              option
+                ? option.label.toLowerCase().includes(input.toLowerCase())
+                : false
+            }
+            options={phimOptions.map((phim) => ({
+              label: phim.ten_phim,
+              value: phim.id,
+            }))}
             allowClear
-            size="small"
-            style={{ width: '100%' }}
-            onChange={(value) => setSelectedPhimId(value)}
-          >
-            {phimOptions.map((phim) => (
-              <Option key={phim.id} value={phim.id}>
-                {phim.ten_phim}
-              </Option>
-            ))}
-          </Select>
-        </Space>
+          />
+          <div style={{ marginTop: 8, textAlign: "right" }}>
+            <Button
+              type="primary"
+              size="small"
+              style={{ marginRight: 8 }}
+              onClick={() => confirm()}
+            >
+              Lọc
+            </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                clearFilters?.();
+                confirm();
+              }}
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
       ),
-      dataIndex: 'phim',
-      key: 'phim',
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) => record.phim?.id === value,
       render: (phim: Phim) => (
         <Space>
-          {phim.anh_poster && (
-            <Image
-              src={phim.anh_poster}
-              alt={phim.ten_phim}
-              width={40}
-              height={60}
-              style={{ objectFit: 'cover', borderRadius: 4 }}
-              preview={false}
-            />
-          )}
-          <span>{phim.ten_phim}</span>
+          <span style={{ fontWeight: 500 }}>{phim?.ten_phim || "—"}</span>
         </Space>
       ),
     },
     {
-      title: (
-        <Space direction="vertical">
-          <span>Số sao</span>
+      title: "Số sao",
+      dataIndex: "so_sao",
+      key: "so_sao",
+      width: 160,
+      render: (so_sao: number) => <Rate disabled defaultValue={so_sao} />,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
           <Select
             placeholder="Chọn sao"
+            style={{ width: 120 }}
+            value={selectedKeys[0]}
+            onChange={(value) => setSelectedKeys(value ? [value] : [])}
             allowClear
-            size="small"
-            style={{ width: '100%' }}
-            onChange={(value) => setSoSaoFilter(value)}
           >
             {[1, 2, 3, 4, 5].map((sao) => (
               <Option key={sao} value={sao}>
@@ -166,35 +200,56 @@ const ListDanhGia: React.FC = () => {
               </Option>
             ))}
           </Select>
-        </Space>
+          <div style={{ marginTop: 8, textAlign: "right" }}>
+            <Button
+              type="primary"
+              size="small"
+              style={{ marginRight: 8 }}
+              onClick={() => confirm()}
+            >
+              Lọc
+            </Button>
+            <Button
+              size="small"
+              onClick={() => {
+                clearFilters?.();
+                confirm();
+              }}
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
       ),
-      dataIndex: 'so_sao',
-      key: 'so_sao',
-      render: (so_sao: number) => <Rate disabled defaultValue={so_sao} />,
-      width: 160,
+
+      filterIcon: (filtered) => (
+        <FilterOutlined  style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) => record.so_sao === value,
     },
     {
-  title: 'Nội dung',
-  dataIndex: 'noi_dung',
-  key: 'noi_dung',
-  render: (text: string) => (
-    <div
-      style={{
-        maxWidth: 300,
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-      }}
-      title={text}
-    >
-      {text}
-    </div>
-  ),
-},
+      title: "Nội dung",
+      width: 300,
+      dataIndex: "noi_dung",
+      key: "noi_dung",
+      render: (text: string) => (
+        <div
+          style={{
+            maxWidth: 300,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+          title={text}
+        >
+          {text}
+        </div>
+      ),
+    },
 
     {
-      title: 'Hành động',
-      key: 'actions',
+      title: "Hành động",
+      key: "actions",
       render: (_: any, record: DanhGia) => (
         <Button type="link" onClick={() => handleViewDetail(record)}>
           Xem chi tiết
@@ -205,7 +260,16 @@ const ListDanhGia: React.FC = () => {
   ];
 
   return (
-      <Card title="Danh sách rạp" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)',background: "#fff", height: "95%"  }}>
+    <Card
+      title="Danh sách rạp"
+      bordered={true}
+      style={{
+        margin: 10,
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        background: "#fff",
+        height: "95%",
+      }}
+    >
       <Table
         rowKey="id"
         loading={loading}
@@ -223,17 +287,33 @@ const ListDanhGia: React.FC = () => {
       >
         {selectedDanhGia && (
           <div>
-            <p><strong>Mã:</strong> {selectedDanhGia.id}</p>
-            <p><strong>Người dùng:</strong> {selectedDanhGia.nguoi_dung.ten}</p>
-            <p><strong>Email:</strong> {selectedDanhGia.nguoi_dung.email}</p>
-            <p><strong>Phim:</strong> {selectedDanhGia.phim.ten_phim}</p>
-            <p><strong>Số sao:</strong> <Rate disabled defaultValue={selectedDanhGia.so_sao} /></p>
-            <p><strong>Nội dung:</strong> {selectedDanhGia.noi_dung}</p>
-            <p><strong>Thời gian đánh giá:</strong> {selectedDanhGia.created_at || 'Không có'}</p>
+            <p>
+              <strong>Mã:</strong> {selectedDanhGia.id}
+            </p>
+            <p>
+              <strong>Người dùng:</strong> {selectedDanhGia.nguoi_dung.ten}
+            </p>
+            <p>
+              <strong>Email:</strong> {selectedDanhGia.nguoi_dung.email}
+            </p>
+            <p>
+              <strong>Phim:</strong> {selectedDanhGia.phim.ten_phim}
+            </p>
+            <p>
+              <strong>Số sao:</strong>{" "}
+              <Rate disabled defaultValue={selectedDanhGia.so_sao} />
+            </p>
+            <p>
+              <strong>Nội dung:</strong> {selectedDanhGia.noi_dung}
+            </p>
+            <p>
+              <strong>Thời gian đánh giá:</strong>{" "}
+              {selectedDanhGia.created_at || "Không có"}
+            </p>
           </div>
         )}
       </Modal>
-      </Card>
+    </Card>
   );
 };
 

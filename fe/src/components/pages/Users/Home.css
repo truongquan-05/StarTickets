@@ -35,8 +35,8 @@
 .movie-tabs {
   display: flex;
   justify-content: center;
-  gap: 48px;
-  margin: 50px 0 70px;
+  gap: 30px;
+  margin: 50px 0 60px;
 }
 
 .tab-btn {
@@ -44,8 +44,7 @@
   border: none;
   outline: none;
   cursor: pointer;
-  font-size: 40px;
-  letter-spacing: 2px;
+  font-size: 35px;
   font-family: 'Anton', sans-serif;
   font-weight: 100;
   color: white;
@@ -86,44 +85,288 @@
    THẺ PHIM ĐANG CHIẾU / SẮP CHIẾU
 ========================== */
 .movie-card {
-  background-color: #2b1a47;
-  border-radius: 1px;
+  background-color: transparent;
+  border-radius: 4px;
   text-align: center;
   color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  overflow: hidden;
 }
 
 
+/* Wrapper cho poster */
+.movie-poster-wrapper {
+  border: 1px solid #ccc;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+/* Nút chuyển trang */
+.swiper-button-next,
+.swiper-button-prev {
+  font-weight: 600;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+}
+
+/* Phải style thêm ::after vì Swiper dùng icon qua pseudo-element */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 30px; /* nhỏ hơn mặc định là 20-24px */
+  color: yellow;
+}
 
 /* Ảnh phim */
 .movie-card img {
   width: 100%;
   height: 400px;
   object-fit: cover;
-  margin-bottom: 16px;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Overlay khi hover */
+.movie-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.movie-poster-wrapper:hover .movie-overlay {
+  opacity: 1;
+}
+
+.movie-poster-wrapper:hover img {
+  transform: scale(1.05);
+}
+/* Lớp phủ đen từ dưới lên (ẩn mặc định) */
+.movie-poster-wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+/* Hiện lớp phủ khi hover */
+.movie-poster-wrapper:hover::after {
+  opacity: 1;
+}
+
+/* Nút play trên overlay */
+.play-overlay-button {
+  border: none;
+  color: #ccc;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 2; /* TRÊN CÙNG */
+}
+
+.play-overlay-button:hover {
+  background: transparent;
+  transform: scale(1.05);
 }
 
 /* Tên phim */
-.movie-card h4 {
+.movie-title {
   font-size: 17px;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 6px;
   text-transform: uppercase;
-  min-height: 44px;
+  margin: 8px 0;
+  max-height: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.movie-title:hover {
+  color: yellow;
+}
+.movie-card h4 {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  min-height: 25px;
+  letter-spacing: 0.5px;
 }
 
 /* Ngày chiếu / mô tả */
 .movie-card p {
   font-size: 14px;
-  color: #aaa;
-  margin-bottom: 12px;
+  color: #ccc;
 }
 
+.movie-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+
+/* Nút */
+.movie-card .book-button {
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+  padding: 0 25px;
+  position: relative;
+  height: 40px;
+  background-color: #FFEB3B; /* màu nền ban đầu */
+  color: #000;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.play-button{
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+  padding: 0 25px;
+  position: relative;
+  height: 40px;
+  background-color: transparent !important; /* màu nền ban đầu */
+  color: #fff !important;
+  border: 1px solid #fff !important;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.movie-card .play-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c) !important;
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.movie-card .book-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.movie-card button:hover::before {
+  transform: scaleX(1);
+}
+
+.movie-card button:hover {
+  color: #fff;
+}
+
+.movie-card button span {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Nút load more */
+.loadmorebox {
+  display: flex;
+  justify-content: center;
+}
+
+.load-more-button{
+  margin-top: 40px;
+  width: 200px;
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+  position: relative;
+  height: 45px;
+  background: linear-gradient(to right, #5d0eeb, #a943ec);
+  color: #fff !important;
+  border: none !important;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.load-more-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c) !important;
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.load-more-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.load-more-button:hover::before {
+  transform: scaleX(1);
+}
+
+.load-more-button:hover {
+  color: #fff;
+}
+
+.load-more-button span {
+  position: relative;
+  z-index: 1;
+}
 /* ==========================
    PHẦN GIỚI THIỆU ĐẶC BIỆT
 ========================== */
@@ -182,10 +425,14 @@
   border: none;
   padding: 12px 32px;
   font-size: 18px;
-  border-radius: 30px;
+  border-radius: 4px;
   font-family: 'Anton', sans-serif;
   letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
 }
+
+
 
 .featured-button a {
   color: #fff;
@@ -193,9 +440,10 @@
 }
 
 .featured-button:hover {
-    background: linear-gradient(to right, #f77904, #e7bf3c);
+  background: linear-gradient(to right, #f77904, #e7bf3c);
   box-shadow: 0 0 15px rgba(255, 75, 43, 0.7);
 }
+
 
 @keyframes fadeInUp {
   from {
@@ -525,7 +773,12 @@
   flex-wrap: wrap;
   margin-top: 30px;
 }
-
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px; 
+}
 /* Tiêu đề */
 .quick-booking-title {
   font-weight: 800;
@@ -566,6 +819,7 @@
   border: none;
   height: 32px;
 }
+
 
 
 

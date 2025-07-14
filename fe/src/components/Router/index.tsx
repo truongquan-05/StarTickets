@@ -44,6 +44,13 @@ import TimKiemPhim from '../pages/Users/Timkiemphim';
 import ListDanhGia from '../pages/Admin/DanhGia/ListDanhGia';
 import TrashMovies from '../pages/Admin/MoviesPage/TrashMovies';
 import ThanhToan from '../pages/Users/DatVe/ThanhToan';
+import LichSuDatVe from '../pages/Users/DatVe/LichSuDatVe';
+import BannerList from '../pages/Admin/Banner/BannerList';
+import BannerForm from '../pages/Admin/Banner/BannerForm';
+import DonVeList from '../pages/Admin/Donve/DonveList';
+import DonVeDetail from '../pages/Admin/Donve/DonveDetail';
+import LichSuTatCaVe from '../pages/Users/DatVe/LichSuTatCaVe';
+import CheckDatVe from '../pages/Users/DatVe/CheckDatVe';
 
 
 
@@ -54,7 +61,7 @@ import ThanhToan from '../pages/Users/DatVe/ThanhToan';
 const Routermain = () => {
   const element = useRoutes([
     {
-      path: '/',
+      path: "/",
       element: <User />,
       children: [
         { path: '', element: <Home /> },
@@ -68,52 +75,58 @@ const Routermain = () => {
         { path: 'register', element: <Register /> },
         { path: 'auth/google/callback', element: <GoogleCallback /> },
         { path: 'profile', element: <ProfilePage /> },
+        { path: 'history-all', element: <LichSuTatCaVe /> },
         { path: '/tim-kiem-phim', element: <TimKiemPhim /> },
+        { path: 'check', element: <CheckDatVe /> },
+
 
 
       ],
     },
     {
-      path: '/admin',
+      path: "/admin",
       element: <Admin />,
       children: [
-        { path: '', element: <DashboardAdmin /> },
-        { path: 'movies/list', element: <List /> },
-         { path: 'movies/detail/:id', element: <MovieDetail /> },
-        { path: 'movies/add', element: <AddMoviesPage /> },
-        { path: 'category_chair/list', element: <ListCategoryChair /> },
-        { path: 'movies/trash', element: <TrashMovies /> },
+        { path: "", element: <DashboardAdmin /> },
+        { path: "movies/list", element: <List /> },
+        { path: "movies/detail/:id", element: <MovieDetail /> },
+        { path: "movies/add", element: <AddMoviesPage /> },
+        { path: "category_chair/list", element: <ListCategoryChair /> },
+        { path: "movies/trash", element: <TrashMovies /> },
 
-        { path: 'chair/list', element: <Chair /> },
-        { path: 'lichchieu/list', element: <LichChieu /> },
-        { path: 'lichchieucu/list', element: <LichChieuCu /> },
-        { path: 'lichchieu/add', element: <AddLichChieu /> },
-        { path: 'lichchieu/edit/:id', element: <EditLichChieu /> },
-        { path: 'cinemas/list', element: <ListCinemas /> },
-        { path: 'cinemas/add', element: <AddCinemasPage /> },
-        { path: 'room/list', element: <ListPhongChieu /> },
-        { path: 'room/list/chuaxuat', element: <PhongChieuChuaXuat /> },
-        { path: 'room/trashed/list', element: <PhongChieuXoaMem /> },
-        { path: 'room/add', element: <AddPhongChieu /> },
+        { path: "banner", element: <BannerList /> },
+        { path: "banner/create", element: <BannerForm /> },
+        { path: "don-ve", element: <DonVeList /> },
+        { path: "don-ve/:id", element: <DonVeDetail /> },
 
-        { path: 'comment/phanhoinguoidung', element: <PhanHoiNguoiDung /> },
-        { path: 'comment/list', element: <Comment /> },
+        { path: "chair/list", element: <Chair /> },
+        { path: "lichchieu/list", element: <LichChieu /> },
+        { path: "lichchieucu/list", element: <LichChieuCu /> },
+        { path: "lichchieu/add", element: <AddLichChieu /> },
+        { path: "lichchieu/edit/:id", element: <EditLichChieu /> },
+        { path: "cinemas/list", element: <ListCinemas /> },
+        { path: "cinemas/add", element: <AddCinemasPage /> },
+        { path: "room/list", element: <ListPhongChieu /> },
+        { path: "room/list/chuaxuat", element: <PhongChieuChuaXuat /> },
+        { path: "room/trashed/list", element: <PhongChieuXoaMem /> },
+        { path: "room/add", element: <AddPhongChieu /> },
 
+        { path: "comment/phanhoinguoidung", element: <PhanHoiNguoiDung /> },
+        { path: "comment/list", element: <Comment /> },
 
+        { path: "users", element: <UserList /> },
+        { path: "vaitro", element: <VaiTro /> },
 
-        { path: 'users', element: <UserList/> },
-        { path: 'vaitro', element: <VaiTro/> },
+        { path: "genre", element: <GenresManager /> },
 
-        { path: 'genre', element: <GenresManager/> },
-        
-        { path: 'food', element: <FoodList /> },
-        { path: 'food/add', element: <FoodAdd /> },
-        { path: 'food/edit/:id', element: <FoodEdit /> },
-        { path: 'vouchers/list', element: <VouchersList /> },
-        { path: 'vouchers/add', element: <AddVoucher /> },
-        { path: 'news', element: <ListNews /> },
-        { path: 'news/add', element: <AddNews /> },
-        { path: 'danh-gia/list', element: <ListDanhGia /> },
+        { path: "food", element: <FoodList /> },
+        { path: "food/add", element: <FoodAdd /> },
+        { path: "food/edit/:id", element: <FoodEdit /> },
+        { path: "vouchers/list", element: <VouchersList /> },
+        { path: "vouchers/add", element: <AddVoucher /> },
+        { path: "news", element: <ListNews /> },
+        { path: "news/add", element: <AddNews /> },
+        { path: "danh-gia/list", element: <ListDanhGia /> },
       ],
     },
   ]);

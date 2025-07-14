@@ -15,4 +15,5 @@ class DatVeChiTiet extends Model
     public function GheDat(){
         return $this->belongsTo(Ghe::class, 'ghe_id', 'id');
     }
+   
 }

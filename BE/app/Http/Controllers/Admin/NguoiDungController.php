@@ -4,9 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Models\VaiTro;
+use App\Models\XacNhan;
 use App\Models\NguoiDung;
+use App\Mail\MaXacNhanMail;
 use Illuminate\Http\Request;
+use App\Jobs\XoaMaXacNhanJob;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -44,7 +50,7 @@ class NguoiDungController extends Controller
             'email_da_xac_thuc',
             'vai_tro_id' => 'required|exists:vai_tro,id',
 
-        ],   [ // 👉 Thêm custom message ở đây
+        ],   [ //  Thêm custom message ở đây
             'ten.required' => 'Vui lòng nhập tên.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không hợp lệ.',
@@ -114,13 +120,76 @@ class NguoiDungController extends Controller
                 'message' => 'Người dùng không tồn tại',
             ], 404);
         }
+        if ($request->has('ma_xac_nhan')) {
+            $updateClient = $request->all();
+            $validatedData = Validator::make($updateClient, [
+                'ten' => 'required|string|max:255',
+                'email' => 'required|email|unique:nguoi_dung,email,' . $id . '|max:255',
+                'so_dien_thoai' => 'required|string|max:10|unique:nguoi_dung,so_dien_thoai,' . $id,
+            ], [
+                'ten.required' => 'Vui lòng nhập tên.',
+                'email.required' => 'Vui lòng nhập email.',
+                'email.email' => 'Email không hợp lệ.',
+                'email.unique' => 'Email đã tồn tại.',
+                'so_dien_thoai.required' => 'Vui lòng nhập số điện thoại.',
+                'so_dien_thoai.max' => 'Số điện thoại không quá 10 ký tự.',
+                'so_dien_thoai.unique' => 'Số điện thoại đã tồn tại.',
+            ]);
+
+            if ($validatedData->fails()) {
+                return response()->json([
+                    'message' => 'Dữ liệu không hợp lệ',
+                    'errors' => $validatedData->errors()
+                ], 422);
+            }
+
+            $xacNhan = XacNhan::where('nguoi_dung_id', $id)->orderByDesc('id')->first();
+            if (!$xacNhan) {
+                return response()->json([
+                    'message' => 'Không tìm thấy mã xác nhận cho người dùng này'
+                ], 404);
+            }
+            if ($xacNhan->ma_xac_nhan != $updateClient['ma_xac_nhan']) {
+                return response()->json([
+                    'message' => 'Mã xác nhận không đúng'
+                ], 422);
+            }
+            $nguoiDung->update($updateClient);
+            return response()->json([
+                'message' => 'Cập nhật thành công ',
+                'data' => NguoiDung::with('vaitro')->find($nguoiDung->id)
+            ]);
+        }
+
+        if ($request->has('xac_thuc_mat_khau')) {
+            $dataPassword = $request->all();
+            if (!Hash::check($dataPassword['mat_khau_cu'], $nguoiDung->password)) {
+                return response()->json([
+                    'message' => 'Mật khẩu cũ không đúng'
+                ], 422);
+            }
+
+
+            $nguoiDung->update([
+                'password' => bcrypt($dataPassword['xac_thuc_mat_khau']),
+            ]);
+            return response()->json([
+                'message' => 'Cập nhật mật khẩu thành công ',
+                'data' => NguoiDung::with('vaitro')->find($nguoiDung->id)
+            ]);
+        }
+
+
+
+
+
 
         $validatedData = Validator::make($request->all(), [
             'ten' => 'required|string|max:255',
             'email' => 'required|email|unique:nguoi_dung,email,' . $id . '|max:255',
             'so_dien_thoai' => 'required|string|max:10|unique:nguoi_dung,so_dien_thoai,' . $id,
             'vai_tro_id' => 'required|exists:vai_tro,id',
-        ], [ 
+        ], [
             'ten.required' => 'Vui lòng nhập tên.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không hợp lệ.',
@@ -139,6 +208,14 @@ class NguoiDungController extends Controller
             ], 422);
         }
 
+        // CHẶN gán quyền Admin nếu không phải SuperAdmin
+        if ($request->has('vai_tro_id') && $request->vai_tro_id == 1 && Auth::user()->vai_tro_id !== 0) {
+            return response()->json([
+                'message' => 'Chỉ SuperAdmin mới có quyền gán vai trò Admin'
+            ], 403);
+        }
+
+        //  Nếu hợp lệ thì cập nhật
         $nguoiDung->update($request->all());
 
         return response()->json([
@@ -165,6 +242,48 @@ class NguoiDungController extends Controller
 
         return response()->json([
             'message' => 'Xóa người dùng thành công',
+        ]);
+    }
+
+    public function TaoMaXacNhan($id)
+    {
+        $nguoiDung = NguoiDung::find($id);
+        if (!$nguoiDung) {
+            return response()->json([
+                'error' => 'Người dùng không tồn tại'
+            ], 404);
+        }
+
+        $maXacNhan = rand(100000, 999999);
+
+        try {
+            Mail::to($nguoiDung->email)->send(new MaXacNhanMail($maXacNhan));
+
+            $xacNhan = XacNhan::create([
+                'nguoi_dung_id' => $id,
+                'ma_xac_nhan' => $maXacNhan
+            ]);
+            XoaMaXacNhanJob::dispatch($xacNhan->id)->delay(now()->addSeconds(60));
+            return response()->json([
+                'message' => 'Mã xác nhận đã được tạo và gửi email',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Không thể gửi email xác nhận. Vui lòng thử lại sau.'
+            ], 500);
+        }
+    }
+
+    public function getMaXacNhan($id)
+    {
+        $xacNhan = XacNhan::where('nguoi_dung_id', $id)->orderByDesc('id')->first();
+        if (!$xacNhan) {
+            return response()->json([
+                'message' => 'Không tìm thấy mã xác nhận cho người dùng này'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Mã xác nhận đã được tìm thấy',
         ]);
     }
 }

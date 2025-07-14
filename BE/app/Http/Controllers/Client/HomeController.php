@@ -21,11 +21,10 @@ class HomeController extends Controller
         $tomorrow = $now->copy()->addDay()->toDateString();
 
 
-        $phimDangChieuIds = DB::table('lich_chieu')
-            ->whereDate('gio_chieu', $today)
-            ->whereTime('gio_chieu', '>=', $timeNow)
-            ->pluck('phim_id')
-            ->unique();
+        $phimDangChieuIds = LichChieu::whereDate('gio_chieu', $today)
+            ->pluck('phim_id');
+
+
 
         $phimDangChieu = Phim::whereIn('id', $phimDangChieuIds)
             ->orderBy('ngay_cong_chieu', 'desc')
@@ -53,7 +52,7 @@ class HomeController extends Controller
             ->orderBy('ngay_cong_chieu', 'desc')
             ->take(9)
             ->get();
-
+   
 
         //  all dac biet
 

@@ -26,6 +26,7 @@ import {
   useCreateNews,
 } from "../../../hook/hungHook";
 import { Link } from "react-router-dom";
+import ReactQuill from "react-quill";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -81,7 +82,11 @@ const ListNews = () => {
     formData.append("tieu_de", values.tieu_de);
     formData.append("noi_dung", values.noi_dung);
 
-    if (values.hinh_anh && values.hinh_anh.length > 0 && values.hinh_anh[0].originFileObj) {
+    if (
+      values.hinh_anh &&
+      values.hinh_anh.length > 0 &&
+      values.hinh_anh[0].originFileObj
+    ) {
       formData.append("hinh_anh", values.hinh_anh[0].originFileObj);
     }
 
@@ -116,7 +121,12 @@ const ListNews = () => {
   };
 
   const getColumnSearchProps = (dataIndex: string) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }: any) => (
       <div style={{ padding: 8 }}>
         <Input
           placeholder={`Tìm kiếm ${dataIndex}`}
@@ -168,13 +178,7 @@ const ListNews = () => {
       ...getColumnSearchProps("tieu_de"),
       width: "25%",
     },
-    {
-      title: "Nội dung",
-      dataIndex: "noi_dung",
-      key: "noi_dung",
-      ...getColumnSearchProps("noi_dung"),
-      width: "40%",
-    },
+
     {
       title: "Hình ảnh",
       dataIndex: "hinh_anh",
@@ -182,7 +186,7 @@ const ListNews = () => {
       width: "18%",
       render: (text: string) => (
         <Image
-          src={`${BASE_URL}${text}`}
+          src={`${BASE_URL}/storage/${text}`}
           width={120}
           height={80}
           style={{ objectFit: "cover", borderRadius: 4 }}
@@ -228,10 +232,8 @@ const ListNews = () => {
           }}
         >
           <span>Danh sách tin tức</span>
-          <Button
-            type="primary"
-          >
-           <Link to={"/admin/news/add"}>Thêm mới</Link> 
+          <Button type="primary">
+            <Link to={"/admin/news/add"}>Thêm mới</Link>
           </Button>
         </div>
       }
@@ -254,7 +256,14 @@ const ListNews = () => {
       />
 
       <Modal
-        title={editingItem ? `Chỉnh sửa tin tức (ID: ${editingItem.id})` : "Thêm mới tin tức"}
+        title={
+          editingItem
+            ? `Chỉnh sửa tin tức (ID: ${editingItem.id})`
+            : "Thêm mới tin tức"
+        }
+        width={1200}
+        height={"90vh"}
+        style={{position:"relative", top:"20px"}}
         open={isModalOpen}
         onCancel={closeModal}
         footer={null}
@@ -274,7 +283,19 @@ const ListNews = () => {
             name="noi_dung"
             rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}
           >
-            <Input.TextArea rows={4} />
+            <ReactQuill
+              theme="snow"
+              style={{ height: "300px", marginBottom: "50px" }}
+              placeholder="Nhập mô tả phim"
+              modules={{
+                toolbar: [
+                  [{ header: [1, 2, 3, false] }],
+                  ["bold", "italic", "underline", "strike"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["clean"],
+                ],
+              }}
+            />
           </Form.Item>
 
           <Form.Item

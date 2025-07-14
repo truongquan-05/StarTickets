@@ -28,7 +28,6 @@ import { IMovies, MoviesForm } from "../interface/movies";
 import "./Phim.css";
 import {
   useListMovies,
-  useDeleteMovies,
   useUpdateMovies,
   useSoftDeleteMovies,
 } from "../../../hook/hungHook";
@@ -37,7 +36,6 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { text } from "framer-motion/client";
 
 const { Option } = Select;
 const { Text } = Typography;

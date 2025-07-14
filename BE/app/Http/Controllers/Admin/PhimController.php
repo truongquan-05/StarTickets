@@ -22,15 +22,13 @@ class PhimController extends Controller
             $query->where('ten_phim', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->has('tinh_trang')) {
-            $query->where('tinh_trang', $request->tinh_trang);
-        }
 
         $perPage = $request->get('per_page', 10);
         $phims = $query->orderBy('id', 'desc')->paginate($perPage);
 
         return response()->json($phims);
     }
+
 
     public function store(StorePhimRequest $request)
     {
@@ -83,13 +81,12 @@ class PhimController extends Controller
         $phim = Phim::create($data);
         // $phim->load('theLoai');
 
+
         return response()->json([
             'message' => 'Thêm phim thành công',
             'data' => $phim
-        ], 201);
+        ], 200);
     }
-
-
 
     // Chi tiết phim theo ID
     public function show($id)

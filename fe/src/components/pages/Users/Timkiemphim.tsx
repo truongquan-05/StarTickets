@@ -4,7 +4,14 @@ import { Spin, Card, Row, Col, Typography, Button } from "antd";
 import { searchPhim } from "../../provider/duProvider";
 import "./Home.css";
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
+const BASE_URL = "http://127.0.0.1:8000";
+
+const getImageUrl = (path: string | null | undefined): string => {
+  if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}/storage/${path}`;
+};
 
 const TimKiemPhim = () => {
   const [results, setResults] = useState<any[]>([]);
@@ -16,7 +23,7 @@ const TimKiemPhim = () => {
     const requestParams: any = {};
 
     for (const [key, value] of params.entries()) {
-      if (key === "the_loai_id[]") {
+      if (key === "the_loai_id") {
         if (!requestParams["the_loai_id"]) requestParams["the_loai_id"] = [];
         requestParams["the_loai_id"].push(value);
       } else {
@@ -51,20 +58,17 @@ const TimKiemPhim = () => {
                 cover={
                   <img
                     alt={phim.ten_phim}
-                    src={
-                      phim.anh_poster
-                        ? `http://127.0.0.1:8000/storage/${phim.anh_poster}`
-                        : "https://via.placeholder.com/220x280?text=No+Image"
-                    }
+                    src={getImageUrl(phim.anh_poster)}
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "https://via.placeholder.com/220x280?text=No+Image";
+                    }}
                     className="poster-image"
                   />
                 }
               >
                 <Title level={4}>{phim.ten_phim || "Không có tên phim"}</Title>
-                <Paragraph ellipsis={{ rows: 2 }}>
-                  {phim.mo_ta || "Chưa có mô tả"}
-                </Paragraph>
-
+                <div dangerouslySetInnerHTML={{ __html: phim.mo_ta }} />
                 <Link to={`/chi-tiet-phim/${phim.id}`}>
                   <Button type="primary" block>
                     Xem chi tiết

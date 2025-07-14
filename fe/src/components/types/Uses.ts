@@ -14,6 +14,14 @@ export interface User {
   isActive: boolean;
   trang_thai: boolean;
 }
+export interface DonDoAn{
+  id:number,
+  do_an_id:number,
+  dat_ve_id:number,
+  gia_ban:number,
+  so_luong:number
+}
+
 export interface Food {
   id: number;
   ten_do_an: string;
@@ -40,7 +48,7 @@ export interface Phim {
   mo_ta: string;
   hinh_anh: string;
   ngay_cong_chieu: string;
-   the_loai_id: TheLoaiObject[]; // ✅ phải là mảng object
+  the_loai_id: TheLoaiObject[]; // ✅ phải là mảng object
   thoi_luong?: number; // nếu bạn dùng
   anh_poster?: string;
 }

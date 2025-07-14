@@ -71,7 +71,7 @@ class TinTucController extends Controller
         $validator = Validator::make($request->all(), [
             'tieu_de' => 'required|string|max:255',
             'noi_dung' => 'required|string',
-            'hinh_anh' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            // 'hinh_anh' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -82,7 +82,7 @@ class TinTucController extends Controller
 
         if ($request->hasFile('hinh_anh')) {
             $path = $request->file('hinh_anh')->store('images', 'public');
-            $data['hinh_anh'] = Storage::url($path);
+            $data['hinh_anh'] = $path;
         }
 
         $tinTuc = TinTuc::create($data);
@@ -95,7 +95,7 @@ class TinTucController extends Controller
         $validator = Validator::make($request->all(), [
             'tieu_de' => 'sometimes|required|string|max:255',
             'noi_dung' => 'sometimes|required|string',
-            'hinh_anh' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            // 'hinh_anh' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($validator->fails()) {
@@ -109,7 +109,7 @@ class TinTucController extends Controller
                 Storage::disk('public')->delete(str_replace('/storage/', '', $tinTuc->hinh_anh));
             }
             $path = $request->file('hinh_anh')->store('images', 'public');
-            $data['hinh_anh'] = Storage::url($path);
+            $data['hinh_anh'] = $path;
         }
 
         $tinTuc->update($data);
@@ -137,7 +137,7 @@ class TinTucController extends Controller
     // Xóa cứng tin tức
     public function forceDelete($id)
     {
-        $tinTuc = TinTuc::onlyTrashed()->find($id);
+        $tinTuc = TinTuc::find($id);
         if (!$tinTuc) {
             return response()->json(['message' => 'Tin tức chưa được xóa mềm hoặc không tồn tại'], 404);
         }

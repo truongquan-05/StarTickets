@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import  { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Table, Button, Modal, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -188,7 +188,8 @@ const ListPhongChieu = () => {
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
-        width={1000}
+        width={1300}
+        
         bodyStyle={{
           display: "flex",
           flexDirection: "column",
