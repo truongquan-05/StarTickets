@@ -31,6 +31,8 @@ use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\RapController as ClientRapController;
 use App\Http\Controllers\Admin\AddQuyenController;
+use App\Http\Controllers\Admin\BannerController;
+
 
 
 
@@ -131,7 +133,16 @@ Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan'])
 
 Route::apiResource('quyen_truy_cap',AddQuyenController::class);
 
-
+//Banner
+Route::prefix('banners')->group(function () {
+    Route::get('/', [BannerController::class, 'index']); // Lấy danh sách banner (active, expired, deleted)
+    Route::post('/', [BannerController::class, 'store']); // Tạo banner mới
+    Route::get('/{id}', [BannerController::class, 'show']); // Xem chi tiết banner
+    Route::put('/{id}', [BannerController::class, 'update']); // Cập nhật banner
+    Route::delete('/{id}', [BannerController::class, 'destroy']); // Xóa mềm banner
+    Route::post('/{id}/restore', [BannerController::class, 'restore']); // Khôi phục banner
+    Route::delete('/{id}/force', [BannerController::class, 'forceDelete']); // Xóa cứng banner
+});
 
 //-------------------CLIENT-------------------//
 
