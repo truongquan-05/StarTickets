@@ -288,6 +288,17 @@ return new class extends Migration {
             $table->string('token', 255);
             $table->timestamps();
         });
+        Schema::create('banners', function (Blueprint $table) {
+            $table->id();
+            $table->string('title', 255);
+            $table->string('image_url', 255);
+            $table->string('link_url', 255)->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     public function down(): void

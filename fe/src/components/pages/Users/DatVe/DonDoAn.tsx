@@ -16,7 +16,6 @@ const getImageUrl = (path: string | null | undefined) => {
   return `${BASE_URL}/storage/${path}`;
 };
 
-
 // Định nghĩa Props của component (chúng ta sẽ theo Lựa chọn 1: tự fetch data)
 interface Props {
   onFoodQuantityChange: (foodItem: SelectedFoodItem) => void;
@@ -27,7 +26,9 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange }) => {
   const { data, isLoading } = useListFoods();
   const foodList = data?.data || []; // Assuming data.data holds the array of foods
 
-  const [foodQuantities, setFoodQuantities] = useState<Map<number, number>>(new Map());
+  const [foodQuantities, setFoodQuantities] = useState<Map<number, number>>(
+    new Map()
+  );
 
   // Effect để khởi tạo số lượng
   useEffect(() => {
@@ -41,11 +42,12 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange }) => {
   }, [foodList]);
 
   // Hàm để lấy số lượng của một món ăn cụ thể
-  const getQuantity = (foodId: number): number => foodQuantities.get(foodId) || 0;
+  const getQuantity = (foodId: number): number =>
+    foodQuantities.get(foodId) || 0;
 
   // Hàm xử lý thay đổi số lượng khi nhấn nút +/-
   const handleQuantityChange = (food: Food, change: number) => {
-    setFoodQuantities(prevQuantities => {
+    setFoodQuantities((prevQuantities) => {
       const newQuantities = new Map(prevQuantities);
       const currentQuantity = newQuantities.get(food.id) || 0;
       const updatedQuantity = Math.max(0, currentQuantity + change); // Đảm bảo số lượng không âm
@@ -59,8 +61,15 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange }) => {
   };
 
   return (
-    <div style={{ flex: 1, padding: 20, border: "1px solid #ddd", borderRadius: 8, marginLeft: 20, backgroundColor: "#282c3f" }}>
-      <h3 style={{ color: "white" }}>Chọn đồ ăn kèm</h3>
+    <div
+      style={{
+        flex: 1,
+        padding: 20,
+        border: "1px solid #333",
+        borderRadius: 4,
+        marginLeft: 20,
+      }}
+    >
       {isLoading ? (
         <Spin />
       ) : (
@@ -72,7 +81,7 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange }) => {
                 key={food.id}
                 style={{
                   border: "1px solid #eee",
-                  borderRadius: 8,
+                  borderRadius: 4,
                   padding: 12,
                   width: "100%", // Chia 2 cột, trừ gap
                   boxSizing: "border-box", // Đảm bảo padding không làm tràn width
@@ -95,41 +104,123 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange }) => {
                     marginRight: 12, // Khoảng cách giữa ảnh và chữ
                   }}
                 />
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                  <div style={{ fontSize: 15, color:"black",paddingBottom:"10px" }}>{food.ten_do_an}</div>
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 15,
+                      color: "black",
+                      paddingBottom: "10px",
+                    }}
+                  >
+                    {food.ten_do_an}
+                  </div>
                   <div style={{ color: "#555", fontSize: 14 }}>
                     {food.gia_ban.toLocaleString("vi-VN")} VNĐ
                   </div>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", marginLeft: 'auto' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginLeft: "auto",
+                    backgroundColor: "#8B9DC3",
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                  }}
+                >
                   <Button
-                    onClick={() => handleQuantityChange(food, -1)}
+                    onClick={(e) => {
+                      handleQuantityChange(food, -1);
+                      e.target.blur(); // Remove focus after click
+                    }}
                     size="small"
                     disabled={quantity === 0}
-                    style={{ backgroundColor: "#e50914", borderColor: "#e50914", color: "white" }}
-                  >
-                    -
-                  </Button>
-                  <InputNumber
-                    min={0}
-                    value={quantity}
-                    onChange={(value) => {
-                      const newQuantity = value !== null ? value : 0;
-                      setFoodQuantities(prev => {
-                          const updated = new Map(prev);
-                          updated.set(food.id, newQuantity);
-                          return updated;
-                      });
-                      onFoodQuantityChange({ ...food, quantity: newQuantity });
+                    style={{
+                      backgroundColor: "transparent",
+                      border: "none",
+                      color: quantity === 0 ? "#6A7A9A" : "#2C3E50",
+                      width: "40px",
+                      height: "36px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                      cursor: quantity === 0 ? "not-allowed" : "pointer",
+                      transition: "all 0.2s ease",
+                      outline: "none", // Remove focus outline
                     }}
-                    style={{ margin: "0 8px", width: 40, textAlign: "center" }}
-                    readOnly
-                  />
+                    onMouseEnter={(e) => {
+                      if (quantity > 0) {
+                        e.target.style.backgroundColor = "yellow"; // Change to yellow on hover
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (quantity > 0) {
+                        e.target.style.backgroundColor = "transparent";
+                      }
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.backgroundColor = "transparent"; // Reset on focus
+                    }}
+                  >
+                    −
+                  </Button>
+
+                  <div
+                    style={{
+                      minWidth: "40px",
+                      height: "36px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "transparent",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      color: "#2C3E50",
+                    }}
+                  >
+                    {quantity}
+                  </div>
+
                   <Button
-                    onClick={() => handleQuantityChange(food, 1)}
+                    onClick={(e) => {
+                      handleQuantityChange(food, 1);
+                      e.target.blur(); // Remove focus after click
+                    }}
                     size="small"
-                    style={{ backgroundColor: "#e50914", borderColor: "#e50914", color: "white" }}
+                    style={{
+                      backgroundColor: "transparent",
+                      border: "none",
+                      color: "#2C3E50",
+                      width: "40px",
+                      height: "36px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      outline: "none", // Remove focus outline
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = "yellow"; // Change to yellow on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "transparent";
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.backgroundColor = "transparent"; // Reset on focus
+                    }}
                   >
                     +
                   </Button>
