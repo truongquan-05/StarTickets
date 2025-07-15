@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   ReactNode,
   useContext,
@@ -87,7 +87,7 @@ export const GoogleAuthProvider = ({ children }: GoogleAuthProviderProps) => {
     if (!userId) throw new Error("Không tìm thấy user.id");
 
     // 🚀 Gọi backend để lấy thông tin người dùng theo ID
-    const res = await axios.get(`http://127.0.0.1:8000/api/nguoi_dung/${userId}`, {
+    const res = await axios.get(`http://127.0.0.1:8000/api/client/nguoi_dung/${userId}`, {
       headers: { Authorization: `Bearer ${parsedToken}` },
     });
 

@@ -9,16 +9,16 @@ class IsAdminArea
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = $request->user();
+        // $user = $request->user();
 
-        if (!$user) {
-            return response()->json(['message' => 'Bạn chưa đăng nhập'], 401);
-        }
+        // if (!$user) {
+        //     return response()->json(['message' => 'Bạn chưa đăng nhập'], 401);
+        // }
 
-        if (in_array($user->vai_tro_id, [1, 3, 4, 99])) {
-            return $next($request);
-        }
+        // if (in_array($user->vai_tro_id, [1, 3, 4, 99])) {
+        //     return $next($request);
+        // }
 
-        return response()->json(['message' => 'Bạn không có quyền truy cập vào khu vực quản trị'], 403);
+        // return response()->json(['message' => 'Bạn không có quyền truy cập vào khu vực quản trị'], 403);
     }
 }

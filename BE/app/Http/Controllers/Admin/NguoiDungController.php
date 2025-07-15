@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Models\VaiTro;
+use App\Http\Controllers\Controller;
 use App\Models\XacNhan;
 use App\Models\NguoiDung;
 use App\Mail\MaXacNhanMail;
 use Illuminate\Http\Request;
 use App\Jobs\XoaMaXacNhanJob;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -17,9 +15,23 @@ use Illuminate\Support\Facades\Validator;
 
 
 
-
 class NguoiDungController extends Controller
 {
+
+
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:TaiKhoan-read')->only(['index', 'show']);
+        $this->middleware('permission:TaiKhoan-create')->only(['store']);
+        $this->middleware('permission:TaiKhoan-update')->only(['update']);
+        $this->middleware('permission:TaiKhoan-delete')->only(['destroy']);
+    }
+
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -208,13 +220,6 @@ class NguoiDungController extends Controller
             ], 422);
         }
 
-        // CHẶN gán quyền Admin nếu không phải SuperAdmin
-        if ($request->has('vai_tro_id') && $request->vai_tro_id == 1 && Auth::user()->vai_tro_id !== 0) {
-            return response()->json([
-                'message' => 'Chỉ SuperAdmin mới có quyền gán vai trò Admin'
-            ], 403);
-        }
-
         //  Nếu hợp lệ thì cập nhật
         $nguoiDung->update($request->all());
 
@@ -286,38 +291,4 @@ class NguoiDungController extends Controller
             'message' => 'Mã xác nhận đã được tìm thấy',
         ]);
     }
-// Cấp quyền cho người dùng
-public function capQuyen(Request $request)
-{
-    $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'vai_tro_id' => 'required|exists:vai_tro,id',
-    ]);
-
-    $actingUser = $request->user();
-    $targetUser = NguoiDung::findOrFail($request->user_id);
-
-    // Không được thay đổi vai trò của SuperAdmin
-    if ($targetUser->vai_tro_id == 99) {
-        return response()->json(['message' => 'Không thể thay đổi vai trò của SuperAdmin'], 403);
-    }
-
-    // Nếu là Admin, chỉ được cấp vai trò Nhân viên hoặc Nhân viên rạp
-    if ($actingUser->vai_tro_id == 1 && in_array($request->vai_tro_id, [1, 99])) {
-        return response()->json(['message' => 'Admin không được gán vai trò Admin hoặc SuperAdmin'], 403);
-    }
-
-    // Nếu không phải Admin hoặc SuperAdmin thì từ chối
-    if (!in_array($actingUser->vai_tro_id, [1, 99])) {
-        return response()->json(['message' => 'Bạn không có quyền thực hiện thao tác này'], 403);
-    }
-
-    $targetUser->vai_tro_id = $request->vai_tro_id;
-    $targetUser->save();
-
-    return response()->json(['message' => 'Cập nhật vai trò thành công']);
-}
-
-
-    
 }
