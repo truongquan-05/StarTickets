@@ -71,41 +71,41 @@ export const GoogleAuthProvider = ({ children }: GoogleAuthProviderProps) => {
   };
 
   const handleGoogleCallback = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-    const userStr = params.get("user");
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      const userStr = params.get("user");
 
-    if (!token || !userStr) throw new Error("Thiếu token hoặc user");
+      if (!token || !userStr) throw new Error("Thiếu token hoặc user");
 
-    const parsedToken = decodeURIComponent(token);
-    const parsedUser = JSON.parse(decodeURIComponent(userStr));
-    const userId = parsedUser?.id;
+      const parsedToken = decodeURIComponent(token);
+      const parsedUser = JSON.parse(decodeURIComponent(userStr));
+      const userId = parsedUser?.id;
 
-    if (!userId) throw new Error("Không tìm thấy user.id");
+      if (!userId) throw new Error("Không tìm thấy user.id");
 
     // 🚀 Gọi backend để lấy thông tin người dùng theo ID
     const res = await axios.get(`http://127.0.0.1:8000/api/client/nguoi_dung/${userId}`, {
       headers: { Authorization: `Bearer ${parsedToken}` },
     });
 
-    const fullUser = res.data?.data || res.data;
+      const fullUser = res.data?.data || res.data;
 
-    // ✅ Lưu đầy đủ user vào state và localStorage
-    setAccessToken(parsedToken);
-    setUser(fullUser);
-    localStorage.setItem("token", parsedToken);
-    localStorage.setItem("user", JSON.stringify(fullUser));
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : "Unknown error";
-    setError(new Error(msg));
-    throw new Error(msg);
-  } finally {
-    setLoading(false);
-  }
-};
+      // ✅ Lưu đầy đủ user vào state và localStorage
+      setAccessToken(parsedToken);
+      setUser(fullUser);
+      localStorage.setItem("token", parsedToken);
+      localStorage.setItem("user", JSON.stringify(fullUser));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setError(new Error(msg));
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const logout = () => {
     setAccessToken(null);
