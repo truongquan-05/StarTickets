@@ -78,6 +78,12 @@ class QuyenHanSeeder extends Seeder
             ['quyen' => 'TinTuc-update', 'mo_ta' => 'Sửa tin tức'],
             ['quyen' => 'TinTuc-delete', 'mo_ta' => 'Xóa tin tức'],
             ['quyen' => 'TinTuc-read', 'mo_ta' => 'Xem tin tức'],
+
+            //Banner
+            ['quyen' => 'Banner-create', 'mo_ta' => 'Tạo Banner'],
+            ['quyen' => 'Banner-update', 'mo_ta' => 'Sửa Banner'],
+            ['quyen' => 'Banner-delete', 'mo_ta' => 'Xóa Banner'],
+            ['quyen' => 'Banner-read', 'mo_ta' => 'Xem Banner'],
         ];
 
         DB::table('quyen_han')->insert($permissions);

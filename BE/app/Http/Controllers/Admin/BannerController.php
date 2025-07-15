@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:Banner-read')->only(['index', 'show']);
+        $this->middleware('permission:Banner-create')->only(['store']);
+        $this->middleware('permission:Banner-update')->only(['update']);
+        $this->middleware('permission:Banner-delete')->only(['destroy', 'restore', 'forceDelete']);
+    }
+
+
     public function index(Request $request)
     {
         $type = $request->query('type', 'active'); // Lọc theo active, expired, hoặc deleted

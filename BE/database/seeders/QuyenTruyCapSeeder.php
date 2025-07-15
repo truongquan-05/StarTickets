@@ -61,6 +61,7 @@ class QuyenTruyCapSeeder extends Seeder
             'DoAn-delete',
             'DoAn-read',
             'Phim-read',
+    
         ];
         foreach ($theaterStaffPermissions as $perm) {
             DB::table('quyen_truy_cap')->insert([
@@ -70,7 +71,5 @@ class QuyenTruyCapSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
-
-
     }
 }

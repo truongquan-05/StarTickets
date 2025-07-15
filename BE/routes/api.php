@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AddQuyenController;
 use App\Models\NguoiDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -129,7 +130,7 @@ Route::POST('delete-dat-ve/{id}', [DatVeController::class, 'BackDelete']);
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']);
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
 
-
+Route::apiResource('quyen_truy_cap',AddQuyenController::class);
 
 
 
