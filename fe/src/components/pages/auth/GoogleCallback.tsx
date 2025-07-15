@@ -16,7 +16,6 @@ const GoogleCallback = () => {
         await handleGoogleCallback();
         message.success("Đăng nhập Google thành công!");
         navigate("/");
-        
       } catch (err) {
         console.error("❌ Lỗi callback:", err);
         message.error("Đăng nhập thất bại.");

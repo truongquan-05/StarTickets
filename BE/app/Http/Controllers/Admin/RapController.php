@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Validator;
 
 class RapController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:Rap-read')->only(['index', 'show']);
+        $this->middleware('permission:Rap-create')->only(['store']);
+        $this->middleware('permission:Rap-update')->only(['update']);
+        $this->middleware('permission:Rap-delete')->only(['destroy']);
+    }
+    
     public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -165,8 +175,8 @@ class RapController extends Controller
         }
 
         foreach ($rap->phongChieus as $phong) {
-            $phong->ghes()->delete();  
-            $phong->delete();        
+            $phong->ghes()->delete();
+            $phong->delete();
         }
 
         $rap->forceDelete(); // Xóa  rạp
@@ -175,8 +185,6 @@ class RapController extends Controller
             'success' => true,
             'message' => 'Xóa mềm rạp và các phòng, ghế liên quan thành công'
         ], 200);
-
-  
     }
 
 

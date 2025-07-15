@@ -44,6 +44,7 @@ class LichSuMuaHangController extends Controller
             ->where('nguoi_dung_id', $userId) // lau ve cua chinh nguoi dung
             ->first();
 
+
         if (!$thanhToan) {
             return response()->json([
                 'status' => false,

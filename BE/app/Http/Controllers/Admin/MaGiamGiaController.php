@@ -10,6 +10,17 @@ use Carbon\Carbon;
 
 class MaGiamGiaController extends Controller
 {
+  public function __construct()
+    {
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:MaGiamGia-read')->only(['index', 'show']);
+        $this->middleware('permission:MaGiamGia-create')->only(['store']);
+        $this->middleware('permission:MaGiamGia-update')->only(['update']);
+    }
+
+
+
+
     // Danh sách mã đang hoạt động hoặc sắp bắt đầu (ẩn mã hết hạn)
     public function index(Request $request)
     {

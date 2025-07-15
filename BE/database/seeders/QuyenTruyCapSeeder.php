@@ -29,10 +29,11 @@ class QuyenTruyCapSeeder extends Seeder
 
         // NHÂN VIÊN (id = 3)
         $staffPermissions = [
-            'Phim-create', 'Phim-update', 'Phim-delete',
-            'Rap-create', 'Rap-update', 'Rap-delete',
-            'PhongChieu-create', 'PhongChieu-update', 'PhongChieu-delete',
-            'Ve-update', 'Ve-delete'
+            'Ve-read',
+            'LichChieu-read',
+            'PhongChieu-read',
+            'Phim-read',
+            'DoAn-read'
         ];
         foreach ($staffPermissions as $perm) {
             DB::table('quyen_truy_cap')->insert([
@@ -43,10 +44,23 @@ class QuyenTruyCapSeeder extends Seeder
             ]);
         }
 
-        // NHÂN VIÊN RẠP (id = 4)
+        // QUẢN LÝ (id = 4)
         $theaterStaffPermissions = [
-            'PhongChieu-create', 'PhongChieu-update', 'PhongChieu-delete',
-            'LichChieu-create', 'LichChieu-update', 'LichChieu-delete',
+            'LichChieu-create',
+            'LichChieu-update',
+            'LichChieu-delete',
+            'LichChieu-read',
+            'PhongChieu-create',
+            'PhongChieu-update',
+            'PhongChieu-delete',
+            'PhongChieu-read',
+            'Ve-read',
+            'DanhGia-read',
+            'DoAn-create',
+            'DoAn-update',
+            'DoAn-delete',
+            'DoAn-read',
+            'Phim-read',
         ];
         foreach ($theaterStaffPermissions as $perm) {
             DB::table('quyen_truy_cap')->insert([
@@ -57,15 +71,6 @@ class QuyenTruyCapSeeder extends Seeder
             ]);
         }
 
-        // USER (id = 2)
-        $userPermissions = ['Ve-create', 'DanhGia-create', 'DanhGia-update', 'DanhGia-delete'];
-        foreach ($userPermissions as $perm) {
-            DB::table('quyen_truy_cap')->insert([
-                'vai_tro_id' => 2,
-                'quyen_han_id' => $permissions[$perm],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+
     }
 }

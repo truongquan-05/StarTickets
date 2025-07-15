@@ -41,7 +41,7 @@ const HeaderUser = () => {
         icon={<HistoryOutlined />}
         className="menu-item-custom"
       >
-        <Link to="history">Lịch Sử Đặt Vé</Link>
+        <Link to="history-all">Lịch Sử Đặt Vé</Link>
       </Menu.Item>
       <Menu.Item
         key="logout"

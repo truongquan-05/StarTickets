@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Models\VaiTro;
+use App\Http\Controllers\Controller;
 use App\Models\XacNhan;
 use App\Models\NguoiDung;
 use App\Mail\MaXacNhanMail;
 use Illuminate\Http\Request;
 use App\Jobs\XoaMaXacNhanJob;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -17,9 +15,23 @@ use Illuminate\Support\Facades\Validator;
 
 
 
-
 class NguoiDungController extends Controller
 {
+
+
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:TaiKhoan-read')->only(['index', 'show']);
+        $this->middleware('permission:TaiKhoan-create')->only(['store']);
+        $this->middleware('permission:TaiKhoan-update')->only(['update']);
+        $this->middleware('permission:TaiKhoan-delete')->only(['destroy']);
+    }
+
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -206,13 +218,6 @@ class NguoiDungController extends Controller
                 'message' => 'Dữ liệu không hợp lệ',
                 'errors' => $validatedData->errors()
             ], 422);
-        }
-
-        // CHẶN gán quyền Admin nếu không phải SuperAdmin
-        if ($request->has('vai_tro_id') && $request->vai_tro_id == 1 && Auth::user()->vai_tro_id !== 0) {
-            return response()->json([
-                'message' => 'Chỉ SuperAdmin mới có quyền gán vai trò Admin'
-            ], 403);
         }
 
         //  Nếu hợp lệ thì cập nhật

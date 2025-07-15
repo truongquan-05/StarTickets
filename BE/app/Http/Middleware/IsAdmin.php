@@ -2,23 +2,27 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\NguoiDung;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IsAdmin
 {
+    public function handle(Request $request, Closure $next)
+    {
+        $userId = Auth::guard('sanctum')->id();
 
-public function handle(Request $request, Closure $next)
-{
-    $user = $request->user() ;
-    // Kiểm tra người dùng đã đăng nhập và có quyền admin  
-    if (!$user) {
-        return response()->json(['message' => 'Bạn chưa đăng nhập'], 401);
-    }
-    if ($user->is_admin) {
-        return $next($request);
-    }
-    return response()->json(['message' => 'Bạn không có quyền truy cập'], 403);
-}
-}
+        if (!$userId) {
+            return response()->json(['message' =>  $userId], 401);
+        }
 
+        $nguoiDung = NguoiDung::find($userId);
+
+        if ($nguoiDung && $nguoiDung->vai_tro_id != 2) {
+            return $next($request);
+        }
+
+        return response()->json(['message' =>  "Không có quyền truy cập"], 403);
+    }
+}

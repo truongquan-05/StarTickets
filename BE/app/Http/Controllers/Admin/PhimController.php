@@ -13,6 +13,17 @@ use App\Models\TheLoai;
 
 class PhimController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:Phim-read')->only(['index', 'show']);
+        $this->middleware('permission:Phim-create')->only(['store']);
+        $this->middleware('permission:Phim-update')->only(['update']);
+        $this->middleware('permission:Phim-delete')->only(['delete', 'softDelete', 'trashed', 'restore']);
+    }
+
+
     // Lấy danh sách phim (kèm lọc, tìm kiếm, phân trang)
     public function index(Request $request)
     {

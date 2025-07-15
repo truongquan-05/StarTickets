@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Validator;
 
 class TinTucController extends Controller
 {
+
+
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:TinTuc-read')->only(['index', 'show']);
+        $this->middleware('permission:TinTuc-create')->only(['store']);
+        $this->middleware('permission:TinTuc-update')->only(['update']);
+        $this->middleware('permission:TinTuc-delete')->only(['destroy', 'restore', 'trashed', 'forceDelete']);
+    }
     // Lấy danh sách tin tức
     public function index(Request $request)
     {
