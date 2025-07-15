@@ -745,6 +745,13 @@
   }
 }
 /* search */
+.session-search{
+    width: 100%;
+  background-color: #1a0933;
+  padding: 15px 10%;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
 .search-page {
   padding: 40px;
   background-color: #12092b;
