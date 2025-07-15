@@ -1,0 +1,339 @@
+/* Payment Container */
+.thanhtoanbox{
+  margin: 60px 0;
+  width: 100%;
+  background-color: #1a0933;
+  padding: 15px 10%;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+.payment-container {
+  background: transparent;
+  color: white;
+  margin: 0!important;
+}
+
+/* Payment Title */
+.payment-title {
+  color: #fff;
+  font-size: 40px;
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  letter-spacing: 1px;;
+}
+.payment-form-col{
+  padding: 0 25px 0 0 !important;
+}
+.payment-form-coll{
+  padding: 0 !important;
+}
+/* Payment Steps */
+.payment-steps {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.payment-step {
+  font-family: 'Anton', sans-serif;
+  color: white;
+  font-weight: 100;
+  font-size: 20px;
+}
+
+.payment-step.active {
+  color: #e6e600;
+  font-weight: 100;
+}
+.step-button{
+    background-color: transparent;
+    border: none;
+    width: 50px;
+    height: 30px;
+    border-bottom: 3px solid #ffff;
+}
+.step-number{
+    text-align: center;
+}
+
+/* Form Elements */
+.form-input {
+  color: black;
+  border-radius: 1px;
+  height: 50px;
+}
+
+/* form-select là class bạn gán */
+.form-select .ant-select-selector {
+  border-radius: 1px !important;
+  height: 50px !important;
+  background-color: rgba(51,102,204,.8) !important;
+  border: none !important;
+  color: #fff !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.form-checkbox {
+  font-family: "Poppins", sans-serif;
+  position: relative;
+  cursor: pointer;
+  color: #fff;
+  transition: color 0.2s ease;
+}
+/* Checkbox khi được chọn (check) sẽ có màu vàng */
+.form-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: gold;
+  border-color: gold;
+}
+
+/* Khi hover vào checkbox */
+.form-checkbox .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.form-checkbox .ant-checkbox:hover .ant-checkbox-inner {
+  border-color: gold;
+}
+/* Terms Link */
+.terms-link {
+  text-decoration: underline;
+  color: #e6e600;
+  cursor: pointer;
+}
+
+/* Buttons */
+/* Nút load more */
+
+
+.primary-button{
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+  position: relative;
+  height: 45px;
+  background: linear-gradient(to right, #5d0eeb, #a943ec);
+  color: #fff !important;
+  border: none !important;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.primary-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c) !important;
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.primary-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.primary-button:hover::before {
+  transform: scaleX(1);
+}
+
+.primary-button:hover {
+  color: #fff;
+}
+
+.primary-button span {
+  position: relative;
+  z-index: 1;
+}
+
+
+.back-button{
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+  position: relative;
+  height: 45px;
+  background: linear-gradient(to right, #5d0eeb, #a943ec);
+  color: #fff !important;
+  border: none !important;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.back-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c) !important;
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.back-button::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.back-button:hover::before {
+  transform: scaleX(1);
+}
+
+.back-button:hover {
+  color: #fff;
+}
+
+.back-button span {
+  position: relative;
+  z-index: 1;
+}
+.payment-button {
+  background-color: #b800ff;
+  border-color: #b800ff;
+  color: #fff;
+  font-weight: bold;
+}
+
+.momo-button {
+  margin-bottom: 12px;
+  border-radius: 4px;
+  height: 70px;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #333; /* viền trắng */
+  font-family: 'Poppins', sans-serif;
+}
+
+.vnpay-button {
+  margin-bottom: 12px;
+  border-radius: 4px;
+  height: 70px;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #333; /* viền trắng */
+  font-family: 'Poppins', sans-serif;
+}
+
+.back-button {
+  margin-bottom: 16px;
+}
+
+/* Payment Icons */
+.payment-icon {
+  width: 30px;
+  margin-right: 8px;
+  border-radius: 3px;
+}
+
+/* Booking Summary Card */
+.booking-summary-card {
+  background-color: rgba(51,102,204,.8);
+  color: white;
+  border-radius: 4px;
+  border: none;
+}
+
+/* Movie Header */
+.movie-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.movie-title {
+  color: #fff;
+  font-size: 20px;
+  font-family: 'Anton', sans-serif;
+  font-weight: 100;
+}
+
+.countdown-timer {
+  background-color: yellow;
+  color: #000;
+  font-weight: 500;
+  border-radius: 2px;
+  padding: 3px 8px;
+  font-size: 13px;
+}
+
+/* Age Restriction */
+.age-restriction {
+  font-family: 'Poppins', sans-serif;
+  color: yellow;
+}
+
+/* Cinema Info */
+.cinema-info {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+/* Screening Time */
+.screening-time {
+  margin-top: 24px;
+  font-weight: bold;
+}
+
+/* Booking Details */
+.booking-details-row {
+  margin-top: 16px;
+}
+
+/* Food & Drinks Section */
+.food-drinks-section {
+  margin-top: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px dashed yellow;
+}
+
+.food-drinks-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.food-drink-price {
+  color: yellow;
+  float: right;
+}
+
+.no-food-drinks {
+  color: white;
+}
+
+/* Total Amount */
+.total-amount {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 !important;
+}
+
+.total-price {
+  font-size: 20px;
+  color: white;
+}

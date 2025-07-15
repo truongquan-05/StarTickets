@@ -187,7 +187,7 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
     <Card
       style={{
         maxWidth: 1000,
-        margin: "0 auto",
+        margin: "100px auto",
         background: "#1b1138",
         border: "1px solid #333",
         borderRadius: 10,
