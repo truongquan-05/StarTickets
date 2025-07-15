@@ -2,16 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\DanhGia;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DanhGiaController extends Controller
 {
-public function index()
-{
-    $danhGias = DanhGia::with(['nguoiDung', 'phim'])->paginate(10);
-    return response()->json($danhGias);
-}
+
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:DanhGia-read')->only(['index', 'show']);
+        $this->middleware('permission:DanhGia-create')->only(['store']);
+        $this->middleware('permission:DanhGia-update')->only(['update']);
+    }
+
+
+
+
+    public function index()
+    {
+        $danhGias = DanhGia::with(['nguoiDung', 'phim'])->paginate(10);
+        return response()->json($danhGias);
+    }
 
     public function show($id)
     {
@@ -19,11 +33,15 @@ public function index()
         return response()->json($danhGia);
     }
 
-    public function delete($id)
-    {
-        $danhGia = DanhGia::findOrFail($id);
-        $danhGia->delete();
+    public function update(Request $request, string $id){
 
-        return response()->json(['message' => 'Xoá đánh giá thành công']);
     }
+
+    // public function delete($id)
+    // {
+    //     $danhGia = DanhGia::findOrFail($id);
+    //     $danhGia->delete();
+
+    //     return response()->json(['message' => 'Xoá đánh giá thành công']);
+    // }
 }

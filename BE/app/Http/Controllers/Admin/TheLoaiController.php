@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 class TheLoaiController extends Controller
 {
+
+
     // Danh sách thể loại với tìm kiếm & phân trang
     public function index(Request $request)
     {

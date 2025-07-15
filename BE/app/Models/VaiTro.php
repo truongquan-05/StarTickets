@@ -12,6 +12,9 @@ class VaiTro extends Model
         'ten_vai_tro',
         'mo_ta',
     ];
-   
-
+    public function QuyenTruyCap()
+    {
+        return $this->belongsToMany(QuyenHan::class, 'quyen_truy_cap', 'vai_tro_id', 'quyen_han_id')
+                ->withPivot('id');
+    }
 }

@@ -372,3 +372,12 @@ export const getDestroyVoucher = async ({resource = "voucher", id, values} : Pro
   return data
 }
 
+export const getListLichSuDonHang = async ({resource = "lich-su-mua-hang"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getListLichSuDonHangChiTiet = async ({resource = "lich-su-mua-hang",id} : Props) => {
+  const {data} = await axiosClient.get(`${resource}/${id}`);
+  return data;
+}

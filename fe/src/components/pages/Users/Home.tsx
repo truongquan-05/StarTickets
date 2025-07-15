@@ -20,6 +20,7 @@ import {
   TagOutlined,
   StarOutlined,
 } from "@ant-design/icons";
+import ContactForm from "./PhanHoiKhachHang";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -551,15 +552,7 @@ const Home = () => {
             <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />
             135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
           </p>
-          <input type="text" placeholder="Họ và tên" />
-          <input type="email" placeholder="Email" />
-          <textarea
-            placeholder="Thông tin liên hệ hoặc phản ánh"
-            rows={10}
-          ></textarea>
-          <button className="contact-btn">
-            <span>Gửi ngay</span>
-          </button>
+          <ContactForm />
         </div>
       </div>
     </div>

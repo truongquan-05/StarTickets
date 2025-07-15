@@ -41,7 +41,7 @@ const HeaderUser = () => {
         icon={<HistoryOutlined />}
         className="menu-item-custom"
       >
-        <Link to="history">Lịch Sử Đặt Vé</Link>
+        <Link to="history-all">Lịch Sử Đặt Vé</Link>
       </Menu.Item>
       <Menu.Item
         key="logout"
@@ -82,7 +82,7 @@ const HeaderUser = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/rap")
+      .get("http://127.0.0.1:8000/api/client/rap")
       .then((res) => {
         if (Array.isArray(res.data)) {
           setRapList(res.data); // Nếu trả ra mảng

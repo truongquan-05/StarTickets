@@ -10,6 +10,19 @@ use Illuminate\Support\Facades\Validator;
 
 class PhongChieuController extends Controller
 {
+
+     public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:PhongChieu-read')->only(['index', 'show']);
+        $this->middleware('permission:PhongChieu-create')->only(['store']);
+        $this->middleware('permission:PhongChieu-update')->only(['update']);
+        $this->middleware('permission:PhongChieu-delete')->only(['destroy','restore','forceDelete','trashed']);
+    }
+
+
+
     // Lấy danh sách phòng chiếu
     public function index(Request $request)
     {

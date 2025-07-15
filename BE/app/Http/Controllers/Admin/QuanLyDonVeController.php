@@ -11,6 +11,17 @@ use App\Models\Phim;
 
 class QuanLyDonVeController extends Controller
 {
+  public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:Ve-read')->only(['index', 'show','loc']);
+        $this->middleware('permission:Ve-create')->only(['store']);
+        $this->middleware('permission:Ve-update')->only(['update']);
+        $this->middleware('permission:Ve-delete')->only(['destroy']);
+    }
+
+
     // hien thi danh sach
     public function index()
     {

@@ -574,11 +574,13 @@
 .contact-btn {
   font-size: 15px;
   padding: 0 25px;
+  z-index: 0;
   position: relative;
   font-family: 'Anton', sans-serif;
   height: 40px;
-  background-color: #FFEB3B; /* màu nền ban đầu */
-  color: #000;
+background: linear-gradient(45deg, #ffcc70, #ffdd00, #fbb034);
+
+  color: #ffffff;
   border: none;
   cursor: pointer;
   border-radius: 4px;
@@ -611,7 +613,7 @@
 
 .contact-btn span {
   position: relative;
-  z-index: 1;
+  z-index: 1000;
 }
 
 

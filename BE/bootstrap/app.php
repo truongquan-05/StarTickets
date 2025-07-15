@@ -25,10 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'CheckLogin' => \App\Http\Middleware\CheckLogin::class,
-
-             'IsAdmin' => \App\Http\Middleware\IsAdmin::class,
-             'permission' => \App\Http\Middleware\CheckPermission::class,
-
+            'IsAdmin' => \App\Http\Middleware\IsAdmin::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
+            'is.admin.area' => \App\Http\Middleware\IsAdminArea::class,
 
         ]);
     })

@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\Validator;
 
 class VaiTroController extends Controller
 {
+
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:VaiTro-read')->only(['index', 'show']);
+        $this->middleware('permission:VaiTro-create')->only(['store']);
+        $this->middleware('permission:VaiTro-update')->only(['update']);
+        $this->middleware('permission:VaiTro-delete')->only(['destroy']);
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -118,6 +130,12 @@ class VaiTroController extends Controller
             return response()->json([
                 'message' => 'Không tìm thấy dữ liệu'
             ], 404);
+        }
+        if ($id == 1 || $id == 2 || $id == 3 || $id == 4 || $id == 99) {
+            return response()->json([
+                'message' => 'Không thể xóa vai trò này',
+
+            ]);
         }
         $data->delete();
         return response()->json([

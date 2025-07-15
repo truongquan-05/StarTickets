@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
             ChuyenNguSeeder::class,
             PhuongThucThanhToan::class,
             QuyenHanSeeder::class,
-            QuyenTruyCapSeeder::class
+            QuyenTruyCapSeeder::class,
+            SuperAdminSeeder::class
         ]);
     }
 }
