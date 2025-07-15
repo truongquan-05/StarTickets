@@ -195,7 +195,7 @@
 /* Tên phim */
 .movie-title {
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 100;
   color: #fff;
   text-transform: uppercase;
   margin: 8px 0;
@@ -210,7 +210,7 @@
 .movie-card h4 {
   margin-top: 20px;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 100;
   color: #fff;
   text-transform: uppercase;
   min-height: 25px;
@@ -464,7 +464,6 @@
   display: flex;
   justify-content: space-between;
   padding: 100px 10%;
-  background-color: #1e0033;
   color: white;
   margin-top: 40px;
 }
@@ -641,96 +640,7 @@
     gap: 24px;
   }
 }
-/* Moviedetail */
-.movie-detail-wrapper {
-  background-color: #12092b;
-  color: #ffffff;
-  padding: 40px 20px;
-  font-family: 'Segoe UI', sans-serif;
-}
 
-.movie-detail-container {
-  display: flex;
-  gap: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.movie-poster img {
-  width: 320px;
-  max-width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-
-.movie-content {
-  flex: 1;
-  min-width: 300px;
-}
-
-.movie-content h1 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
-
-.movie-attributes {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px;
-}
-
-.movie-attributes li {
-  margin-bottom: 8px;
-  font-size: 16px;
-}
-
-.movie-attributes span {
-  font-weight: 600;
-  margin-right: 5px;
-}
-
-.movie-age-warning {
-  background-color: yellow;
-  color: black;
-  font-weight: bold;
-  padding: 6px 10px;
-  border-radius: 5px;
-  display: inline-block;
-  margin: 10px 0 20px;
-}
-
-.movie-section {
-  margin-bottom: 20px;
-}
-
-.movie-section h3 {
-  color: #ffffff;
-  font-size: 20px;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.movie-section p {
-  line-height: 1.6;
-}
-
-.trailer-button {
-  background: #6f36e2;
-  color: #fff;
-  font-weight: bold;
-  border: none;
-  border-radius: 30px;
-  padding: 8px 24px;
-  transition: background 0.3s ease;
-}
-
-.trailer-button:hover {
-  background: #e50946;
-  color: #fff;
-}
 
 /* Responsive */
 @media screen and (max-width: 768px) {

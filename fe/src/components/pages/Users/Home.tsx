@@ -480,6 +480,7 @@ const Home = () => {
         bodyStyle={{ padding: 0, height: 450 }}
         destroyOnClose
         centered
+        style={{ fontFamily: "Anton, sans-serif", fontWeight: 100, fontSize: 50, borderRadius: 4 }}
       >
         {trailerUrl ? (
           <iframe
