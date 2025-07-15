@@ -82,7 +82,7 @@ const HeaderUser = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/rap")
+      .get("http://127.0.0.1:8000/api/client/rap")
       .then((res) => {
         if (Array.isArray(res.data)) {
           setRapList(res.data); // Nếu trả ra mảng

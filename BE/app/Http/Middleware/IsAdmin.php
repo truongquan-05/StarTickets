@@ -14,7 +14,7 @@ class IsAdmin
         $userId = Auth::guard('sanctum')->id();
 
         if (!$userId) {
-            return response()->json(['message' =>  $userId], 401);
+            return response()->json(['message' =>  "Chưa đăng nhập"], 401);
         }
 
         $nguoiDung = NguoiDung::find($userId);

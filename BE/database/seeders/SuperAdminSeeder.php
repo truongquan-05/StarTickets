@@ -14,8 +14,8 @@ class SuperAdminSeeder extends Seeder
             ['email' => 'superadmin@example.com'],
             [
                 'ten' => 'Super Admin',
-                'email' => 'superadmin@example.com',
-                'password' => Hash::make('superadmin123'), // Mật khẩu đăng nhập
+                'email' => 'admin@gmail.com',
+                'password' => bcrypt('12345678'), // Mật khẩu đăng nhập
                 'so_dien_thoai' => '0999999999',
                 'google_id' => null,
                 'anh_dai_dien' => null,

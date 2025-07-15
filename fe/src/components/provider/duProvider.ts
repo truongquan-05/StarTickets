@@ -124,7 +124,7 @@ export const searchMovies = async (keyword: string) => {
 // lọc phim
 // duProvider.ts
 export const getRaps = () =>
-  axiosClient.get("/rap").then((res) => {
+  axiosClient.get("/client/rap").then((res) => {
     return res.data.data || [];
   });
 
