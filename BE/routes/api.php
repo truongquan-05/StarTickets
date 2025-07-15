@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AddQuyenController;
 use App\Models\NguoiDung;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,7 +30,7 @@ use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\RapController as ClientRapController;
-
+use App\Http\Controllers\Admin\AddQuyenController;
 
 
 
