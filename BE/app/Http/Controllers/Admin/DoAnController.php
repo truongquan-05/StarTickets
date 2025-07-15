@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Storage;
 
 class DoAnController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:DoAn-read')->only(['index', 'show']);
+        $this->middleware('permission:DoAn-create')->only(['store']);
+        $this->middleware('permission:DoAn-update')->only(['update']);
+        $this->middleware('permission:DoAn-delete')->only(['delete']);
+    }
+    
     public function index(Request $request)
     {
         $query = DoAn::query();

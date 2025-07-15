@@ -52,7 +52,7 @@ class HomeController extends Controller
             ->orderBy('ngay_cong_chieu', 'desc')
             ->take(9)
             ->get();
-   
+
 
         //  all dac biet
 
@@ -73,6 +73,64 @@ class HomeController extends Controller
 
         ]);
     }
+
+    public function getPhimDangChieu()
+    {
+        $today = Carbon::now()->toDateString();
+
+        $phimDangChieuIds = LichChieu::whereDate('gio_chieu', $today)
+            ->pluck('phim_id');
+
+        return Phim::whereIn('id', $phimDangChieuIds)
+            ->orderBy('ngay_cong_chieu', 'desc')
+            ->take(32)
+            ->get();
+    }
+
+    public function getPhimSapChieu()
+    {
+        $now = Carbon::now();
+        $today = $now->toDateString();
+        $tomorrow = $now->copy()->addDay()->toDateString();
+
+        $phimDangChieuIds = LichChieu::whereDate('gio_chieu', $today)
+            ->pluck('phim_id');
+
+        $phimCoLichChieuTuNgayMai = DB::table('lich_chieu')
+            ->whereDate('gio_chieu', '>=', $tomorrow)
+            ->pluck('phim_id');
+
+        $phimKhongCoLichChieu = Phim::whereNotIn('id', DB::table('lich_chieu')->pluck('phim_id'))
+            ->whereDate('ngay_cong_chieu', '>=', $tomorrow)
+            ->pluck('id');
+
+        $phimSapChieuIds = $phimCoLichChieuTuNgayMai
+            ->merge($phimKhongCoLichChieu)
+            ->unique()
+            ->diff($phimDangChieuIds)
+            ->values();
+
+        return Phim::whereIn('id', $phimSapChieuIds)
+            ->orderBy('ngay_cong_chieu', 'desc')
+            ->take(9)
+            ->get();
+    }
+
+    public function getPhimDacBiet()
+    {
+        $now = Carbon::now();
+
+        return Phim::where('loai_suat_chieu', 'Đặc biệt')
+            ->whereHas('lichChieu', function ($query) use ($now) {
+                $query->where('gio_chieu', '>=', $now);
+            })
+            ->select('phim.*')
+            ->distinct()
+            ->orderBy('ngay_cong_chieu', 'desc')
+            ->get();
+    }
+
+
 
     // Có trong lịch chiếu
     public function getAllPhimDangChieu()

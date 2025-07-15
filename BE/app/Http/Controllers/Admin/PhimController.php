@@ -13,10 +13,21 @@ use App\Models\TheLoai;
 
 class PhimController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:Phim-read')->only(['index', 'show']);
+        $this->middleware('permission:Phim-create')->only(['store']);
+        $this->middleware('permission:Phim-update')->only(['update']);
+        $this->middleware('permission:Phim-delete')->only(['delete', 'softDelete', 'trashed', 'restore']);
+    }
+
+
     // Lấy danh sách phim (kèm lọc, tìm kiếm, phân trang)
     public function index(Request $request)
     {
-        $query = Phim::with('theLoai')->whereNot('trang_thai_phim', 'Nháp');
+        $query = Phim::with('theLoai');
 
         if ($request->has('search')) {
             $query->where('ten_phim', 'like', '%' . $request->search . '%');
@@ -29,23 +40,6 @@ class PhimController extends Controller
         return response()->json($phims);
     }
 
-    public function PhimChuaXuatBan(Request $request)
-    {
-        $query = Phim::with('theLoai')->where('trang_thai_phim', 'Nháp');
-
-        if ($request->has('search')) {
-            $query->where('ten_phim', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->has('tinh_trang')) {
-            $query->where('tinh_trang', $request->tinh_trang);
-        }
-
-        $perPage = $request->get('per_page', 10);
-        $phims = $query->orderBy('id', 'desc')->paginate($perPage);
-
-        return response()->json($phims);
-    }
 
     public function store(StorePhimRequest $request)
     {
@@ -94,8 +88,6 @@ class PhimController extends Controller
         if ($request->hasFile('anh_poster')) {
             $data['anh_poster'] = $request->file('anh_poster')->store('posters', 'public');
         }
-
-        $data['trang_thai_phim'] = $request->input('trang_thai_phim');
 
         $phim = Phim::create($data);
         // $phim->load('theLoai');

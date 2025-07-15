@@ -1,13 +1,26 @@
 import axios from "axios";
 import { User } from "../types/Uses";
 
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
+
+// const axiosClient = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL,
+//   headers: {
+//     Authorization: token ? `Bearer ${token}` : "",
+//   },
+// });
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    Authorization: token ? `Bearer ${token}` : "",
-  },
+});
+
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export type Props = {
@@ -111,14 +124,12 @@ export const searchMovies = async (keyword: string) => {
 // lọc phim
 // duProvider.ts
 export const getRaps = () =>
-  axiosClient.get("/rap").then((res) => {
-    console.log(">>> getRaps:", res.data); 
+  axiosClient.get("/client/rap").then((res) => {
     return res.data.data || [];
   });
 
 export const getTheLoais = () =>
   axiosClient.get("/the_loai").then((res) => {
-    console.log(">>> getTheLoais:", res.data); 
     return res.data.data || [];
   });
 

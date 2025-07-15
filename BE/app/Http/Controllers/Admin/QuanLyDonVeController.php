@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -7,8 +8,20 @@ use App\Models\ThanhToan;
 use App\Models\LichChieu;
 use App\Models\Phim;
 
+
 class QuanLyDonVeController extends Controller
 {
+  public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:Ve-read')->only(['index', 'show','loc']);
+        $this->middleware('permission:Ve-create')->only(['store']);
+        $this->middleware('permission:Ve-update')->only(['update']);
+        $this->middleware('permission:Ve-delete')->only(['destroy']);
+    }
+
+
     // hien thi danh sach
     public function index()
     {
@@ -16,8 +29,9 @@ class QuanLyDonVeController extends Controller
             'nguoiDung:id,ten,email',
             'phuongThuc:id,ten',
             'datVe:id,lich_chieu_id,tong_tien',
-            'datVe.lichChieu:id,phim_id,gio_chieu',
-            'datVe.lichChieu.phim:id,ten_phim'
+            'datVe.lichChieu',
+            'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
         ])->latest()->get();
 
         return response()->json([
@@ -33,8 +47,12 @@ class QuanLyDonVeController extends Controller
             'nguoiDung:id,ten,email,so_dien_thoai',
             'phuongThuc:id,ten',
             'datVe:id,lich_chieu_id,tong_tien',
-            'datVe.lichChieu:id,phim_id,gio_chieu',
-            'datVe.lichChieu.phim:id,ten_phim'
+            'datVe.lichChieu',
+            'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
+            'datVe.DatVeChiTiet.GheDat',
+            'datVe.DonDoAn',
+            'datVe.DonDoAn.DoAn'
         ])->find($id);
 
         if (!$donVe) {
@@ -94,8 +112,8 @@ class QuanLyDonVeController extends Controller
         $phimIds = LichChieu::distinct()->pluck('phim_id');
 
         $phim = Phim::whereIn('id', $phimIds)
-                    ->select('id', 'ten_phim')
-                    ->get();
+            ->select('id', 'ten_phim')
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -103,4 +121,3 @@ class QuanLyDonVeController extends Controller
         ]);
     }
 }
-

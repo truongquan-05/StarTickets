@@ -4,7 +4,7 @@ import { INews } from "../../Admin/interface/news";
 import { useListNews } from "../../../hook/hungHook";
 import "../../../assets/css/tintuc.css"; // Assuming you have a CSS file for styling
 
-const { Title, Paragraph } = Typography;
+// Removed unused destructuring from Typography
 const BASE_URL = "http://127.0.0.1:8000";
 
 const NewsUser: React.FC = () => {
@@ -22,8 +22,20 @@ const NewsUser: React.FC = () => {
 
   if (isError || newsList.length === 0) {
     return (
-      <div className="news-wrapper">
-        <Empty description="Không có tin tức nào" />
+      <div
+        className="news-wrapper"
+        style={{
+          height: "60px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Empty
+          description={
+            <span style={{ color: "white" }}>Không có tin tức nào</span>
+          }
+        />
       </div>
     );
   }
@@ -39,7 +51,8 @@ const NewsUser: React.FC = () => {
                 className="news-card"
                 cover={
                   <Image
-                    src={`${BASE_URL}${item.hinh_anh}`}
+                    src={`${BASE_URL}/storage/${item.hinh_anh}`}
+                    
                     alt={item.tieu_de}
                     height={280}
                     style={{

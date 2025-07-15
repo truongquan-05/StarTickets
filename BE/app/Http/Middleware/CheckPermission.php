@@ -10,11 +10,7 @@ class CheckPermission
 {
     public function handle($request, Closure $next, $permission)
     {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['message' => 'Chưa đăng nhập'], 401);
-        }
+        $user = Auth::guard('sanctum')->user();
 
         $quyens = DB::table('quyen_truy_cap')
             ->join('quyen_han', 'quyen_truy_cap.quyen_han_id', '=', 'quyen_han.id')

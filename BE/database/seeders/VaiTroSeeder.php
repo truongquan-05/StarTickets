@@ -14,7 +14,7 @@ class VaiTroSeeder extends Seeder
             [ 'id' => 1, 'ten_vai_tro' => 'Admin' ],
             [ 'id' => 2, 'ten_vai_tro' => 'User' ],
             [ 'id' => 3, 'ten_vai_tro' => 'Nhân viên' ],
-            [ 'id' => 4, 'ten_vai_tro' => 'Nhân viên rạp' ],
+            [ 'id' => 4, 'ten_vai_tro' => 'Quản lý' ],
         ];
 
         foreach ($vaiTros as $vaiTro) {

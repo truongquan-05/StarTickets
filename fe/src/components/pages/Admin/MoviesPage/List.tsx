@@ -28,7 +28,6 @@ import { IMovies, MoviesForm } from "../interface/movies";
 import "./Phim.css";
 import {
   useListMovies,
-  useDeleteMovies,
   useUpdateMovies,
   useSoftDeleteMovies,
 } from "../../../hook/hungHook";

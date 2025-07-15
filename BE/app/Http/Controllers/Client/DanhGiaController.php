@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreDanhGiaRequest;
 use App\Http\Requests\UpdateDanhGiaRequest;
 use App\Models\DanhGia;
+use App\Models\ThanhToan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -72,11 +73,30 @@ class DanhGiaController extends Controller
         if (!$danhGia) {
             return response()->json([
                 'message' => 'Bạn chưa đánh giá phim này'
-            ], 404);
+            ], 200);
         }
 
         return response()->json([
             'message' => 'Đánh giá của bạn cho phim',
+            'data' => $danhGia
+        ]);
+    }
+
+    public function getDanhGiaByPhim($phimId)
+    {
+        $danhGia = DanhGia::where('phim_id', $phimId)
+            ->with(['nguoiDung', 'phim'])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        if (!$danhGia) {
+            return response()->json([
+                'message' => 'Chưa có đánh giá nào'
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Đánh giá phim',
             'data' => $danhGia
         ]);
     }
@@ -86,7 +106,21 @@ class DanhGiaController extends Controller
     {
         $userId = Auth::id();
         $data = $request->validated();
+        $thanhToan = ThanhToan::with(['datVe.lichChieu.phim'])->where('nguoi_dung_id',  $userId)
+            ->whereHas('datVe.lichChieu.phim', function ($query) use ($data) {
+                $query->where('id', $data['phim_id']);
+            })
+            ->get();
+        if ($thanhToan->isEmpty()) {
+            return response()->json([
+                'message' => 'Bạn chưa mua phim này',
+            ], 422);
+        }
 
+
+        if ($request['nguoi_dung_id'] != $userId) {
+            return response()->json(['message' => 'Lỗi đăng nhập']);
+        }
         $oldDanhGia = DanhGia::where('nguoi_dung_id', $userId)
             ->where('phim_id', $data['phim_id'])
             ->with(['nguoiDung', 'phim'])
@@ -96,7 +130,7 @@ class DanhGiaController extends Controller
             return response()->json([
                 'message' => 'Bạn đã đánh giá phim này!',
                 'data' => $oldDanhGia
-            ], 409);
+            ], 422);
         }
 
         $data['nguoi_dung_id'] = $userId;

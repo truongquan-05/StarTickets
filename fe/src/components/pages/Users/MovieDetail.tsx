@@ -26,6 +26,7 @@ import { useBackConfirm } from "../../hook/useConfirmBack";
 import { SelectedFoodItem } from "./DatVe/DonDoAn";
 import FoodSelectionDisplay from "./DatVe/DonDoAn";
 import DuongCongManHinh from "./DuongCongManHinh";
+import DanhGiaForm from "./DanhGia";
 
 interface IRap {
   id: number;
@@ -302,58 +303,71 @@ const MovieDetailUser = () => {
     if (
       !selectedLichChieu ||
       !selectedLichChieu.gia_ve ||
-      // THAY ĐỔI DÒNG NÀY: KIỂM TRA CẢ selectedSeats VÀ selectedFoods
       (selectedSeats.length === 0 && selectedFoods.length === 0) ||
       danhSachGhe.length === 0
     ) {
-      if (totalPrice !== 0) {
-        setTotalPrice(0);
-      }
-      if (displaySelectedSeats.length > 0) {
-        setDisplaySelectedSeats([]);
-      }
+      if (totalPrice !== 0) setTotalPrice(0);
+      if (displaySelectedSeats.length > 0) setDisplaySelectedSeats([]);
       return;
     }
+
     let currentTotalPrice = 0;
     const seatsToCalculateDisplay: SelectedSeatWithPrice[] = [];
+
     selectedSeats.forEach((seatNumber) => {
       const ghe = danhSachGhe.find((g: IGhe) => g.so_ghe === seatNumber);
 
-      if (ghe) {
-        const loaiGheIdCuaGhe = ghe.loai_ghe_id;
-        const giaVeItem = selectedLichChieu.gia_ve.find(
-          (gv) => gv.pivot.loai_ghe_id === loaiGheIdCuaGhe
-        );
-        let price = 0;
-        let tenLoaiGhe = "Không xác định";
-        if (giaVeItem) {
-          price = parseFloat(giaVeItem.pivot.gia_ve);
-          tenLoaiGhe = giaVeItem.ten_loai_ghe;
-        } else {
-          console.warn(
-            `Không tìm thấy giá cho loai_ghe_id: ${loaiGheIdCuaGhe} trong lịch chiếu ID ${selectedLichChieu.id}.`
-          );
+      if (!ghe) return;
+
+      const loaiGheIdCuaGhe = ghe.loai_ghe_id;
+      const giaVeItem = selectedLichChieu.gia_ve.find(
+        (gv) => gv.pivot.loai_ghe_id === loaiGheIdCuaGhe
+      );
+
+      let price = 0;
+      let tenLoaiGhe = "Không xác định";
+
+      if (giaVeItem) {
+        price = parseFloat(giaVeItem.pivot.gia_ve);
+        tenLoaiGhe = giaVeItem.ten_loai_ghe;
+
+        // Nếu ghế đôi thì chia đôi giá
+        if (
+          loaiGheIdCuaGhe === 3 ||
+          tenLoaiGhe.toLowerCase() === "đôi" ||
+          tenLoaiGhe.toLowerCase() === "doi"
+        ) {
+          price = price / 2;
         }
-        currentTotalPrice += price;
-        seatsToCalculateDisplay.push({
-          ghe_id: ghe.id,
-          so_ghe: ghe.so_ghe,
-          loai_ghe: tenLoaiGhe,
-          gia: price,
-        });
+      } else {
+        console.warn(
+          `Không tìm thấy giá cho loai_ghe_id: ${loaiGheIdCuaGhe} trong lịch chiếu ID ${selectedLichChieu.id}.`
+        );
       }
+
+      currentTotalPrice += price;
+
+      seatsToCalculateDisplay.push({
+        ghe_id: ghe.id,
+        so_ghe: ghe.so_ghe,
+        loai_ghe: tenLoaiGhe,
+        gia: price,
+      });
     });
 
-    // THÊM PHẦN TÍNH TỔNG TIỀN TỪ ĐỒ ĂN VÀO ĐÂY
+    // Tính tổng tiền đồ ăn
     const foodTotalPrice = selectedFoods.reduce((sum, foodItem) => {
       return sum + foodItem.gia_ban * foodItem.quantity;
     }, 0);
 
-    currentTotalPrice += foodTotalPrice; // Cộng tổng tiền đồ ăn vào
+    currentTotalPrice += foodTotalPrice;
 
+    // Cập nhật totalPrice nếu thay đổi
     if (totalPrice !== currentTotalPrice) {
       setTotalPrice(currentTotalPrice);
     }
+
+    // Cập nhật displaySelectedSeats nếu thay đổi
     if (
       JSON.stringify(displaySelectedSeats) !==
       JSON.stringify(seatsToCalculateDisplay)
@@ -366,7 +380,7 @@ const MovieDetailUser = () => {
     danhSachGhe,
     totalPrice,
     displaySelectedSeats,
-    selectedFoods, // <-- THÊM selectedFoods VÀO DEPENDENCY ARRAY NÀY
+    selectedFoods,
   ]);
 
   if (
@@ -775,7 +789,6 @@ const MovieDetailUser = () => {
         return;
       }
     }
-
     setSelectedSeats(newSelectedSeats);
     // THÊM ĐOẠN NÀY NGAY SAU setSelectedSeats(newSelectedSeats);
     if (newSelectedSeats.length === 0) {
@@ -820,8 +833,10 @@ const MovieDetailUser = () => {
               {movie.the_loai?.ten_the_loai || "Đang cập nhật"}
             </li>
             <li>
-              <span>⏱ Thời lượng:</span> {movie.thoi_luong}'
+              <span style={{ marginLeft: 4 }}> ⏱ Thời lượng:</span>{" "}
+              {movie.thoi_luong}'
             </li>
+
             <li>
               <span>💿 Định dạng:</span> 2D
             </li>
@@ -832,7 +847,10 @@ const MovieDetailUser = () => {
           <div className="movie-age-warning">🔞 {movie.do_tuoi_gioi_han}</div>
           <div className="movie-section">
             <h3>MÔ TẢ</h3>
-            <p>{movie.mo_ta}</p>
+            <div
+              style={{ color: "white" }}
+              dangerouslySetInnerHTML={{ __html: movie.mo_ta }}
+            />
           </div>
           <Button
             icon={<PlayCircleOutlined />}
@@ -897,7 +915,6 @@ const MovieDetailUser = () => {
         }}
         selectedLichChieuId={selectedLichChieuId}
       />
-
       {selectedPhong && (
         <div
           style={{
@@ -996,25 +1013,7 @@ const MovieDetailUser = () => {
                       alignItems: "center",
                       gap: 12,
                       flex: 1,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 40,
-                        height: 20,
-                        backgroundColor: "red",
-                        borderRadius: 6,
-                      }}
-                    />
-                    <span> VIP</span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      flex: 1,
+                      marginRight: 10,
                     }}
                   >
                     <div
@@ -1025,6 +1024,48 @@ const MovieDetailUser = () => {
                         borderRadius: 6,
                       }}
                     />
+                    <span> VIP</span>
+                  </div>
+
+                  <div
+                    style={{
+                      width: 90,
+                      height: 20,
+                      display: "flex",
+                      position: "relative",
+                    }}
+                  >
+                    {/* Nửa trái */}
+                    <div
+                      style={{
+                        width: "50%",
+                        height: "100%",
+                        backgroundColor: "white",
+                        borderTop: "1.5px solid black",
+                        borderBottom: "1.5px solid black",
+                        borderLeft: "1.5px solid black",
+                        borderRight: "none",
+                        borderRadius: 5,
+                        boxSizing: "border-box",
+                      }}
+                    />
+
+                    {/* Nửa phải */}
+                    <div
+                      style={{
+                        width: "50%",
+                        height: "100%",
+                        backgroundColor: "white",
+                        borderTop: "1.5px solid black",
+                        borderBottom: "1.5px solid black",
+                        borderRight: "1.5px solid black",
+                        borderLeft: "none",
+                        borderRadius: 5,
+                        boxSizing: "border-box",
+                        marginRight: 5,
+                      }}
+                    />
+
                     <span>ĐÔI</span>
                   </div>
                 </div>
@@ -1064,9 +1105,24 @@ const MovieDetailUser = () => {
             )}
           </div>{" "}
           {/* KẾT THÚC CONTAINER CHÍNH */}
+          <div>Đồ ăn</div>
         </div>
       )}
+      <br />
+      <br />
+      <br /> <br />
+      <br />
+      <br />
+      <div>
+       <DanhGiaForm
+         id={movie.id}
+         phim={movie}
+         onSubmit={() => {
+           message.success("Đánh giá đã được gửi!");
+         }}
+       />
 
+      </div>
       {/* PHẦN FOOTER CỐ ĐỊNH Ở DƯỚI CÙNG */}
       {(selectedSeats.length > 0 || selectedFoods.length > 0) && ( // Footer hiển thị nếu có ghế HOẶC đồ ăn
         <div
