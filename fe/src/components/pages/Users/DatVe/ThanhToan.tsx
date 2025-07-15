@@ -14,6 +14,7 @@ import {
   Select,
 } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
+import "./ThanhToan.css"; // Đảm bảo đường dẫn đúng
 import {
   useCreateThanhToanMoMo,
   useDestroyVoucher,
@@ -25,6 +26,7 @@ import { useListVouchers } from "../../../hook/thinhHook";
 import { IVoucher } from "../../Admin/interface/vouchers";
 import { DonDoAn, Food } from "../../../types/Uses";
 import { useBackDelete } from "../../../hook/useConfirmBack";
+import { TagsOutlined } from "@ant-design/icons";
 // IMPORT CÁC INTERFACE CỦA BẠN TẠI ĐÂY
 
 const { Title, Text } = Typography;
@@ -283,403 +285,475 @@ const ThanhToan: React.FC = () => {
 
   return (
     <>
-      <Row
-        gutter={24}
-        style={{
-          padding: 24,
-          minHeight: 600,
-          maxWidth: 1200,
-          margin: "auto",
-          background: "linear-gradient(180deg, #2d0058 0%, #5d23c8 100%)",
-          color: "white",
-        }}
-      >
-        <Col span={14}>
-          <Title level={3} style={{ color: "#e6e600" }}>
-            TRANG THANH TOÁN
-          </Title>
-          <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
-            <Text
-              style={{
-                color: step === 1 ? "#e6e600" : "white",
-                fontWeight: step === 1 ? "bold" : "normal",
-              }}
+      <div className="thanhtoanbox">
+        <h3 className="payment-title">TRANG THANH TOÁN</h3>
+        <div className="payment-steps">
+          <Text className={`payment-step ${step === 1 ? "active" : ""}`}>
+            <div className="step-number">1</div>
+            <div className="step-label">THÔNG TIN KHÁCH HÀNG</div>
+          </Text>
+          <button className="step-button"></button>
+          <Text className={`payment-step ${step === 2 ? "active" : ""}`}>
+            <div className="step-number">2</div>
+            <div className="step-label">PHƯƠNG THỨC THANH TOÁN</div>
+          </Text>
+        </div>
+        <Row gutter={24} className="payment-container">
+          <Col span={12} className="payment-form-col">
+            <Form
+              layout="vertical"
+              form={form}
+              onFinish={step === 1 ? onFinishStep1 : onFinishStep2}
             >
-              1 THÔNG TIN KHÁCH HÀNG
-            </Text>
-            <Text
-              style={{
-                color: step === 2 ? "#e6e600" : "white",
-                fontWeight: step === 2 ? "bold" : "normal",
-              }}
-            >
-              2 THANH TOÁN
-            </Text>
-          </div>
-
-          <Form
-            layout="vertical"
-            form={form}
-            onFinish={step === 1 ? onFinishStep1 : onFinishStep2}
-          >
-            {step === 1 && (
-              <>
-                <Form.Item
-                  label="Họ và tên"
-                  name="fullName"
-                  rules={[
-                    { required: true, message: "Vui lòng nhập họ và tên" },
-                  ]}
-                >
-                  <Input placeholder="Họ và tên" style={{ color: "black" }} />
-                </Form.Item>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    { required: true, message: "Vui lòng nhập email" },
-                    { type: "email", message: "Email không hợp lệ" },
-                  ]}
-                >
-                  <Input placeholder="Email" style={{ color: "black" }} />
-                </Form.Item>
-                <Form.Item label="Mã giảm giá" name="ma_giam_gia_id">
-                  <Select
-                    showSearch
-                    placeholder="Chọn mã giảm giá"
-                    allowClear
-                    value={selectedVoucherId ?? undefined}
-                    onChange={(value) => {
-                      if (value === undefined) {
-                        form.setFieldsValue({ ma_giam_gia_id: null }); // <- thêm dòng này
-                        if (selectedVoucherId) {
-                          destroyVoucher(
-                            {
-                              id: bookingData.id,
-                              values: {
+              {step === 1 && (
+                <>
+                  <Form.Item
+                    label={
+                      <span style={{ color: "white", fontWeight: 600 }}>
+                        Họ và tên
+                      </span>
+                    }
+                    name="fullName"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập họ và tên" },
+                    ]}
+                  >
+                    <Input
+                      placeholder="Nhập tên của bạn"
+                      size="large"
+                      className="form-input"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={
+                      <span style={{ color: "white", fontWeight: 600 }}>
+                        Email
+                      </span>
+                    }
+                    name="email"
+                    rules={[
+                      { required: true, message: "Vui lòng nhập email" },
+                      { type: "email", message: "Email không hợp lệ" },
+                    ]}
+                  >
+                    <Input
+                      placeholder="Nhập email của bạn"
+                      size="large"
+                      className="form-input"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={
+                      <span style={{ color: "white", fontWeight: 600 }}>
+                        * Mã giảm giá (nếu có)
+                      </span>
+                    }
+                    name="ma_giam_gia_id"
+                  >
+                    <Select
+                      prefix={<TagsOutlined style={{ color: "yellow", fontSize: "22px", marginRight: "8px" }} />}
+                      size="large"
+                      className="form-select"
+                      showSearch
+                      placeholder="Chọn mã giảm giá (nếu có)"
+                      allowClear
+                      value={selectedVoucherId ?? undefined}
+                      onChange={(value) => {
+                        if (value === undefined) {
+                          form.setFieldsValue({ ma_giam_gia_id: null }); // <- thêm dòng này
+                          if (selectedVoucherId) {
+                            destroyVoucher(
+                              {
+                                id: bookingData.id,
+                                values: {
+                                  dat_ve_id: bookingData.id,
+                                  tong_tien: bookingData.tong_tien,
+                                },
+                              },
+                              {
+                                onSuccess: (res) => {
+                                  const newTongTien = res?.data?.tong_tien;
+                                  setTongTienSauVoucher(newTongTien);
+                                  message.info("Đã hủy áp dụng mã giảm giá.");
+                                },
+                              }
+                            );
+                          }
+                          setSelectedVoucherId(null);
+                        } else {
+                          setSelectedVoucherId(value);
+                          form.setFieldsValue({ ma_giam_gia_id: value }); // <- đảm bảo form có giá trị đúng
+                          const selected = voucherList.find(
+                            (v: IVoucher) => v.id === value
+                          );
+                          if (selected) {
+                            usevoucher(
+                              {
+                                id: selected.id,
                                 dat_ve_id: bookingData.id,
                                 tong_tien: bookingData.tong_tien,
                               },
-                            },
-                            {
-                              onSuccess: (res) => {
-                                const newTongTien = res?.data?.tong_tien;
-                                setTongTienSauVoucher(newTongTien);
-                                message.info("Đã hủy áp dụng mã giảm giá.");
-                              },
-                            }
-                          );
+                              {
+                                onSuccess: (res) => {
+                                  const newTongTien = res?.data?.tong_tien;
+                                  setTongTienSauVoucher(newTongTien);
+                                  message.success(
+                                    `Mã "${selected.ma}" đã được áp dụng!`
+                                  );
+                                },
+                              }
+                            );
+                          }
                         }
-                        setSelectedVoucherId(null);
-                      } else {
-                        setSelectedVoucherId(value);
-                        form.setFieldsValue({ ma_giam_gia_id: value }); // <- đảm bảo form có giá trị đúng
-                        const selected = voucherList.find(
-                          (v: IVoucher) => v.id === value
-                        );
-                        if (selected) {
-                          usevoucher(
-                            {
-                              id: selected.id,
-                              dat_ve_id: bookingData.id,
-                              tong_tien: bookingData.tong_tien,
-                            },
-                            {
-                              onSuccess: (res) => {
-                                const newTongTien = res?.data?.tong_tien;
-                                setTongTienSauVoucher(newTongTien);
-                                message.success(
-                                  `Mã "${selected.ma}" đã được áp dụng!`
-                                );
-                              },
-                            }
-                          );
-                        }
-                      }
-                    }}
-                    options={voucherList.map((voucher: IVoucher) => ({
-                      label: `${voucher.ma} - Giảm ${voucher.phan_tram_giam}%`,
-                      value: voucher.id,
-                    }))}
-                    style={{ color: "black" }}
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  name="terms1"
-                  valuePropName="checked"
-                  rules={[
-                    {
-                      validator: (_, value) =>
-                        value
-                          ? Promise.resolve()
-                          : Promise.reject(
-                              new Error(
-                                "Bạn phải đảm bảo mua vé đúng độ tuổi quy định"
-                              )
-                            ),
-                    },
-                  ]}
-                >
-                  <Checkbox
-                    checked={checkedTerms1}
-                    onChange={(e) => setCheckedTerms1(e.target.checked)}
-                  >
-                    Đảm bảo mua vé đúng số tuổi quy định.
-                  </Checkbox>
-                </Form.Item>
-
-                <Form.Item
-                  name="terms2"
-                  valuePropName="checked"
-                  rules={[
-                    {
-                      validator: (_, value) =>
-                        value
-                          ? Promise.resolve()
-                          : Promise.reject(
-                              new Error(
-                                "Bạn phải đồng ý với điều khoản của rạp"
-                              )
-                            ),
-                    },
-                  ]}
-                >
-                  <Checkbox
-                    checked={checkedTerms2}
-                    onChange={(e) => setCheckedTerms2(e.target.checked)}
-                  >
-                    Đồng ý với{" "}
-                    <a
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setIsModalVisible(true);
                       }}
-                      style={{ color: "#e6e600", cursor: "pointer" }}
+                      options={voucherList.map((voucher: IVoucher) => ({
+                        label: `${voucher.ma} - Giảm ${voucher.phan_tram_giam}%`,
+                        value: voucher.id,
+                      }))}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="terms1"
+                    valuePropName="checked"
+                    rules={[
+                      {
+                        validator: (_, value) =>
+                          value
+                            ? Promise.resolve()
+                            : Promise.reject(
+                                new Error(
+                                  "Bạn phải đảm bảo mua vé đúng độ tuổi quy định"
+                                )
+                              ),
+                      },
+                    ]}
+                  >
+                    <Checkbox
+                      checked={checkedTerms1}
+                      onChange={(e) => setCheckedTerms1(e.target.checked)}
+                      className="form-checkbox"
                     >
-                      điều khoản của rạp
-                    </a>
-                    .
-                  </Checkbox>
-                </Form.Item>
+                      Đảm bảo mua vé đúng số tuổi quy định.
+                    </Checkbox>
+                  </Form.Item>
 
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    block
-                    disabled={isSubmitDisabled}
-                    style={{
-                      backgroundColor: "#b800ff",
-                      borderColor: "#b800ff",
-                      color: "#fff",
-                      fontWeight: "bold",
-                    }}
-                    htmlType="submit"
+                  <Form.Item
+                    name="terms2"
+                    valuePropName="checked"
+                    rules={[
+                      {
+                        validator: (_, value) =>
+                          value
+                            ? Promise.resolve()
+                            : Promise.reject(
+                                new Error(
+                                  "Bạn phải đồng ý với điều khoản của rạp"
+                                )
+                              ),
+                      },
+                    ]}
                   >
-                    Tiếp tục
-                  </Button>
-                </Form.Item>
-              </>
-            )}
+                    <Checkbox
+                      checked={checkedTerms2}
+                      onChange={(e) => setCheckedTerms2(e.target.checked)}
+                      className="form-checkbox"
+                    >
+                      Đồng ý với{" "}
+                      <a
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setIsModalVisible(true);
+                        }}
+                        className="terms-link"
+                      >
+                        điều khoản của rạp.
+                      </a>
+                    </Checkbox>
+                  </Form.Item>
 
-            {step === 2 && (
-              <>
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    block
-                    icon={
-                      <img
-                        src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
-                        alt="Momo"
-                        style={{ width: 20, marginRight: 8 }}
-                      />
-                    }
-                    style={{
-                      backgroundColor: "#b800ff",
-                      borderColor: "#b800ff",
-                      color: "#fff",
-                      fontWeight: "bold",
-                      marginBottom: 12,
-                    }}
-                    onClick={() => {
-                      phuongThucThanhToanId.current = 1;
-                      setSelectedPaymentMethod(2);
-                      form.submit();
-                    }}
-                  >
-                    Thanh toán qua Momo
-                  </Button>
-                </Form.Item>
+                  <Form.Item>
+                    <button
+                      type="submit"
+                      className="primary-button"
+                      disabled={isSubmitDisabled}
+                      style={{ width: "100%" }} // Tương đương với `block` trong AntD
+                    >
+                      <span>Tiếp tục</span>
+                    </button>
+                  </Form.Item>
+                </>
+              )}
 
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    block
-                    icon={
-                      <img
-                        src="https://vinadesign.vn/uploads/thumbnails/800/2023/05/vnpay-logo-vinadesign-25-12-59-16.jpg"
-                        alt="VNPay"
-                        style={{ width: 20, marginRight: 8 }}
-                      />
-                    }
-                    style={{
-                      backgroundColor: "#b800ff",
-                      borderColor: "#b800ff",
-                      color: "#fff",
-                      fontWeight: "bold",
-                    }}
-                    onClick={() => {
-                      phuongThucThanhToanId.current = 2;
-                      setSelectedPaymentMethod(2);
-                      form.submit();
-                    }}
-                  >
-                    Thanh toán qua VNPay
-                  </Button>
-                </Form.Item>
-                <Form.Item>
-                  <Button
-                    type="default"
-                    block
-                    style={{ marginBottom: 16 }}
-                    onClick={onBackStep2}
-                  >
-                    Quay lại
-                  </Button>
-                </Form.Item>
-              </>
-            )}
-          </Form>
-        </Col>
+              {step === 2 && (
+                <>
+                  <Form.Item>
+                    <Button
+                      type="default"
+                      block
+                      icon={
+                        <img
+                          src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                          alt="Momo"
+                          className="payment-icon"
+                        />
+                      }
+                      className="payment-button momo-button"
+                      onClick={() => {
+                        phuongThucThanhToanId.current = 1;
+                        setSelectedPaymentMethod(2);
+                        form.submit();
+                      }}
+                    >
+                      Thanh toán qua Momo
+                    </Button>
+                  </Form.Item>
 
-        <Col span={10}>
-          <Card
-            style={{ backgroundColor: "#5d23c8", color: "white" }}
-            bodyStyle={{ padding: "24px" }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
+                  <Form.Item>
+                    <Button
+                      type="default"
+                      block
+                      icon={
+                        <img
+                          src="https://vinadesign.vn/uploads/thumbnails/800/2023/05/vnpay-logo-vinadesign-25-12-59-16.jpg"
+                          alt="VNPay"
+                          className="payment-icon"
+                        />
+                      }
+                      className="payment-button vnpay-button"
+                      onClick={() => {
+                        phuongThucThanhToanId.current = 2;
+                        setSelectedPaymentMethod(2);
+                        form.submit();
+                      }}
+                    >
+                      Thanh toán qua VNPay
+                    </Button>
+                  </Form.Item>
+                  <Form.Item>
+                    <button
+                      type="button"
+                      className="back-button"
+                      onClick={onBackStep2}
+                      style={{ width: "100%" }} // nếu bạn muốn giữ `block` như AntD
+                    >
+                      <span>Quay lại</span>
+                    </button>
+                  </Form.Item>
+                </>
+              )}
+            </Form>
+          </Col>
+
+          <Col span={12} className="payment-form-coll">
+            <Card
+              className="booking-summary-card"
+              bodyStyle={{ padding: "24px" }}
             >
-              <Title level={5} style={{ color: "#fff" }}>
-                {movieTitle}
-              </Title>
-              <div
-                style={{
-                  backgroundColor: "yellow",
-                  color: "#000",
-                  fontWeight: "bold",
-                  padding: "4px 8px",
-                  borderRadius: 4,
-                }}
-              >
-                THỜI GIAN GIỮ VÉ: {formatTime(countdown)}
-              </div>
-            </div>
-
-            {ageRestriction !== undefined && (
-              <Text style={{ fontWeight: "bold", color: "yellow" }}>
-                Phim dành cho khán giả từ {ageRestriction}+ tuổi
-              </Text>
-            )}
-
-            <div style={{ marginTop: 16, fontSize: 14 }}>
-              <Text strong>{cinemaName}</Text>
-              <br />
-              <Text>{cinemaAddress}</Text>
-            </div>
-
-            {bookingData.lich_chieu_id && (
-              <>
-                <div style={{ marginTop: 24, fontWeight: "bold" }}>
-                  <Text>Thời gian</Text>
-                  <br />
-                  <Text>{screeningTime}</Text>
+              <div className="movie-header">
+                <h2 className="movie-title">{movieTitle}</h2>
+                <div className="countdown-timer">
+                  THỜI GIAN GIỮ VÉ: {formatTime(countdown)}
                 </div>
+              </div>
 
-                <Row style={{ marginTop: 16 }}>
-                  <Col span={8}>
-                    <Text strong>Phòng chiếu</Text>
-                    <br />
-                    <Text>{roomName}</Text>
-                  </Col>
-                  <Col span={8}>
-                    <Text strong>Số vé</Text>
-                    <br />
-                    <Text>{selectedSeats.length}</Text>
-                  </Col>
-                </Row>
-
-                <Row style={{ marginTop: 16 }}>
-                  <Col span={8}>
-                    <Text strong>Loại ghế</Text>
-                    <br />
-                    <Text>{seatType}</Text>
-                  </Col>
-                  <Col span={8}>
-                    <Text strong>Số ghế</Text>
-                    <br />
-                    <Text>{selectedSeats.join(", ")}</Text>
-                  </Col>
-                </Row>
-              </>
-            )}
-
-            {/* HIỂN THỊ THÔNG TIN ĐỒ ĂN Ở ĐÂY */}
-            <div
-              style={{
-                marginTop: 16,
-                borderTop: "1px dotted #999",
-                paddingTop: 12,
-              }}
-            >
-              <Text strong>Đồ Ăn & Thức Uống</Text>
-              <br />
-              {bookingData.don_do_an && bookingData.don_do_an.length > 0 ? (
-                <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
-                  {bookingData.don_do_an.map((item, index) => (
-                    <li key={item.id || index} style={{ marginBottom: 4 }}>
-                      <Text style={{}}>
-                        {item.do_an.ten_do_an} x {item.so_luong}{" "}
-                        <span style={{ float: "right" }}>
-                          {(item.gia_ban * item.so_luong).toLocaleString(
-                            "vi-VN"
-                          )}{" "}
-                          VNĐ
-                        </span>
-                      </Text>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <Text style={{ color: "white" }}>
-                  Không có đồ ăn/thức uống nào được mua.
+              {ageRestriction !== undefined && (
+                <Text className="age-restriction">
+                  Phim dành cho khán giả từ {ageRestriction} tuổi trở lên (
+                  {ageRestriction}+)
                 </Text>
               )}
-            </div>
 
-            <div
-              style={{
-                marginTop: 24,
-                fontWeight: "bold",
-                fontSize: 18,
-                display: "flex",
-                justifyContent: "space-between",
-                color: "yellow",
-              }}
-            >
-              <Text>SỐ TIỀN CẦN THANH TOÁN</Text>
-              <Text style={{ fontSize: 20 }}>
-                {(tongTienSauVoucher ?? 0).toLocaleString("vi-VN")} VND
-              </Text>
-            </div>
-          </Card>
-        </Col>
-      </Row>
+              <div className="cinema-info">
+                <Text
+                  strong
+                  style={{ color: "#fff", fontFamily: "'Poppins', sans-serif" }}
+                >
+                  {cinemaName}
+                </Text>
+                <br />
+                <Text
+                  style={{ color: "#fff", fontFamily: "'Poppins', sans-serif" }}
+                >
+                  {cinemaAddress}
+                </Text>
+              </div>
+
+              {bookingData.lich_chieu_id && (
+                <>
+                  <div className="screening-time">
+                    <Text
+                      style={{
+                        color: "yellow",
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
+                    >
+                      Thời gian
+                    </Text>
+                    <br />
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
+                    >
+                      {screeningTime}
+                    </Text>
+                  </div>
+
+                  <Row className="booking-details-row">
+                    <Col span={8}>
+                      <Text
+                        strong
+                        style={{
+                          color: "yellow",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        Phòng chiếu
+                      </Text>
+                      <br />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        {roomName}
+                      </Text>
+                    </Col>
+                    <Col span={8}>
+                      <Text
+                        strong
+                        style={{
+                          color: "yellow",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        Số vé
+                      </Text>
+                      <br />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        {selectedSeats.length}
+                      </Text>
+                    </Col>
+                  </Row>
+
+                  <Row className="booking-details-row">
+                    <Col span={8}>
+                      <Text
+                        strong
+                        style={{
+                          color: "yellow",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        Loại ghế
+                      </Text>
+                      <br />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        {seatType}
+                      </Text>
+                    </Col>
+                    <Col span={8}>
+                      <Text
+                        strong
+                        style={{
+                          color: "yellow",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        Số ghế
+                      </Text>
+                      <br />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        {selectedSeats.join(", ")}
+                      </Text>
+                    </Col>
+                  </Row>
+                </>
+              )}
+
+              {/* HIỂN THỊ THÔNG TIN ĐỒ ĂN Ở ĐÂY */}
+              <div className="food-drinks-section">
+                <Text
+                  strong
+                  style={{
+                    color: "yellow",
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
+                >
+                  Đồ Ăn & Thức Uống
+                </Text>
+                <br />
+                {bookingData.don_do_an && bookingData.don_do_an.length > 0 ? (
+                  <ul className="food-drinks-list">
+                    {bookingData.don_do_an.map((item, index) => (
+                      <li key={item.id || index} className="food-drink-item">
+                        <Text
+                          style={{
+                            color: "white",
+                            fontFamily: "'Poppins', sans-serif",
+                          }}
+                        >
+                          {item.do_an.ten_do_an} x {item.so_luong}{" "}
+                          <span className="food-drink-price">
+                            {(item.gia_ban * item.so_luong).toLocaleString(
+                              "vi-VN"
+                            )}{" "}
+                            VNĐ
+                          </span>
+                        </Text>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Text
+                    className="no-food-drinks"
+                    style={{
+                      color: "white",
+                      fontFamily: "'Poppins', sans-serif",
+                    }}
+                  >
+                    Không có đồ ăn, thức uống nào được mua.
+                  </Text>
+                )}
+              </div>
+
+              <div className="total-amount">
+                <Text
+                  style={{
+                    color: "yellow",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                  }}
+                >
+                  SỐ TIỀN CẦN THANH TOÁN
+                </Text>
+                <Text className="total-price">
+                  {(tongTienSauVoucher ?? 0).toLocaleString("vi-VN")} VND
+                </Text>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      </div>
 
       <Modal
         title="Điều khoản của rạp"

@@ -1,7 +1,15 @@
 // MovieDetailUser.tsx
 import { useCallback, useEffect, useState, useRef } from "react";
 import { Button, Spin, Image, Modal, message } from "antd";
-import { PlayCircleOutlined } from "@ant-design/icons";
+import {
+  ClockCircleOutlined,
+  FieldTimeOutlined,
+  GlobalOutlined,
+  PlayCircleOutlined,
+  TagOutlined,
+  UsergroupDeleteOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../../provider/duProvider";
 import {
@@ -13,7 +21,7 @@ import {
   useUpdateCheckGhe,
   useCreateDatVe,
 } from "../../hook/hungHook";
-import "./Home.css";
+import "./MovieDetailUser.css";
 import { ILichChieu } from "../Admin/interface/lichchieu";
 import { IPhongChieu } from "../Admin/interface/phongchieu";
 import LichChieuDatVe from "./DatVe/LichChieuDatve";
@@ -819,9 +827,9 @@ const MovieDetailUser = () => {
             src={`${BASE_URL}/storage/${movie.anh_poster}`}
             alt={movie.ten_phim}
             width={"100%"}
-            height={400}
-            style={{ objectFit: "cover", borderRadius: 8 }}
+            style={{ objectFit: "cover" }}
             fallback="https://via.placeholder.com/240x360?text=No+Image"
+            className="movie-poster-img"
           />
         </div>
 
@@ -829,22 +837,46 @@ const MovieDetailUser = () => {
           <h1>{movie.ten_phim}</h1>
           <ul className="movie-attributes">
             <li>
-              <span>🎬 Thể loại:</span>{" "}
-              {movie.the_loai?.ten_the_loai || "Đang cập nhật"}
+              <span>
+                <TagOutlined />
+              </span>
+              {movie.the_loai_id
+                ? JSON.parse(movie.the_loai_id)
+                    .map((genre: any) => genre.ten_the_loai)
+                    .join(", ")
+                : movie.the_loai
+                ? movie.the_loai.join(", ")
+                : "Chưa cập nhật"}
             </li>
             <li>
-              <span style={{ marginLeft: 4 }}> ⏱ Thời lượng:</span>{" "}
+              <span>
+                <FieldTimeOutlined />
+              </span>
               {movie.thoi_luong}'
             </li>
 
             <li>
-              <span>💿 Định dạng:</span> 2D
+              <span>
+                <VideoCameraOutlined />
+              </span>{" "}
+              2D
             </li>
             <li>
-              <span>🌐 Ngôn ngữ:</span> {movie.ngon_ngu}
+              <span>
+                <GlobalOutlined />
+              </span>{" "}
+              {movie.ngon_ngu}
+            </li>
+            <li>
+              <span>
+                <UsergroupDeleteOutlined />
+              </span>{" "}
+              <div className="movie-age-warning">
+                Phim dành cho độ tuổi từ đủ {movie.do_tuoi_gioi_han} tuổi trở lên (
+                {movie.do_tuoi_gioi_han}+)
+              </div>
             </li>
           </ul>
-          <div className="movie-age-warning">🔞 {movie.do_tuoi_gioi_han}</div>
           <div className="movie-section">
             <h3>MÔ TẢ</h3>
             <div
@@ -852,13 +884,12 @@ const MovieDetailUser = () => {
               dangerouslySetInnerHTML={{ __html: movie.mo_ta }}
             />
           </div>
-          <Button
-            icon={<PlayCircleOutlined />}
-            size="large"
-            onClick={handleShowModal}
-          >
-            Xem Trailer
-          </Button>
+          <button className="play-button-detail" onClick={handleShowModal}>
+            <PlayCircleOutlined
+              style={{ fontSize: "18px", marginRight: "5px" }}
+            />
+            <span> Xem Trailer</span>
+          </button>
         </div>
       </div>
       <Modal
@@ -870,6 +901,12 @@ const MovieDetailUser = () => {
         bodyStyle={{ padding: 0, height: 450 }}
         destroyOnClose
         centered
+        style={{
+          fontFamily: "Anton, sans-serif",
+          fontWeight: 100,
+          fontSize: 50,
+          borderRadius: 4,
+        }}
       >
         {movie.trailer ? (
           <iframe
@@ -885,16 +922,7 @@ const MovieDetailUser = () => {
           <p style={{ padding: 20, textAlign: "center" }}>Không có trailer</p>
         )}
       </Modal>
-      <h3
-        style={{
-          textAlign: "center",
-          marginBottom: 20,
-          marginTop: 50,
-          fontSize: 30,
-        }}
-      >
-        LỊCH CHIẾU
-      </h3>
+      <h3 className="lich-chieu-title">LỊCH CHIẾU</h3>
       <LichChieuDatVe
         groupedLichChieu={groupedLichChieu}
         rapList={rapList}
@@ -919,209 +947,204 @@ const MovieDetailUser = () => {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
-            alignItems: "flex-start",
             flexDirection: "column",
-            width: "auto", // Giữ nguyên auto width
-            margin: "auto", // Vẫn để auto margin để căn giữa tổng thể
-            paddingTop: 50,
-            marginTop: 30,
-            borderRadius: 8,
-            maxWidth: selectedSeats.length > 0 ? 1200 : "fit-content", // Giới hạn max-width khi chia 2 cột, fit-content khi 1 cột
-            paddingLeft: selectedSeats.length > 0 ? 170 : 0, // Padding chỉ khi chia 2 cột
-            paddingRight: selectedSeats.length > 0 ? 170 : 0, // Padding chỉ khi chia 2 cột
+            alignItems: "center",
+            maxWidth: 1200,
+            marginTop: 110,
             boxSizing: "border-box",
           }}
         >
-          <h3 style={{ margin: "auto", fontSize: 25 }}>
+          <h3 className="selected-seats-title">
             Chọn ghế: {selectedPhong.ten_phong} - {tenRap}
           </h3>
-          <br /> <br />
-          {/* CONTAINER CHO SƠ ĐỒ GHẾ VÀ CHỌN ĐỒ ĂN */}
-          <div style={{ position: "relative", width: "100%" }}>
+
+          {/* Màn hình cong */}
+          <div style={{ position: "relative", width: "100%", marginTop: 20 }}>
             <DuongCongManHinh />
           </div>
-          <br /> <br />
+
+          {/* Sơ đồ ghế */}
           <div
             style={{
+              width: "100%",
+              maxWidth: 650,
+              marginTop: 30,
               display: "flex",
               justifyContent: "center",
-              width: "100%",
-              gap: selectedSeats.length > 0 ? "20px" : "0px", // Giữ nguyên gap đã điều chỉnh
-              marginTop: "30px",
-              flexWrap: "wrap",
             }}
           >
-            {/* CỘT BÊN TRÁI: SƠ ĐỒ GHẾ VÀ CHÚ THÍCH */}
-            <div
-              style={{
-                flex: selectedSeats.length > 0 ? 1 : "none",
-                minWidth: selectedSeats.length > 0 ? "400px" : "fit-content", // Fit-content để sơ đồ ghế tự co lại
-                maxWidth: selectedSeats.length > 0 ? "650px" : "fit-content", // Fit-content để sơ đồ ghế tự co lại
-                width: selectedSeats.length === 0 ? "fit-content" : "auto", // Điều kiện này vẫn đúng
-                margin: selectedSeats.length === 0 ? "auto" : "0", // Điều kiện này vẫn đúng
-              }}
-            >
+            <div className="sodoghe" style={{ paddingTop: 0 }}>
+              <SoDoGhe
+                phongId={selectedPhong.id}
+                loaiSoDo={selectedPhong.loai_so_do}
+                danhSachGhe={danhSachGhe}
+                isLoadingGhe={isLoadingGhe}
+                isErrorGhe={isErrorGhe}
+                trangThaiPhong={3}
+                danhSachCheckGhe={checkGheList}
+                onClickCheckGhe={handleClickCheckGhe}
+              />
+
+              {/* Chú thích ghế */}
               <div
-                className="sodoghe"
-                style={{ margin: "auto", paddingTop: 0 }} // margin: auto ở đây là quan trọng nhất để căn giữa sơ đồ ghế
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  maxWidth: 600,
+                  margin: "20px auto 0 auto",
+                  fontWeight: 600,
+                  fontSize: 18,
+                  userSelect: "none",
+                }}
               >
-                <SoDoGhe
-                  phongId={selectedPhong.id}
-                  loaiSoDo={selectedPhong.loai_so_do}
-                  danhSachGhe={danhSachGhe}
-                  isLoadingGhe={isLoadingGhe}
-                  isErrorGhe={isErrorGhe}
-                  trangThaiPhong={3}
-                  danhSachCheckGhe={checkGheList}
-                  onClickCheckGhe={handleClickCheckGhe}
-                />
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div
+                    style={{
+                      width: 40,
+                      height: 20,
+                      backgroundColor: "black",
+                      borderRadius: 6,
+                    }}
+                  />
+                  <span>Ghế thường</span>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div
+                    style={{
+                      width: 40,
+                      height: 20,
+                      backgroundColor: "blue",
+                      borderRadius: 6,
+                    }}
+                  />
+                  <span>Ghế VIP</span>
+                </div>
+
                 <div
-                  className="chuthich"
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    maxWidth: 600,
-                    margin: "20px auto 0 auto", // Vẫn giữ margin: auto cho chú thích
-                    fontWeight: "600",
-                    fontSize: 18,
-                    userSelect: "none",
+                    alignItems: "center",
+                    gap: 8,
+                    width: 90,
+                    position: "relative",
                   }}
                 >
                   <div
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      flex: 1,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 40,
-                        height: 20,
-                        backgroundColor: "black",
-                        borderRadius: 6,
-                      }}
-                    />
-                    <span style={{ marginRight: 8 }}> THƯỜNG</span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      flex: 1,
-                      marginRight: 10,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 40,
-                        height: 20,
-                        backgroundColor: "blue",
-                        borderRadius: 6,
-                      }}
-                    />
-                    <span> VIP</span>
-                  </div>
-
-                  <div
-                    style={{
-                      width: 90,
+                      width: "50%",
                       height: 20,
-                      display: "flex",
-                      position: "relative",
+                      backgroundColor: "white",
+                      border: "1.5px solid black",
+                      borderRight: "none",
+                      borderRadius: "5px 0 0 5px",
                     }}
-                  >
-                    {/* Nửa trái */}
-                    <div
-                      style={{
-                        width: "50%",
-                        height: "100%",
-                        backgroundColor: "white",
-                        borderTop: "1.5px solid black",
-                        borderBottom: "1.5px solid black",
-                        borderLeft: "1.5px solid black",
-                        borderRight: "none",
-                        borderRadius: 5,
-                        boxSizing: "border-box",
-                      }}
-                    />
-
-                    {/* Nửa phải */}
-                    <div
-                      style={{
-                        width: "50%",
-                        height: "100%",
-                        backgroundColor: "white",
-                        borderTop: "1.5px solid black",
-                        borderBottom: "1.5px solid black",
-                        borderRight: "1.5px solid black",
-                        borderLeft: "none",
-                        borderRadius: 5,
-                        boxSizing: "border-box",
-                        marginRight: 5,
-                      }}
-                    />
-
-                    <span>ĐÔI</span>
-                  </div>
+                  />
+                  <div
+                    style={{
+                      width: "50%",
+                      height: 20,
+                      backgroundColor: "white",
+                      border: "1.5px solid black",
+                      borderLeft: "none",
+                      borderRadius: "0 5px 5px 0",
+                    }}
+                  />
+                  <span>Ghế đôi (2 người)</span>
                 </div>
               </div>
-            </div>{" "}
-            {/* KẾT THÚC CỘT SƠ ĐỒ GHẾ */}
-            {/* CỘT BÊN PHẢI: FOOD SELECTION DISPLAY (HIỂN THỊ KHI CÓ GHẾ ĐƯỢC CHỌN) */}
-            {selectedSeats.length > 0 && (
-              <div
-                className="food-selection-area"
-                style={{ flex: 1, minWidth: "300px", maxWidth: "450px" }}
-              >
-                <FoodSelectionDisplay
-                  onFoodQuantityChange={handleFoodQuantityChange}
-                />
-                {selectedFoods.length > 0 && ( // Tóm tắt đồ ăn trong cột này, chỉ hiển thị nếu có đồ ăn
-                  <div
-                    className="selected-foods-summary"
-                    style={{
-                      marginTop: "20px",
-                      borderTop: "1px solid #333",
-                      paddingTop: "20px",
-                    }}
-                  >
-                    <h4>Đồ ăn đã chọn:</h4>
-                    <ul>
-                      {selectedFoods.map((food) => (
-                        <li key={food.id}>
-                          {food.ten_do_an} x {food.quantity} (
-                          {food.gia_ban * food.quantity} VNĐ)
-                        </li>
-                      ))}
-                    </ul>
+            </div>
+          </div>
+
+          {/* Hiển thị đồ ăn */}
+          
+          {/* Đồ ăn bên dưới (nếu có ghế) */}
+          {selectedSeats.length > 0 && (
+            <div className="food-selection-area">
+              <h3 className="lich-chieu-title">Chọn đồ ăn kèm</h3>
+              <div className="food-selection-container">
+                {/* Danh sách đồ ăn bên trái */}
+                <div className="food-list-section">
+                  <h4 className="food-list-title">Danh sách món ăn</h4>
+
+                  <div className="food-list-scroll">
+                    <FoodSelectionDisplay
+                      onFoodQuantityChange={handleFoodQuantityChange}
+                    />
                   </div>
-                )}
+                </div>
+
+                {/* Đồ ăn đã chọn bên phải */}
+                <div className="selected-foods-section">
+                  <h4 className="selected-foods-title">
+                    Đồ ăn đã chọn ({selectedFoods.length})
+                  </h4>
+
+                  {selectedFoods.length === 0 ? (
+                    <div className="empty-selection-message">
+                      Chưa có món ăn nào được chọn
+                    </div>
+                  ) : (
+                    <>
+                      <div className="selected-foods-scroll">
+                        <div className="selected-foods-list">
+                          {selectedFoods.map((food, index) => (
+                            <div key={food.id} className="selected-food-item">
+                              <div className="selected-food-info">
+                                <div className="selected-food-name">
+                                  {food.ten_do_an}
+                                </div>
+                                <div className="selected-food-quantity">
+                                  <span>Số lượng:</span>
+                                  <span className="quantity-badge">
+                                    {food.quantity}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="selected-food-price">
+                                {(
+                                  food.gia_ban * food.quantity
+                                ).toLocaleString()}{" "}
+                                VNĐ
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Tổng tiền */}
+                      <div className="total-section">
+                        <span className="total-label">Tổng cộng:</span>
+                        <span className="total-amount">
+                          {selectedFoods
+                            .reduce(
+                              (total, food) =>
+                                total + food.gia_ban * food.quantity,
+                              0
+                            )
+                            .toLocaleString()}{" "}
+                          VNĐ
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            )}
-          </div>{" "}
-          {/* KẾT THÚC CONTAINER CHÍNH */}
-          <div>Đồ ăn</div>
+            </div>
+          )}
         </div>
       )}
-      <br />
-      <br />
-      <br /> <br />
-      <br />
-      <br />
-      <div>
-       <DanhGiaForm
-         id={movie.id}
-         phim={movie}
-         onSubmit={() => {
-           message.success("Đánh giá đã được gửi!");
-         }}
-       />
 
+      {/* PHẦN ĐÁNH GIÁ PHIM */}
+      <div>
+        <DanhGiaForm
+          id={movie.id}
+          phim={movie}
+          onSubmit={() => {
+            message.success("Đánh giá đã được gửi!");
+          }}
+        />
       </div>
       {/* PHẦN FOOTER CỐ ĐỊNH Ở DƯỚI CÙNG */}
       {(selectedSeats.length > 0 || selectedFoods.length > 0) && ( // Footer hiển thị nếu có ghế HOẶC đồ ăn
@@ -1131,20 +1154,29 @@ const MovieDetailUser = () => {
             bottom: 0,
             left: 0,
             right: 0,
-            backgroundColor: "#0b0b2e",
+            backgroundColor: "#0c0b1f",
             color: "white",
-            padding: "12px 24px",
+            padding: "12px 10%",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             zIndex: 1000,
             fontSize: 16,
             fontWeight: 500,
+            height: 100,
+            borderTop: "1px solid #333",
           }}
         >
           <div style={{ display: "flex", gap: 40 }}>
             <div>
-              <div style={{ fontWeight: "bold" }}>
+              <div
+                style={{
+                  fontWeight: "100",
+                  fontFamily: "Anton",
+                  fontSize: 25,
+                  marginBottom: 10,
+                }}
+              >
                 {movie.ten_phim?.toUpperCase()}
               </div>
               <div style={{ fontSize: 14, opacity: 0.8 }}>
@@ -1155,43 +1187,76 @@ const MovieDetailUser = () => {
               Ghế: {selectedSeats.join(", ")}
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div
               style={{
-                backgroundColor: "yellow",
+                backgroundColor: "yellow", // vàng đất giống hình
                 color: "#000",
-                padding: "6px 12px",
+                padding: "15px 10px",
                 borderRadius: 4,
                 fontWeight: 600,
-                fontSize: 16,
+                fontSize: 10,
+                display: "inline-block",
               }}
             >
-              {selectedSeats.length > 0
-                ? `⏰ ${formatTime(remainingTime)}`
-                : `⏰ ${formatTime(TIMEOUT_MINUTES * 60)}`}
+              <div style={{ marginBottom: 5, gap: 0, fontSize: 13 }}>
+                <span>Thời gian giữ vé:</span>
+              </div>
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: "100",
+                  letterSpacing: 1,
+                  fontFamily: "Anton, sans-serif",
+                }}
+              >
+                {selectedSeats.length > 0
+                  ? formatTime(remainingTime)
+                  : formatTime(TIMEOUT_MINUTES * 60)}
+              </div>
             </div>
-            <div style={{ textAlign: "right" }}>
-              <button
+            <div style={{ textAlign: "left" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 12,
+                  fontWeight: 600,
+                }}
+              >
+                <span style={{ color: "#aaa", fontSize: 16, marginRight: 60 }}>
+                  Tạm tính
+                </span>
+                <span style={{ fontSize: 16, color: "#ffff" }}>
+                  {totalPrice.toLocaleString("vi-VN")} VNĐ
+                </span>
+              </div>
+
+              <button className="btn-dat-ve"
                 onClick={handleThanhToanClick}
                 style={{
-                  padding: "6px 12px",
-                  fontSize: 16,
-                  backgroundColor: "#28a745",
-                  color: "white",
+                  width: "100%",
+                  fontFamily: "Anton, sans-serif",
+                  padding: "10px 16px",
+                  fontSize: 15,
+                  backgroundColor: "yellow",
+                  fontWeight: "100",
                   border: "none",
-                  borderRadius: 8,
+                  borderRadius: 4,
                   cursor: "pointer",
                   opacity:
                     selectedSeats.length > 0 || selectedFoods.length > 0
                       ? 1
                       : 0.6,
+                  textTransform: "uppercase",
                 }}
                 disabled={
                   (selectedSeats.length === 0 && selectedFoods.length === 0) ||
                   isProcessingPayment
                 }
               >
-                Thanh toán {totalPrice.toLocaleString("vi-VN")} VNĐ
+                <span>Đặt vé</span>
               </button>
             </div>
           </div>

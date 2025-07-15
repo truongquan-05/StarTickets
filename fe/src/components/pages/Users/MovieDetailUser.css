@@ -1,0 +1,405 @@
+/* MovieDetail */
+.movie-detail-wrapper {
+  width: 100%;
+  background: linear-gradient(to right, #1e0033, #0c0b1f); /* Deep, cinematic background */
+  padding: 1px 10%; /* Increased padding for better spacing */
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+
+.movie-detail-container {
+  display: flex;
+  gap: 30px; /* Wider gap for clearer separation */
+  max-width: 1280px; /* Modern max-width for larger screens */
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.movie-poster {
+  border: 1px solid #ccc; /* Subtle border for definition */
+  width: 500px; /* Slightly larger poster for prominence */
+  border-radius: 4px; /* Smooth, modern corners */
+  overflow: hidden; /* Ensure content respects border-radius */
+  box-shadow: 0 6px 22px rgba(255, 255, 255, 0.15); /* Subtle, refined shadow */
+  background-color: #1c1133; /* Fallback for loading states */
+}
+
+.movie-content {
+  flex: 1;
+  min-width: 320px; /* Adjusted for better text flow */
+  color: #ffffff; /* Consistent white text */
+}
+
+.movie-content h1 {
+  font-family: 'Anton', sans-serif;
+  font-size: 43px; /* Larger title for emphasis */
+  font-weight: 100;
+  letter-spacing: 1px;
+  margin-bottom: 26px; /* More spacing below title */
+  color: #ffffff;
+  line-height: 1.3; /* Improved readability */
+  margin-top: 5px;
+}
+
+.movie-attributes {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 26px; /* Consistent spacing */
+}
+
+.movie-attributes li {
+  margin-bottom: 12px; /* Increased spacing for clarity */
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  color: #d1d1d1; /* Softer gray for secondary text */
+}
+
+.movie-attributes span {
+  font-size: 25px;
+  font-weight: 800;
+  margin-right: 7px; /* More spacing for readability */
+  color: yellow; /* Yellow for emphasis */
+}
+
+.movie-age-warning {
+  background-color: yellow;
+  color: #0f071b;
+  display: inline-block;
+  padding: 5px 0 5px 0;
+  font-size: 20px; /* Balanced size */
+}
+
+.movie-section {
+  margin-bottom: 26px; /* Consistent spacing */
+}
+
+.movie-section h3 {
+  color: #ffffff;
+  font-size: 22px; /* Clear hierarchy */
+  margin-bottom: 14px;
+  font-weight: 100;
+  font-family: 'Anton', sans-serif;
+  letter-spacing: 1px;
+}
+
+.movie-section p {
+  line-height: 1.7; /* Improved readability */
+  font-size: 20px;
+  color: #d1d1d1; /* Softer gray for descriptions */
+}
+
+/* Nút load more */
+
+.play-button-detail{
+  border: 1px solid white;
+  width: 200px;
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+  position: relative;
+  height: 45px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.play-button-detail::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #f77904, #e7bf3c); /* màu khi hover */
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.play-button-detail:hover::before {
+  transform: scaleX(1);
+}
+
+.play-button-detail:hover {
+  color: #fff;
+}
+
+.play-button-detail span {
+  position: relative;
+  z-index: 1;
+}
+/* tiêu đề phòng chiếu*/
+.lich-chieu-title{
+  font-family: 'Anton', sans-serif;
+  text-align: center;
+  font-size: 40px;
+  color: #ffffff;
+  letter-spacing: 1px;
+  margin: 130px 0 40px 0;
+}
+
+
+
+/*tiêu đề đồ ăn*/
+.selected-seats-title{
+  color: #ffffff;
+  text-align: center;
+  font-size: 40px;
+  font-family: 'Anton', sans-serif;
+  font-weight: 100;
+}
+
+/* FoodSelection.css */
+
+/* FoodSelection.css */
+
+.food-selection-area {
+  width: 100%;
+}
+
+.food-selection-container {
+  display: flex;
+  gap: 24px;
+  min-height: 400px;
+}
+
+/* Danh sách đồ ăn bên trái */
+.food-list-section {
+  flex: 1;
+  background: #0c0b1f;
+  border-radius: 4px;
+  padding: 16px;
+  border: 1px solid #333;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.food-list-title {
+  margin: 0 0 17px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.food-list-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Đồ ăn đã chọn bên phải */
+.selected-foods-section {
+  width: 350px;
+  background: #0c0b1f;
+  border-radius: 4px;
+  padding: 16px;
+  border: 2px solid yellow;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.selected-foods-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-selection-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.selected-foods-scroll {
+  flex: 1;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.selected-foods-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selected-food-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: linear-gradient(to right, #5d0eeb, #a943ec);
+  border-radius: 4px;
+  border: 1px solid #9ca3af;
+  transition: all 0.2s ease;
+}
+.selected-food-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.selected-food-name {
+  font-weight: 500;
+  color: #f3f4f6;
+  font-size: 14px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selected-food-quantity {
+  font-size: 12px;
+  color: #d1d5db;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quantity-badge {
+  width: 20px;
+  height: 20px;
+  font-weight: 600;
+  background: yellow;
+  color: #1f2937;
+  padding: 1px 6px;
+  border-radius: 50px;
+  font-size: 12px;
+  text-align: center;
+  align-items: center;
+  display: flex;
+}
+
+.selected-food-price {
+  text-align: right;
+  font-weight: 600;
+  font-size: 13px;
+  color: yellow;
+  background: transparent;
+}
+
+/* Tổng tiền */
+.total-section {
+  padding-top: 27px;
+  border-top: 2px dashed yellow;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.total-amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .food-selection-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .selected-foods-section {
+    width: 100%;
+  }
+  
+  .food-selection-area {
+    padding: 16px;
+  }
+}
+
+/* Scrollbar styling */
+.food-list-scroll::-webkit-scrollbar,
+.selected-foods-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.food-list-scroll::-webkit-scrollbar-track,
+.selected-foods-scroll::-webkit-scrollbar-track {
+  background: #374151;
+  border-radius: 3px;
+}
+
+.food-list-scroll::-webkit-scrollbar-thumb,
+.selected-foods-scroll::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 3px;
+}
+
+.food-list-scroll::-webkit-scrollbar-thumb:hover,
+.selected-foods-scroll::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+
+
+
+
+
+
+/* Nút load more */
+
+.btn-dat-ve{
+  border: 1px solid white;
+  height: 39px;
+  font-family: "Anton", sans-serif;
+  font-weight: 100;
+  position: relative;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: color 0.4s ease;
+  letter-spacing: 1px;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.btn-dat-ve::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(to right, #5d0eeb, #a943ec);
+  z-index: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.btn-dat-ve:hover::before {
+  transform: scaleX(1);
+}
+
+.btn-dat-ve:hover {
+  color: #fff;
+}
+
+.btn-dat-ve span {
+  position: relative;
+  z-index: 1;
+}

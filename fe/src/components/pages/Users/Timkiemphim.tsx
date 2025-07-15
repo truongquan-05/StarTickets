@@ -44,6 +44,7 @@ const TimKiemPhim = () => {
   }, [location.search]);
 
   return (
+    <div className="session-search">
     <div className="search-page">
       {loading ? (
         <Spin />
@@ -79,6 +80,7 @@ const TimKiemPhim = () => {
           ))}
         </Row>
       )}
+    </div>
     </div>
   );
 };
