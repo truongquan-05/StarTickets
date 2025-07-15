@@ -28,7 +28,14 @@ const Login = () => {
       const { user, access_token } = response.data;
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", access_token);
-      window.location.href = "/";
+
+      // Phân quyền chuyển hướng
+      const vaiTroId = user?.vai_tro_id;
+      if (vaiTroId === 2 || vaiTroId === null) {
+        window.location.href = "/"; // Không có quyền admin
+      } else {
+        window.location.href = "/admin"; // Có quyền admin
+      }
     } catch (err: any) {
       message.error(err?.response?.data?.message || "Đăng nhập thất bại!");
     }
