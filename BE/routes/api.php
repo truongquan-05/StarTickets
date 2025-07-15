@@ -10,11 +10,13 @@ use App\Http\Controllers\Admin\PhimController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\TinTucController;
 use App\Http\Controllers\Admin\VaiTroController;
 use App\Http\Controllers\Client\DatVeController;
 use App\Http\Controllers\Admin\LoaiGheController;
 use App\Http\Controllers\Admin\TheLoaiController;
+use App\Http\Controllers\Admin\AddQuyenController;
 use App\Http\Controllers\Admin\ChuyenNguController;
 use App\Http\Controllers\Admin\LichChieuController;
 use App\Http\Controllers\Admin\MaGiamGiaController;
@@ -25,12 +27,11 @@ use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\QuanLyDonVeController;
 use App\Http\Controllers\Client\LichSuMuaHangController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
+use App\Http\Controllers\Client\RapController as ClientRapController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
-use App\Http\Controllers\Client\RapController as ClientRapController;
-use App\Http\Controllers\Admin\AddQuyenController;
 
 
 
@@ -131,7 +132,16 @@ Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan'])
 
 Route::apiResource('quyen_truy_cap',AddQuyenController::class);
 
-
+//Banner
+Route::prefix('banners')->group(function () {
+    Route::get('/', [BannerController::class, 'index']); // Lấy danh sách banner (active, expired, deleted)
+    Route::post('/', [BannerController::class, 'store']); // Tạo banner mới
+    Route::get('/{id}', [BannerController::class, 'show']); // Xem chi tiết banner
+    Route::put('/{id}', [BannerController::class, 'update']); // Cập nhật banner
+    Route::delete('/{id}', [BannerController::class, 'destroy']); // Xóa mềm banner
+    Route::post('/{id}/restore', [BannerController::class, 'restore']); // Khôi phục banner
+    Route::delete('/{id}/force', [BannerController::class, 'forceDelete']); // Xóa cứng banner
+});
 
 //-------------------CLIENT-------------------//
 
