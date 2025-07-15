@@ -11,14 +11,15 @@ class LichSuMuaHangController extends Controller
 
 {
 
-    public function lichSu(Request $request)
+    public function index()
     {
-        $userId = Auth::id();
+        $userId = Auth::guard('sanctum')->id();
 
         $lichSu = ThanhToan::with([
             'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
             'datVe.DatVeChiTiet.GheDat',
-            'phuongThucThanhToan',
+            'phuongThuc',
         ])
             ->where('nguoi_dung_id', $userId)
             ->orderByDesc('created_at')
@@ -31,21 +32,19 @@ class LichSuMuaHangController extends Controller
     }
 
 
-    public function show(Request $request, $id)
+    public function show( $id)
     {
-        $userId = Auth::id();
+        // $userId = Auth::guard('sanctum')->id();
 
-        $thanhToan = ThanhToan::with([
+        $lichSu = ThanhToan::with([
             'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
             'datVe.DatVeChiTiet.GheDat',
-            'phuongThucThanhToan',
-        ])
-            ->where('id', $id)
-            ->where('nguoi_dung_id', $userId) // lau ve cua chinh nguoi dung
-            ->first();
+            'phuongThuc',
+        ])->find($id);
 
 
-        if (!$thanhToan) {
+        if (!$lichSu) {
             return response()->json([
                 'status' => false,
                 'message' => 'Không tìm thấy giao dịch.'
@@ -54,7 +53,7 @@ class LichSuMuaHangController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $thanhToan
+            'data' => $lichSu
         ]);
     }
 }

@@ -178,3 +178,4 @@ Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'update']);
 Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
 Route::get('/client/rap', [ClientRapController::class, 'index']);
+Route::apiResource('lich-su-ve',LichSuMuaHangController::class);
