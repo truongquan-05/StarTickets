@@ -76,7 +76,7 @@ class CheckOutController extends Controller
 
             // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
             //before sign HMAC SHA256 signature
-            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+$rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
             $signature = hash_hmac("sha256", $rawHash, $secretKey);
             $data = array(
                 'dat_ve_id' => $dat_ve_id,
@@ -140,7 +140,7 @@ class CheckOutController extends Controller
             $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
 
             $startTime = date("YmdHis");
-            $expire = date('YmdHis', strtotime('+10 minutes', strtotime($startTime)));
+$expire = date('YmdHis', strtotime('+10 minutes', strtotime($startTime)));
 
             $inputData = array(
                 "vnp_Version" => "2.1.0",
@@ -215,8 +215,7 @@ class CheckOutController extends Controller
                         $data['qr_code'] = "'data:image/svg+xml;base64,' . base64_encode($qrSvg)";
                         $thanhToan = ThanhToan::create($extraData);
                         $DatVe = DatVe::find($thanhToan->dat_ve_id);
-
-                        $diemCong = $DatVe->tong_tien * 0.001;
+$diemCong = $DatVe->tong_tien * 0.001;
 
                         $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
@@ -273,8 +272,7 @@ class CheckOutController extends Controller
                     }
                 }
             }
-
-            if ($request->phuong_thuc_thanh_toan_id == 2) {
+if ($request->phuong_thuc_thanh_toan_id == 2) {
 
                 // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
 
@@ -334,7 +332,7 @@ class CheckOutController extends Controller
                         $don_do_an->each(function ($item) {
                             $doAn = DoAn::find($item->do_an_id);
                             if ($doAn) {
-                                $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
+$doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
                             }
                         });
                     }
