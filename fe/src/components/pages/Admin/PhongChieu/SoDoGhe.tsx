@@ -790,7 +790,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 border: "2px solid orange",
               }}
             />
-            <span>Đang chọn</span>
+            <span style={{color:'white'}}>Đang chọn</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <div
@@ -802,7 +802,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 borderRadius: 4,
               }}
             />
-            <span>Đã đặt</span>
+            <span style={{color:'white'}}>Đã đặt</span>
           </div>
         </div>
       )}

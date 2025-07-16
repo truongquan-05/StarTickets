@@ -55,6 +55,7 @@ class CheckOutController extends Controller
             $dat_ve_id = $request->input('dat_ve_id');
             $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
             $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
+            $diem = $request->input('diem', null);
             $nguoi_dung_id = $request->input('nguoi_dung_id');
             $email = $request->input('email');
             $ho_ten = $request->input('ho_ten');
@@ -70,13 +71,14 @@ class CheckOutController extends Controller
                 'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
                 'nguoi_dung_id' => $nguoi_dung_id,
                 'ma_giam_gia_id' => $ma_giam_gia_id,
+                'diem' => $diem,
                 'email' => $email,
                 'ho_ten' => $ho_ten,
             ]);
 
             // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
             //before sign HMAC SHA256 signature
-$rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
             $signature = hash_hmac("sha256", $rawHash, $secretKey);
             $data = array(
                 'dat_ve_id' => $dat_ve_id,
@@ -117,6 +119,7 @@ $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $e
             $nguoi_dung_id = $request->input('nguoi_dung_id');
             $email = $request->input('email');
             $ho_ten = $request->input('ho_ten');
+            $diem = $request->input('diem', null);
 
             $vnp_Returnurl = "http://localhost:8000/api/momo-ipn?"
                 . "dat_ve_id={$dat_ve_id}"
@@ -124,6 +127,7 @@ $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $e
                 . "&nguoi_dung_id={$nguoi_dung_id}"
                 . "&ma_giam_gia_id=" . ($ma_giam_gia_id ?? null)
                 . "&email={$email}"
+                . "&diem={$diem}"
                 . "&ho_ten=" . ($ho_ten);
 
 
@@ -140,7 +144,7 @@ $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $e
             $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
 
             $startTime = date("YmdHis");
-$expire = date('YmdHis', strtotime('+10 minutes', strtotime($startTime)));
+            $expire = date('YmdHis', strtotime('+10 minutes', strtotime($startTime)));
 
             $inputData = array(
                 "vnp_Version" => "2.1.0",
@@ -210,12 +214,17 @@ $expire = date('YmdHis', strtotime('+10 minutes', strtotime($startTime)));
                             $voucher = MaGiamGia::find($extraData['ma_giam_gia_id']);
                             $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
                         }
+                        if ($extraData['diem']) {
+                            $diem = DiemThanhVien::where('nguoi_dung_id', $extraData['nguoi_dung_id'])->first();
+                            $diem->update(['diem' => $diem->diem - $extraData['diem']]);
+                        }
+
                         //TẠO QR MÃ GIAO DỊCH
                         $qrSvg = QrCode::format('svg')->size(250)->generate($extraData['ma_giao_dich']);
                         $data['qr_code'] = "'data:image/svg+xml;base64,' . base64_encode($qrSvg)";
                         $thanhToan = ThanhToan::create($extraData);
                         $DatVe = DatVe::find($thanhToan->dat_ve_id);
-$diemCong = $DatVe->tong_tien * 0.001;
+                        $diemCong = $DatVe->tong_tien * 0.001;
 
                         $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
@@ -272,7 +281,7 @@ $diemCong = $DatVe->tong_tien * 0.001;
                     }
                 }
             }
-if ($request->phuong_thuc_thanh_toan_id == 2) {
+            if ($request->phuong_thuc_thanh_toan_id == 2) {
 
                 // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
 
@@ -282,6 +291,10 @@ if ($request->phuong_thuc_thanh_toan_id == 2) {
                     if ($data['ma_giam_gia_id'] != null) {
                         $voucher = MaGiamGia::find($data['ma_giam_gia_id']);
                         $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
+                    }
+                    if ($data['diem'] != null) {
+                        $diem = DiemThanhVien::where('nguoi_dung_id', $extraData['nguoi_dung_id'])->first();
+                        $diem->update(['diem' => $diem->diem - $extraData['diem']]);
                     }
                     //TẠO QR MÃ GIAO DỊCH
                     $qrSvg = QrCode::format('svg')->size(250)->generate($data['ma_giao_dich']);
@@ -332,7 +345,7 @@ if ($request->phuong_thuc_thanh_toan_id == 2) {
                         $don_do_an->each(function ($item) {
                             $doAn = DoAn::find($item->do_an_id);
                             if ($doAn) {
-$doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
+                                $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
                             }
                         });
                     }
@@ -342,30 +355,30 @@ $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
                 }
             }
         } catch (\Throwable $th) {
-               $dataVeId = $data['dat_ve_id'];
-                    $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
-                    $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
-                    $don_do_an = $dataVe->DonDoAn ?? null;
-                    if ($dat_ve_chi_tiet->isNotEmpty()) {
-                        $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
-                            $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
-                                ->where('lich_chieu_id', $dataVe->lich_chieu_id)
-                                ->first();
-                            if ($checkGhe) {
-                                $checkGhe->update(['trang_thai' => 'trong']);
-                            }
-                        });
+            $dataVeId = $data['dat_ve_id'];
+            $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
+            $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
+            $don_do_an = $dataVe->DonDoAn ?? null;
+            if ($dat_ve_chi_tiet->isNotEmpty()) {
+                $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
+                    $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
+                        ->where('lich_chieu_id', $dataVe->lich_chieu_id)
+                        ->first();
+                    if ($checkGhe) {
+                        $checkGhe->update(['trang_thai' => 'trong']);
                     }
-                    if ($don_do_an->isNotEmpty()) {
-                        $don_do_an->each(function ($item) {
-                            $doAn = DoAn::find($item->do_an_id);
-                            if ($doAn) {
-                                $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
-                            }
-                        });
+                });
+            }
+            if ($don_do_an->isNotEmpty()) {
+                $don_do_an->each(function ($item) {
+                    $doAn = DoAn::find($item->do_an_id);
+                    if ($doAn) {
+                        $doAn->update(['so_luong' => $doAn->so_luong + $item->so_luong]);
                     }
+                });
+            }
 
-                    $dataVe->delete();
+            $dataVe->delete();
             return response()->json([
                 'data' => $data,
             ], 422);

@@ -1022,34 +1022,43 @@ const MovieDetailUser = () => {
                 </div>
 
                 <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    width: 90,
-                    position: "relative",
-                  }}
-                >
-                  <div
                     style={{
-                      width: "50%",
+                      width: 90,
                       height: 20,
-                      backgroundColor: "white",
-                      border: "1.5px solid black",
-                      borderRight: "none",
-                      borderRadius: "5px 0 0 5px",
+                      display: "flex",
+                      position: "relative",
                     }}
-                  />
-                  <div
-                    style={{
-                      width: "50%",
-                      height: 20,
-                      backgroundColor: "white",
-                      border: "1.5px solid black",
-                      borderLeft: "none",
-                      borderRadius: "0 5px 5px 0",
-                    }}
-                  />
+                  >
+                    {/* Nửa trái */}
+                    <div
+                      style={{
+                        width: "50%",
+                        height: "100%",
+                        backgroundColor: "white",
+                        borderTop: "1.5px solid black",
+                        borderBottom: "1.5px solid black",
+                        borderLeft: "1.5px solid black",
+                        borderRight: "none",
+                        borderRadius: 5,
+                        boxSizing: "border-box",
+                      }}
+                    />
+
+                    {/* Nửa phải */}
+                    <div
+                      style={{
+                        width: "50%",
+                        height: "100%",
+                        backgroundColor: "white",
+                        borderTop: "1.5px solid black",
+                        borderBottom: "1.5px solid black",
+                        borderRight: "1.5px solid black",
+                        borderLeft: "none",
+                        borderRadius: 5,
+                        boxSizing: "border-box",
+                        marginRight: 5,
+                      }}
+                    />
                   <span style={{color:'white'}}>Đôi</span>
                 </div>
               </div>
