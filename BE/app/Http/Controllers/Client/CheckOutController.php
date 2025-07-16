@@ -221,7 +221,7 @@ class CheckOutController extends Controller
 
                         //TẠO QR MÃ GIAO DỊCH
                         $qrSvg = QrCode::format('svg')->size(250)->generate($extraData['ma_giao_dich']);
-                        $data['qr_code'] = "'data:image/svg+xml;base64,' . base64_encode($qrSvg)";
+                        $data['qr_code'] = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
                         $thanhToan = ThanhToan::create($extraData);
                         $DatVe = DatVe::find($thanhToan->dat_ve_id);
                         $diemCong = $DatVe->tong_tien * 0.001;
@@ -298,7 +298,7 @@ class CheckOutController extends Controller
                     }
                     //TẠO QR MÃ GIAO DỊCH
                     $qrSvg = QrCode::format('svg')->size(250)->generate($data['ma_giao_dich']);
-                    $data['qr_code'] = "'data:image/svg+xml;base64,' . base64_encode($qrSvg)";
+                    $data['qr_code'] = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
                     $thanhToan = ThanhToan::create($data);
                     $DatVe = DatVe::find($thanhToan->dat_ve_id);

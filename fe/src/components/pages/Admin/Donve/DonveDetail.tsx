@@ -10,6 +10,7 @@ import {
   Divider,
   Row,
   Col,
+  Popconfirm,
 } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import { getDonVeById } from "../../../provider/duProvider";
@@ -22,7 +23,10 @@ import {
   CreditCardOutlined,
   DollarOutlined,
   FileDoneOutlined,
+  PrinterOutlined,
 } from "@ant-design/icons";
+import { printSingleTicket } from "./printTicket ";
+import axios from "axios";
 
 const { Title, Text } = Typography;
 
@@ -48,25 +52,51 @@ export default function DonVeDetail() {
     }
   };
 
-  // const renderPaymentStatus = (status: string) => {
-  //   const statusMap: Record<string, { color: string; text: string }> = {
-  //     thanh_cong: { color: "green", text: "Thành công" },
-  //     cho_xu_ly: { color: "orange", text: "Chờ xử lý" },
-  //     that_bai: { color: "red", text: "Thất bại" },
-  //   };
-
-  //   const currentStatus = statusMap[data?.trang_thai_thanh_toan] || {
-  //     color: "default",
-  //     text: "Không xác định",
-  //   };
-  //   return <Tag color={currentStatus.color}>{currentStatus.text}</Tag>;
-  // };
-
   if (!data && loading) return <Card loading={true} />;
 
   if (!data) return <p>Không tìm thấy đơn vé</p>;
 
-  console.log(data);
+  const handlePrintOrder = () => {
+    const listGhe = data.dat_ve?.dat_ve_chi_tiet
+      ?.map((ct: any) => ct.ghe_dat?.so_ghe)
+      .join(", ");
+
+    const listDoAn = data.dat_ve?.don_do_an
+      ?.map((item: any) => `${item.do_an?.ten_do_an} x${item.so_luong}`)
+      .join(", ");
+
+    const ticketsToPrint = {
+      qr_code_data_url: data.qr_code,
+      ma_don_hang: data.ma_giao_dich,
+      ghe: listGhe,
+      doAn: listDoAn,
+      phim: data.dat_ve.lich_chieu.phim?.ten_phim,
+      thoigian: data.dat_ve.lich_chieu?.gio_chieu,
+      rap: data.dat_ve.lich_chieu.phong_chieu.rap?.ten_rap,
+      diaChi: data.dat_ve.lich_chieu.phong_chieu.rap?.dia_chi,
+      ten: data.ho_ten,
+      tongTien: data.dat_ve.tong_tien,
+    };
+    if (data.da_quet === 1) {
+      message.error("Đơn vé đã được in trước đó");
+      return;
+    }
+    printSingleTicket(ticketsToPrint);
+  };
+  const updatePrint = async (id: any) => {
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/handler-qr/${id}`
+      );
+      if (!response) {
+        throw new Error("Failed to update print status");
+      }
+      message.success("Đã cập nhật trạng thái in thành công");
+      fetchDetail();
+    } catch (error) {
+      message.error("Lỗi khi cập nhật trạng thái in");
+    }
+  };
   return (
     <div style={{ padding: "24px" }}>
       <Card
@@ -77,9 +107,20 @@ export default function DonVeDetail() {
           </Title>
         }
         extra={
-          <Tag color="#2db7f5" style={{ fontSize: 14, padding: "4px 8px" }}>
-            {new Date(data.dat_ve?.thoi_gian_dat).toLocaleString()}
-          </Tag>
+          <Popconfirm
+            title="Bạn có chắc muốn cập nhật?"
+            onConfirm={() => updatePrint(id)}
+            okText="Cập nhật"
+            cancelText="Hủy"
+          >
+            <Button
+              type="primary"
+              style={{ marginRight: 16 }}
+              disabled={data?.da_quet === 1}
+            >
+              {data?.da_quet === 1 ? "Đã in" : "Chưa in"}
+            </Button>
+          </Popconfirm>
         }
         bordered={false}
         loading={loading}
@@ -188,6 +229,10 @@ export default function DonVeDetail() {
                 </Text>
               </Descriptions.Item>
 
+              <Descriptions.Item label={<span>Thời gian</span>}>
+                <Text strong>{data.dat_ve?.lich_chieu?.gio_chieu}</Text>
+              </Descriptions.Item>
+
               <Descriptions.Item label={<span>Thời lượng</span>}>
                 <Text strong>
                   {data.dat_ve?.lich_chieu?.phim?.thoi_luong} Phút
@@ -247,13 +292,21 @@ export default function DonVeDetail() {
         <Divider />
 
         <div style={{ textAlign: "center", marginTop: 24 }}>
-          <Button
-            type="primary"
-            onClick={() => window.print()}
-            style={{ marginRight: 16 }}
+          <Popconfirm
+            title="Bạn có chắc muốn in vé?"
+            onConfirm={() => handlePrintOrder()}
+            okText="In"
+            cancelText="Hủy"
           >
-            In đơn vé
-          </Button>
+            <Button
+              type="primary"
+              style={{ marginRight: 16 }}
+              icon={<PrinterOutlined />}
+            >
+              In đơn vé
+            </Button>
+          </Popconfirm>
+
           <Button onClick={() => navigate(-1)}>Quay lại</Button>
         </div>
       </Card>

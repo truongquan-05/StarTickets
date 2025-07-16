@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { SearchOutlined, FileSearchOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { DatePicker } from "antd";
+import QRCodeScanner from "./QuetQR";
 
 const { Title, Text } = Typography;
 
@@ -265,6 +266,9 @@ export default function DonVeList() {
         }
         extra={
           <Space>
+            <div>
+              <QRCodeScanner />
+            </div>
             <Input
               placeholder="Mã đơn hàng...."
               prefix={<SearchOutlined />}
@@ -278,21 +282,21 @@ export default function DonVeList() {
           </Space>
         }
       >
-          <Table
-            rowKey="id"
-            dataSource={filteredData}
-            columns={columns}
-            loading={loading}
-            bordered
-            size="middle"
-            scroll={{ x: "1200px" }}
-            pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              showTotal: (total) => `Tổng cộng ${total} đơn vé`,
-              pageSizeOptions: ["10", "20", "50", "100"],
-            }}
-          />{" "}
+        <Table
+          rowKey="id"
+          dataSource={filteredData}
+          columns={columns}
+          loading={loading}
+          bordered
+          size="middle"
+          scroll={{ x: "1200px" }}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `Tổng cộng ${total} đơn vé`,
+            pageSizeOptions: ["10", "20", "50", "100"],
+          }}
+        />{" "}
       </Card>
     </div>
   );
