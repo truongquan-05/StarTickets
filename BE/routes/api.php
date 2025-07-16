@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\NguoiDung;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\GheController;
 use App\Http\Controllers\Admin\RapController;
@@ -31,10 +29,8 @@ use App\Http\Controllers\Client\RapController as ClientRapController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
+use App\Http\Controllers\Client\DiemThuongController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
-
-
-
 
 //-------------------ADMIN-------------------//
 
@@ -130,7 +126,7 @@ Route::POST('delete-dat-ve/{id}', [DatVeController::class, 'BackDelete']);
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']);
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
 
-Route::apiResource('quyen_truy_cap',AddQuyenController::class);
+Route::apiResource('quyen_truy_cap', AddQuyenController::class);
 
 //Banner
 Route::prefix('banners')->group(function () {
@@ -178,4 +174,6 @@ Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'update']);
 Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
 Route::get('/client/rap', [ClientRapController::class, 'index']);
-Route::apiResource('lich-su-ve',LichSuMuaHangController::class);
+Route::apiResource('lich-su-ve', LichSuMuaHangController::class);
+Route::get('diem_thanh_vien', [DiemThuongController::class, 'index']);
+Route::post('diem_thanh_vien', [DiemThuongController::class, 'checkDiem']);

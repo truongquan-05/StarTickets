@@ -949,7 +949,7 @@ const MovieDetailUser = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            maxWidth: 1200,
+            // maxWidth: 1200,
             marginTop: 110,
             boxSizing: "border-box",
           }}
@@ -959,7 +959,7 @@ const MovieDetailUser = () => {
           </h3>
 
           {/* Màn hình cong */}
-          <div style={{ position: "relative", width: "100%", marginTop: 20 }}>
+            <div style={{ position: "relative", width: "100%" }}>
             <DuongCongManHinh />
           </div>
 

@@ -208,10 +208,13 @@ const LichSuTatCaVe = () => {
               </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Tổng tiền">
-              {Number(chiTietData.data?.dat_ve?.tong_tien).toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              })}
+              {Number(chiTietData.data?.dat_ve?.tong_tien).toLocaleString(
+                "vi-VN",
+                {
+                  style: "currency",
+                  currency: "VND",
+                }
+              )}
             </Descriptions.Item>
           </Descriptions>
         ) : (
@@ -231,14 +234,10 @@ const LichSuTatCaVe = () => {
           <div style={{ textAlign: "center" }}>
             <Spin />
           </div>
-        ) : chiTietData?.qr_code ? (
+        ) : chiTietData?.data?.qr_code ? (
           <div style={{ textAlign: "center" }}>
             <Image
-              src={
-                chiTietData.qr_code.startsWith("data:image")
-                  ? chiTietData.qr_code.replace(/^'/, "").replace(/'$/, "")
-                  : `data:image/svg+xml;base64,${chiTietData.qr_code}`
-              }
+              src={`${chiTietData.data.qr_code}`}
               alt="QR Code"
               width={250}
               preview={false}
