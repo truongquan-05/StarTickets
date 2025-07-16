@@ -822,7 +822,7 @@ const MovieDetailUser = () => {
   return (
     <div className="movie-detail-wrapper">
       <div className="movie-detail-container">
-        <div className="movie-poster">
+        <div className="movie-poster" style={{ position: "sticky", top: "130px" }}>
           <Image
             src={`${BASE_URL}/storage/${movie.anh_poster}`}
             alt={movie.ten_phim}
@@ -834,7 +834,7 @@ const MovieDetailUser = () => {
         </div>
 
         <div className="movie-content">
-          <h1>{movie.ten_phim}</h1>
+          <h1>{movie.ten_phim.toUpperCase()}</h1>
           <ul className="movie-attributes">
             <li>
               <span>
@@ -872,8 +872,8 @@ const MovieDetailUser = () => {
                 <UsergroupDeleteOutlined />
               </span>{" "}
               <div className="movie-age-warning">
-                Phim dành cho độ tuổi từ đủ {movie.do_tuoi_gioi_han} tuổi trở lên (
-                {movie.do_tuoi_gioi_han}+)
+                Phim dành cho độ tuổi từ đủ {movie.do_tuoi_gioi_han} tuổi trở
+                lên ({movie.do_tuoi_gioi_han}+)
               </div>
             </li>
           </ul>
@@ -973,7 +973,15 @@ const MovieDetailUser = () => {
               justifyContent: "center",
             }}
           >
-            <div className="sodoghe" style={{ paddingTop: 0 }}>
+            <div
+              className="sodoghe"
+              style={{
+                paddingTop: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <SoDoGhe
                 phongId={selectedPhong.id}
                 loaiSoDo={selectedPhong.loai_so_do}
@@ -986,153 +994,285 @@ const MovieDetailUser = () => {
               />
 
               {/* Chú thích ghế */}
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly", // giãn đều các chú thích
+              flexWrap: "wrap", // nếu chật thì xuống dòng
+              userSelect: "none",
+              marginTop: 30,
+              width: "100%",
+              maxWidth: "1200px", // tránh dãn quá rộng
+              marginInline: "auto",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* Ghế chọn */}
               <div
                 style={{
+                  width: "40px",
+                  height: "29px",
+                  backgroundColor: "yellow",
+                  borderRadius: "8px",
+                  border: "none",
+                  opacity: 1,
+                  visibility: "visible",
+                  pointerEvents: "auto",
                   display: "flex",
-                  justifyContent: "space-between",
-                  maxWidth: 600,
-                  margin: "20px auto 0 auto",
-                  fontWeight: 600,
-                  fontSize: 18,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  userSelect: "none",
+                  margin: "3px 0",
+                  position: "relative",
+                }}
+              ></div>
+
+              {/* Chữ "Ghế thường" */}
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: "#fff",
                   userSelect: "none",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div
-                    style={{
-                      width: 40,
-                      height: 20,
-                      backgroundColor: "black",
-                      borderRadius: 6,
-                    }}
-                  />
-                  <span>Ghế thường</span>
-                </div>
+                Ghế Chọn
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* Ghế chọn */}
+              <div
+                style={{
+                  width: "40px",
+                  height: "29px",
+                  backgroundColor: "#302c4c",
+                  borderRadius: "8px",
+                  border: "none",
+                  opacity: 1,
+                  visibility: "visible",
+                  pointerEvents: "auto",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  userSelect: "none",
+                  margin: "3px 0",
+                  position: "relative",
+                }}
+              ></div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div
-                    style={{
-                      width: 40,
-                      height: 20,
-                      backgroundColor: "blue",
-                      borderRadius: 6,
-                    }}
-                  />
-                  <span>Ghế VIP</span>
-                </div>
+              {/* Chữ "Ghế thường" */}
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: "#fff",
+                  userSelect: "none",
+                }}
+              >
+                Ghế Đã Đặt
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* Ghế thường */}
+              <div
+                style={{
+                  width: "40px",
+                  height: "29px",
+                  backgroundColor: "#ccc",
+                  borderRadius: "8px",
+                  border: "1px solid black",
+                  opacity: 1,
+                  visibility: "visible",
+                  pointerEvents: "auto",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  userSelect: "none",
+                  margin: "3px 0",
+                  position: "relative",
+                }}
+              ></div>
 
+              {/* Chữ "Ghế thường" */}
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: "#fff",
+                  userSelect: "none",
+                }}
+              >
+                Ghế Thường
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* Ghế VIP */}
+              <div
+                style={{
+                  width: "40px",
+                  height: "29px",
+                  backgroundColor: "#fff",
+                  borderRadius: "8px",
+                  border: "3px solid blue",
+                  opacity: 1,
+                  visibility: "visible",
+                  pointerEvents: "auto",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  userSelect: "none",
+                  margin: "3px 0",
+                  position: "relative",
+                }}
+              ></div>
+
+              {/* Chữ "Ghế vip" */}
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: "#fff",
+                  userSelect: "none",
+                }}
+              >
+                Ghế Vip
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* Ghế đôi */}
+              <div
+                style={{
+                  width: "70px",
+                  height: "30px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  display: "flex",
+                  position: "relative",
+                  margin: "5px 0",
+                  opacity: 1,
+                  userSelect: "none",
+                  alignItems: "center",
+                  padding: "0px",
+                }}
+              >
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    width: 90,
-                    position: "relative",
+                    width: "50%",
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    borderTop: "1.5px solid black",
+                    borderBottom: "1.5px solid black",
+                    borderLeft: "1.5px solid black",
+                    borderRight: "none",
+                    borderRadius: "5px",
+                    boxSizing: "border-box",
                   }}
-                >
-                  <div
-                    style={{
-                      width: "50%",
-                      height: 20,
-                      backgroundColor: "white",
-                      border: "1.5px solid black",
-                      borderRight: "none",
-                      borderRadius: "5px 0 0 5px",
-                    }}
+                />
+                <div
+                  style={{
+                    width: "50%",
+                    height: "100%",
+                    backgroundColor: "#fff",
+                    borderTop: "1.5px solid black",
+                    borderBottom: "1.5px solid black",
+                    borderRight: "1.5px solid black",
+                    borderLeft: "none",
+                    borderRadius: "5px",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+
+              {/* Chữ "Ghế đôi" */}
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: "#fff",
+                  userSelect: "none",
+                }}
+              >
+                Ghế Đôi
+              </span>
+            </div>
+          </div>
+          {/* Hiển thị đồ ăn */}
+
+          {/* Đồ ăn bên dưới (nếu có ghế) */}
+
+          <div className="food-selection-area">
+            <h3 className="lich-chieu-title">CHỌN ĐỒ ĂN KÈM</h3>
+            <div className="food-selection-container">
+              {/* Danh sách đồ ăn bên trái */}
+              <div className="food-list-section">
+                <h4 className="food-list-title">Danh sách món ăn</h4>
+
+                <div className="food-list-scroll">
+                  <FoodSelectionDisplay
+                    onFoodQuantityChange={handleFoodQuantityChange}
                   />
-                  <div
-                    style={{
-                      width: "50%",
-                      height: 20,
-                      backgroundColor: "white",
-                      border: "1.5px solid black",
-                      borderLeft: "none",
-                      borderRadius: "0 5px 5px 0",
-                    }}
-                  />
-                  <span>Ghế đôi (2 người)</span>
                 </div>
+              </div>
+
+              {/* Đồ ăn đã chọn bên phải */}
+              <div className="selected-foods-section">
+                <h4 className="selected-foods-title">
+                  Đồ ăn đã chọn ({selectedFoods.length})
+                </h4>
+
+                {selectedFoods.length === 0 ? (
+                  <div className="empty-selection-message">
+                    Chưa có món ăn nào được chọn
+                  </div>
+                ) : (
+                  <>
+                    <div className="selected-foods-scroll">
+                      <div className="selected-foods-list">
+                        {selectedFoods.map((food, index) => (
+                          <div key={food.id} className="selected-food-item">
+                            <div className="selected-food-info">
+                              <div className="selected-food-name">
+                                {food.ten_do_an}
+                              </div>
+                              <div className="selected-food-quantity">
+                                <span>Số lượng:</span>
+                                <span className="quantity-badge">
+                                  {food.quantity}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="selected-food-price">
+                              {(food.gia_ban * food.quantity).toLocaleString()}{" "}
+                              VNĐ
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Tổng tiền */}
+                    <div className="total-section">
+                      <span className="total-label">Tổng cộng:</span>
+                      <span className="total-amount">
+                        {selectedFoods
+                          .reduce(
+                            (total, food) =>
+                              total + food.gia_ban * food.quantity,
+                            0
+                          )
+                          .toLocaleString()}{" "}
+                        VNĐ
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
-
-          {/* Hiển thị đồ ăn */}
-          
-          {/* Đồ ăn bên dưới (nếu có ghế) */}
-          {selectedSeats.length > 0 && (
-            <div className="food-selection-area">
-              <h3 className="lich-chieu-title">Chọn đồ ăn kèm</h3>
-              <div className="food-selection-container">
-                {/* Danh sách đồ ăn bên trái */}
-                <div className="food-list-section">
-                  <h4 className="food-list-title">Danh sách món ăn</h4>
-
-                  <div className="food-list-scroll">
-                    <FoodSelectionDisplay
-                      onFoodQuantityChange={handleFoodQuantityChange}
-                    />
-                  </div>
-                </div>
-
-                {/* Đồ ăn đã chọn bên phải */}
-                <div className="selected-foods-section">
-                  <h4 className="selected-foods-title">
-                    Đồ ăn đã chọn ({selectedFoods.length})
-                  </h4>
-
-                  {selectedFoods.length === 0 ? (
-                    <div className="empty-selection-message">
-                      Chưa có món ăn nào được chọn
-                    </div>
-                  ) : (
-                    <>
-                      <div className="selected-foods-scroll">
-                        <div className="selected-foods-list">
-                          {selectedFoods.map((food, index) => (
-                            <div key={food.id} className="selected-food-item">
-                              <div className="selected-food-info">
-                                <div className="selected-food-name">
-                                  {food.ten_do_an}
-                                </div>
-                                <div className="selected-food-quantity">
-                                  <span>Số lượng:</span>
-                                  <span className="quantity-badge">
-                                    {food.quantity}
-                                  </span>
-                                </div>
-                              </div>
-
-                              <div className="selected-food-price">
-                                {(
-                                  food.gia_ban * food.quantity
-                                ).toLocaleString()}{" "}
-                                VNĐ
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Tổng tiền */}
-                      <div className="total-section">
-                        <span className="total-label">Tổng cộng:</span>
-                        <span className="total-amount">
-                          {selectedFoods
-                            .reduce(
-                              (total, food) =>
-                                total + food.gia_ban * food.quantity,
-                              0
-                            )
-                            .toLocaleString()}{" "}
-                          VNĐ
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Kết thúc phần đồ ăn */}
         </div>
       )}
 
@@ -1233,7 +1373,8 @@ const MovieDetailUser = () => {
                 </span>
               </div>
 
-              <button className="btn-dat-ve"
+              <button
+                className="btn-dat-ve"
                 onClick={handleThanhToanClick}
                 style={{
                   width: "100%",

@@ -500,7 +500,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       borderBottom: "1.5px solid black",
                       borderLeft: "1.5px solid black",
                       borderRight: "none",
-                      borderRadius: 5,
+                      borderRadius: 8,
                       boxSizing: "border-box",
                     }}
                   />
@@ -515,7 +515,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       borderBottom: "1.5px solid black",
                       borderRight: "1.5px solid black",
                       borderLeft: "none",
-                      borderRadius: 5,
+                      borderRadius: 8,
                       boxSizing: "border-box",
                     }}
                   />
@@ -746,64 +746,6 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               </span>
             </div>
           )}
-        </div>
-      )}
-
-      {trangThaiPhong === 3 && ( // Chú thích cho chế độ mua
-        <div
-          className="legend"
-          style={{
-            marginTop: 24,
-            maxWidth: 700,
-            marginLeft: "auto",
-            marginRight: "auto",
-            display: "flex",
-            justifyContent: "center",
-            gap: 40,
-            fontWeight: 600,
-            fontSize: 14,
-            padding: 12,
-            borderRadius: 6,
-            flexWrap: "wrap",
-            userSelect: "none",
-          }}
-        >
-          {/* <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 40,
-                height: 20,
-                backgroundColor: "white",
-                borderRadius: 4,
-                border: '2px solid black'
-              }}
-            />
-            <span>Ghế trống</span>
-          </div> */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 40,
-                height: 20,
-                backgroundColor: "yellow",
-                borderRadius: 4,
-                border: "2px solid orange",
-              }}
-            />
-            <span>Đang chọn</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 40,
-                height: 20,
-                backgroundColor: "#47566B",
-                opacity: 0.5,
-                borderRadius: 4,
-              }}
-            />
-            <span>Đã đặt</span>
-          </div>
         </div>
       )}
     </div>
