@@ -1,4 +1,418 @@
+/* CSS cho component DanhGia */
 .ant-rate-star-zero svg {
   color: #ffffff !important;  
 }
 
+.boxDanhGia {
+  width: 100%;
+  background-color: transparent;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  margin: 100px 0;
+}
+
+/* Thống kê đánh giá */
+.rating-statistics-card {
+  background: #1a1a2e;
+  border: 1px solid #2c2c3a;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.rating-statistics-card .ant-card-body {
+  padding: 20px;
+}
+
+/* Ô đánh giá nhanh bên phải */
+.quick-rating-card {
+  background: #0c0b1f !important;
+  border: 1px solid #2c2c3a !important;
+  border-radius: 4px;
+  height: fit-content;
+}
+
+.quick-rating-card .ant-card-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.quick-rating-card .ant-btn-primary {
+  background: #ffd700 !important;
+  border-color: #ffd700 !important;
+  color: #000 !important;
+  font-weight: bold;
+  width: 100%;
+}
+
+.quick-rating-card .ant-btn-primary:hover {
+  background: #ffed4a !important;
+  border-color: #ffed4a !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+/* Card đánh giá chính */
+.review-card {
+  background: #0c0b1f !important;
+  border: 1px solid #333 !important;
+  margin-top: 25px;
+  border-radius: 4px;
+}
+
+.review-card .ant-card-head {
+  border-bottom: 1px solid #2c2c3a !important;
+  background: transparent !important;
+}
+
+.review-title {
+  font-family: 'Anton', sans-serif;
+  font-weight: 100;
+  color: #ffffff;
+  margin: 0;
+}
+
+.review-content {
+  width: 100%;
+}
+
+/* Form đánh giá */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.form-label {
+  color: #ffffff;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.form-label-secondary {
+  color: #f0f0f0;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+/* Rating stars */
+.star-rating {
+  color: #ffc107;
+  font-size: 22px;
+}
+
+.star-rating .ant-rate-star-full .ant-rate-star-first,
+.star-rating .ant-rate-star-full .ant-rate-star-second {
+  color: #ffc107;
+}
+
+.star-rating-disabled {
+  font-size: 16px;
+  color: #ffc107;
+}
+
+.star-rating-disabled .ant-rate-star-full .ant-rate-star-first,
+.star-rating-disabled .ant-rate-star-full .ant-rate-star-second {
+  color: #ffc107;
+}
+
+.star-rating-edit {
+  font-size: 20px;
+  color: #ffc107;
+}
+
+.star-rating-edit .ant-rate-star-full .ant-rate-star-first,
+.star-rating-edit .ant-rate-star-full .ant-rate-star-second {
+  color: #ffc107;
+}
+
+/* Textarea */
+.review-textarea {
+  border-radius: 4px;
+  background: #fff !important;
+  border-color: #3c2d60 !important;
+  color: #000 !important;
+  resize: none;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.review-textarea:focus {
+  border-color: #6c5ce7 !important;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2) !important;
+}
+
+.review-textarea-edit {
+  background: #fff !important;
+  color: #000 !important;
+  resize: none;
+  font-weight: 500;
+  border-color: #3c2d60 !important;
+}
+
+.review-textarea-edit:focus {
+  border-color: #6c5ce7 !important;
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2) !important;
+}
+
+/* Buttons */
+.submit-review-btn {
+  background: yellow !important;
+  border-color: none !important;
+  color: #000 !important;
+  font-weight: 100;
+  box-shadow: 0 0 8px #6c5ce777;
+  border-radius: 3px;
+  font-family: 'Anton', sans-serif;
+}
+
+.submit-review-btn:hover {
+  background: #5a4fd1 !important;
+  border-color: #5a4fd1 !important;
+  color: #fff !important;
+}
+
+.submit-review-btn:disabled {
+  background: #4a4a4a !important;
+  border-color: #4a4a4a !important;
+  color: #888 !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.cancel-review-btn {
+  background: transparent !important;
+  border-color: 1px solid #fff !important;
+  color: #fff !important;
+  font-weight: 100;
+  box-shadow: 0 0 8px #6c5ce777;
+  border-radius: 3px;
+  font-family: 'Anton', sans-serif;
+}
+
+.cancel-review-btn:hover {
+  background: yellow !important;
+  color: #000 !important;
+  border: none;
+}
+
+.cancel-review-btn:disabled {
+  background: #4a4a4a !important;
+  border-color: #4a4a4a !important;
+  color: #888 !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.canceledit-review-btn {
+  background: transparent !important;
+  border-color: 1px solid #000 !important;
+  color: #000 !important;
+  font-weight: 100;
+  box-shadow: 0 0 8px #6c5ce777;
+  border-radius: 3px;
+  font-family: 'Anton', sans-serif;
+}
+
+.canceledit-review-btn:hover {
+  background: yellow !important;
+  color: #000 !important;
+  border: none;
+}
+
+.canceledit-review-btn:disabled {
+  background: #4a4a4a !important;
+  border-color: #000 !important;
+  color: #888 !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Section titles */
+.section-title {
+  color: #000 !important;
+  font-weight: 600;
+}
+.section-titlee {
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* User review cards */
+.user-review-card {
+  background: #fff !important;
+  border: none !important;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  color: #000 !important;
+  border-radius: 4px;
+}
+
+.user-review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.2);
+}
+
+.user-review-card .ant-card-body {
+  padding: 16px;
+}
+
+.review-text {
+  color: #000 !important;
+  display: block;
+  margin-bottom: 4px;
+  line-height: 1.6;
+}
+
+.review-date {
+  font-size: 12px !important;
+  color: #888 !important;
+}
+
+/* Dropdown */
+.dropdown-icon {
+  font-size: 18px;
+  color: #aaa;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.dropdown-icon:hover {
+  color: #6c5ce7 !important;
+  background: rgba(108, 92, 231, 0.2);
+}
+
+/* Edit form */
+.edit-form {
+  background: #fff !important;
+  border: none !important;
+  margin-bottom: 12px;
+}
+
+.edit-form .ant-card-body {
+  padding: 16px;
+}
+
+.edit-form-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+.edit-form-title {
+  color: black !important;
+  font-weight: 600;
+}
+
+/* Divider */
+.divider {
+  background: #333 !important;
+  margin: 24px 0;
+}
+
+.divider.ant-divider-horizontal {
+  border-top: 1px solid #333;
+}
+
+/* Empty state */
+.empty-state {
+  color: #999 !important;
+  text-align: center;
+  padding: 40px 20px;
+  font-style: italic;
+}
+
+/* Progress bars trong thống kê */
+.ant-progress-bg {
+  background: #ffd700 !important;
+}
+
+.ant-progress-inner {
+  background: #2c2c3a !important;
+}
+
+/* Avatar */
+.ant-avatar {
+  background: #2d2d44;
+  color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .boxDanhGia {
+    margin: 50px 0;
+  }
+  
+  .rating-statistics-card .ant-card-body {
+    padding: 15px;
+  }
+  
+  .quick-rating-card .ant-card-body {
+    padding: 15px;
+  }
+  
+  .user-review-card .ant-card-body {
+    padding: 12px;
+  }
+  
+  .star-rating {
+    font-size: 20px;
+  }
+  
+  .review-textarea {
+    font-size: 13px;
+  }
+}
+
+/* Form đánh giá trong background khác */
+.review-form-container {
+  background: #2c2c3a;
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/* Sticky positioning cho ô đánh giá */
+.sticky-rating-container {
+  position: sticky;
+  top: 20px;
+}
+
+/* Animation cho hover effects */
+.user-review-card,
+.quick-rating-card .ant-btn-primary,
+.submit-review-btn,
+.dropdown-icon {
+  transition: all 0.3s ease;
+}
+
+/* Menu dropdown */
+.ant-dropdown-menu {
+  background: #2b1f4d !important;
+  border: 1px solid #333 !important;
+}
+
+.ant-dropdown-menu-item {
+  color: #fff !important;
+}
+
+.ant-dropdown-menu-item:hover {
+  background: rgba(108, 92, 231, 0.2) !important;
+  color: #6c5ce7 !important;
+}
+
+/* Row spacing */
+.ant-row {
+  margin-left: -12px;
+  margin-right: -12px;
+}
+
+.ant-col {
+  padding-left: 12px;
+  padding-right: 12px;
+}
