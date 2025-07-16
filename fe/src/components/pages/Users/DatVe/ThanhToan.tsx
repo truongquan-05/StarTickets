@@ -16,9 +16,13 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import "./ThanhToan.css"; // Đảm bảo đường dẫn đúng
 import {
+  useCheckDiem,
   useCreateThanhToanMoMo,
   useDestroyVoucher,
+  useGetTongTien,
   useListCinemas,
+  useListDatVe,
+  useListDiem,
   useVoucher,
   // useUpdateCheckGhe // Đã bỏ import này
 } from "../../../hook/hungHook";
@@ -38,6 +42,7 @@ interface BookingData {
   lich_chieu_id: number | null; // Có thể là null nếu chỉ mua đồ ăn mà không có vé
   tong_tien: string; // Giữ string nếu backend trả về string
   created_at: string;
+  lich_chieu: any;
   dat_ve_chi_tiet: Array<{
     id: number;
     ghe_id: number;
@@ -50,6 +55,8 @@ interface BookingData {
         id: number;
         ten_loai: string;
       };
+      so_ghe: string;
+      phong_id: number;
     };
     gia_ve: string; // Giữ string nếu backend trả về string
   }>;
@@ -105,7 +112,6 @@ const ThanhToan: React.FC = () => {
     resource: "ma_giam_gia",
   });
   const voucherList = data?.data ?? [];
-
   const location = useLocation();
   const navigate = useNavigate();
   const bookingData = location.state?.bookingData as BookingData | undefined;
@@ -118,6 +124,8 @@ const ThanhToan: React.FC = () => {
   const [tongTienSauVoucher, setTongTienSauVoucher] = useState<number | null>(
     tongTienGoc
   );
+  const { data: listDiem } = useListDiem({ resource: "diem_thanh_vien" });
+  const checkDiem = useCheckDiem({ resource: "diem_thanh_vien" });
 
   // Lấy user từ localStorage (chỉ lấy ten và email)
   const userStr = localStorage.getItem("user");
@@ -171,7 +179,6 @@ const ThanhToan: React.FC = () => {
         setLichChieuInfo({
           id: 0,
           gio_chieu: new Date().toISOString(),
-          phim: { id: 0, ten_phim: "Đồ Ăn & Thức Uống", do_tuoi_gioi_han: 0 },
           phong_chieu: { id: 0, ten_phong: "Online", rap_id: 0 },
         });
         setLoading(false);
@@ -209,6 +216,10 @@ const ThanhToan: React.FC = () => {
   const onBackStep2 = () => {
     setStep(1);
   };
+  const { data: tongTienData, refetch: refetchTongTien } = useGetTongTien({
+    resource: "dat_ve",
+    id: bookingData?.id ?? 0,
+  });
 
   const onFinishStep2 = () => {
     if (!bookingData || !user) {
@@ -274,7 +285,7 @@ const ThanhToan: React.FC = () => {
     : "";
   const roomName = lichChieuInfo?.phong_chieu?.ten_phong || "Không có phòng";
   const selectedSeats = bookingData.dat_ve_chi_tiet.map(
-    (item) => item.ghe_dat.ten_ghe
+    (item) => item.ghe_dat.so_ghe
   );
   const seatType =
     bookingData.dat_ve_chi_tiet[0]?.ghe_dat.loai_ghe?.ten_loai || "Ghế Thường";
@@ -282,6 +293,7 @@ const ThanhToan: React.FC = () => {
   const totalPrice = Number(bookingData.tong_tien); // Chắc chắn là number để tính toán
 
   const isSubmitDisabled = !checkedTerms1 || !checkedTerms2;
+  console.log(bookingData);
 
   return (
     <>
@@ -351,7 +363,15 @@ const ThanhToan: React.FC = () => {
                     name="ma_giam_gia_id"
                   >
                     <Select
-                      prefix={<TagsOutlined style={{ color: "yellow", fontSize: "22px", marginRight: "8px" }} />}
+                      prefix={
+                        <TagsOutlined
+                          style={{
+                            color: "yellow",
+                            fontSize: "22px",
+                            marginRight: "8px",
+                          }}
+                        />
+                      }
                       size="large"
                       className="form-select"
                       showSearch
@@ -371,10 +391,9 @@ const ThanhToan: React.FC = () => {
                                 },
                               },
                               {
-                                onSuccess: (res) => {
-                                  const newTongTien = res?.data?.tong_tien;
-                                  setTongTienSauVoucher(newTongTien);
-                                  message.info("Đã hủy áp dụng mã giảm giá.");
+                                onSuccess: () => {
+                                  message.success("Hủy mã thành công!");
+                                  refetchTongTien(); // Gọi lại API để cập nhật tổng tiền mới
                                 },
                               }
                             );
@@ -394,12 +413,9 @@ const ThanhToan: React.FC = () => {
                                 tong_tien: bookingData.tong_tien,
                               },
                               {
-                                onSuccess: (res) => {
-                                  const newTongTien = res?.data?.tong_tien;
-                                  setTongTienSauVoucher(newTongTien);
-                                  message.success(
-                                    `Mã "${selected.ma}" đã được áp dụng!`
-                                  );
+                                onSuccess: () => {
+                                  message.success("Áp dụng mã thành công!");
+                                  refetchTongTien(); // Gọi lại API để cập nhật tổng tiền mới
                                 },
                               }
                             );
@@ -410,6 +426,34 @@ const ThanhToan: React.FC = () => {
                         label: `${voucher.ma} - Giảm ${voucher.phan_tram_giam}%`,
                         value: voucher.id,
                       }))}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={
+                      <span style={{ color: "white", fontWeight: 600 }}>
+                        * Điểm của bạn: {listDiem?.data?.diem}
+                      </span>
+                    }
+                    name="diem"
+                  >
+                    <Input
+                      placeholder="Nhập điểm"
+                      onBlur={(e) => {
+                        const value = e.target.value.trim();
+                        checkDiem.mutate(
+                          {
+                            dat_ve_id: bookingData.id,
+                            tong_tien: tongTienSauVoucher,
+                            diem: value === "" ? 0 : Number(value),
+                          },
+                          {
+                            onSuccess: () => {
+                              message.success("Áp dụng điểm thành công!");
+                              refetchTongTien(); // Gọi lại API để cập nhật tổng tiền mới
+                            },
+                          }
+                        );
+                      }}
                     />
                   </Form.Item>
 
@@ -551,33 +595,21 @@ const ThanhToan: React.FC = () => {
               bodyStyle={{ padding: "24px" }}
             >
               <div className="movie-header">
-                <h2 className="movie-title">{movieTitle}</h2>
+                <h2 className="movie-title">
+                  {bookingData.lich_chieu.phim.ten_phim}
+                </h2>
                 <div className="countdown-timer">
                   THỜI GIAN GIỮ VÉ: {formatTime(countdown)}
                 </div>
               </div>
 
-              {ageRestriction !== undefined && (
+              {bookingData.lich_chieu.phim.do_tuoi_gioi_han !== undefined && (
                 <Text className="age-restriction">
-                  Phim dành cho khán giả từ {ageRestriction} tuổi trở lên (
-                  {ageRestriction}+)
+                  Phim dành cho khán giả từ{" "}
+                  {bookingData.lich_chieu.phim.do_tuoi_gioi_han} tuổi trở lên (
+                  {bookingData.lich_chieu.phim.do_tuoi_gioi_han}+)
                 </Text>
               )}
-
-              <div className="cinema-info">
-                <Text
-                  strong
-                  style={{ color: "#fff", fontFamily: "'Poppins', sans-serif" }}
-                >
-                  {cinemaName}
-                </Text>
-                <br />
-                <Text
-                  style={{ color: "#fff", fontFamily: "'Poppins', sans-serif" }}
-                >
-                  {cinemaAddress}
-                </Text>
-              </div>
 
               {bookingData.lich_chieu_id && (
                 <>
@@ -597,11 +629,31 @@ const ThanhToan: React.FC = () => {
                         fontFamily: "'Poppins', sans-serif",
                       }}
                     >
-                      {screeningTime}
+                      {bookingData.lich_chieu.gio_chieu}
                     </Text>
                   </div>
 
                   <Row className="booking-details-row">
+                    <Col span={8}>
+                      <Text
+                        strong
+                        style={{
+                          color: "yellow",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        Tên Rạp
+                      </Text>
+                      <br />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
+                      >
+                        {bookingData.lich_chieu.phong_chieu.rap.ten_rap}
+                      </Text>
+                    </Col>
                     <Col span={8}>
                       <Text
                         strong
@@ -619,27 +671,7 @@ const ThanhToan: React.FC = () => {
                           fontFamily: "'Poppins', sans-serif",
                         }}
                       >
-                        {roomName}
-                      </Text>
-                    </Col>
-                    <Col span={8}>
-                      <Text
-                        strong
-                        style={{
-                          color: "yellow",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
-                      >
-                        Số vé
-                      </Text>
-                      <br />
-                      <Text
-                        style={{
-                          color: "#fff",
-                          fontFamily: "'Poppins', sans-serif",
-                        }}
-                      >
-                        {selectedSeats.length}
+                        {bookingData.lich_chieu.phong_chieu.ten_phong}
                       </Text>
                     </Col>
                   </Row>
@@ -747,7 +779,8 @@ const ThanhToan: React.FC = () => {
                   SỐ TIỀN CẦN THANH TOÁN
                 </Text>
                 <Text className="total-price">
-                  {(tongTienSauVoucher ?? 0).toLocaleString("vi-VN")} VND
+                  {(tongTienData?.data?.tong_tien ?? 0).toLocaleString("vi-VN")}{" "}
+                  VND
                 </Text>
               </div>
             </Card>

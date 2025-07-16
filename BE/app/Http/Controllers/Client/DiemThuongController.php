@@ -13,8 +13,8 @@ class DiemThuongController extends Controller
     public function index()
     {
         $userId = Auth::guard('sanctum')->id();
-        $data = DiemThanhVien::where('nguoi_dung_id', $userId)->get();
-        if($data->isEmpty()){
+        $data = DiemThanhVien::where('nguoi_dung_id', $userId)->first();
+        if(empty($data)){
             return response()->json([
                 'message' => 'Chưa có điểm nào',
             ], 422);
@@ -66,12 +66,11 @@ class DiemThuongController extends Controller
             ], 422);
         }
         $tongTienNew = $request->input('tong_tien') - (float)$request->input('diem');
-
         $datVe->update(['tong_tien' => $tongTienNew]);
-
+        $dataDatVe =DatVe::find($request->input('dat_ve_id'));
         return response()->json([
             'message' => 'Thành công',
-            'status' => 200
+            'status' => $dataDatVe 
         ], 200);
     }
 
