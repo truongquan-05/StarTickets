@@ -719,7 +719,7 @@ export const useDestroyVoucher = ({ resource = "voucher" }: Props) => {
 
 
 export const useListLichSuDonHangChiTiet = ({
-  resource = "lich-su-mua-hang",
+  resource = "lich-su-ve",
   id,
 }: Props) => {
   return useQuery({
@@ -728,7 +728,7 @@ export const useListLichSuDonHangChiTiet = ({
   });
 };
 
-export const useListLichSuDonHang = ({ resource = "lich-su-mua-hang" }) => {
+export const useListLichSuDonHang = ({ resource = "lich-su-ve" }) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getListLichSuDonHang({ resource }),

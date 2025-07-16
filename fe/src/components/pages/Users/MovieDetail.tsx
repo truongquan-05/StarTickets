@@ -1006,7 +1006,7 @@ const MovieDetailUser = () => {
                       borderRadius: 6,
                     }}
                   />
-                  <span>Ghế thường</span>
+                  <span  style={{color:'white'}}>Thường</span>
                 </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -1018,7 +1018,7 @@ const MovieDetailUser = () => {
                       borderRadius: 6,
                     }}
                   />
-                  <span>Ghế VIP</span>
+                  <span style={{color:'white'}}> VIP</span>
                 </div>
 
                 <div
@@ -1050,7 +1050,7 @@ const MovieDetailUser = () => {
                       borderRadius: "0 5px 5px 0",
                     }}
                   />
-                  <span>Ghế đôi (2 người)</span>
+                  <span>Ghế đôi</span>
                 </div>
               </div>
             </div>
