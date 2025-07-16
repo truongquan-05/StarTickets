@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\QRController;
 use App\Http\Controllers\Admin\GheController;
 use App\Http\Controllers\Admin\RapController;
 use App\Http\Controllers\Admin\DoAnController;
@@ -23,13 +24,13 @@ use App\Http\Controllers\Client\CheckGheController;
 use App\Http\Controllers\Client\CheckOutController;
 use App\Http\Controllers\Admin\PhongChieuController;
 use App\Http\Controllers\Admin\QuanLyDonVeController;
+use App\Http\Controllers\Client\DiemThuongController;
 use App\Http\Controllers\Client\LichSuMuaHangController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Client\RapController as ClientRapController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
-use App\Http\Controllers\Client\DiemThuongController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 
 //-------------------ADMIN-------------------//
@@ -118,17 +119,13 @@ Route::prefix('auth')->group(function () {
     Route::post('create-ma-dang-ky/{email}', [LoginController::class, 'createMaDangKy']); // Tạo mã đăng ký
 });
 Route::middleware("auth:sanctum")->post('logout', [LogoutController::class, 'logout']);
-
 Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
 Route::POST('delete-dat-ve/{id}', [DatVeController::class, 'BackDelete']);
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']);
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
-
 Route::apiResource('quyen_truy_cap', AddQuyenController::class);
-
-//Banner
 Route::prefix('banners')->group(function () {
     Route::get('/', [BannerController::class, 'index']); // Lấy danh sách banner (active, expired, deleted)
     Route::post('/', [BannerController::class, 'store']); // Tạo banner mới
@@ -138,6 +135,8 @@ Route::prefix('banners')->group(function () {
     Route::post('/{id}/restore', [BannerController::class, 'restore']); // Khôi phục banner
     Route::delete('/{id}/force', [BannerController::class, 'forceDelete']); // Xóa cứng banner
 });
+Route::get('handler-qr/{id}', [QRController::class, 'show']);
+Route::post('handler-qr/{id}', [QRController::class, 'update']);
 
 //-------------------CLIENT-------------------//
 
