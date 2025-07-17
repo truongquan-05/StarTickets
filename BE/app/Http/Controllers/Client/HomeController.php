@@ -83,7 +83,7 @@ class HomeController extends Controller
 
         return Phim::whereIn('id', $phimDangChieuIds)
             ->orderBy('ngay_cong_chieu', 'desc')
-            ->take(32)
+            ->take(16)
             ->get();
     }
 
@@ -112,7 +112,7 @@ class HomeController extends Controller
 
         return Phim::whereIn('id', $phimSapChieuIds)
             ->orderBy('ngay_cong_chieu', 'desc')
-            ->take(9)
+            ->take(16)
             ->get();
     }
 
@@ -127,6 +127,7 @@ class HomeController extends Controller
             ->select('phim.*')
             ->distinct()
             ->orderBy('ngay_cong_chieu', 'desc')
+            ->take(16)
             ->get();
     }
 

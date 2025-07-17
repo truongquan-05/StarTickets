@@ -13,11 +13,10 @@ class BannerController extends Controller
 
     public function __construct()
     {
-        $this->middleware('IsAdmin');
-        $this->middleware('permission:Banner-read')->only(['index', 'show']);
-        $this->middleware('permission:Banner-create')->only(['store']);
-        $this->middleware('permission:Banner-update')->only(['update']);
-        $this->middleware('permission:Banner-delete')->only(['destroy', 'restore', 'forceDelete']);
+        $this->middleware(['IsAdmin','permission:Banner-read'])->only(['show']);
+        $this->middleware(['IsAdmin','permission:Banner-create'])->only(['store']);
+        $this->middleware(['IsAdmin','permission:Banner-update'])->only(['update']);
+        $this->middleware(['IsAdmin','permission:Banner-delete'])->only(['destroy', 'restore', 'forceDelete']);
     }
 
 
