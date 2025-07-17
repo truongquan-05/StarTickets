@@ -163,7 +163,7 @@ Route::apiResource('check_ghe', CheckGheController::class);
 Route::get('show-all-checkghe/{id}', [CheckGheController::class, 'showAllCheckGhe']);
 Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
-Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'update']);
+Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'destroy']);
 Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
 Route::get('/client/rap', [ClientRapController::class, 'index']);

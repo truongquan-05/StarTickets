@@ -14,7 +14,8 @@ class DiemThuongController extends Controller
     {
         $userId = Auth::guard('sanctum')->id();
         $data = DiemThanhVien::where('nguoi_dung_id', $userId)->first();
-        if($data->isEmpty()){
+
+        if (empty($data)) {
             return response()->json([
                 'message' => 'Chưa có điểm nào',
             ], 422);
@@ -30,51 +31,74 @@ class DiemThuongController extends Controller
     public function checkDiem(Request $request)
     {
         $userId = Auth::guard('sanctum')->id();
-        $data = DiemThanhVien::where('nguoi_dung_id', $userId)->first();
+        $userPoints = DiemThanhVien::where('nguoi_dung_id', $userId)->first();
         $datVe = DatVe::find($request->input('dat_ve_id'));
 
-        if (empty($request->input('diem'))) {
-            $datVe->update(['tong_tien' => $request->input('tong_tien')]);
+        // Kiểm tra dữ liệu cơ bản
+        if (!$userPoints) {
             return response()->json([
-                'message' => 'Hủy dùng điểm',
-            ], 200);
+                'message' => 'Bạn chưa có điểm thành viên nào.',
+            ], 404); // Dùng 404 nếu không tìm thấy resource điểm
         }
 
         if (!$datVe) {
             return response()->json([
-                'message' => 'Có lỗi gì đó!',
-                'status' => 404
+                'message' => 'Không tìm thấy đơn đặt vé.',
             ], 404);
         }
 
-        if (!$data) {
+        $diemMuonDung = (float)$request->input('diem', 0); // Lấy điểm muốn dùng, mặc định là 0 nếu rỗng
+        $diemCu = (float)$request->input('diemCu', 0); // Lấy điểm cũ, mặc định là 0 nếu rỗng
+
+
+        if ($diemCu > 0) {
+            $userPoints->diem += $diemCu;
+            $userPoints->save(); // Cập nhật ngay điểm của thành viên
+        }
+
+        if ($diemMuonDung <= 0) {
+
+            $datVe->tong_tien = $datVe->tong_tien + $diemCu;
+            $datVe->save();
+
             return response()->json([
-                'message' => 'Chưa có điểm nào',
+                'message' => 'Đã hủy áp dụng điểm thành công.',
+                'current_total_price' => $datVe->tong_tien // Trả về tổng tiền đã cập nhật
+            ], 200);
+        }
+
+        // --- Bước 3: Xử lý trường hợp ÁP DỤNG điểm mới ---
+
+        if ($diemMuonDung > $userPoints->diem) {
+            if ($diemCu > 0) {
+                $datVe->tong_tien = $datVe->tong_tien + $diemCu;
+                $datVe->save();
+            }
+            return response()->json([
+                'message' => 'Bạn không đủ điểm để sử dụng.',
+                'current_available_points' => $userPoints->diem
             ], 422);
         }
 
-        if ((float)$request->input('diem') > (float)$data->diem) {
+        $maxDiemAllowed = $datVe->tong_tien * 0.7;
+        if ($diemMuonDung > $maxDiemAllowed) {
             return response()->json([
-                'message' => 'Bạn không đủ điểm',
-                'status' => 422
+                'message' => "Số điểm tối đa được áp dụng là 70% giá trị đơn hàng. Tối đa: " . (float)$maxDiemAllowed . " điểm.",
+                'max_points_allowed' => (float)$maxDiemAllowed
             ], 422);
         }
 
-        if ((float)$request->input('diem') > $datVe->tong_tien * 0.7) {
-            return response()->json([
-                'message' => "Tối đa 70% đơn hàng. Tối đa: $datVe->tong_tien * 0.7",
-            ], 422);
-        }
-        $tongTienNew = $request->input('tong_tien') - (float)$request->input('diem');
+        // Nếu mọi thứ hợp lệ, tiến hành áp dụng điểm
+        $tongTienMoi = $datVe->tong_tien - $diemMuonDung + $diemCu;
+        $datVe->tong_tien = $tongTienMoi;
+        $datVe->save();
 
-        $datVe->update(['tong_tien' => $tongTienNew]);
-        $dataDatVe =DatVe::find($request->input('dat_ve_id'));
-
-
-
+        $userPoints->diem -= $diemMuonDung;
+        $userPoints->save();
         return response()->json([
-            'message' => 'Thành công',
-            'status' => 200
+            'message' => 'Áp dụng điểm thành công.',
+            'current_total_price' => $datVe->tong_tien,
+            'remaining_points' => $userPoints->diem
         ], 200);
     }
 

@@ -97,7 +97,7 @@ class DatVeController extends Controller
             DB::commit();
 
 
-            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat.loaiGhe', 'lichChieu.phim', 'lichChieu.phong_chieu'])->find($idDatVe);
+            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat.loaiGhe','lichChieu.phim','lichChieu.phong_chieu.rap'])->find($idDatVe);
 
             return response()->json([
                 'data' => $dataThanhToan
