@@ -34,6 +34,7 @@ use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
+use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
 
 
 
