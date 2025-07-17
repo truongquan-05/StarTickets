@@ -136,36 +136,53 @@ export const getTheLoais = () =>
 export const searchPhim = (params: any) => {
   return axiosClient.post("/loc", params);
 };
-
-// 1. Lấy danh sách banner
-export const getListBanners = async ({ resource = "banner" }: Props) => {
-  const { data } = await axiosClient.get(resource);
+//Banner
+export const getListBanners = async () => {
+  const { data } = await axiosClient.get("/banners");
+  return data;
+};
+export const createBanner = async (values: FormData) => {
+  const { data } = await axiosClient.post("/banners", values);
+  return data;
+};
+// Lấy thông tin chi tiết banner theo id
+export const getBannerById = async (id: number) => {
+  const { data } = await axiosClient.get(`/banners/${id}`);
   return data;
 };
 
-// 2. Tạo banner mới
-export const getCreateBanner = async ({ resource = "banner", values }: Props) => {
-  const { data } = await axiosClient.post(resource, values, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export const updateBanner = async (id: number, values: FormData) => {
+  values.append("_method", "PUT");
+  const { data } = await axiosClient.post(`/banners/${id}`, values);
   return data;
 };
 
-// 3. Bật/tắt banner
-export const getToggleBanner = async ({ resource = "banner", id }: Props) => {
-  if (!id) return;
-  const { data } = await axiosClient.patch(`${resource}/${id}/toggle`);
+// Toggle hoạt động
+export const toggleBanner = async (id: number) => {
+  const { data } = await axiosClient.patch(`/banners/${id}/toggle`);
   return data;
 };
 
-// 4. Xóa banner
-export const getDeleteBanner = async ({ resource = "banner", id }: Props) => {
-  if (!id) return;
-  const { data } = await axiosClient.delete(`${resource}/${id}`);
+// Xoá mềm banner
+export const deleteBanner = async (id: number) => {
+  const { data } = await axiosClient.delete(`/banners/${id}`);
   return data;
 };
+export const getListTrashBanners = async () => {
+  const { data } = await axiosClient.get("/banners/trash");
+  return { data };
+};
+
+export const restoreBanner = async (id: number) => {
+  const { data } = await axiosClient.post(`/banners/${id}/restore`);
+  return data;
+};
+
+export const forceDeleteBanner = async (id: number) => {
+  const { data } = await axiosClient.delete(`/banners/${id}/force`);
+  return data;
+};
+
 
 // Đơn vé
 export const getListDonVe = async () => {

@@ -124,7 +124,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const [current, upcoming] = await Promise.all([
-          getCurrentMovies(),
+          getCurrentMovies().then(),
           getUpcomingMovies(),
         ]);
 
