@@ -63,6 +63,11 @@ class MaGiamGiaController extends Controller
         }
         $datVe->update(['tong_tien' => $tongTienNew]);
 
+        // if ($request->input('id')) {
+        //     $voucher = MaGiamGia::find($request['ma_giam_gia_id']);
+        //     $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
+        // }
+
         return response()->json([
             'data' => $datVe,
             'message' => 'Voucher đang hoạt động',

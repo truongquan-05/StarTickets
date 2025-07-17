@@ -86,11 +86,6 @@ Route::prefix('ma_giam_gia')->group(function () {
 Route::apiResource('lich_chieu', LichChieuController::class);
 Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']);
 Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenNguIndex']);
-Route::get('/home', [HomeController::class, 'index']);
-Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
-Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
-Route::get('/search', [HomeController::class, 'search']);
-Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 Route::apiResource('tin_tuc', TinTucController::class);
 Route::prefix('tin_tuc')->group(function () {
@@ -139,7 +134,6 @@ Route::get('handler-qr/{id}', [QRController::class, 'show']);
 Route::post('handler-qr/{id}', [QRController::class, 'update']);
 
 //-------------------CLIENT-------------------//
-
 
 Route::get('/client/nguoi_dung/{id}', [ClientNguoiDungController::class, 'show']);
 Route::get('/home', [HomeController::class, 'index']);
