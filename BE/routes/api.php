@@ -32,6 +32,11 @@ use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
+use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
+use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
+use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
+
+
 
 //-------------------ADMIN-------------------//
 
@@ -86,11 +91,6 @@ Route::prefix('ma_giam_gia')->group(function () {
 Route::apiResource('lich_chieu', LichChieuController::class);
 Route::post('lich_chieu/check', [LichChieuController::class, 'checkLichChieu']);
 Route::get('/lich_chieus/chuyen_ngu/{id}', [LichChieuController::class, 'ChuyenNguIndex']);
-Route::get('/home', [HomeController::class, 'index']);
-Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
-Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
-Route::get('/search', [HomeController::class, 'search']);
-Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 Route::apiResource('chuyen_ngu', ChuyenNguController::class);
 Route::apiResource('tin_tuc', TinTucController::class);
 Route::prefix('tin_tuc')->group(function () {
@@ -140,7 +140,6 @@ Route::post('handler-qr/{id}', [QRController::class, 'update']);
 
 //-------------------CLIENT-------------------//
 
-
 Route::get('/client/nguoi_dung/{id}', [ClientNguoiDungController::class, 'show']);
 Route::get('/home', [HomeController::class, 'index']);
 
@@ -169,10 +168,13 @@ Route::apiResource('check_ghe', CheckGheController::class);
 Route::get('show-all-checkghe/{id}', [CheckGheController::class, 'showAllCheckGhe']);
 Route::post('check_ghe/bulk-update', [CheckGheController::class, 'bulkUpdate']);
 Route::get('voucher', [MaGiamGiaClient::class, 'index']);
-Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'update']);
+Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'destroy']);
 Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
-Route::get('/client/rap', [ClientRapController::class, 'index']);
+
 Route::apiResource('lich-su-ve', LichSuMuaHangController::class);
 Route::get('diem_thanh_vien', [DiemThuongController::class, 'index']);
 Route::post('diem_thanh_vien', [DiemThuongController::class, 'checkDiem']);
+Route::apiResource('client/lich_chieu', ClientLichChieuController::class);
+Route::apiResource('client/phong_chieu', ClientPhongChieuController::class);
+Route::get('/client/rap', [ClientRapController::class, 'index']);

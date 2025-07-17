@@ -21,6 +21,8 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import ContactForm from "./PhanHoiKhachHang";
+import HomeBanner from "../Admin/Banner/HomeBanner";
+import axios from "axios";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -124,7 +126,7 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const [current, upcoming] = await Promise.all([
-          getCurrentMovies(),
+          getCurrentMovies().then(),
           getUpcomingMovies(),
         ]);
 
@@ -147,6 +149,40 @@ const Home = () => {
     };
 
     fetchData();
+  }, []);
+
+  // Biến state để lưu danh sách phim
+  const [PhimDangChieu, setMovies] = useState<[]>([]);
+  const [PhimSapChieu, setSapChieu] = useState<[]>([]);
+  const [PhimDacBiet, setDacBiet] = useState<[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Hàm gọi API để lấy danh sách phim
+  const fetchMovies = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const dangChieu = await axios.get(
+        "http://127.0.0.1:8000/api/home/dang-chieu"
+      );
+      const sapChieu = await axios.get(
+        "http://127.0.0.1:8000/api/home/sap-chieu"
+      );
+      const dacBiet = await axios.get(
+        "http://127.0.0.1:8000/api/home/dac-biet"
+      );
+      setMovies(dangChieu.data);
+      setSapChieu(sapChieu.data);
+      setDacBiet(dacBiet.data);
+    } catch (error: any) {
+      console.error("Error fetching movies:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovies();
   }, []);
 
   // Hàm render movie card cho phim đang chiếu
@@ -191,7 +227,6 @@ const Home = () => {
       </div>
     </SwiperSlide>
   );
-
   // Hàm render movie card cho phim sắp chiếu
   const renderUpcomingMovieCard = (movie: any, index: number) => (
     <SwiperSlide key={index}>
@@ -340,7 +375,7 @@ const Home = () => {
 
     switch (activeTab) {
       case "now":
-        return Array.isArray(currentMovies) && currentMovies.length > 0 ? (
+        return Array.isArray(PhimDangChieu) && PhimDangChieu.length > 0 ? (
           <>
             <Swiper
               spaceBetween={24}
@@ -348,7 +383,7 @@ const Home = () => {
               navigation
               modules={[Navigation]}
             >
-              {currentMovies.map((movie: any, i: number) =>
+              {PhimDangChieu.map((movie: any, i: number) =>
                 renderCurrentMovieCard(movie, i)
               )}
             </Swiper>
@@ -365,7 +400,7 @@ const Home = () => {
         );
 
       case "upcoming":
-        return Array.isArray(upcomingMovies) && upcomingMovies.length > 0 ? (
+        return Array.isArray(PhimSapChieu) && PhimSapChieu.length > 0 ? (
           <>
             <Swiper
               spaceBetween={24}
@@ -373,7 +408,7 @@ const Home = () => {
               navigation
               modules={[Navigation]}
             >
-              {upcomingMovies.map((movie: any, i: number) =>
+              {PhimSapChieu.map((movie: any, i: number) =>
                 renderUpcomingMovieCard(movie, i)
               )}
             </Swiper>
@@ -390,7 +425,7 @@ const Home = () => {
         );
 
       case "special":
-        return Array.isArray(specialMovies) && specialMovies.length > 0 ? (
+        return Array.isArray(PhimDacBiet) && PhimDacBiet.length > 0 ? (
           <>
             <Swiper
               spaceBetween={24}
@@ -398,7 +433,7 @@ const Home = () => {
               navigation
               modules={[Navigation]}
             >
-              {specialMovies.map((movie: any, i: number) =>
+              {PhimDacBiet.map((movie: any, i: number) =>
                 renderSpecialMovieCard(movie, i)
               )}
             </Swiper>
@@ -421,31 +456,7 @@ const Home = () => {
 
   return (
     <div className="home-wrapper">
-      <Swiper
-        modules={[Navigation, Autoplay]}
-        navigation
-        autoplay={{ delay: 3000 }}
-        className="banner-swiper"
-      >
-        <SwiperSlide>
-          <div className="banner-wrapper">
-            <img
-              src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
-              alt="banner"
-              className="banner-img"
-            />
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="banner-wrapper">
-            <img
-              src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
-              alt="banner"
-              className="banner-img"
-            />
-          </div>
-        </SwiperSlide>
-      </Swiper>
+      <HomeBanner />
 
       <QuickBooking />
 
@@ -481,7 +492,12 @@ const Home = () => {
         bodyStyle={{ padding: 0, height: 450 }}
         destroyOnClose
         centered
-        style={{ fontFamily: "Anton, sans-serif", fontWeight: 100, fontSize: 50, borderRadius: 4 }}
+        style={{
+          fontFamily: "Anton, sans-serif",
+          fontWeight: 100,
+          fontSize: 50,
+          borderRadius: 4,
+        }}
       >
         {trailerUrl ? (
           <iframe

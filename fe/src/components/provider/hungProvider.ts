@@ -381,3 +381,18 @@ export const getListLichSuDonHangChiTiet = async ({resource = "lich-su-ve",id} :
   const {data} = await axiosClient.get(`${resource}/${id}`);
   return data;
 }
+
+export const getListDiem = async ({resource = "diem_thanh_vien"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getUseCheckDiem = async ({resource = "diem_thanh_vien" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getListTongTien = async ({resource = "dat_ve",id} : Props) => {
+  const {data} = await axiosClient.get(`${resource}/${id}`);
+  return data;
+}

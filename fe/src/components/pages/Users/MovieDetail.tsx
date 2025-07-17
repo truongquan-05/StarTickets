@@ -75,6 +75,7 @@ const MovieDetailUser = () => {
     null
   );
   const [selectedFoods, setSelectedFoods] = useState<SelectedFoodItem[]>([]);
+  
   const { mutate: updateCheckGhe } = useUpdateCheckGhe({
     resource: "check_ghe",
   });
@@ -89,9 +90,9 @@ const MovieDetailUser = () => {
       id: selectedLichChieuId ?? undefined,
     });
   const { data: lichChieuList = [], isLoading: loadingLichChieu } =
-    useListLichChieu({ resource: "lich_chieu" });
-  const phongQuery = useListPhongChieu({ resource: "phong_chieu" });
-  const rapQuery = useListCinemas({ resource: "rap" });
+    useListLichChieu({ resource: "client/lich_chieu" });
+  const phongQuery = useListPhongChieu({ resource: "client/phong_chieu" });
+  const rapQuery = useListCinemas({ resource: "client/rap" });
   const phongList = phongQuery.data?.data || [];
   const rapList = rapQuery.data || [];
   const { mutate: createDatVe } = useCreateDatVe({ resource: "dat_ve" });

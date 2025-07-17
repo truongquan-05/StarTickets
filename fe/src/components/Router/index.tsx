@@ -50,6 +50,9 @@ import DonVeList from "../pages/Admin/Donve/DonveList";
 import DonVeDetail from "../pages/Admin/Donve/DonveDetail";
 import LichSuTatCaVe from "../pages/Users/DatVe/LichSuTatCaVe";
 import CheckDatVe from "../pages/Users/DatVe/CheckDatVe";
+import BannerEdit from "../pages/Admin/Banner/BannerEdit";
+import TrashBanners from "../pages/Admin/Banner/TrashBanners";
+import HomeBanner from "../pages/Admin/Banner/HomeBanner";
 import RequireAdminAccess from "../pages/auth/RequireAdminAccess";
 import RedirectAdminAccess from "../pages/auth/RedirectAdminAccess";
 
@@ -73,6 +76,7 @@ const Routermain = () => {
         { path: "history-all", element: <LichSuTatCaVe /> },
         { path: "/tim-kiem-phim", element: <TimKiemPhim /> },
         { path: "check", element: <CheckDatVe /> },
+        { path: "banner", element: <HomeBanner /> },
         {
           path: "redirect-admin",
           element: <RedirectAdminAccess />,
@@ -96,6 +100,9 @@ const Routermain = () => {
 
         { path: "banner", element: <BannerList /> },
         { path: "banner/create", element: <BannerForm /> },
+        { path: "banner/edit/:id", element: <BannerEdit /> },
+        { path: "banner/trash", element: <TrashBanners /> },
+
         { path: "don-ve", element: <DonVeList /> },
         { path: "don-ve/:id", element: <DonVeDetail /> },
 
