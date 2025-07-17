@@ -134,6 +134,9 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/vaitro" icon={<IdcardOutlined />}>
           <Link to="/admin/vaitro">Vai Trò</Link>
         </Menu.Item>
+        <Menu.Item key="/admin/phanquyen" icon={<IdcardOutlined />}>
+          <Link to="/admin/phanquyen">Thêm quyền</Link>
+        </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
         key="food"

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\VaiTro;
 use App\Models\QuyenTruyCap;
+use App\Models\QuyenHan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -36,22 +37,17 @@ class AddQuyenController extends Controller
         $user = Auth::guard('sanctum')->user();
         $data = $request->all();
 
-        $check = QuyenTruyCap::where('vai_tro_id', $data['vai_tro_id'])
-            ->where('quyen_han_id', $data['quyen_han_id'])->get();
+        foreach ($data['quyen_han'] as $quyenHanId) {
 
-        if (!$check->isEmpty()) {
-            return response()->json([
-                'message' => 'Quyền đã được cấp từ trước',
-            ]);
+
+            if ($quyenHanId == 1 && $user->vai_tro_id != 99) {
+                return response()->json([
+                    'message' => "Bạn không có quyền cấp Admin",
+                ]);
+            }
+            $data['quyen_han_id'] = $quyenHanId;
+            QuyenTruyCap::create($data);
         }
-
-        if ($data['quyen_han_id'] == 1 && $user->vai_tro_id != 99) {
-            return response()->json([
-                'message' => "Bạn không có quyền cấp Admin",
-            ]);
-        }
-
-        QuyenTruyCap::create($data);
         return response()->json([
             'message' => 'Cấp quyền thành công',
         ]);
@@ -92,4 +88,31 @@ class AddQuyenController extends Controller
             'message' => "Gỡ quyền thành công",
         ]);
     }
+    public function getQuyenHan($id)
+    {
+        $data = QuyenHan::all(); // Tất cả quyền hạn
+        $quyenTruyCap = QuyenTruyCap::where('vai_tro_id', $id)->get(); // Danh sách quyền đã gán cho vai trò
+
+        // Lấy danh sách ID quyền đã có
+        $quyenDaGanIds = $quyenTruyCap->pluck('quyen_han_id')->toArray();
+
+        // Lọc ra những quyền chưa được gán
+        $dataQuyen = [];
+
+        foreach ($data as $quyen) {
+            if (!in_array($quyen->id, $quyenDaGanIds)) {
+                $dataQuyen[] = [
+                    'id' => $quyen->id,
+                    'quyen' => $quyen->quyen,
+                    'mo_ta' => $quyen->mo_ta,
+                ];
+            }
+        }
+
+        return response()->json([
+            'message' => 'Danh sách quyền hạn chưa gán',
+            'data' => $dataQuyen
+        ]);
+    }
+
 }

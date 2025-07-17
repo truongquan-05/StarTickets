@@ -3,6 +3,7 @@ import {
   checkLichChieu,
   deleteDatVe,
   deleteForeverMovie,
+  getAddQuyen,
   getCheckGheByLichChieuId,
   getCreateCategoryChair,
   getCreateDatVe,
@@ -21,6 +22,7 @@ import {
   getDeleteNews,
   getDeletePhanHoiNguoiDung,
   getDeletePhongChieu,
+  getDeleteQuyen,
   getDeleteVaiTro,
   getDestroyPhongChieu,
   getDestroyVoucher,
@@ -40,13 +42,16 @@ import {
   getListNews,
   getListPhanHoiNguoiDung,
   getListPhongChieu,
+  getListQuyen,
   getListTongTien,
   getListTrashMovies,
   getListTrashPhongChieu,
   getListVaiTro,
   getMovieDetail,
+  getQuyenHanId,
   getRestoreMovies,
   getRestorePhongChieu,
+  getShowQuyen,
   getSoftDeleteMovies,
   getUpdateCategoryChair,
   getUpdateCheckGhe,
@@ -760,6 +765,55 @@ export const useGetTongTien = ({ resource = "dat_ve", id }: { resource?: string;
   return useQuery({
     queryKey: [resource, id],
     queryFn: () => getListTongTien({ resource, id }),
+    enabled: !!id,
+  });
+};
+
+export const useListQuyen = ({ resource = "quyen_truy_cap" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getListQuyen({ resource }),
+  });
+};
+
+export const useShowQuyen = ({ resource = "quyen_truy_cap", id }: { resource?: string; id: number }) => {
+  return useQuery({
+    queryKey: [resource, id],
+    queryFn: () => getShowQuyen({ resource, id }),
+    enabled: !!id,
+  });
+};
+
+export const useDeleteQuyen = ({
+  resource = "quyen_truy_cap",
+}: {
+  resource?: string;
+}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number | string) => getDeleteQuyen({ resource, id }),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: [resource] });
+      message.success("Xóa thành công");
+    },
+    onError: () => {
+      message.error("Xóa thất bại");
+    },
+  });
+};
+
+export const useAddQuyen = ({ resource = "quyen_truy_cap" }: Props) => {
+  return useMutation({
+    mutationFn: (values: any) => getAddQuyen({ resource, values }),
+  });
+};
+
+
+export const useShowQuyenHanTheoID = ({ resource = "get-quyen", id }: { resource?: string; id: number }) => {
+  return useQuery({
+    queryKey: [resource, id],
+    queryFn: () => getQuyenHanId({ resource, id }),
     enabled: !!id,
   });
 };
