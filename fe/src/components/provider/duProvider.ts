@@ -137,6 +137,14 @@ export const searchPhim = (params: any) => {
   return axiosClient.post("/loc", params);
 };
 //Banner
+// duProvider.ts
+
+// Lấy danh sách banner công khai hiển thị ra trang chủ
+export const getPublicBanners = async () => {
+  const { data } = await axiosClient.get("/banners");
+  return data;
+};
+
 export const getListBanners = async () => {
   const { data } = await axiosClient.get("/banners");
   return data;

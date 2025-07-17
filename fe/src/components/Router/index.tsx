@@ -52,6 +52,7 @@ import LichSuTatCaVe from '../pages/Users/DatVe/LichSuTatCaVe';
 import CheckDatVe from '../pages/Users/DatVe/CheckDatVe';
 import BannerEdit from '../pages/Admin/Banner/BannerEdit';
 import TrashBanners from '../pages/Admin/Banner/TrashBanners';
+import HomeBanner from '../pages/Admin/Banner/HomeBanner';
 
 
 
@@ -81,6 +82,8 @@ const Routermain = () => {
         { path: 'history-all', element: <LichSuTatCaVe /> },
         { path: '/tim-kiem-phim', element: <TimKiemPhim /> },
         { path: 'check', element: <CheckDatVe /> },
+        { path: "banner", element: <HomeBanner /> },
+
 
 
 

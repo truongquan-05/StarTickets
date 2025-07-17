@@ -21,6 +21,7 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import ContactForm from "./PhanHoiKhachHang";
+import HomeBanner from "../Admin/Banner/HomeBanner";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -421,31 +422,7 @@ const Home = () => {
 
   return (
     <div className="home-wrapper">
-      <Swiper
-        modules={[Navigation, Autoplay]}
-        navigation
-        autoplay={{ delay: 3000 }}
-        className="banner-swiper"
-      >
-        <SwiperSlide>
-          <div className="banner-wrapper">
-            <img
-              src="https://1900.com.vn/storage/uploads/companies/banner/2960/449205422-456847240544421-5147111165711126657-n-1720805927.jpg"
-              alt="banner"
-              className="banner-img"
-            />
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="banner-wrapper">
-            <img
-              src="https://chieuphimquocgia.com.vn/_next/image?url=http%3A%2F%2Fapiv2.chieuphimquocgia.com.vn%2FContent%2FImages%2FBanner%2F0018728.png&w=3840&q=75"
-              alt="banner"
-              className="banner-img"
-            />
-          </div>
-        </SwiperSlide>
-      </Swiper>
+      <HomeBanner/>
 
       <QuickBooking />
 
