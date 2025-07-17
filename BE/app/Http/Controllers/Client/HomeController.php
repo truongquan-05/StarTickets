@@ -154,6 +154,19 @@ class HomeController extends Controller
         return response()->json($phim);
     }
 
+    public function getAllPhimDacBiet()
+    {
+        $now = Carbon::now();
+        return Phim::where('loai_suat_chieu', 'Đặc biệt')
+            ->whereHas('lichChieu', function ($query) use ($now) {
+                $query->where('gio_chieu', '>=', $now);
+            })
+            ->select('phim.*')
+            ->distinct()
+            ->orderBy('ngay_cong_chieu', 'desc')
+            ->get();
+    }
+
     public function getAllPhimSapChieu()
     {
         $now = Carbon::now();
