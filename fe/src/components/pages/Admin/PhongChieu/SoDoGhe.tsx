@@ -500,7 +500,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       borderBottom: "1.5px solid black",
                       borderLeft: "1.5px solid black",
                       borderRight: "none",
-                      borderRadius: 8,
+                      borderRadius: 5,
                       boxSizing: "border-box",
                     }}
                   />
@@ -515,7 +515,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       borderBottom: "1.5px solid black",
                       borderRight: "1.5px solid black",
                       borderLeft: "none",
-                      borderRadius: 8,
+                      borderRadius: 5,
                       boxSizing: "border-box",
                     }}
                   />
@@ -531,11 +531,15 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       top: "50%",
                       left: "50%",
                       width: "80%",
-                      textAlign:"center",
+                      textAlign: "center",
                       transform: "translate(-50%, -50%)",
                     }}
                   >
-                    {isHidden ? "X" : ghe.so_ghe.split("-")[0] +' - '+ ghe.so_ghe.split("-")[1] }
+                    {isHidden
+                      ? "X"
+                      : ghe.so_ghe.split("-")[0] +
+                        " - " +
+                        ghe.so_ghe.split("-")[1]}
                   </span>
                 </div>
               );
@@ -696,7 +700,6 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               height: 20,
               display: "flex",
               position: "relative",
-         
             }}
           >
             {/* Nửa trái */}
@@ -709,7 +712,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 borderBottom: "1.5px solid black",
                 borderLeft: "1.5px solid black",
                 borderRight: "none",
-                borderRadius: 5,
+                borderRadius: "5px",
                 boxSizing: "border-box",
               }}
             />
@@ -724,9 +727,9 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 borderBottom: "1.5px solid black",
                 borderRight: "1.5px solid black",
                 borderLeft: "none",
-                borderRadius: 5,
+                borderRadius: "5px",
                 boxSizing: "border-box",
-                marginRight:5,
+                marginRight: 5,
               }}
             />
 

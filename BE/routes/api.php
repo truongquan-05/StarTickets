@@ -32,6 +32,10 @@ use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
+use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
+use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
+
+
 
 //-------------------ADMIN-------------------//
 
@@ -166,7 +170,10 @@ Route::get('voucher', [MaGiamGiaClient::class, 'index']);
 Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'destroy']);
 Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
-Route::get('/client/rap', [ClientRapController::class, 'index']);
+
 Route::apiResource('lich-su-ve', LichSuMuaHangController::class);
 Route::get('diem_thanh_vien', [DiemThuongController::class, 'index']);
 Route::post('diem_thanh_vien', [DiemThuongController::class, 'checkDiem']);
+Route::apiResource('client/lich_chieu', ClientLichChieuController::class);
+Route::apiResource('client/phong_chieu', ClientPhongChieuController::class);
+Route::get('/client/rap', [ClientRapController::class, 'index']);
