@@ -31,6 +31,7 @@ import {
   getListChuyenNgu,
   getListCinemas,
   getListDatVe,
+  getListDiem,
   getListGhe,
   getListLichChieu,
   getListLichSuDonHang,
@@ -39,6 +40,7 @@ import {
   getListNews,
   getListPhanHoiNguoiDung,
   getListPhongChieu,
+  getListTongTien,
   getListTrashMovies,
   getListTrashPhongChieu,
   getListVaiTro,
@@ -56,6 +58,7 @@ import {
   getUpdatePhongChieu,
   getUpdateTrangThaiGhe,
   getUpdateVaiTro,
+  getUseCheckDiem,
 } from "../provider/hungProvider";
 import { Props } from "../provider/hungProvider";
 import { message } from "antd";
@@ -719,7 +722,7 @@ export const useDestroyVoucher = ({ resource = "voucher" }: Props) => {
 
 
 export const useListLichSuDonHangChiTiet = ({
-  resource = "lich-su-mua-hang",
+  resource = "lich-su-ve",
   id,
 }: Props) => {
   return useQuery({
@@ -728,9 +731,35 @@ export const useListLichSuDonHangChiTiet = ({
   });
 };
 
-export const useListLichSuDonHang = ({ resource = "lich-su-mua-hang" }) => {
+export const useListLichSuDonHang = ({ resource = "lich-su-ve" }) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getListLichSuDonHang({ resource }),
+  });
+};
+
+export const useListDiem = ({ resource = "diem_thanh_vien" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getListDiem({ resource }),
+  });
+};
+
+export const useCheckDiem = ({ resource = "diem_thanh_vien" }: Props) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (values: any) => getUseCheckDiem({ resource, values }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: [resource] });
+      return data?.data; // Trả về toàn bộ response data
+    },
+  });
+};
+
+export const useGetTongTien = ({ resource = "dat_ve", id }: { resource?: string; id: number }) => {
+  return useQuery({
+    queryKey: [resource, id],
+    queryFn: () => getListTongTien({ resource, id }),
+    enabled: !!id,
   });
 };

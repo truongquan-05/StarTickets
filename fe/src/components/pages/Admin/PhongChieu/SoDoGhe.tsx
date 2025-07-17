@@ -531,11 +531,15 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       top: "50%",
                       left: "50%",
                       width: "80%",
-                      textAlign:"center",
+                      textAlign: "center",
                       transform: "translate(-50%, -50%)",
                     }}
                   >
-                    {isHidden ? "X" : ghe.so_ghe.split("-")[0] +' - '+ ghe.so_ghe.split("-")[1] }
+                    {isHidden
+                      ? "X"
+                      : ghe.so_ghe.split("-")[0] +
+                        " - " +
+                        ghe.so_ghe.split("-")[1]}
                   </span>
                 </div>
               );
@@ -696,7 +700,6 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               height: 20,
               display: "flex",
               position: "relative",
-         
             }}
           >
             {/* Nửa trái */}
@@ -709,7 +712,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 borderBottom: "1.5px solid black",
                 borderLeft: "1.5px solid black",
                 borderRight: "none",
-                borderRadius: 5,
+                borderRadius: "5px",
                 boxSizing: "border-box",
               }}
             />
@@ -724,9 +727,9 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 borderBottom: "1.5px solid black",
                 borderRight: "1.5px solid black",
                 borderLeft: "none",
-                borderRadius: 5,
+                borderRadius: "5px",
                 boxSizing: "border-box",
-                marginRight:5,
+                marginRight: 5,
               }}
             />
 
@@ -746,64 +749,6 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
               </span>
             </div>
           )}
-        </div>
-      )}
-
-      {trangThaiPhong === 3 && ( // Chú thích cho chế độ mua
-        <div
-          className="legend"
-          style={{
-            marginTop: 24,
-            maxWidth: 700,
-            marginLeft: "auto",
-            marginRight: "auto",
-            display: "flex",
-            justifyContent: "center",
-            gap: 40,
-            fontWeight: 600,
-            fontSize: 14,
-            padding: 12,
-            borderRadius: 6,
-            flexWrap: "wrap",
-            userSelect: "none",
-          }}
-        >
-          {/* <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 40,
-                height: 20,
-                backgroundColor: "white",
-                borderRadius: 4,
-                border: '2px solid black'
-              }}
-            />
-            <span>Ghế trống</span>
-          </div> */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 40,
-                height: 20,
-                backgroundColor: "yellow",
-                borderRadius: 4,
-                border: "2px solid orange",
-              }}
-            />
-            <span>Đang chọn</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div
-              style={{
-                width: 40,
-                height: 20,
-                backgroundColor: "#47566B",
-                opacity: 0.5,
-                borderRadius: 4,
-              }}
-            />
-            <span>Đã đặt</span>
-          </div>
         </div>
       )}
     </div>

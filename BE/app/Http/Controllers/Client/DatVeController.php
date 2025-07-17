@@ -97,7 +97,7 @@ class DatVeController extends Controller
             DB::commit();
 
 
-            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat.loaiGhe'])->find($idDatVe);
+            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat.loaiGhe','lichChieu.phim','lichChieu.phong_chieu.rap'])->find($idDatVe);
 
             return response()->json([
                 'data' => $dataThanhToan
@@ -135,7 +135,7 @@ class DatVeController extends Controller
         foreach ($DatVeChiTiet as $item) {
             CheckGhe::where('ghe_id', $item->ghe_id)
                 ->where('lich_chieu_id', $dataThanhToan->lich_chieu_id)
-                ->update(['trang_thai' => 'trong','nguoi_dung_id' => null]);
+                ->update(['trang_thai' => 'trong', 'nguoi_dung_id' => null]);
         }
         foreach ($DonDoAn as $item) {
             $DoAn = DoAn::find($item->do_an_id);
@@ -148,12 +148,12 @@ class DatVeController extends Controller
         DatVe::find($id)->delete();
         return response()->json([
             "message" => "Hủy đặt vé thành công",
-            
+
         ]);
     }
 
     // XÓA KHI BACK TRANG
-   public function BackDelete($id)
+    public function BackDelete($id)
     {
         $data = DatVe::find($id);
         if (!$data) {
@@ -169,7 +169,7 @@ class DatVeController extends Controller
         foreach ($DatVeChiTiet as $item) {
             CheckGhe::where('ghe_id', $item->ghe_id)
                 ->where('lich_chieu_id', $dataThanhToan->lich_chieu_id)
-                ->update(['trang_thai' => 'trong','nguoi_dung_id' => null]);
+                ->update(['trang_thai' => 'trong', 'nguoi_dung_id' => null]);
         }
         foreach ($DonDoAn as $item) {
             $DoAn = DoAn::find($item->do_an_id);
@@ -182,8 +182,20 @@ class DatVeController extends Controller
         DatVe::find($id)->delete();
         return response()->json([
             "message" => "Hủy đặt vé thành công",
-            
+
         ]);
     }
 
+    public function show($id)
+    {
+        $data = DatVe::find($id);
+        if (!$data) {
+            return response()->json([
+                "message" => "Không tìm thấy dữ liệu đặt vé",
+            ], 404);
+        }
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }

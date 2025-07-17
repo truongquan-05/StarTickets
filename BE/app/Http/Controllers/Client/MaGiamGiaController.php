@@ -57,31 +57,43 @@ class MaGiamGiaController extends Controller
                 'status' => 422
             ], 422);
         }
-        $tongTienNew = $request->input('tong_tien') - $data->phan_tram_giam / 100 * $request->input('tong_tien');
-        if ($data->phan_tram_giam / 100 * $request->input('tong_tien') > $data->giam_toi_da) {
-            $tongTienNew = $data->giam_toi_da;
+        $tongTienNew = $datVe->tong_tien - $request->input('tien_voucher');
+        if ($request->input('tien_voucher') > $data->giam_toi_da) {
+            $tongTienNew = $datVe->tong_tien - $data->giam_toi_da;
         }
         $datVe->update(['tong_tien' => $tongTienNew]);
+
+        $voucher = MaGiamGia::find($request['id']);
+        $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung + 1]);
 
         return response()->json([
             'data' => $datVe,
             'message' => 'Voucher đang hoạt động',
-            'status' => 200
+            'status' => 200,
+            'voucher' => $tongTienNew
         ], 200);
     }
 
 
-    public function update(Request $request, string $id)
+    public function destroy(Request $request, string $id)
     {
         try {
+            $voucher = MaGiamGia::find($request['ma_giam_gia_id']);
+            $voucher->update(['so_lan_da_su_dung' => $voucher->so_lan_da_su_dung - 1]);
             $datVe = DatVe::find($id);
+
+            $tongTienNew = $datVe->tong_tien + $request->input('tien_voucher');
+            if ($request->input('tien_voucher') > $voucher->giam_toi_da) {
+                $tongTienNew = $datVe->tong_tien + $voucher->giam_toi_da;
+            }
+
             $datVe->update([
-                'tong_tien' => $request->input('tong_tien')
+                'tong_tien' => $tongTienNew
             ]);
 
             return response()->json([
                 'data' => $datVe,
-                'message' => 'Voucher đang hoạt động',
+                'message' => 'Hủy thành công',
                 'status' => 200
             ], 200);
         } catch (\Throwable $th) {

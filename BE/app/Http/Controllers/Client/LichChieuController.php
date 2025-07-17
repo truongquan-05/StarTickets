@@ -1,29 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Client;
 
-use Carbon\Carbon;
 use App\Models\Phim;
 use App\Models\GiaVe;
 use App\Models\CheckGhe;
 use App\Models\ChuyenNgu;
 use App\Models\LichChieu;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\PhongChieu;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class LichChieuController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('IsAdmin');
-    //     $this->middleware('permission:LichChieu-read')->only(['index', 'show']);
-    //     $this->middleware('permission:LichChieu-create')->only(['store']);
-    //     $this->middleware('permission:LichChieu-update')->only(['update']);
-    //     $this->middleware('permission:LichChieu-delete')->only(['delete', 'destroy']);
-    // }
 
 
 
