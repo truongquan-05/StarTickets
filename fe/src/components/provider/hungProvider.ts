@@ -396,3 +396,32 @@ export const getListTongTien = async ({resource = "dat_ve",id} : Props) => {
   const {data} = await axiosClient.get(`${resource}/${id}`);
   return data;
 }
+
+export const getListQuyen = async ({resource = "quyen_truy_cap"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getAddQuyen = async ({resource = "quyen_truy_cap" , values} : Props) => {
+  const {data} = await  axiosClient.post(resource,values);
+  return data;
+}
+
+export const getDeleteQuyen = async ({ resource = "quyen_truy_cap", id }: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+
+export const getShowQuyen = async ({resource = "quyen_truy_cap",id} : Props) => {
+  const {data} = await axiosClient.get(`${resource}/${id}`);
+  return data;
+}
+
+export const getQuyenHanId = async ({resource = "get-quyen",id} : Props) => {
+  const {data} = await axiosClient.get(`${resource}/${id}`);
+  return data;
+}
+
+
+

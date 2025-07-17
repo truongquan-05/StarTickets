@@ -55,6 +55,7 @@ import TrashBanners from "../pages/Admin/Banner/TrashBanners";
 import HomeBanner from "../pages/Admin/Banner/HomeBanner";
 import RequireAdminAccess from "../pages/auth/RequireAdminAccess";
 import RedirectAdminAccess from "../pages/auth/RedirectAdminAccess";
+import PhanQuyen from "../pages/NguoiDung/PhanQuyen";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -123,6 +124,7 @@ const Routermain = () => {
 
         { path: "users", element: <UserList /> },
         { path: "vaitro", element: <VaiTro /> },
+        { path: "phanquyen", element: <PhanQuyen /> },
 
         { path: "genre", element: <GenresManager /> },
 
