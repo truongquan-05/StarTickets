@@ -1,4 +1,4 @@
-import { CheckCircleTwoTone } from "@ant-design/icons";
+import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { Button } from "antd";
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -37,7 +37,7 @@ const CheckDatVe = () => {
   };
 
   const messageStyle = {
-    fontFamily: '"Poppins", sans-serif',
+    fontFamily: '"Alata", sans-serif',
     fontSize: "1.1rem",
     lineHeight: "1.6",
     maxWidth: "500px",
@@ -47,23 +47,61 @@ const CheckDatVe = () => {
 
   if (error) {
     return (
-      <div style={containerStyle}>
-        <div style={titleStyle}>GIAO DỊCH THẤT BẠI</div>
-        <div style={messageStyle}>
-          Giao dịch không thành công, vui lòng kiểm tra lại thông tin thanh toán
-          của bạn
+      <div
+        className="boxloithanhtoan"
+        style={{ textAlign: "center", position: "relative" }}
+      >
+        <div style={containerStyle}>
+          {/* Lớp phủ mờ đen */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              zIndex: 0,
+            }}
+          />
+          <CloseCircleTwoTone
+            twoToneColor="yellow"
+            style={{ fontSize: "150px", marginBottom: "1rem", zIndex: 1 }}
+          />
+          <div
+            style={{
+              ...titleStyle,
+              color: "white",
+              textAlign: "center",
+            }}
+          >
+            Giao dịch thất bại
+          </div>
+          <div style={messageStyle}>
+            Giao dịch không thành công, vui lòng kiểm tra lại thông tin thanh
+            toán của bạn.
+            <br />
+            Xin chân thành cảm ơn!
+          </div>
           <br />
-          Xin chân thành cảm ơn!
+          <button
+            style={{ padding: "4px 24px", fontSize: "16px" }}
+            className="primary-button"
+            onClick={() => navigate("/")}
+          >
+            <span>Quay lại trang chủ</span>
+          </button>
         </div>
-        <br />
-        <Button onClick={() => navigate("/")}>Quay lại trang chủ</Button>
       </div>
     );
   }
 
   if (datVeId && maGiaoDich) {
     return (
-      <div className="boxloithanhtoan" style={{ textAlign: "center",position: "relative"  }}>
+      <div
+        className="boxloithanhtoan"
+        style={{ textAlign: "center", position: "relative" }}
+      >
         <div style={containerStyle}>
           {/* Lớp phủ mờ đen */}
           <div
@@ -79,13 +117,13 @@ const CheckDatVe = () => {
           />
           <CheckCircleTwoTone
             twoToneColor="yellow"
-            style={{ fontSize: "150px", marginBottom: "1rem", zIndex: 1, }}
+            style={{ fontSize: "150px", marginBottom: "1rem", zIndex: 1 }}
           />
           <div
             style={{
               ...titleStyle,
               color: "white",
-              textAlign: "center" /* vàng nổi bật */,
+              textAlign: "center",
             }}
           >
             Giao dịch thành công

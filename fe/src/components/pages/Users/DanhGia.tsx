@@ -15,7 +15,7 @@ import {
   Row,
   Col,
 } from "antd";
-import { MoreOutlined, UserOutlined, StarOutlined } from "@ant-design/icons";
+import { MoreOutlined, UserOutlined, StarOutlined, EditOutlined, MehOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "./DanhGia.css";
 import axios from "axios";
@@ -119,6 +119,7 @@ const RatingStatistics: React.FC<{ reviews: DanhGia[] }> = ({
             color: "#888",
             fontSize: "14px",
             marginTop: "4px",
+            fontFamily: "Alata, sans-serif",
           }}
         >
           ({stats.totalReviews} Đánh giá)
@@ -228,6 +229,7 @@ const QuickRatingForm: React.FC<{
             color: "#888",
             fontSize: "14px",
             marginBottom: "16px",
+            fontFamily: "Alata, sans-serif",
           }}
         >
           {totalReviews} đánh giá của bạn
@@ -235,7 +237,7 @@ const QuickRatingForm: React.FC<{
 
         <Button
           type="primary"
-          icon={<StarOutlined />}
+          icon={<EditOutlined />}
           onClick={onRateClick}
           style={{
             width: "100%",
@@ -449,7 +451,7 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
                     marginBottom: "20px",
                   }}
                 >
-                  <h4 className="form-label">Chọn số sao</h4>
+                  <h4 className="form-label-review"><MehOutlined  style={{marginRight: "8px"}}/>Chọn số sao</h4>
                   <Rate
                     value={soSao}
                     onChange={setSoSao}
@@ -457,7 +459,7 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
                     style={{ marginBottom: "16px" }}
                   />
 
-                  <h4 className="form-label-secondary">Nhập bình luận</h4>
+                  <h4 className="form-label-secondary"><EditOutlined style={{marginRight: "8px"}}/>Nhập bình luận</h4>
                   <TextArea
                     rows={4}
                     placeholder="Viết cảm nhận của bạn..."
@@ -557,7 +559,7 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
               {myDanhGia && isEditing && (
                 <Card size="small" className="edit-form">
                   <Space direction="vertical" className="edit-form-content">
-                    <Text className="edit-form-title">Chỉnh sửa đánh giá</Text>
+                    <Text className="edit-form-title-review"><EditOutlined style={{marginRight: "8px"}}/>Chỉnh sửa đánh giá</Text>
 
                     <Rate
                       value={editSoSao}

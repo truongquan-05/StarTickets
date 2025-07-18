@@ -3,7 +3,7 @@
   width: 100%;
   background: linear-gradient(to right, #1e0033, #0c0b1f); /* Deep, cinematic background */
   padding: 1px 10%; /* Increased padding for better spacing */
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Alata', sans-serif;
   box-sizing: border-box;
 }
 
@@ -182,11 +182,12 @@
 .food-list-title {
   margin: 0 0 17px 18px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 100;
   color: #f3f4f6;
   display: flex;
   align-items: center;
   gap: 8px;
+  font-family: 'Alata', sans-serif;
 }
 
 .food-list-scroll {
@@ -208,9 +209,10 @@
 }
 
 .selected-foods-title {
+  font-family: 'Alata', sans-serif;
   margin: 0 0 16px 0;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 100;
   color: #ffff;
   display: flex;
   align-items: center;
@@ -309,10 +311,10 @@
 }
 
 .total-amount {
+  margin: 0 !important;
   font-size: 20px;
   font-weight: 700;
   color: #ffff;
-  padding: 8px 12px;
   border-radius: 8px;
 }
 

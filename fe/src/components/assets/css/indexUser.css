@@ -157,11 +157,11 @@
 }
 
 .footer-links a {
-  font-family: "Poppins", sans-serif;
+  font-family: "Alata", sans-serif;
   color: #ddd;
   text-decoration: none;
   transition: color 0.2s ease;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .footer-links a:hover {
@@ -169,11 +169,12 @@
 }
 
 .footer-bottom {
+  font-family: "Alata", sans-serif;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 20px;
-  font-size: 13px;
+  font-size: 15px;
   color: #fff;
 }
 

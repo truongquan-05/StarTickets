@@ -4,7 +4,7 @@
   width: 100%;
   background-color: #1a0933;
   padding: 15px 10%;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Alata', sans-serif;
   box-sizing: border-box;
 }
 .payment-container {
@@ -56,6 +56,7 @@
 
 /* Form Elements */
 .form-input {
+  font-family: 'Alata', sans-serif;
   color: black;
   border-radius: 1px;
   height: 50px;
@@ -68,11 +69,11 @@
   background-color: rgba(51,102,204,.8) !important;
   border: none !important;
   color: #fff !important;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: 'Alata', sans-serif !important;
 }
 
 .form-checkbox {
-  font-family: "Poppins", sans-serif;
+  font-family: "Alata", sans-serif;
   position: relative;
   cursor: pointer;
   color: #fff;
@@ -209,31 +210,91 @@
   z-index: 1;
 }
 .payment-button {
-  background-color: #b800ff;
-  border-color: #b800ff;
+  background-color: white;
+  border-color: white;
   color: #fff;
-  font-weight: bold;
+}
+
+.payment-icon {
+  width: 32px;
+  height: 32px;
+  transition: transform 0.3s ease;
+}
+
+/* Khi hover vào nút, chỉ ảnh zoom lên */
+.momo-button:hover .payment-icon {
+  transform: scale(1.3);
+}
+.vnpay-button:hover .payment-icon {
+  transform: scale(1.3);
 }
 
 .momo-button {
-  margin-bottom: 12px;
-  border-radius: 4px;
-  height: 70px;
+  position: relative;
+  overflow: hidden;
   background-color: transparent;
   color: #fff;
-  border: 1px solid #333; /* viền trắng */
-  font-family: 'Poppins', sans-serif;
+  border: 1px solid #333;
+  font-family: 'Alata', sans-serif;
+  font-size: 18px;
+  border-radius: 4px;
+  height: 70px;
+  transition: all 0.3s ease;
+}
+
+.momo-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, silver, transparent);
+  transition: all 0.4s ease-in-out;
+}
+
+.momo-button:hover::before {
+  left: 100%;
+}
+
+.momo-button:hover {
+  color: #fff;
+  border-color: #b800ff;
 }
 
 .vnpay-button {
-  margin-bottom: 12px;
-  border-radius: 4px;
-  height: 70px;
+  position: relative;
+  overflow: hidden;
   background-color: transparent;
   color: #fff;
-  border: 1px solid #333; /* viền trắng */
-  font-family: 'Poppins', sans-serif;
+  border: 1px solid #333;
+  font-family: 'Alata', sans-serif;
+  font-size: 18px;
+  border-radius: 4px;
+  height: 70px;
+  transition: all 0.3s ease;
 }
+
+.vnpay-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, silver, transparent);
+  transition: all 0.4s ease-in-out;
+}
+
+.vnpay-button:hover::before {
+  left: 100%;
+}
+
+.vnpay-button:hover {
+  color: #fff;
+  border-color: #b800ff;
+}
+
 
 .back-button {
   margin-bottom: 16px;
@@ -280,7 +341,7 @@
 
 /* Age Restriction */
 .age-restriction {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Alata', sans-serif;
   color: yellow;
 }
 
@@ -293,7 +354,7 @@
 /* Screening Time */
 .screening-time {
   margin-top: 24px;
-  font-weight: bold;
+  font-weight: 100;
 }
 
 /* Booking Details */
@@ -323,7 +384,7 @@
 }
 
 /* Total Amount */
-.total-amount {
+.total-amount2 {
   margin-top: 24px;
   display: flex;
   justify-content: space-between;
@@ -334,4 +395,5 @@
 .total-price {
   font-size: 20px;
   color: white;
+  font-family: 'Alata', sans-serif;
 }

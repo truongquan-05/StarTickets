@@ -80,6 +80,7 @@ const ContactForm = () => {
   const textareaStyle = {
     ...inputStyle,
     resize: "none" as const,
+    paddingTop: "15px",
   };
 
   return (

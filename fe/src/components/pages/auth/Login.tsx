@@ -56,7 +56,7 @@ const Login = () => {
           >
             <Form.Item
               label={
-                <span style={{ color: "white", fontWeight: 600 }}>Email</span>
+                <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>Email</span>
               }
               name="email"
               rules={[
@@ -70,13 +70,14 @@ const Login = () => {
                 size="large"
                 style={{
                   borderRadius: "1px",
+                  fontFamily: "Alata, sans-serif",
                 }}
               />
             </Form.Item>
 
             <Form.Item
               label={
-                <span style={{ color: "white", fontWeight: 600 }}>
+                <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                   Mật khẩu
                 </span>
               }
@@ -89,6 +90,7 @@ const Login = () => {
                 size="large"
                 style={{
                   borderRadius: "1px",
+                  fontFamily: "Alata, sans-serif",
                 }}
               />
             </Form.Item>
@@ -108,7 +110,7 @@ const Login = () => {
                 <Col>
                   <Link
                     href="/forgot-password"
-                    style={{ color: "white", textDecoration: "underline" }}
+                    style={{ color: "white", textDecoration: "underline", fontFamily: "Alata, sans-serif" }}
                   >
                     Quên mật khẩu?
                   </Link>
@@ -131,11 +133,11 @@ const Login = () => {
             <Divider style={{ backgroundColor: "yellow" }} />
 
             <Form.Item style={{ textAlign: "center" }}>
-              <Text style={{ color: "white" }}>
+              <Text style={{ color: "white", fontFamily: "Alata, sans-serif" }}>
                 Bạn chưa có tài khoản?{" "}
                 <Link
                   href="/register"
-                  style={{ color: "yellow", textDecoration: "underline" }}
+                  style={{ color: "yellow", textDecoration: "underline", fontFamily: "Alata, sans-serif" }}
                 >
                   Đăng ký ngay
                 </Link>
