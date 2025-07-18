@@ -183,7 +183,7 @@ const HeaderUser = () => {
         <a href="#">
           <CalendarOutlined /> Lịch chiếu
         </a>
-        <a href="#" className="khuyen_mai">
+        <a href="/list-voucher" className="khuyen_mai">
           Khuyến mãi
         </a>
         <a href="#">Thuê sự kiện</a>

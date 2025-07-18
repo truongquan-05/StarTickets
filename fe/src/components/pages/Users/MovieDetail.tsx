@@ -59,7 +59,7 @@ function convertYouTubeUrlToEmbed(url: string) {
 }
 
 const MovieDetailUser = () => {
-  const TIMEOUT_MINUTES = 5;
+  const TIMEOUT_MINUTES = 1;
   const location = useLocation();
   const previousPathnameRef = useRef<string>(location.pathname);
   const { id } = useParams();
@@ -161,6 +161,8 @@ const MovieDetailUser = () => {
       if (!lichChieuIdToProcess || seatsToProcess.length === 0) {
         return;
       }
+      const userStr = localStorage.getItem("user");
+      const user = userStr ? JSON.parse(userStr) : null;
       const currentDanhSachGhe = danhSachGheRef.current;
       const currentCheckGheList = checkGheListRef.current;
 
@@ -180,7 +182,7 @@ const MovieDetailUser = () => {
           ) {
             updateCheckGhe({
               id: correspondingCheckGhe.id,
-              values: { trang_thai: "trong", nguoi_dung_id: null }, // Giải phóng ghế
+              values: { trang_thai: "trong", nguoi_dung_id: user.id }, // Giải phóng ghế
               lichChieuId: lichChieuIdToProcess,
             });
           }

@@ -57,6 +57,7 @@ import RequireAdminAccess from "../pages/auth/RequireAdminAccess";
 import RedirectAdminAccess from "../pages/auth/RedirectAdminAccess";
 import PhanQuyen from "../pages/NguoiDung/PhanQuyen";
 import BannerHetHan from "../pages/Admin/Banner/BannerHetHan";
+import ListVoucher from "../pages/Users/ListVoucher";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -79,6 +80,7 @@ const Routermain = () => {
         { path: "/tim-kiem-phim", element: <TimKiemPhim /> },
         { path: "check", element: <CheckDatVe /> },
         { path: "banner", element: <HomeBanner /> },
+        { path: "list-voucher", element: <ListVoucher /> },
         {
           path: "redirect-admin",
           element: <RedirectAdminAccess />,
