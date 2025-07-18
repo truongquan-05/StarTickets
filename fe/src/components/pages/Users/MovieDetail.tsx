@@ -75,6 +75,7 @@ const MovieDetailUser = () => {
     null
   );
   const [selectedFoods, setSelectedFoods] = useState<SelectedFoodItem[]>([]);
+  
   const { mutate: updateCheckGhe } = useUpdateCheckGhe({
     resource: "check_ghe",
   });

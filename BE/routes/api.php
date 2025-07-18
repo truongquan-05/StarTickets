@@ -34,6 +34,7 @@ use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
+use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
 
 
 
@@ -125,6 +126,7 @@ Route::POST('delete-dat-ve/{id}', [DatVeController::class, 'BackDelete']);
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']);
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
 Route::apiResource('quyen_truy_cap', AddQuyenController::class);
+Route::get('get-quyen/{id}', [AddQuyenController::class, 'getQuyenHan']);
 Route::prefix('banners')->group(function () {
     Route::get('/', [BannerController::class, 'index']); // Lấy danh sách banner (active, expired, deleted)
     Route::post('/', [BannerController::class, 'store']); // Tạo banner mới
