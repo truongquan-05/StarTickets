@@ -1,0 +1,105 @@
+.voucher-wrapper {
+  background: linear-gradient(to bottom, #0D0C1D, #1D1441);
+  color: white;
+  padding: 40px 16px;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.voucher-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.voucher-item {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 80px;
+  border-bottom: 1px solid #444366; /* thêm line ngăn cách */
+  padding-bottom: 40px;
+}
+
+.voucher-item.reverse {
+  flex-direction: column-reverse;
+}
+
+@media (min-width: 768px) {
+  .voucher-item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .voucher-item.reverse {
+    flex-direction: row-reverse;
+  }
+}
+
+.voucher-content {
+  flex: 1;
+}
+
+.voucher-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.voucher-description p {
+  margin-bottom: 10px;
+  line-height: 1.7;
+  font-size: 14px;
+  color: #ddd;
+}
+
+.voucher-description strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.voucher-description ul {
+  margin-left: 20px;
+  list-style-type: disc;
+  color: #ccc;
+}
+
+.voucher-status.kich-hoat {
+  color: #ffdc00;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.voucher-button {
+  background-color: #ffdc00;
+  color: #0d0c1d;
+  font-weight: 700;
+  padding: 12px 30px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
+  letter-spacing: 1.2px;
+  box-shadow: 0 0 8px #ffdc00aa;
+  width: fit-content;
+}
+
+.voucher-button:hover {
+  background-color: #f7d600;
+  box-shadow: 0 0 12px #f7d600cc;
+}
+
+.voucher-image-wrapper {
+  flex: 1;
+  max-width: 480px;
+}
+
+.voucher-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
