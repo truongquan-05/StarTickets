@@ -6,6 +6,7 @@ use App\Models\VaiTro;
 use App\Models\QuyenTruyCap;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\QuyenHan;
 use Illuminate\Support\Facades\Auth;
 
 class AddQuyenController extends Controller
@@ -36,24 +37,39 @@ class AddQuyenController extends Controller
         $user = Auth::guard('sanctum')->user();
         $data = $request->all();
 
-        $check = QuyenTruyCap::where('vai_tro_id', $data['vai_tro_id'])
-            ->where('quyen_han_id', $data['quyen_han_id'])->get();
+        foreach ($data['quyen_han'] as $quyenHanId) {
 
-        if (!$check->isEmpty()) {
-            return response()->json([
-                'message' => 'Quyền đã được cấp từ trước',
-            ]);
+
+            if ($quyenHanId == 1 && $user->vai_tro_id != 99) {
+                return response()->json([
+                    'message' => "Bạn không có quyền cấp Admin",
+                ]);
+            }
+            $data['quyen_han_id'] = $quyenHanId;
+            QuyenTruyCap::create($data);
         }
-
-        if ($data['quyen_han_id'] == 1 && $user->vai_tro_id != 99) {
-            return response()->json([
-                'message' => "Bạn không có quyền cấp Admin",
-            ]);
-        }
-
-        QuyenTruyCap::create($data);
         return response()->json([
             'message' => 'Cấp quyền thành công',
+        ]);
+    }
+
+    public function getQuyenHan($id)
+    {
+        $data = QuyenHan::all();
+        $quyenTruyCap = QuyenTruyCap::where('vai_tro_id', $id)->get();
+        $dataQuyen = [];
+        foreach ($data as $quyen) {
+            if ($quyen['id'] != $quyenTruyCap->quyen_han_id) {
+                $dataQuyen[] = [
+                    'id' => $quyen->id,
+                    'quyen' => $quyen->quyen,
+                    'mo_ta' => $quyen->mo_ta,
+                ];
+            }
+        }
+        return response()->json([
+            'message' => 'Danh sách quyền hạn',
+            'data' => $dataQuyen
         ]);
     }
 

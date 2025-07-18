@@ -126,6 +126,8 @@ Route::POST('delete-dat-ve/{id}', [DatVeController::class, 'BackDelete']);
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']);
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
 Route::apiResource('quyen_truy_cap', AddQuyenController::class);
+Route::get('get-quyen', [AddQuyenController::class, 'getQuyenHan']);
+
 Route::prefix('banners')->group(function () {
     Route::get('/', [BannerController::class, 'index']); // Lấy danh sách banner (active, expired, deleted)
     Route::post('/', [BannerController::class, 'store']); // Tạo banner mới
