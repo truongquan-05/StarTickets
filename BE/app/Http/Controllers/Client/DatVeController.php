@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Client;
 use App\Models\DoAn;
 use App\Models\DatVe;
 use App\Models\DonDoAn;
+use App\Jobs\XoaDonHang;
 use App\Models\CheckGhe;
 use App\Models\DatVeChiTiet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Models\PhuongThucThanhToan;
+use App\Http\Controllers\Controller;
 
 class DatVeController extends Controller
 {
@@ -31,6 +32,7 @@ class DatVeController extends Controller
                         "tong_tien" => $value['tong_tien'],
                     ]);
                     $lich_chieu_id = $value['lich_chieu_id'];
+                    XoaDonHang::dispatch($DatVe->id)->delay(now()->addMinutes(5));
                 }
             }
 
@@ -97,7 +99,7 @@ class DatVeController extends Controller
             DB::commit();
 
 
-            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat.loaiGhe','lichChieu.phim','lichChieu.phong_chieu.rap'])->find($idDatVe);
+            $dataThanhToan = DatVe::with(['DonDoAn.DoAn', 'DatVeChiTiet.GheDat.loaiGhe', 'lichChieu.phim', 'lichChieu.phong_chieu.rap'])->find($idDatVe);
 
             return response()->json([
                 'data' => $dataThanhToan

@@ -6,7 +6,6 @@ import {
   BankOutlined,
   TagsOutlined,
   FileTextOutlined,
-  BarChartOutlined,
   UserOutlined,
   GiftOutlined,
   CommentOutlined,
@@ -79,10 +78,6 @@ const SideBar: React.FC<SideBarProps> = ({
     >
       <Menu.Item key="/admin" icon={<HomeOutlined />}>
         <Link to="/admin">Dashboard</Link>
-      </Menu.Item>
-
-      <Menu.Item key="/admin/thongke/list" icon={<BarChartOutlined />}>
-        <Link to="/admin/">Thống Kê</Link>
       </Menu.Item>
 
       <Menu.Item key="/admin/don-ve" icon={<ShoppingOutlined />}>

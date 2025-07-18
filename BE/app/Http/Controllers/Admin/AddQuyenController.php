@@ -7,7 +7,6 @@ use App\Models\QuyenTruyCap;
 use App\Models\QuyenHan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\QuyenHan;
 use Illuminate\Support\Facades\Auth;
 
 class AddQuyenController extends Controller
@@ -54,25 +53,7 @@ class AddQuyenController extends Controller
         ]);
     }
 
-    public function getQuyenHan($id)
-    {
-        $data = QuyenHan::all();
-        $quyenTruyCap = QuyenTruyCap::where('vai_tro_id', $id)->get();
-        $dataQuyen = [];
-        foreach ($data as $quyen) {
-            if ($quyen['id'] != $quyenTruyCap->quyen_han_id) {
-                $dataQuyen[] = [
-                    'id' => $quyen->id,
-                    'quyen' => $quyen->quyen,
-                    'mo_ta' => $quyen->mo_ta,
-                ];
-            }
-        }
-        return response()->json([
-            'message' => 'Danh sách quyền hạn',
-            'data' => $dataQuyen
-        ]);
-    }
+
 
     /**
      * Display the specified resource.
