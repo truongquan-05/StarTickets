@@ -13,16 +13,16 @@ class BannerController extends Controller
 
     public function __construct()
     {
-        $this->middleware(['IsAdmin','permission:Banner-read'])->only(['show']);
-        $this->middleware(['IsAdmin','permission:Banner-create'])->only(['store']);
-        $this->middleware(['IsAdmin','permission:Banner-update'])->only(['update']);
-        $this->middleware(['IsAdmin','permission:Banner-delete'])->only(['destroy', 'restore', 'forceDelete']);
+        $this->middleware(['IsAdmin', 'permission:Banner-read'])->only(['show']);
+        $this->middleware(['IsAdmin', 'permission:Banner-create'])->only(['store']);
+        $this->middleware(['IsAdmin', 'permission:Banner-update'])->only(['update']);
+        $this->middleware(['IsAdmin', 'permission:Banner-delete'])->only(['destroy', 'restore', 'forceDelete']);
     }
 
 
     public function index(Request $request)
     {
-        $type = $request->query('type', 'active'); // Lọc theo active, expired, hoặc deleted
+        $type = $request->query('type', 'active');
 
         $query = Banner::query();
 
@@ -130,5 +130,29 @@ class BannerController extends Controller
         }
         $banner->forceDelete(); // Xóa cứng
         return response()->json(['message' => 'Xóa cứng banner thành công'], 204);
+    }
+
+    public function trashed()
+    {
+        $banners = Banner::onlyTrashed()->get();
+        return response()->json($banners, 200);
+    }
+
+    public function hetHan()
+    {
+        $banners = Banner::where('is_active', false)
+            ->orWhere(function ($query) {
+                $query->where('end_date', '<', Carbon::now())
+                    ->orWhereNull('end_date');
+            })->get();
+        return response()->json($banners, 200);
+    }
+
+    public function toggleActive($id)
+    {
+        $banner = Banner::find($id);
+        $banner->is_active = !$banner->is_active;
+        $banner->save();
+        return response()->json(['message' => 'Cập nhật trạng thái hoạt động thành công', 'data' => $banner]);
     }
 }

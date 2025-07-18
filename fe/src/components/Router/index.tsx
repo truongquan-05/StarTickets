@@ -56,6 +56,7 @@ import HomeBanner from "../pages/Admin/Banner/HomeBanner";
 import RequireAdminAccess from "../pages/auth/RequireAdminAccess";
 import RedirectAdminAccess from "../pages/auth/RedirectAdminAccess";
 import PhanQuyen from "../pages/NguoiDung/PhanQuyen";
+import BannerHetHan from "../pages/Admin/Banner/BannerHetHan";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -103,6 +104,7 @@ const Routermain = () => {
         { path: "banner/create", element: <BannerForm /> },
         { path: "banner/edit/:id", element: <BannerEdit /> },
         { path: "banner/trash", element: <TrashBanners /> },
+        { path: "banner/het-han", element: <BannerHetHan /> },
 
         { path: "don-ve", element: <DonVeList /> },
         { path: "don-ve/:id", element: <DonVeDetail /> },
