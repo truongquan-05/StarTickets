@@ -25,32 +25,30 @@ const NewsDetail = () => {
     );
 
   return (
-    <div className="news-detail-wrapper">
-      <Row gutter={8}>
-        <Col xs={12} md={12}>
-          <Image
-            src={`${BASE_URL}/storage/${data.hinh_anh}`}
-            alt={data.tieu_de}
-            className="news-detail-image"
-            fallback="https://via.placeholder.com/600x400?text=No+Image"
-            preview={false}
-          />
-        </Col>
-        <Col xs={12} md={12}>
-          <Title
-            level={2}
-            className="news-detail-title"
-            style={{ color: "white" }}
-          >
-            {data.tieu_de}
-          </Title>
-          <Divider className="news-detail-divider" />
-          <div
-            style={{ color: "white" }}
-            dangerouslySetInnerHTML={{ __html: data.noi_dung }}
-          />
-        </Col>
-      </Row>
+    <div className="tintucchitiet">
+      <div className="news-detail-wrapper">
+        <Row gutter={8}>
+          <Col xs={10} md={10}>
+            <div style={{ position: "sticky", top: "130px" }}>
+              <Image
+              src={`${BASE_URL}/storage/${data.hinh_anh}`}
+              alt={data.tieu_de}
+              className="news-detail-image"
+              fallback="https://via.placeholder.com/600x400?text=No+Image"
+              preview={false}
+            />
+            </div>
+          </Col>
+          <Col xs={14} md={14} style={{ paddingLeft: "20px" }}>
+            <h3 className="news-detail-title" style={{ color: "yellow" }}>
+              {data.tieu_de}
+            </h3>
+
+            <Divider className="news-detail-divider" />
+            <p dangerouslySetInnerHTML={{ __html: data.noi_dung }} className="news-detail-content"></p>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 };

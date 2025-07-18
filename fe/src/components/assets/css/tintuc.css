@@ -1,12 +1,13 @@
 .tintuc{
   width: 100%;
-  background-color: #1a0933;
+  background: linear-gradient(to right, #1e0033, #0c0b1f); /* Deep, cinematic background */
   padding: 15px 10%;
   box-sizing: border-box;
 }
 
 
 .news-wrapper {
+  background-color: transparent;
   padding: 40px 20px;
   margin: 0 auto;
   min-height: 85vh;

@@ -1,13 +1,36 @@
 import { useEffect, useState } from "react";
-import { Card, Form, Input, Button, message } from "antd";
-import "./Profile.css";
+import {
+  Card,
+  Form,
+  Input,
+  Button,
+  message,
+  Row,
+  Col,
+  Avatar,
+  Typography,
+  Space,
+} from "antd";
+import {
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  LockOutlined,
+  SafetyOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import axios from "axios";
+import "./Profile.css";
+
+const { Title, Text } = Typography;
 
 const ProfilePage = () => {
   const [form] = Form.useForm();
   const [passwordForm] = Form.useForm();
   const [user, setUser] = useState<any>(null);
   const [countdown, setCountdown] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+
   const handleSendCode = async () => {
     if (countdown > 0) return;
 
@@ -87,6 +110,7 @@ const ProfilePage = () => {
       setUser(updatedUser);
       form.resetFields();
       form.setFieldsValue(updatedUser);
+      setIsEditing(false);
 
       message.success("Cập nhật thành công!");
     } catch (error: any) {
@@ -119,125 +143,309 @@ const ProfilePage = () => {
     }
   };
 
-  if (!user) return <p>Đang tải thông tin người dùng...</p>;
+  if (!user) {
+    return (
+      <div className="profile-loading-container">
+        <Card className="profile-loading-card">
+          <div className="profile-loading-text">
+            Đang tải thông tin người dùng...
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="profile-container">
-      <h2 className="title">👤 THÔNG TIN KHÁCH HÀNG</h2>
+    <div className="profile-page-container">
+      <Row gutter={24}>
+        {/* Sidebar bên trái - Avatar và Email */}
+        <Col xs={24} md={8} lg={6}>
+          <Card className="profile-sidebar-card">
+            <div className="profile-sidebar-content">
+              <Avatar
+                size={120}
+                src={user.avatar || undefined}
+                icon={!user.avatar && <UserOutlined />}
+                className="profile-avatar"
+              />
+              <Title level={2} className="profile-username">
+                {user.ten || "Chưa cập nhật"}
+              </Title>
+              <Text type="secondary" className="profile-email">
+                {user.email}
+              </Text>
+            </div>
+          </Card>
+        </Col>
 
-      <Card className="profile-card" bodyStyle={{ padding: 24 }}>
-        <h3 className="section-title">Thông tin cá nhân</h3>
-        <Form layout="vertical" form={form} onFinish={handleUpdateInfo}>
-          <div className="form-row">
-            <Form.Item label="Họ và tên" name="ten" className="form-item">
-              <Input />
-            </Form.Item>
-          </div>
-          <div className="form-row">
-            <Form.Item
-              label="Số điện thoại"
-              name="so_dien_thoai"
-              className="form-item"
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item label="Email" name="email" className="form-item">
-              <Input />
-            </Form.Item>
-          </div>
+        {/* Nội dung chính bên phải */}
+        <Col xs={24} md={16} lg={18}>
+          {/* Thông tin cá nhân */}
+          <Card className="profile-content-card">
+            <div className="profile-card-header">
+              <Title level={3} className="profile-card-title">
+                <UserOutlined className="profile-form-label-icon" />
+                Thông tin cá nhân
+              </Title>
+              <Button
+                type="text"
+                icon={<EditOutlined />}
+                onClick={() => setIsEditing(!isEditing)}
+                className={`profile-edit-button ${
+                  isEditing ? "profile-edit-button-cancel" : ""
+                }`}
+              >
+                {isEditing ? "Hủy" : "Chỉnh sửa"}
+              </Button>
+            </div>
 
-          <Form.Item label="Mã xác nhận" required>
-            <Input.Group compact>
+            <Form layout="vertical" form={form} onFinish={handleUpdateInfo}>
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    label={
+                      <Text className="profile-form-label">
+                        <UserOutlined className="profile-form-label-icon" />
+                        Họ và tên
+                      </Text>
+                    }
+                    name="ten"
+                  >
+                    <Input
+                      disabled={!isEditing}
+                      className={
+                        isEditing
+                          ? "profile-input-enabled"
+                          : "profile-input-disabled"
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    label={
+                      <Text className="profile-form-label">
+                        <PhoneOutlined className="profile-form-label-icon" />
+                        Số điện thoại
+                      </Text>
+                    }
+                    name="so_dien_thoai"
+                  >
+                    <Input
+                      disabled={!isEditing}
+                      className={
+                        isEditing
+                          ? "profile-input-enabled"
+                          : "profile-input-disabled"
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+
               <Form.Item
-                name="ma_xac_nhan"
-                noStyle
+                label={
+                  <Text className="profile-form-label">
+                    <MailOutlined className="profile-form-label-icon" />
+                    Email
+                  </Text>
+                }
+                name="email"
+              >
+                <Input
+                  disabled={!isEditing}
+                  className={
+                    isEditing
+                      ? "profile-input-enabled"
+                      : "profile-input-disabled"
+                  }
+                />
+              </Form.Item>
+
+              {isEditing && (
+                <>
+                  <Form.Item
+                    label={
+                      <Text className="profile-form-label-success">
+                        <SafetyOutlined className="profile-form-label-icon" />
+                        Mã xác nhận
+                      </Text>
+                    }
+                    required
+                  >
+                    <Input.Group compact>
+                      <Form.Item
+                        name="ma_xac_nhan"
+                        noStyle
+                        rules={[
+                          {
+                            required: true,
+                            message: "Vui lòng nhập mã xác nhận!",
+                          },
+                        ]}
+                      >
+                        <Input
+                          className="profile-verification-input"
+                          placeholder="Nhập mã xác nhận"
+                        />
+                      </Form.Item>
+                      <Button
+                        className={`profile-verification-button ${
+                          countdown > 0
+                            ? "profile-verification-button-disabled"
+                            : "profile-verification-button-active"
+                        }`}
+                        onClick={handleSendCode}
+                        disabled={countdown > 0}
+                      >
+                        {countdown > 0 ? `${countdown}s` : "Gửi mã"}
+                      </Button>
+                    </Input.Group>
+                  </Form.Item>
+
+                  <Form.Item className="profile-form-actions">
+                    <Space>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="profile-button-primary"
+                      >
+                        Cập nhật thông tin
+                      </Button>
+                      <Button
+                        onClick={() => setIsEditing(false)}
+                        className="profile-button-secondary"
+                      >
+                        Hủy
+                      </Button>
+                    </Space>
+                  </Form.Item>
+                </>
+              )}
+            </Form>
+          </Card>
+
+          {/* Đổi mật khẩu */}
+          <Card className="profile-content-card">
+            <Title level={3} className="profile-card-title-password">
+              <LockOutlined className="profile-form-label-icon" />
+              Đổi mật khẩu
+            </Title>
+
+            <Form
+              layout="vertical"
+              form={passwordForm}
+              onFinish={handleChangePassword}
+            >
+              <Form.Item
+                label={
+                  <Text className="profile-form-label-danger">
+                    <LockOutlined className="profile-form-label-icon" />
+                    Mật khẩu cũ
+                  </Text>
+                }
+                name="mat_khau_cu"
                 rules={[
-                  { required: true, message: "Vui lòng nhập mã xác nhận!" },
+                  { required: true, message: "Vui lòng nhập mật khẩu cũ!" },
+                  { min: 8, message: "Mật khẩu tối thiểu 8 ký tự!" },
                 ]}
               >
-                <Input style={{ width: "70%" }} />
+                <Input.Password
+                  className="profile-input-danger"
+                  placeholder="Nhập mật khẩu cũ"
+                />
               </Form.Item>
-              <Button
-                style={{ width: "30%" }}
-                onClick={handleSendCode}
-                disabled={countdown > 0}
-              >
-                {countdown > 0 ? `Gửi lại (${countdown}s)` : "Gửi mã"}
-              </Button>
-            </Input.Group>
-          </Form.Item>
 
-          <Button type="primary" htmlType="submit" className="save-btn">
-            LƯU THÔNG TIN
-          </Button>
-        </Form>
-      </Card>
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    label={
+                      <Text className="profile-form-label-danger">
+                        <LockOutlined className="profile-form-label-icon" />
+                        Mật khẩu mới
+                      </Text>
+                    }
+                    name="mat_khau_moi"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập mật khẩu mới!",
+                      },
+                      { min: 8, message: "Mật khẩu tối thiểu 8 ký tự!" },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (
+                            !value ||
+                            getFieldValue("mat_khau_cu") !== value
+                          ) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error(
+                              "Mật khẩu mới không được trùng mật khẩu cũ!"
+                            )
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password
+                      className="profile-input-danger"
+                      placeholder="Nhập mật khẩu mới"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    label={
+                      <Text className="profile-form-label-danger">
+                        <SafetyOutlined className="profile-form-label-icon" />
+                        Xác thực mật khẩu
+                      </Text>
+                    }
+                    name="xac_thuc_mat_khau"
+                    dependencies={["mat_khau_moi"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng xác thực lại mật khẩu!",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (
+                            !value ||
+                            getFieldValue("mat_khau_moi") === value
+                          ) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error("Xác thực mật khẩu không khớp!")
+                          );
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password
+                      className="profile-input-danger"
+                      placeholder="Nhập lại mật khẩu mới"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
 
-      <Card className="profile-card" bodyStyle={{ padding: 24 }}>
-        <h3 className="section-title">Đổi mật khẩu</h3>
-        <Form
-          layout="vertical"
-          form={passwordForm}
-          onFinish={handleChangePassword}
-        >
-          <Form.Item
-            label="Mật khẩu cũ"
-            name="mat_khau_cu"
-            rules={[
-              { required: true, message: "Vui lòng nhập mật khẩu cũ!" },
-              { min: 8, message: "Mật khẩu tối thiểu 8 ký tự!" },
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item
-            label="Mật khẩu mới"
-            name="mat_khau_moi"
-            rules={[
-              { required: true, message: "Vui lòng nhập mật khẩu mới!" },
-              { min: 8, message: "Mật khẩu tối thiểu 8 ký tự!" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("mat_khau_cu") !== value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Mật khẩu mới không được trùng mật khẩu cũ!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item
-            label="Xác thực mật khẩu"
-            name="xac_thuc_mat_khau"
-            dependencies={["mat_khau_moi"]}
-            rules={[
-              { required: true, message: "Vui lòng xác thực lại mật khẩu!" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("mat_khau_moi") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Xác thực mật khẩu không khớp!")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Button type="primary" htmlType="submit" className="save-btn">
-            ĐỔI MẬT KHẨU
-          </Button>
-        </Form>
-      </Card>
+              <Form.Item className="profile-password-form-actions">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="profile-button-danger"
+                >
+                  Đổi mật khẩu
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };
