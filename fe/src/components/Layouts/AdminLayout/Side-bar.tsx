@@ -26,6 +26,7 @@ import {
   GoldOutlined,
   PaperClipOutlined,
   DeleteOutlined,
+  StopOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -191,9 +192,22 @@ const SideBar: React.FC<SideBarProps> = ({
         </Menu.Item>
       </Menu.SubMenu>
 
-      <Menu.Item key="/admin/banner" icon={<FileTextOutlined />}>
-        <Link to="/admin/banner">Banner</Link>
-      </Menu.Item>
+      <Menu.SubMenu
+        key="banner"
+        icon={<FileTextOutlined />}
+        title="Quản lý Banner"
+      >
+        <Menu.Item key="" icon={<UnorderedListOutlined />}>
+          <Link to="/admin/banner">Danh sách Banner</Link>
+        </Menu.Item>
+
+        <Menu.Item key="" icon={<StopOutlined />}>
+          <Link to="/admin/banner/het-han">Banner hết hạn</Link>
+        </Menu.Item>
+        <Menu.Item key="" icon={<DeleteOutlined />}>
+          <Link to="/admin/banner/trash">Thùng rác</Link>
+        </Menu.Item>
+      </Menu.SubMenu>
     </Menu>
   );
 

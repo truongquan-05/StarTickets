@@ -128,16 +128,24 @@ Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan'])
 Route::apiResource('quyen_truy_cap', AddQuyenController::class);
 Route::get('get-quyen/{id}', [AddQuyenController::class, 'getQuyenHan']);
 Route::prefix('banners')->group(function () {
-    Route::get('/', [BannerController::class, 'index']); // Lấy danh sách banner (active, expired, deleted)
-    Route::post('/', [BannerController::class, 'store']); // Tạo banner mới
-    Route::get('/{id}', [BannerController::class, 'show']); // Xem chi tiết banner
-    Route::put('/{id}', [BannerController::class, 'update']); // Cập nhật banner
-    Route::delete('/{id}', [BannerController::class, 'destroy']); // Xóa mềm banner
-    Route::post('/{id}/restore', [BannerController::class, 'restore']); // Khôi phục banner
-    Route::delete('/{id}/force', [BannerController::class, 'forceDelete']); // Xóa cứng banner
+    Route::get('/', [BannerController::class, 'index']);
+    Route::post('/', [BannerController::class, 'store']);
+    Route::get('/{id}', [BannerController::class, 'show']);
+    Route::put('/{id}', [BannerController::class, 'update']);
+    Route::delete('/{id}', [BannerController::class, 'destroy']);
+    Route::post('/{id}/restore', [BannerController::class, 'restore']);
+    Route::PATCH('/{id}/active', [BannerController::class, 'toggleActive']);
+    Route::delete('/{id}/force', [BannerController::class, 'forceDelete']);
+    Route::get('list/trash', [BannerController::class, 'trashed']);
+    Route::get('list/het_han', [BannerController::class, 'hetHan']);
 });
+
 Route::get('handler-qr/{id}', [QRController::class, 'show']);
 Route::post('handler-qr/{id}', [QRController::class, 'update']);
+
+
+
+
 
 //-------------------CLIENT-------------------//
 

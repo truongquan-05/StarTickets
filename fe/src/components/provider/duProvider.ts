@@ -149,6 +149,10 @@ export const getListBanners = async () => {
   const { data } = await axiosClient.get("/banners");
   return data;
 };
+export const getListBannersHetHan = async () => {
+  const { data } = await axiosClient.get("/banners/list/het_han");
+  return data;
+};
 export const createBanner = async (values: FormData) => {
   const { data } = await axiosClient.post("/banners", values);
   return data;
@@ -167,7 +171,7 @@ export const updateBanner = async (id: number, values: FormData) => {
 
 // Toggle hoạt động
 export const toggleBanner = async (id: number) => {
-  const { data } = await axiosClient.patch(`/banners/${id}/toggle`);
+  const { data } = await axiosClient.patch(`/banners/${id}/active`);
   return data;
 };
 
@@ -177,7 +181,7 @@ export const deleteBanner = async (id: number) => {
   return data;
 };
 export const getListTrashBanners = async () => {
-  const { data } = await axiosClient.get("/banners/trash");
+  const { data } = await axiosClient.get("/banners/list/trash");
   return { data };
 };
 

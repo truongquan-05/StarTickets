@@ -1,14 +1,14 @@
 // pages/Admin/Banner/BannerList.tsx
 import { useEffect, useState } from "react";
 import { Table, Button, Switch, message, Image, Card, Space, Popconfirm,  Typography, Flex } from "antd";
-import { getListBanners, toggleBanner, deleteBanner } from "../../../provider/duProvider";
+import {  toggleBanner, deleteBanner, getListBannersHetHan } from "../../../provider/duProvider";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
 
-const BannerList = () => {
+const BannerHetHan = () => {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<Record<number, boolean>>({});
@@ -17,8 +17,9 @@ const BannerList = () => {
   const fetchBanners = async () => {
     try {
       setLoading(true);
-      const res = await getListBanners();
-      setBanners(res.data || []);
+      const res = await getListBannersHetHan();
+      setBanners(res || []);
+      console.log(res);
     } catch (err) {
       message.error("Không thể tải danh sách banner");
     } finally {
@@ -159,19 +160,7 @@ const BannerList = () => {
 
   return (
     <Card
-      title={
-        <Flex justify="space-between" align="center">
-          <Title level={4} style={{ margin: 0 }}>Quản lý Banner</Title>
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />} 
-            onClick={() => navigate("/admin/banner/create")}
-            style={{ borderRadius: 4 }}
-          >
-            Thêm Banner
-          </Button>
-        </Flex>
-      }
+      
       bordered={false}
       style={{ boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.03)', borderRadius: 8 }}
       bodyStyle={{ padding: 0 }}
@@ -189,23 +178,10 @@ const BannerList = () => {
         }}
         style={{ borderRadius: 8 }}
         scroll={{ x: 1200 }}
-        locale={{
-          emptyText: (
-            <Space direction="vertical" size={16}>
-              <Text>Không có banner nào</Text>
-              <Button 
-                type="primary" 
-                icon={<PlusOutlined />} 
-                onClick={() => navigate("/admin/banner/create")}
-              >
-                Thêm banner đầu tiên
-              </Button>
-            </Space>
-          ),
-        }}
+      
       />
     </Card>
   );
 };
 
-export default BannerList;
+export default BannerHetHan;
