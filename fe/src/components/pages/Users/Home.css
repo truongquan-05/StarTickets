@@ -105,7 +105,6 @@
 .swiper-button-next,
 .swiper-button-prev {
   font-weight: 600;
-  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;

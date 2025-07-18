@@ -171,25 +171,34 @@ const Register = () => {
                           prefix={<SafetyCertificateOutlined />}
                           placeholder="Nhập mã xác nhận"
                           size="large"
+                          style={{ borderRadius: "1px" }}
                         />
                       </Form.Item>
                     </Col>
                     <Col span={8}>
-                      <Button
-                        block
-                        size="large"
-                        onClick={handleSendCode}
-                        disabled={countdown > 0}
-                        style={{
-                          backgroundColor:
-                            countdown > 0 ? "#f5f5f5" : "#1890ff",
-                          color: countdown > 0 ? "#999" : "#fff",
-                          borderColor: countdown > 0 ? "#d9d9d9" : "#1890ff",
-                          opacity: 1,
-                        }}
-                      >
-                        {countdown > 0 ? `Gửi lại (${countdown}s)` : "Gửi mã"}
-                      </Button>
+                      <button
+  onClick={handleSendCode}
+  disabled={countdown > 0}
+  style={{
+    display: "block",
+    width: "100%",
+    height: "40px",
+    lineHeight: "40px",
+    fontSize: "14px",
+    backgroundColor: countdown > 0 ? "#f5f5f5" : "#1a0933",
+    color: countdown > 0 ? "#999" : "#fff",
+    border: `1px solid ${countdown > 0 ? "#d9d9d9" : "#333"}`,
+    borderRadius: "1px",
+    cursor: countdown > 0 ? "not-allowed" : "pointer",
+    opacity: 1,
+    transition: "all 0.3s",
+    fontFamily: "Anton, sans-serif",
+    fontWeight: 100,
+  }}
+>
+  {countdown > 0 ? `GỬI LẠI (${countdown}s)` : "GỬI MÃ"}
+</button>
+
                     </Col>
                   </Row>
                 </Form.Item>
