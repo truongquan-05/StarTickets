@@ -36,8 +36,7 @@ use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
-
-
+use App\Http\Controllers\Client\QuenMatKhau;
 
 //-------------------ADMIN-------------------//
 
@@ -147,7 +146,9 @@ Route::post('handler-qr/{id}', [QRController::class, 'update']);
 Route::get('thong_tin_admin/{id}', [AdminController::class, 'show']);
 Route::put('thong_tin_admin/{id}', [AdminController::class, 'update']);
 
-
+Route::post('forget-password', [QuenMatKhau::class, 'store']);
+Route::post('xac-nhan-ma', [QuenMatKhau::class, 'checkMaXacNhan']);
+Route::post('reset-password', [QuenMatKhau::class, 'update']);
 
 
 
