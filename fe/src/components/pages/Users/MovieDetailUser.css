@@ -16,6 +16,7 @@
 }
 
 .movie-poster {
+  object-fit: cover;
   border: 1px solid #ccc; /* Subtle border for definition */
   width: 500px; /* Slightly larger poster for prominence */
   border-radius: 4px; /* Smooth, modern corners */

@@ -406,13 +406,3 @@
   color: #6c5ce7 !important;
 }
 
-/* Row spacing */
-.ant-row {
-  margin-left: -12px;
-  margin-right: -12px;
-}
-
-.ant-col {
-  padding-left: 12px;
-  padding-right: 12px;
-}

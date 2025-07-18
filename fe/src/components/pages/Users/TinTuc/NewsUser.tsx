@@ -43,7 +43,7 @@ const NewsUser: React.FC = () => {
   return (
     <div className="tintuc">
       <div className="news-wrapper">
-        <h2 className="news-title">Tin tức mới từ StarTicket</h2>
+        <h2 className="news-title">TIN TỨC MỚI TỪ STARTICKETS</h2>
         <Row gutter={[24, 24]}>
           {newsList.map((item) => (
             <Col xs={24} sm={24} md={12} lg={12} key={item.id}>
@@ -57,8 +57,8 @@ const NewsUser: React.FC = () => {
                     height={280}
                     style={{
                       objectFit: "cover",
-                      borderTopLeftRadius: 6,
-                      borderTopRightRadius: 6,
+                      borderTopLeftRadius: 4,
+                      borderTopRightRadius: 4,
                     }}
                     fallback="https://via.placeholder.com/400x220?text=No+Image"
                     preview={false}

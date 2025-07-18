@@ -15,6 +15,7 @@ import {
 } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./ThanhToan.css"; // Đảm bảo đường dẫn đúng
+import bgImage from "../../../../assets/live-cover2.webp";
 import {
   useCheckDiem,
   useCreateThanhToanMoMo,
@@ -30,7 +31,7 @@ import { useListVouchers } from "../../../hook/thinhHook";
 import { IVoucher } from "../../Admin/interface/vouchers";
 import { DonDoAn, Food } from "../../../types/Uses";
 import { useBackDelete } from "../../../hook/useConfirmBack";
-import { TagsOutlined } from "@ant-design/icons";
+import { EyeInvisibleTwoTone, TagsOutlined } from "@ant-design/icons";
 // IMPORT CÁC INTERFACE CỦA BẠN TẠI ĐÂY
 
 const { Title, Text } = Typography;
@@ -253,11 +254,76 @@ const ThanhToan: React.FC = () => {
 
   if (!bookingData) {
     return (
-      <div style={{ textAlign: "center", padding: 50 }}>
-        <Title level={3}>Không tìm thấy thông tin đặt vé</Title>
-        <Button type="primary" onClick={() => navigate("/")}>
-          Quay về trang chủ
-        </Button>
+      <div className="boxloithanhtoan" style={{ textAlign: "center" }}>
+        <div
+          style={{
+            position: "relative",
+            textAlign: "center",
+            minHeight: "80vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            background: `url(${bgImage}) no-repeat center center`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            overflow: "hidden",
+          }}
+        >
+          {/* Lớp phủ mờ đen */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              zIndex: 0,
+            }}
+          />
+
+          {/* Giữ nguyên phần này */}
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <EyeInvisibleTwoTone
+              twoToneColor="yellow"
+              style={{ fontSize: "150px" }}
+            />
+
+            <h3
+              style={{
+                color: "white",
+                fontWeight: 100,
+                fontFamily: "Anton, sans-serif",
+                fontSize: "34px",
+              }}
+            >
+              Không tìm thấy thông tin đặt vé
+            </h3>
+            <p
+              style={{
+                fontFamily: '"Poppins", sans-serif',
+                color: "white",
+                fontSize: "1.1rem",
+                lineHeight: "1.6",
+                maxWidth: "500px",
+                margin: "0 auto",
+              }}
+            >
+              Vui lòng kiểm tra hoặc tiến hành đặt lại để nhận vé và thông tin
+              chi tiết.
+            </p>
+            <br />
+            <button
+              style={{ padding: "4px 24px", fontSize: "16px" }}
+              className="primary-button"
+              onClick={() => navigate("/")}
+            >
+              <span>Quay lại trang chủ</span>
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -674,7 +740,7 @@ const ThanhToan: React.FC = () => {
                           fontFamily: "'Poppins', sans-serif",
                         }}
                       >
-                        Tên Rạp
+                        Tên rạp
                       </Text>
                       <br />
                       <Text

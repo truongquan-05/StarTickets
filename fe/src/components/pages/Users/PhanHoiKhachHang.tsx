@@ -68,7 +68,7 @@ const ContactForm = () => {
     color: "white",
     marginBottom: "6px",
     display: "block",
-    fontSize: "14px",
+    fontSize: "16px",
   };
 
   const errorStyle = {
