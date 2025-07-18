@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Button, Spin, Modal } from "antd";
+import {  Spin, Modal } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import featuredImage from "../../../assets/image.png";
@@ -216,10 +216,10 @@ const Home = () => {
           <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
         </Link>
         <p style={{ fontSize: 12, color: "#888" }}>
-          <TagOutlined style={{color: "yellow"}}/> : {parseGenres(movie)}
+          <TagOutlined style={{ color: "yellow" }} /> : {parseGenres(movie)}
         </p>
         <p style={{ fontSize: 12, color: "#888" }}>
-          <ClockCircleOutlined style={{color: "yellow"}}/> :{" "}
+          <ClockCircleOutlined style={{ color: "yellow" }} /> :{" "}
           {movie.thoi_luong ? `${movie.thoi_luong} phút` : "Chưa cập nhật"}
         </p>
         <div className="movie-buttons">
@@ -270,16 +270,16 @@ const Home = () => {
           <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
         </Link>
         <p style={{ fontSize: 12, color: "#888" }}>
-          <CalendarOutlined style={{color: "yellow"}}/> :{" "}
+          <CalendarOutlined style={{ color: "yellow" }} /> :{" "}
           {movie.ngay_cong_chieu
             ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
             : "Chưa cập nhật"}
         </p>
         <p style={{ fontSize: 12, color: "#888" }}>
-          <TagOutlined style={{color: "yellow"}}/> : {parseGenres(movie)}
+          <TagOutlined style={{ color: "yellow" }} /> : {parseGenres(movie)}
         </p>
         <p style={{ fontSize: 12, color: "#888" }}>
-          <ClockCircleOutlined style={{color: "yellow"}}/> :{" "}
+          <ClockCircleOutlined style={{ color: "yellow" }} /> :{" "}
           {movie.thoi_luong ? `${movie.thoi_luong} phút` : "Chưa cập nhật"}
         </p>
         <div className="movie-buttons">
@@ -382,7 +382,18 @@ const Home = () => {
   // Hàm render nội dung theo tab
   const renderTabContent = () => {
     if (loading) {
-      return <Spin />;
+      return (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center" /* Căn giữa theo chiều ngang */,
+            alignItems: "center" /* Căn giữa theo chiều dọc */,
+          }}
+        >
+          <Spin size="large" />{" "}
+          {/* Bạn có thể điều chỉnh kích thước của Spin */}
+        </div>
+      );
     }
 
     switch (activeTab) {

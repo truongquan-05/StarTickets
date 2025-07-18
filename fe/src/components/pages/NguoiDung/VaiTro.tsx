@@ -75,7 +75,7 @@ const VaiTro = () => {
             cancelText="Huỷ"
             onConfirm={() => {
               deleteCategoryChair(record.id);
-              message.success("Đã xoá thể loại: " + record.ten_vai_tro);
+              // message.success("Đã xoá thể loại: " + record.ten_vai_tro);
             }}
           >
             <Button

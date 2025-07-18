@@ -191,6 +191,10 @@ export const useDeleteVaiTro = ({ resource = "vai_tro" }: Props) => {
     mutationFn: (id?: string | number) => getDeleteVaiTro({ resource, id }),
     onSuccess: () => {
       queryclient.invalidateQueries({ queryKey: [resource] });
+      message.success("Xoá thành công");
+    },
+    onError: (err: any) => {
+      message.error(err.response.data.message || "Có lỗi xảy ra");
     },
   });
 };
@@ -217,8 +221,8 @@ export const useUpdateVaiTro = ({ resource = "vai_tro" }) => {
       message.success("Cập nhật thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
     },
-    onError: () => {
-      message.error("Cập nhật thất bại");
+    onError: (err: any) => {
+      message.error(err.response.data.message || "Có lỗi");
     },
   });
 };
@@ -725,7 +729,6 @@ export const useDestroyVoucher = ({ resource = "voucher" }: Props) => {
   });
 };
 
-
 export const useListLichSuDonHangChiTiet = ({
   resource = "lich-su-ve",
   id,
@@ -761,7 +764,13 @@ export const useCheckDiem = ({ resource = "diem_thanh_vien" }: Props) => {
   });
 };
 
-export const useGetTongTien = ({ resource = "dat_ve", id }: { resource?: string; id: number }) => {
+export const useGetTongTien = ({
+  resource = "dat_ve",
+  id,
+}: {
+  resource?: string;
+  id: number;
+}) => {
   return useQuery({
     queryKey: [resource, id],
     queryFn: () => getListTongTien({ resource, id }),
@@ -776,7 +785,13 @@ export const useListQuyen = ({ resource = "quyen_truy_cap" }) => {
   });
 };
 
-export const useShowQuyen = ({ resource = "quyen_truy_cap", id }: { resource?: string; id: number }) => {
+export const useShowQuyen = ({
+  resource = "quyen_truy_cap",
+  id,
+}: {
+  resource?: string;
+  id: number;
+}) => {
   return useQuery({
     queryKey: [resource, id],
     queryFn: () => getShowQuyen({ resource, id }),
@@ -809,8 +824,13 @@ export const useAddQuyen = ({ resource = "quyen_truy_cap" }: Props) => {
   });
 };
 
-
-export const useShowQuyenHanTheoID = ({ resource = "get-quyen", id }: { resource?: string; id: number }) => {
+export const useShowQuyenHanTheoID = ({
+  resource = "get-quyen",
+  id,
+}: {
+  resource?: string;
+  id: number;
+}) => {
   return useQuery({
     queryKey: [resource, id],
     queryFn: () => getQuyenHanId({ resource, id }),

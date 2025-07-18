@@ -59,7 +59,7 @@ function convertYouTubeUrlToEmbed(url: string) {
 }
 
 const MovieDetailUser = () => {
-  const TIMEOUT_MINUTES = 500;
+  const TIMEOUT_MINUTES = 5;
   const location = useLocation();
   const previousPathnameRef = useRef<string>(location.pathname);
   const { id } = useParams();
@@ -75,7 +75,7 @@ const MovieDetailUser = () => {
     null
   );
   const [selectedFoods, setSelectedFoods] = useState<SelectedFoodItem[]>([]);
-  
+
   const { mutate: updateCheckGhe } = useUpdateCheckGhe({
     resource: "check_ghe",
   });
@@ -400,7 +400,18 @@ const MovieDetailUser = () => {
     loadingCheckGhe ||
     isLoadingGhe
   )
-    return <Spin />;
+    return (
+      <div
+        style={{
+          display: "flex",
+          height: "40vh",
+          justifyContent: "center"  ,
+          alignItems: "center"  ,
+        }}
+      >
+        <Spin size="large" /> {/* Bạn có thể điều chỉnh kích thước của Spin */}
+      </div>
+    );
   if (!movie) return <p>Không tìm thấy phim</p>;
 
   // --- Logic xử lý thanh toán ---
@@ -823,7 +834,10 @@ const MovieDetailUser = () => {
   return (
     <div className="movie-detail-wrapper">
       <div className="movie-detail-container">
-        <div className="movie-poster" style={{ position: "sticky", top: "130px" }}>
+        <div
+          className="movie-poster"
+          style={{ position: "sticky", top: "130px" }}
+        >
           <Image
             src={`${BASE_URL}/storage/${movie.anh_poster}`}
             alt={movie.ten_phim}
@@ -960,7 +974,7 @@ const MovieDetailUser = () => {
           </h3>
 
           {/* Màn hình cong */}
-            <div style={{ position: "relative", width: "100%" }}>
+          <div style={{ position: "relative", width: "100%" }}>
             <DuongCongManHinh />
           </div>
 

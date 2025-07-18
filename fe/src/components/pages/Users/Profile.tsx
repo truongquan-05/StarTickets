@@ -164,16 +164,13 @@ const ProfilePage = () => {
             <div className="profile-sidebar-content">
               <Avatar
                 size={120}
-                src={user.avatar || undefined}
+                src={user.anh_dai_dien || undefined}
                 icon={!user.avatar && <UserOutlined />}
                 className="profile-avatar"
               />
               <Title level={2} className="profile-username">
                 {user.ten || "Chưa cập nhật"}
               </Title>
-              <Text type="secondary" className="profile-email">
-                {user.email}
-              </Text>
             </div>
           </Card>
         </Col>
@@ -273,7 +270,7 @@ const ProfilePage = () => {
                     }
                     required
                   >
-                    <Input.Group compact>
+                    <Input.Group compact style={{ display: "flex" }}>
                       <Form.Item
                         name="ma_xac_nhan"
                         noStyle
@@ -435,7 +432,7 @@ const ProfilePage = () => {
 
               <Form.Item className="profile-password-form-actions">
                 <Button
-                  type="primary"
+                  type="danger"
                   htmlType="submit"
                   className="profile-button-danger"
                 >

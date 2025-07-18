@@ -12,10 +12,9 @@ class MaGiamGiaController extends Controller
 {
   public function __construct()
     {
-        $this->middleware('IsAdmin');
-        $this->middleware('permission:MaGiamGia-read')->only(['index', 'show']);
-        $this->middleware('permission:MaGiamGia-create')->only(['store']);
-        $this->middleware('permission:MaGiamGia-update')->only(['update']);
+        $this->middleware(['IsAdmin','permission:MaGiamGia-read'])->only(['show']);
+        $this->middleware(['IsAdmin','permission:MaGiamGia-create'])->only(['store']);
+        $this->middleware(['IsAdmin','permission:MaGiamGia-update'])->only(['update']);
     }
 
 

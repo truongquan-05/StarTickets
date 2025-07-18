@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Client;
 use App\Models\DoAn;
 use App\Models\DatVe;
 use App\Models\DonDoAn;
+use App\Jobs\XoaDonHang;
+use App\Mail\MaQRVeMail;
 use App\Models\CheckGhe;
 use App\Models\MaGiamGia;
 use App\Models\ThanhToan;
 use Illuminate\Http\Request;
 use App\Models\DiemThanhVien;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Jobs\XoaDonHang;
+use Illuminate\Support\Facades\Mail;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CheckOutController extends Controller
@@ -212,7 +215,7 @@ class CheckOutController extends Controller
 
                         //TẠO QR MÃ GIAO DỊCH
                         $qrSvg = QrCode::format('svg')->size(250)->generate($extraData['ma_giao_dich']);
-                        $data['qr_code'] = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
+                        $extraData['qr_code'] = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
                         $thanhToan = ThanhToan::create($extraData);
                         $DatVe = DatVe::find($thanhToan->dat_ve_id);
                         $diemCong = $DatVe->tong_tien * 0.05;
@@ -228,6 +231,8 @@ class CheckOutController extends Controller
                                 'diem' => $diemCong
                             ]);
                         }
+                        Mail::to($thanhToan->email)->send(new MaQRVeMail($extraData['ma_giao_dich']));
+
 
                         // Redirect về trang history với dữ liệu truyền qua query string
                         $queryParams = http_build_query([
@@ -236,6 +241,7 @@ class CheckOutController extends Controller
                             'nguoi_dung_id' => $thanhToan->nguoi_dung_id,
                             'ma_giao_dich' => $thanhToan->ma_giao_dich,
                         ]);
+
 
                         return redirect("http://localhost:5173/check?$queryParams");
                     } else {
@@ -285,9 +291,8 @@ class CheckOutController extends Controller
 
                     $thanhToan = ThanhToan::create($data);
                     $DatVe = DatVe::find($thanhToan->dat_ve_id);
-
+                    Mail::to($thanhToan->email)->send(new MaQRVeMail($data['ma_giao_dich']));
                     $diemCong = $DatVe->tong_tien * 0.05;
-
                     $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
                     if ($DiemThanhVien) {
@@ -340,9 +345,14 @@ class CheckOutController extends Controller
         } catch (\Throwable $th) {
             $dataVeId = $data['dat_ve_id'];
             $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
+            if (!$dataVe) {
+                return response()->json([
+                    'message' => 'Đơn vé không tồn tại',
+                ], 404);
+            }
             $dat_ve_chi_tiet = $dataVe->DatVeChiTiet ?? null;
             $don_do_an = $dataVe->DonDoAn ?? null;
-            if ($dat_ve_chi_tiet->isNotEmpty()) {
+            if ($dat_ve_chi_tiet) {
                 $dat_ve_chi_tiet->each(function ($item) use ($dataVe) {
                     $checkGhe = CheckGhe::where('ghe_id', $item->ghe_id)
                         ->where('lich_chieu_id', $dataVe->lich_chieu_id)
@@ -352,7 +362,7 @@ class CheckOutController extends Controller
                     }
                 });
             }
-            if ($don_do_an->isNotEmpty()) {
+            if ($don_do_an) {
                 $don_do_an->each(function ($item) {
                     $doAn = DoAn::find($item->do_an_id);
                     if ($doAn) {
@@ -362,9 +372,8 @@ class CheckOutController extends Controller
             }
 
             $dataVe->delete();
-            return response()->json([
-                'data' => $data,
-            ], 422);
+   
+            return redirect("http://localhost:5173/check?error=1");
         }
     }
 

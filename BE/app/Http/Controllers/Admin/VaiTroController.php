@@ -46,7 +46,7 @@ class VaiTroController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ten_vai_tro' => 'required|max:50',
+            'ten_vai_tro' => 'required|max:50|unique:vai_tro,ten_vai_tro',
             'mo_ta' => 'nullable|max:255'
         ]);
 
@@ -104,6 +104,12 @@ class VaiTroController extends Controller
         }
 
         $vaiTro = VaiTro::find($id);
+        if ($id == 1 || $id == 2 || $id == 3 || $id == 4 || $id == 99) {
+            return response()->json([
+                'message' => 'Không thể sửa vai trò này',
+
+            ], 422);
+        }
 
         if (!$vaiTro) {
             return response()->json([
@@ -135,7 +141,7 @@ class VaiTroController extends Controller
             return response()->json([
                 'message' => 'Không thể xóa vai trò này',
 
-            ]);
+            ], 422);
         }
         $data->delete();
         return response()->json([

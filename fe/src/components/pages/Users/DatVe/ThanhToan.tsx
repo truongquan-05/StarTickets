@@ -94,7 +94,7 @@ interface RapInfo {
 
 const ThanhToan: React.FC = () => {
   const [step, setStep] = useState<1 | 2>(1);
-  const [countdown, setCountdown] = useState(30000); // 5 phút = 300 giây
+  const [countdown, setCountdown] = useState(300); // 5 phút = 300 giây
   const [lichChieuInfo, setLichChieuInfo] = useState<LichChieuInfo | null>(
     null
   );
@@ -120,7 +120,7 @@ const ThanhToan: React.FC = () => {
   const valueWhenFocused = useRef("");
 
   const { data: rapList, isLoading: loadingRap } = useListCinemas({
-    resource: "rap",
+    resource: "client/rap",
   });
   const tongTienGoc = Number(bookingData?.tong_tien ?? 0);
   const [tongTienSauVoucher, setTongTienSauVoucher] = useState<number | null>(

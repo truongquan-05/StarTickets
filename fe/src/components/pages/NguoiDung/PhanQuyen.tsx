@@ -147,12 +147,18 @@ const PhanQuyen = () => {
         {isLoadingQuyen ? (
           <p>Đang tải...</p>
         ) : quyenData?.data?.quyen_truy_cap?.length > 0 ? (
-          <ul style={{ paddingLeft: 20, }}>
+          <ul style={{ paddingLeft: 20 }}>
             {quyenData.data.quyen_truy_cap.map((q: any, index: number) => (
-              
-              <li key={index} style={{ marginBottom: 8,display:"flex",justifyContent:"space-between" }}>
+              <li
+                key={index}
+                style={{
+                  marginBottom: 8,
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 <div className="motaquyen">
-                <b>{q.quyen}</b>: {q.mo_ta}{" "}
+                  <b>{q.quyen}</b>: {q.mo_ta}{" "}
                 </div>
                 <Popconfirm
                   title="Bạn có chắc chắn muốn xóa quyền này?"
@@ -160,7 +166,7 @@ const PhanQuyen = () => {
                   cancelText="Hủy"
                   onConfirm={() => DeleteQuyen(q.pivot.id)}
                 >
-                  <Button icon={<DeleteFilled />} size="small" type="text"/>
+                  <Button icon={<DeleteFilled />} size="small" type="text" />
                 </Popconfirm>
               </li>
             ))}
@@ -197,6 +203,13 @@ const PhanQuyen = () => {
               value={selectedQuyenIds}
               onChange={(values) => setSelectedQuyenIds(values)}
               allowClear
+              filterOption={(input, option) => {
+                const label = option?.label;
+                if (typeof label === "string") {
+                  return label.toLowerCase().includes(input.toLowerCase());
+                }
+                return false;
+              }}
             >
               {getQuyenHanData.map((item: any) => (
                 <Option key={item.id} value={item.id} label={item.quyen}>

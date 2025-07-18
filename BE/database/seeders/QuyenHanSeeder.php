@@ -17,7 +17,7 @@ class QuyenHanSeeder extends Seeder
             ['quyen' => 'Phim-create', 'mo_ta' => 'Thêm phim'],
             ['quyen' => 'Phim-update', 'mo_ta' => 'Sửa phim'],
             ['quyen' => 'Phim-delete', 'mo_ta' => 'Xóa phim'],
-            ['quyen' => 'Phim-read', 'mo_ta' => 'Xóa phim'],
+            ['quyen' => 'Phim-read', 'mo_ta' => 'Xem phim'],
 
             // Quản lý rạp
             ['quyen' => 'Rap-create', 'mo_ta' => 'Thêm rạp'],
