@@ -161,7 +161,7 @@ const ProfilePage = () => {
         {/* Sidebar bên trái - Avatar và Email */}
         <Col xs={24} md={8} lg={6}>
           <Card className="profile-sidebar-card">
-            <div className="profile-sidebar-content">
+            <div className="profile-sidebar-content" style={{ textAlign: "center" }}>
               <Avatar
                 size={120}
                 src={user.anh_dai_dien || undefined}

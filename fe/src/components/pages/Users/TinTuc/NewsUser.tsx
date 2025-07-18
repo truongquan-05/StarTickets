@@ -14,8 +14,15 @@ const NewsUser: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="news-wrapper">
-        <Spin size="large" tip="Đang tải tin tức..." />
+      <div
+        style={{
+          display: "flex",
+          height: "40vh",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spin size="large" /> {/* Bạn có thể điều chỉnh kích thước của Spin */}
       </div>
     );
   }
@@ -52,7 +59,6 @@ const NewsUser: React.FC = () => {
                 cover={
                   <Image
                     src={`${BASE_URL}/storage/${item.hinh_anh}`}
-                    
                     alt={item.tieu_de}
                     height={280}
                     style={{
