@@ -6,7 +6,7 @@
 .boxDanhGia {
   width: 100%;
   background-color: transparent;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Alata', sans-serif;
   box-sizing: border-box;
   margin: 100px 0;
 }
@@ -83,16 +83,18 @@
   width: 100%;
 }
 
-.form-label {
+.form-label-review {
   color: #ffffff;
   font-weight: 500;
   margin-bottom: 8px;
+  font-family: 'Alata', sans-serif;
 }
 
 .form-label-secondary {
   color: #f0f0f0;
   font-weight: 500;
   margin-bottom: 8px;
+  font-family: 'Alata', sans-serif;
 }
 
 /* Rating stars */
@@ -237,7 +239,8 @@
 }
 .section-titlee {
   color: #fff !important;
-  font-weight: 600;
+  font-weight: 100 !important;
+  font-family: 'Alata', sans-serif;
 }
 
 /* User review cards */
@@ -304,9 +307,10 @@
   gap: 12px;
 }
 
-.edit-form-title {
+.edit-form-title-review {
   color: black !important;
-  font-weight: 600;
+  font-weight: 100;
+  font-family: 'Alata', sans-serif;
 }
 
 /* Divider */

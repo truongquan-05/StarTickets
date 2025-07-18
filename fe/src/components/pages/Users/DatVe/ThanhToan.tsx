@@ -303,7 +303,7 @@ const ThanhToan: React.FC = () => {
             </h3>
             <p
               style={{
-                fontFamily: '"Poppins", sans-serif',
+                fontFamily: "Alata, sans-serif",
                 color: "white",
                 fontSize: "1.1rem",
                 lineHeight: "1.6",
@@ -387,7 +387,7 @@ const ThanhToan: React.FC = () => {
                 <>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 600 }}>
+                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                         Họ và tên
                       </span>
                     }
@@ -404,7 +404,7 @@ const ThanhToan: React.FC = () => {
                   </Form.Item>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 600 }}>
+                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                         Email
                       </span>
                     }
@@ -422,7 +422,7 @@ const ThanhToan: React.FC = () => {
                   </Form.Item>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 600 }}>
+                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                         * Mã giảm giá (nếu có)
                       </span>
                     }
@@ -511,14 +511,14 @@ const ThanhToan: React.FC = () => {
                   </Form.Item>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 600 }}>
+                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                         * Điểm của bạn: {listDiem?.data?.diem}
                       </span>
                     }
                     name="diem"
                   >
-                    <Input
-                      placeholder="Nhập điểm"
+                    <Input style={{ height: "50px", borderRadius: "1px", fontWeight: 100, fontFamily: "Alata, sans-serif" }}
+                      placeholder="Nhập điểm tích lũy (nếu có)"
                       onFocus={(e) => {
                         valueWhenFocused.current = e.target.value;
                       }}
@@ -697,7 +697,7 @@ const ThanhToan: React.FC = () => {
                   {bookingData.lich_chieu.phim.ten_phim}
                 </h2>
                 <div className="countdown-timer">
-                  THỜI GIAN GIỮ VÉ: {formatTime(countdown)}
+                  THỜI GIAN GIỮ VÉ  {formatTime(countdown)}
                 </div>
               </div>
 
@@ -715,7 +715,8 @@ const ThanhToan: React.FC = () => {
                     <Text
                       style={{
                         color: "yellow",
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: "'Alata', sans-serif",
+                        fontWeight: "100",
                       }}
                     >
                       Thời gian
@@ -724,7 +725,7 @@ const ThanhToan: React.FC = () => {
                     <Text
                       style={{
                         color: "#fff",
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: "'Alata', sans-serif",
                       }}
                     >
                       {bookingData.lich_chieu.gio_chieu}
@@ -734,10 +735,10 @@ const ThanhToan: React.FC = () => {
                   <Row className="booking-details-row">
                     <Col span={8}>
                       <Text
-                        strong
+                        
                         style={{
                           color: "yellow",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         Tên rạp
@@ -746,7 +747,7 @@ const ThanhToan: React.FC = () => {
                       <Text
                         style={{
                           color: "#fff",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         {bookingData.lich_chieu.phong_chieu.rap.ten_rap}
@@ -754,10 +755,10 @@ const ThanhToan: React.FC = () => {
                     </Col>
                     <Col span={8}>
                       <Text
-                        strong
+                        
                         style={{
                           color: "yellow",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         Phòng chiếu
@@ -766,7 +767,7 @@ const ThanhToan: React.FC = () => {
                       <Text
                         style={{
                           color: "#fff",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         {bookingData.lich_chieu.phong_chieu.ten_phong}
@@ -777,10 +778,10 @@ const ThanhToan: React.FC = () => {
                   <Row className="booking-details-row">
                     <Col span={8}>
                       <Text
-                        strong
+                        
                         style={{
                           color: "yellow",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         Loại ghế
@@ -789,7 +790,7 @@ const ThanhToan: React.FC = () => {
                       <Text
                         style={{
                           color: "#fff",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         {seatType}
@@ -797,10 +798,10 @@ const ThanhToan: React.FC = () => {
                     </Col>
                     <Col span={8}>
                       <Text
-                        strong
+                        
                         style={{
                           color: "yellow",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         Số ghế
@@ -809,7 +810,7 @@ const ThanhToan: React.FC = () => {
                       <Text
                         style={{
                           color: "#fff",
-                          fontFamily: "'Poppins', sans-serif",
+                          fontFamily: "'Alata', sans-serif",
                         }}
                       >
                         {selectedSeats.join(", ")}
@@ -822,13 +823,13 @@ const ThanhToan: React.FC = () => {
               {/* HIỂN THỊ THÔNG TIN ĐỒ ĂN Ở ĐÂY */}
               <div className="food-drinks-section">
                 <Text
-                  strong
+                  
                   style={{
                     color: "yellow",
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: "'Alata', sans-serif",
                   }}
                 >
-                  Đồ Ăn & Thức Uống
+                  Đồ ăn & Thức uống
                 </Text>
                 <br />
                 {bookingData.don_do_an && bookingData.don_do_an.length > 0 ? (
@@ -838,7 +839,7 @@ const ThanhToan: React.FC = () => {
                         <Text
                           style={{
                             color: "white",
-                            fontFamily: "'Poppins', sans-serif",
+                            fontFamily: "'Alata', sans-serif",
                           }}
                         >
                           {item.do_an.ten_do_an} x {item.so_luong}{" "}
@@ -857,7 +858,7 @@ const ThanhToan: React.FC = () => {
                     className="no-food-drinks"
                     style={{
                       color: "white",
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: "'Alata', sans-serif",
                     }}
                   >
                     Không có đồ ăn, thức uống nào được mua.
@@ -865,12 +866,12 @@ const ThanhToan: React.FC = () => {
                 )}
               </div>
 
-              <div className="total-amount">
+              <div className="total-amount2">
                 <Text
                   style={{
                     color: "yellow",
-                    fontFamily: "'Poppins', sans-serif",
-                    fontWeight: "bold",
+                    fontFamily: "'Alata', sans-serif",
+                    fontWeight: "100",
                     fontSize: "18px",
                   }}
                 >
@@ -878,7 +879,7 @@ const ThanhToan: React.FC = () => {
                 </Text>
                 <Text className="total-price">
                   {(tongTienData?.data?.tong_tien ?? 0).toLocaleString("vi-VN")}{" "}
-                  VND
+                  VNĐ
                 </Text>
               </div>
             </Card>

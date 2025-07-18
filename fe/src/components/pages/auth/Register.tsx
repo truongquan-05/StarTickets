@@ -85,13 +85,13 @@ const Register = () => {
             message.error(msg);
           });
         });
-      } if(error.response.data.message) {
+      }
+      if (error.response.data.message) {
         message.error(error.response.data.message);
       }
     }
   };
 
-  
   return (
     <div className="login-background">
       <Row justify="center" align="middle" className="login-container">
@@ -111,7 +111,7 @@ const Register = () => {
               <Col xs={24} md={12}>
                 <Form.Item
                   label={
-                    <span style={{ color: "white", fontWeight: 600 }}>
+                    <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                       Họ và tên
                     </span>
                   }
@@ -128,7 +128,7 @@ const Register = () => {
 
                 <Form.Item
                   label={
-                    <span style={{ color: "white", fontWeight: 600 }}>
+                    <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                       Email
                     </span>
                   }
@@ -149,7 +149,7 @@ const Register = () => {
                 {/* Mã xác nhận */}
                 <Form.Item
                   label={
-                    <span style={{ color: "white", fontWeight: 600 }}>
+                    <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                       Mã xác nhận
                     </span>
                   }
@@ -177,28 +177,30 @@ const Register = () => {
                     </Col>
                     <Col span={8}>
                       <button
-  onClick={handleSendCode}
-  disabled={countdown > 0}
-  style={{
-    display: "block",
-    width: "100%",
-    height: "40px",
-    lineHeight: "40px",
-    fontSize: "14px",
-    backgroundColor: countdown > 0 ? "#f5f5f5" : "#1a0933",
-    color: countdown > 0 ? "#999" : "#fff",
-    border: `1px solid ${countdown > 0 ? "#d9d9d9" : "#333"}`,
-    borderRadius: "1px",
-    cursor: countdown > 0 ? "not-allowed" : "pointer",
-    opacity: 1,
-    transition: "all 0.3s",
-    fontFamily: "Anton, sans-serif",
-    fontWeight: 100,
-  }}
->
-  {countdown > 0 ? `GỬI LẠI (${countdown}s)` : "GỬI MÃ"}
-</button>
-
+                        onClick={handleSendCode}
+                        disabled={countdown > 0}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          height: "40px",
+                          lineHeight: "40px",
+                          fontSize: "14px",
+                          backgroundColor:
+                            countdown > 0 ? "#f5f5f5" : "#1a0933",
+                          color: countdown > 0 ? "#999" : "#fff",
+                          border: `1px solid ${
+                            countdown > 0 ? "#d9d9d9" : "#333"
+                          }`,
+                          borderRadius: "1px",
+                          cursor: countdown > 0 ? "not-allowed" : "pointer",
+                          opacity: 1,
+                          transition: "all 0.3s",
+                          fontFamily: "Anton, sans-serif",
+                          fontWeight: 100,
+                        }}
+                      >
+                        {countdown > 0 ? `GỬI LẠI (${countdown}s)` : "GỬI MÃ"}
+                      </button>
                     </Col>
                   </Row>
                 </Form.Item>
@@ -208,7 +210,7 @@ const Register = () => {
               <Col xs={24} md={12}>
                 <Form.Item
                   label={
-                    <span style={{ color: "white", fontWeight: 600 }}>
+                    <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                       Số điện thoại
                     </span>
                   }
@@ -234,7 +236,7 @@ const Register = () => {
                   <Col span={12}>
                     <Form.Item
                       label={
-                        <span style={{ color: "white", fontWeight: 600 }}>
+                        <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                           Mật khẩu
                         </span>
                       }
@@ -257,7 +259,7 @@ const Register = () => {
                   <Col span={12}>
                     <Form.Item
                       label={
-                        <span style={{ color: "white", fontWeight: 600 }}>
+                        <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
                           Xác thực mật khẩu
                         </span>
                       }
@@ -368,11 +370,11 @@ const Register = () => {
             <Divider style={{ backgroundColor: "yellow" }} />
 
             <Form.Item style={{ textAlign: "center" }}>
-              <Text style={{ color: "white" }}>
+              <Text style={{ color: "white", fontFamily: "Alata, sans-serif" }}>
                 Bạn đã có tài khoản?{" "}
                 <Link
                   href="/login"
-                  style={{ color: "yellow", textDecoration: "underline" }}
+                  style={{ color: "yellow", textDecoration: "underline", fontFamily: "Alata, sans-serif" }}
                 >
                   Đăng nhập ngay
                 </Link>

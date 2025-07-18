@@ -17,7 +17,7 @@ const DuongCongManHinh = () => {
       </svg>
       <h2
         style={{
-          fontFamily: "Poppins, sans-serif",
+          fontFamily: "Alata, sans-serif",
           color: "#fff",
           fontWeight: 100,
           fontSize: 22,
