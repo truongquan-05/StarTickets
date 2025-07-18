@@ -16,3 +16,4 @@ class QuyenHan extends Model
         return $this->hasMany(QuyenTruyCap::class, 'quyen_han_id', 'id');
     }
 }
+

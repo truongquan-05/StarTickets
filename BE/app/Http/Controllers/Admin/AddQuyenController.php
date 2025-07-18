@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\VaiTro;
 use App\Models\QuyenTruyCap;
+use App\Models\QuyenHan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\QuyenHan;
@@ -108,4 +109,31 @@ class AddQuyenController extends Controller
             'message' => "Gỡ quyền thành công",
         ]);
     }
+    public function getQuyenHan($id)
+    {
+        $data = QuyenHan::all(); // Tất cả quyền hạn
+        $quyenTruyCap = QuyenTruyCap::where('vai_tro_id', $id)->get(); // Danh sách quyền đã gán cho vai trò
+
+        // Lấy danh sách ID quyền đã có
+        $quyenDaGanIds = $quyenTruyCap->pluck('quyen_han_id')->toArray();
+
+        // Lọc ra những quyền chưa được gán
+        $dataQuyen = [];
+
+        foreach ($data as $quyen) {
+            if (!in_array($quyen->id, $quyenDaGanIds)) {
+                $dataQuyen[] = [
+                    'id' => $quyen->id,
+                    'quyen' => $quyen->quyen,
+                    'mo_ta' => $quyen->mo_ta,
+                ];
+            }
+        }
+
+        return response()->json([
+            'message' => 'Danh sách quyền hạn chưa gán',
+            'data' => $dataQuyen
+        ]);
+    }
+
 }
