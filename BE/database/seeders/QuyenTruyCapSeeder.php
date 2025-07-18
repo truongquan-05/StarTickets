@@ -61,11 +61,26 @@ class QuyenTruyCapSeeder extends Seeder
             'DoAn-delete',
             'DoAn-read',
             'Phim-read',
-    
+
         ];
         foreach ($theaterStaffPermissions as $perm) {
             DB::table('quyen_truy_cap')->insert([
                 'vai_tro_id' => 4,
+                'quyen_han_id' => $permissions[$perm],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // USER (id = 2)
+        $userPermissions = [
+            'TaiKhoan-update',
+            'TaiKhoan-read'
+
+        ];
+        foreach ($userPermissions as $perm) {
+            DB::table('quyen_truy_cap')->insert([
+                'vai_tro_id' => 2,
                 'quyen_han_id' => $permissions[$perm],
                 'created_at' => now(),
                 'updated_at' => now(),

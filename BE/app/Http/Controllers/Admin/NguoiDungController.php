@@ -22,11 +22,10 @@ class NguoiDungController extends Controller
     public function __construct()
     {
 
-        $this->middleware('IsAdmin');
-        $this->middleware('permission:TaiKhoan-read')->only(['index', 'show']);
-        $this->middleware('permission:TaiKhoan-create')->only(['store']);
-        $this->middleware('permission:TaiKhoan-update')->only(['update']);
-        $this->middleware('permission:TaiKhoan-delete')->only(['destroy']);
+        $this->middleware(['IsAdmin','permission:TaiKhoan-read'])->only(['index', 'show']);
+        $this->middleware(['IsAdmin','permission:TaiKhoan-create'])->only(['store']);
+        $this->middleware(['IsAdmin','permission:TaiKhoan-update'])->only(['update']);
+        $this->middleware(['IsAdmin','permission:TaiKhoan-delete'])->only(['destroy']);
     }
 
 
