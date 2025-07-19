@@ -191,10 +191,6 @@ class NguoiDungController extends Controller
         }
 
 
-
-
-
-
         $validatedData = Validator::make($request->all(), [
             'ten' => 'required|string|max:255',
             'email' => 'required|email|unique:nguoi_dung,email,' . $id . '|max:255',

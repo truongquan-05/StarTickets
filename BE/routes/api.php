@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RapController;
 use App\Http\Controllers\Admin\DoAnController;
 use App\Http\Controllers\Admin\PhimController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Admin\BannerController;
@@ -28,15 +29,14 @@ use App\Http\Controllers\Client\DiemThuongController;
 use App\Http\Controllers\Client\LichSuMuaHangController;
 use App\Http\Controllers\Admin\PhanHoiKhachHangController;
 use App\Http\Controllers\Client\RapController as ClientRapController;
+use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
-use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
+use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
-use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
-
-
+use App\Http\Controllers\Client\QuenMatKhau;
 
 //-------------------ADMIN-------------------//
 
@@ -143,7 +143,12 @@ Route::prefix('banners')->group(function () {
 Route::get('handler-qr/{id}', [QRController::class, 'show']);
 Route::post('handler-qr/{id}', [QRController::class, 'update']);
 
+Route::get('thong_tin_admin/{id}', [AdminController::class, 'show']);
+Route::put('thong_tin_admin/{id}', [AdminController::class, 'update']);
 
+Route::post('forget-password', [QuenMatKhau::class, 'store']);
+Route::post('xac-nhan-ma', [QuenMatKhau::class, 'checkMaXacNhan']);
+Route::post('reset-password', [QuenMatKhau::class, 'update']);
 
 
 
