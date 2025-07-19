@@ -21,49 +21,17 @@ class HomeController extends Controller
         $tomorrow = $now->copy()->addDay()->toDateString();
 
 
-        $phimDangChieuIds = LichChieu::whereDate('gio_chieu', $today)
-            ->pluck('phim_id');
-
-
-
-        $phimDangChieu = Phim::whereIn('id', $phimDangChieuIds)
-            ->orderBy('ngay_cong_chieu', 'desc')
-            ->take(32)
-            ->get();
-
-
-        $phimCoLichChieuTuNgayMai = DB::table('lich_chieu')
-            ->whereDate('gio_chieu', '>=', $tomorrow)
-            ->pluck('phim_id');
-
-
-        $phimKhongCoLichChieu = Phim::whereNotIn('id', DB::table('lich_chieu')->pluck('phim_id'))
-            ->whereDate('ngay_cong_chieu', '>=', $tomorrow)
-            ->pluck('id');
-
-
-        $phimSapChieuIds = $phimCoLichChieuTuNgayMai
-            ->merge($phimKhongCoLichChieu)
-            ->unique()
-            ->diff($phimDangChieuIds)        //loai bo phim giong
-            ->values();
-
-        $phimSapChieu = Phim::whereIn('id', $phimSapChieuIds)
-            ->orderBy('ngay_cong_chieu', 'desc')
+        $phimDangChieu = Phim::whereDate('ngay_cong_chieu', '<=', $today)
             ->take(9)
             ->get();
 
 
-        //  all dac biet
-
+        $phimSapChieu = Phim::whereDate('ngay_cong_chieu', '>=', $today)
+            ->take(9)
+            ->get();
 
         $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
-            ->whereHas('lichChieu', function ($query) use ($now) {
-                $query->where('gio_chieu', '>=', $now);
-            })
-            ->select('phim.*')
-            ->distinct()
-            ->orderBy('ngay_cong_chieu', 'desc')
+            ->take(9)
             ->get();
 
         return response()->json([
@@ -78,57 +46,32 @@ class HomeController extends Controller
     {
         $today = Carbon::now()->toDateString();
 
-        $phimDangChieuIds = LichChieu::whereDate('gio_chieu', $today)
-            ->pluck('phim_id');
-
-        return Phim::whereIn('id', $phimDangChieuIds)
-            ->orderBy('ngay_cong_chieu', 'desc')
-            ->take(16)
+        $phimDangChieu = Phim::whereDate('ngay_cong_chieu', '<=', $today)
+            ->take(9)
             ->get();
+
+
+        return $phimDangChieu;
     }
 
     public function getPhimSapChieu()
     {
         $now = Carbon::now();
         $today = $now->toDateString();
-        $tomorrow = $now->copy()->addDay()->toDateString();
 
-        $phimDangChieuIds = LichChieu::whereDate('gio_chieu', $today)
-            ->pluck('phim_id');
-
-        $phimCoLichChieuTuNgayMai = DB::table('lich_chieu')
-            ->whereDate('gio_chieu', '>=', $tomorrow)
-            ->pluck('phim_id');
-
-        $phimKhongCoLichChieu = Phim::whereNotIn('id', DB::table('lich_chieu')->pluck('phim_id'))
-            ->whereDate('ngay_cong_chieu', '>=', $tomorrow)
-            ->pluck('id');
-
-        $phimSapChieuIds = $phimCoLichChieuTuNgayMai
-            ->merge($phimKhongCoLichChieu)
-            ->unique()
-            ->diff($phimDangChieuIds)
-            ->values();
-
-        return Phim::whereIn('id', $phimSapChieuIds)
-            ->orderBy('ngay_cong_chieu', 'desc')
-            ->take(16)
+        $phimSapChieu = Phim::whereDate('ngay_cong_chieu', '>', $today)
+            ->take(9)
             ->get();
+
+        return $phimSapChieu;
     }
 
     public function getPhimDacBiet()
     {
-        $now = Carbon::now();
-
-        return Phim::where('loai_suat_chieu', 'Đặc biệt')
-            ->whereHas('lichChieu', function ($query) use ($now) {
-                $query->where('gio_chieu', '>=', $now);
-            })
-            ->select('phim.*')
-            ->distinct()
-            ->orderBy('ngay_cong_chieu', 'desc')
-            ->take(16)
+        $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
+            ->take(9)
             ->get();
+        return $phimDacBiet;
     }
 
 
@@ -140,66 +83,31 @@ class HomeController extends Controller
         $today = $now->toDateString();
         $timeNow = $now->toTimeString();
 
-        // Lấy các phim có lịch chiếu hôm nay và giờ chiếu >= hiện tại
-        $phimDangChieuIds = DB::table('lich_chieu')
-            ->whereDate('gio_chieu', $today)
-            ->whereTime('gio_chieu', '>=', $timeNow)
-            ->pluck('phim_id')
-            ->unique();
-
-        $phim = Phim::whereIn('id', $phimDangChieuIds)
-            ->orderBy('ngay_cong_chieu', 'desc')
+        $phim = Phim::whereDate('ngay_cong_chieu', '<=', $today)
             ->get();
+
 
         return response()->json($phim);
     }
 
     public function getAllPhimDacBiet()
     {
-        $now = Carbon::now();
-        return Phim::where('loai_suat_chieu', 'Đặc biệt')
-            ->whereHas('lichChieu', function ($query) use ($now) {
-                $query->where('gio_chieu', '>=', $now);
-            })
-            ->select('phim.*')
-            ->distinct()
-            ->orderBy('ngay_cong_chieu', 'desc')
+        $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
+            ->take(9)
             ->get();
+        return response()->json($phimDacBiet);
     }
 
     public function getAllPhimSapChieu()
     {
         $now = Carbon::now();
-        $tomorrow = $now->copy()->addDay()->toDateString();
+        $today = $now->toDateString();
 
-
-        $phimCoLichChieuTuNgayMai = DB::table('lich_chieu')
-            ->whereDate('gio_chieu', '>=', $tomorrow)
-            ->pluck('phim_id');
-
-
-        $phimKhongCoLichChieu = Phim::whereNotIn('id', DB::table('lich_chieu')->pluck('phim_id'))
-            ->whereDate('ngay_cong_chieu', '>=', $tomorrow)
-            ->pluck('id');
-
-        // Gop lai all
-        $phimDangChieuIds = DB::table('lich_chieu')
-            ->whereDate('gio_chieu', $now->toDateString())
-            ->whereTime('gio_chieu', '>=', $now->toTimeString())
-            ->pluck('phim_id')
-            ->unique();
-
-        $phimSapChieuIds = $phimCoLichChieuTuNgayMai
-            ->merge($phimKhongCoLichChieu)
-            ->unique()
-            ->diff($phimDangChieuIds) //loai tru phim dang chei
-            ->values();
-
-        $phim = Phim::whereIn('id', $phimSapChieuIds)
-            ->orderBy('ngay_cong_chieu', 'desc')
+        $phimSapChieu = Phim::whereDate('ngay_cong_chieu', '>', $today)
+            ->take(9)
             ->get();
 
-        return response()->json($phim);
+        return response()->json($phimSapChieu);
     }
     public function search(Request $request)
     {
