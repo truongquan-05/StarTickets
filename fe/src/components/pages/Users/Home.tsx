@@ -18,6 +18,7 @@ import {
   PlayCircleOutlined,
   TagOutlined,
   CommentOutlined,
+  PlayCircleTwoTone,
 } from "@ant-design/icons";
 import ContactForm from "./PhanHoiKhachHang";
 import HomeBanner from "../Admin/Banner/HomeBanner";
@@ -210,9 +211,9 @@ const Home = () => {
               <div className="age">
                 <span className="num">T{movie.do_tuoi_gioi_han || "T?"}</span>
                 <span className="txt2">
-                  {movie.do_tuoi_gioi_han > 18
+                  {movie.do_tuoi_gioi_han >= 18
                     ? "ADULT"
-                    : movie.do_tuoi_gioi_han > 13
+                    : movie.do_tuoi_gioi_han >= 13
                     ? "TEEN"
                     : movie.do_tuoi_gioi_han > 0
                     ? "KID"
@@ -222,9 +223,9 @@ const Home = () => {
             </div>
             <div className="contentphimm">
               <Link to={`/phim/${movie.slug || movie.id}`}>
-                <h4 className="movie-title1">
+                <h5 className="movie-title1">
                   {movie.title || movie.ten_phim}
-                </h4>
+                </h5>
               </Link>
               <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
                 <CalendarOutlined
@@ -263,7 +264,7 @@ const Home = () => {
             className="play-button"
             onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
           >
-            <PlayCircleOutlined style={{ marginRight: 8 }} />
+            <PlayCircleTwoTone twoToneColor="yellow" style={{ marginRight: 5, fontSize:"20px" }} />
             <span>Trailer</span>
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>
@@ -301,9 +302,9 @@ const Home = () => {
               <div className="age">
                 <span className="num">T{movie.do_tuoi_gioi_han || "T?"}</span>
                 <span className="txt2">
-                  {movie.do_tuoi_gioi_han > 18
+                  {movie.do_tuoi_gioi_han >= 18
                     ? "ADULT"
-                    : movie.do_tuoi_gioi_han > 13
+                    : movie.do_tuoi_gioi_han >= 13
                     ? "TEEN"
                     : movie.do_tuoi_gioi_han > 0
                     ? "KID"
@@ -313,9 +314,9 @@ const Home = () => {
             </div>
             <div className="contentphimm">
               <Link to={`/phim/${movie.slug || movie.id}`}>
-                <h4 className="movie-title1">
+                <h5 className="movie-title1">
                   {movie.title || movie.ten_phim}
-                </h4>
+                </h5>
               </Link>
               <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
                 <CalendarOutlined
@@ -356,7 +357,7 @@ const Home = () => {
             className="play-button"
             onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
           >
-            <PlayCircleOutlined style={{ marginRight: 8 }} />
+            <PlayCircleTwoTone twoToneColor="yellow" style={{ marginRight: 5, fontSize:"20px" }} />
             <span>Trailer</span>
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>
@@ -395,9 +396,9 @@ const Home = () => {
               <div className="age">
                 <span className="num">T{movie.do_tuoi_gioi_han || "T?"}</span>
                 <span className="txt2">
-                  {movie.do_tuoi_gioi_han > 18
+                  {movie.do_tuoi_gioi_han >= 18
                     ? "ADULT"
-                    : movie.do_tuoi_gioi_han > 13
+                    : movie.do_tuoi_gioi_han >= 13
                     ? "TEEN"
                     : movie.do_tuoi_gioi_han > 0
                     ? "KID"
@@ -405,11 +406,16 @@ const Home = () => {
                 </span>
               </div>
             </div>
+            <div className="attach2">
+              <div className="type-movie2">
+                <span className="txtt">Đặc biệt</span>
+              </div>
+            </div>
             <div className="contentphimm">
               <Link to={`/phim/${movie.slug || movie.id}`}>
-                <h4 className="movie-title1">
+                <h5 className="movie-title1">
                   {movie.title || movie.ten_phim}
-                </h4>
+                </h5>
               </Link>
               <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
                 <CalendarOutlined
@@ -450,7 +456,7 @@ const Home = () => {
             className="play-button"
             onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
           >
-            <PlayCircleOutlined style={{ marginRight: 8 }} />
+            <PlayCircleTwoTone twoToneColor="yellow" style={{ marginRight: 5, fontSize:"20px" }} />
             <span>Trailer</span>
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>

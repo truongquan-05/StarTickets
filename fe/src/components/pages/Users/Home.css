@@ -93,10 +93,13 @@
   flex-direction: column;
   overflow: hidden;
 }
+.movie-card:hover h4{
+  color: yellow;
+}
 
 /* Wrapper cho poster */
 .movie-poster-wrapper {
-  border: 1px solid #ccc;
+  border: 1px solid #4b4b4b;
   position: relative;
   overflow: hidden;
   border-radius: 4px;
@@ -109,14 +112,20 @@
   align-items: center;
   justify-content: center;
   transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.4); /* màu nền mờ */
+  border-radius: 50%; /* tạo khung tròn */
+  z-index: 10;
 }
 
-/* Phải style thêm ::after vì Swiper dùng icon qua pseudo-element */
+/* Icon trong nút */
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  font-size: 30px; /* nhỏ hơn mặc định là 20-24px */
+  font-size: 15px;
   color: yellow;
 }
+
 
 /* Ảnh phim */
 .movie-card img {
@@ -149,7 +158,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.8);
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 0;
@@ -164,7 +173,6 @@
   position: relative;
   transform: translateY(10%); /* Giảm xuống từ 100% → 30% là hợp lý hơn */
   opacity: 0;
-  transition: transform 0.4s ease, opacity 0.4s ease;
   z-index: 2;
   text-align: left;
   width: 100%;
@@ -176,6 +184,7 @@
 .movie-poster-wrapper:hover .contentphimm {
   transform: translateY(0);
   opacity: 1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
 .attach {
@@ -191,10 +200,49 @@
   z-index: 0;
 }
 
+.attach2 {
+  transform: translateY(0); /* vị trí ban đầu */
+  opacity: 1;               /* hiển thị */
+  
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 150px;
+  z-index: 0;
+}
+
+.type-movie2 {
+  position: absolute;
+  top: 17px;
+  right: -30px;
+  width: 120px;
+  background-color: red;
+  text-align: center;
+  transform: rotate(45deg);
+  font-family: var(--font-title);
+  padding: 6px 0;
+  box-shadow: 0 0 4px rgba(0,0,0,0.9);
+}
+
+.txtt {
+  color: white;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-family: "Anton", sans-serif;
+  letter-spacing: 1px;
+}
+
+
 /* Khi hover: trượt lên và biến mất */
 .movie-poster-wrapper:hover .attach {
   transform: translateY(-100%); /* Trượt lên trên khung */
   opacity: 0;                   /* Mờ dần */
+}
+.movie-poster-wrapper:hover .attach2 {
+  transform: translateY(-100%); /* Trượt lên trên khung */
+  opacity: 0;                   /* Mờ dần */
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
 
@@ -251,8 +299,8 @@
 
 /* Tên phim */
 .movie-title1 {
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 19px;
+  font-weight: 100;
   color: #fff;
   text-transform: uppercase;
   margin: 20px 0;
@@ -323,13 +371,13 @@
 .play-button {
   font-family: "Anton", sans-serif;
   font-weight: 100;
+  text-decoration: underline;
   font-size: 15px;
   padding: 0 25px;
   position: relative;
   height: 40px;
-  background-color: transparent !important; /* màu nền ban đầu */
+  background-color: transparent; /* màu nền ban đầu */
   color: #fff !important;
-  border: 1px solid #fff !important;
   cursor: pointer;
   border-radius: 4px;
   overflow: hidden;
@@ -348,6 +396,7 @@
   background: linear-gradient(to right, #f77904, #e7bf3c) !important;
   z-index: 0;
   transform: scaleX(0);
+  border: 1px solid white;
   transform-origin: left;
   transition: transform 0.4s ease;
 }
