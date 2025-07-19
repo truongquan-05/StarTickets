@@ -145,11 +145,12 @@
 }
 
 .review-textarea-edit {
+  border-radius: 4px;
   background: #fff !important;
   color: #000 !important;
   resize: none;
   font-weight: 500;
-  border-color: #3c2d60 !important;
+  border-color: 1px solid #333;
 }
 
 .review-textarea-edit:focus {

@@ -14,8 +14,16 @@ import {
   Progress,
   Row,
   Col,
+  Empty,
 } from "antd";
-import { MoreOutlined, UserOutlined, StarOutlined, EditOutlined, MehOutlined } from "@ant-design/icons";
+import {
+  MoreOutlined,
+  UserOutlined,
+  StarOutlined,
+  EditOutlined,
+  MehOutlined,
+  CaretDownOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import "./DanhGia.css";
 import axios from "axios";
@@ -451,7 +459,10 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
                     marginBottom: "20px",
                   }}
                 >
-                  <h4 className="form-label-review"><MehOutlined  style={{marginRight: "8px"}}/>Chọn số sao</h4>
+                  <h4 className="form-label-review">
+                    <MehOutlined style={{ marginRight: "8px" }} />
+                    Chọn số sao
+                  </h4>
                   <Rate
                     value={soSao}
                     onChange={setSoSao}
@@ -459,7 +470,10 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
                     style={{ marginBottom: "16px" }}
                   />
 
-                  <h4 className="form-label-secondary"><EditOutlined style={{marginRight: "8px"}}/>Nhập bình luận</h4>
+                  <h4 className="form-label-secondary">
+                    <EditOutlined style={{ marginRight: "8px" }} />
+                    Nhập bình luận
+                  </h4>
                   <TextArea
                     rows={4}
                     placeholder="Viết cảm nhận của bạn..."
@@ -492,9 +506,9 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
               <Title level={5} className="section-titlee">
                 Bình luận của bạn
               </Title>
-
               {myDanhGia && myDanhGia && !isEditing && (
                 <Card
+                  title={<CaretDownOutlined />}
                   size="small"
                   className="user-review-card"
                   extra={
@@ -559,7 +573,10 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
               {myDanhGia && isEditing && (
                 <Card size="small" className="edit-form">
                   <Space direction="vertical" className="edit-form-content">
-                    <Text className="edit-form-title-review"><EditOutlined style={{marginRight: "8px"}}/>Chỉnh sửa đánh giá</Text>
+                    <Text className="edit-form-title-review">
+                      <EditOutlined style={{ marginRight: "8px" }} />
+                      Chỉnh sửa đánh giá
+                    </Text>
 
                     <Rate
                       value={editSoSao}
@@ -583,7 +600,8 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
                       >
                         Lưu
                       </Button>
-                      <Button className="canceledit-review-btn"
+                      <Button
+                        className="canceledit-review-btn"
                         onClick={() => {
                           setIsEditing(false);
                           setEditSoSao(0);
@@ -592,8 +610,6 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
                       >
                         Hủy
                       </Button>
-
-                      
                     </Space>
                   </Space>
                 </Card>
@@ -606,7 +622,9 @@ const DanhGiaForm: React.FC<DanhGiaFormProps> = ({ id }) => {
               </Title>
 
               {data.length === 0 ? (
-                <Text className="empty-state">Chưa có đánh giá nào.</Text>
+                <Card size="small" className="user-review-card">
+                  <Empty description="Chưa có bình luận nào." />
+                </Card>
               ) : (
                 data.map((danhGia: any, index: number) => (
                   <Card key={index} size="small" className="user-review-card">

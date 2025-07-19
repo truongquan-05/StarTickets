@@ -128,26 +128,19 @@
 
 /* Overlay khi hover */
 .movie-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  opacity: 0;
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .movie-poster-wrapper:hover .movie-overlay {
   opacity: 1;
 }
 
-.movie-poster-wrapper:hover img {
-  transform: scale(1.05);
-}
 /* Lớp phủ đen từ dưới lên (ẩn mặc định) */
 .movie-poster-wrapper::after {
   content: "";
@@ -156,7 +149,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  background: rgba(0, 0, 0, 0.9);
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 0;
@@ -167,31 +160,110 @@
   opacity: 1;
 }
 
-/* Nút play trên overlay */
-.play-overlay-button {
-  border: none;
-  color: #ccc;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  z-index: 2; /* TRÊN CÙNG */
+.contentphimm {
+  position: relative;
+  transform: translateY(10%); /* Giảm xuống từ 100% → 30% là hợp lý hơn */
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  z-index: 2;
+  text-align: left;
+  width: 100%;
+  padding: 0px 30px; /* đẩy nội dung cách lề trái một chút cho đẹp */
+  box-sizing: border-box;
 }
 
-.play-overlay-button:hover {
-  background: transparent;
-  transform: scale(1.05);
+/* Khi hover */
+.movie-poster-wrapper:hover .contentphimm {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.attach {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(0); /* vị trí ban đầu */
+  opacity: 1;               /* hiển thị */
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  z-index: 0;
+}
+
+/* Khi hover: trượt lên và biến mất */
+.movie-poster-wrapper:hover .attach {
+  transform: translateY(-100%); /* Trượt lên trên khung */
+  opacity: 0;                   /* Mờ dần */
+}
+
+
+.type-movie {
+  background-color: #f93;
+  color: #000;
+  font-family: var(--font-title);
+  height: 3.5em;
+  padding: 0.4rem;
+  text-transform: uppercase;
+}
+.txt {
+  align-items: center;
+  border: 0.2rem solid #000;
+  border-radius: 0.4rem;
+  display: flex;
+  font-size: 1rem;
+  height: 2.2rem;
+  justify-content: center;
+  width: 2.2rem;
+  font-family: "Anton", sans-serif;
+}
+.age {
+  background-color: #f03;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-title);
+  height: 3.5em;
+  width: 3.5em;
+  padding: 0.4rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+.num {
+  font-size: 1.6em;
+  letter-spacing: 0.18rem;
+  line-height: 100%;
+  text-indent: 0.18rem;
+  font-family: "Anton", sans-serif;
+}
+.txt2 {
+  margin-top: 2px;
+  align-items: center;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  font-size: 0.4em;
+  justify-content: center;
+  letter-spacing: 0.2rem;
+  line-height: 100%;
+  padding: 0.15rem;
+  font-family: "Anton", sans-serif;
 }
 
 /* Tên phim */
-.movie-title {
+.movie-title1 {
   font-size: 17px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 20px 0;
+  max-height: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "Alata", sans-serif !important;
+}
+.movie-title {
+  font-size: 20px;
   font-weight: 600;
   color: #fff;
   text-transform: uppercase;
@@ -200,14 +272,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: 'Alata', sans-serif !important;
+  font-family: "Alata", sans-serif !important;
 }
 .movie-title:hover {
   color: yellow;
 }
 .movie-card h4 {
-  margin-top: 20px;
-  font-size: 18px;
+  margin: 20px 0;
+  font-size: 20px;
   font-weight: 100;
   color: #fff;
   text-transform: uppercase;
@@ -674,20 +746,7 @@
   background-color: #37297b;
 }
 /*lọc phim*/
-.quick-booking-wrapper {
-  background-color: #f0f4ff;
-  border-radius: 10px;
-  padding: 20px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 100px; /* tăng khoảng cách giữa các item */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: fit-content;
-  margin: 0 auto;
-  flex-wrap: wrap;
-  margin-top: 30px;
-}
+
 .loading-spinner {
   display: flex;
   justify-content: center;
@@ -734,3 +793,7 @@
   border: none;
   height: 32px;
 }
+
+
+
+

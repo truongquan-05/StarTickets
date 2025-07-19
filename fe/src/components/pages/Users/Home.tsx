@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  Spin, Modal } from "antd";
+import { Spin, Modal, Empty } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { Link } from "react-router-dom";
@@ -15,10 +15,9 @@ import QuickBooking from "../CinemasPage/QuickBooking";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
-  PlayCircleFilled,
   PlayCircleOutlined,
   TagOutlined,
-  StarOutlined,
+  CommentOutlined,
 } from "@ant-design/icons";
 import ContactForm from "./PhanHoiKhachHang";
 import HomeBanner from "../Admin/Banner/HomeBanner";
@@ -203,25 +202,62 @@ const Home = () => {
             />
           </Link>
           <div className="movie-overlay">
-            <button
-              className="play-overlay-button"
-              onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
-            >
-              <PlayCircleFilled style={{ fontSize: 70 }} />
-            </button>
+            <div className="attach">
+              <div className="type-movie">
+                {" "}
+                <span className="txt">2D</span>
+              </div>
+              <div className="age">
+                <span className="num">T{movie.do_tuoi_gioi_han || "T?"}</span>
+                <span className="txt2">
+                  {movie.do_tuoi_gioi_han > 18
+                    ? "ADULT"
+                    : movie.do_tuoi_gioi_han > 13
+                    ? "TEEN"
+                    : movie.do_tuoi_gioi_han > 0
+                    ? "KID"
+                    : "???"}
+                </span>
+              </div>
+            </div>
+            <div className="contentphimm">
+              <Link to={`/phim/${movie.slug || movie.id}`}>
+                <h4 className="movie-title1">
+                  {movie.title || movie.ten_phim}
+                </h4>
+              </Link>
+              <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
+                <CalendarOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                Đang khởi chiếu
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <TagOutlined style={{ color: "yellow", marginRight: "5px" }} />{" "}
+                {parseGenres(movie)}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <ClockCircleOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.thoi_luong
+                  ? `${movie.thoi_luong} phút`
+                  : "Chưa cập nhật"}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <CommentOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.ngon_ngu ? movie.ngon_ngu : "Chưa rõ phiên bản"}
+              </p>
+            </div>
           </div>
         </div>
 
         <Link to={`/phim/${movie.slug || movie.id}`}>
           <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
         </Link>
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <TagOutlined style={{ color: "yellow" }} /> : {parseGenres(movie)}
-        </p>
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <ClockCircleOutlined style={{ color: "yellow" }} /> :{" "}
-          {movie.thoi_luong ? `${movie.thoi_luong} phút` : "Chưa cập nhật"}
-        </p>
+
         <div className="movie-buttons">
           <button
             className="play-button"
@@ -257,31 +293,64 @@ const Home = () => {
             />
           </Link>
           <div className="movie-overlay">
-            <button
-              className="play-overlay-button"
-              onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
-            >
-              <PlayCircleFilled style={{ fontSize: 70 }} />
-            </button>
+            <div className="attach">
+              <div className="type-movie">
+                {" "}
+                <span className="txt">2D</span>
+              </div>
+              <div className="age">
+                <span className="num">T{movie.do_tuoi_gioi_han || "T?"}</span>
+                <span className="txt2">
+                  {movie.do_tuoi_gioi_han > 18
+                    ? "ADULT"
+                    : movie.do_tuoi_gioi_han > 13
+                    ? "TEEN"
+                    : movie.do_tuoi_gioi_han > 0
+                    ? "KID"
+                    : "???"}
+                </span>
+              </div>
+            </div>
+            <div className="contentphimm">
+              <Link to={`/phim/${movie.slug || movie.id}`}>
+                <h4 className="movie-title1">
+                  {movie.title || movie.ten_phim}
+                </h4>
+              </Link>
+              <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
+                <CalendarOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.ngay_cong_chieu
+                  ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+                  : "Chưa cập nhật"}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <TagOutlined style={{ color: "yellow", marginRight: "5px" }} />{" "}
+                {parseGenres(movie)}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <ClockCircleOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.thoi_luong
+                  ? `${movie.thoi_luong} phút`
+                  : "Chưa cập nhật"}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <CommentOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.ngon_ngu ? movie.ngon_ngu : "Chưa rõ phiên bản"}
+              </p>
+            </div>
           </div>
         </div>
 
         <Link to={`/phim/${movie.slug || movie.id}`}>
           <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
         </Link>
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <CalendarOutlined style={{ color: "yellow" }} /> :{" "}
-          {movie.ngay_cong_chieu
-            ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
-            : "Chưa cập nhật"}
-        </p>
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <TagOutlined style={{ color: "yellow" }} /> : {parseGenres(movie)}
-        </p>
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <ClockCircleOutlined style={{ color: "yellow" }} /> :{" "}
-          {movie.thoi_luong ? `${movie.thoi_luong} phút` : "Chưa cập nhật"}
-        </p>
+
         <div className="movie-buttons">
           <button
             className="play-button"
@@ -303,12 +372,8 @@ const Home = () => {
   // Hàm render movie card cho suất chiếu đặc biệt
   const renderSpecialMovieCard = (movie: any, index: number) => (
     <SwiperSlide key={index}>
-      <div className="movie-card special-card">
+      <div className="movie-card">
         <div className="movie-poster-wrapper">
-          <div className="special-badge">
-            <StarOutlined style={{ color: "#gold" }} />
-            <span>ĐẶC BIỆT</span>
-          </div>
           <Link to={`/phim/${movie.slug || movie.id}`}>
             <img
               src={getImageUrl(
@@ -322,55 +387,74 @@ const Home = () => {
             />
           </Link>
           <div className="movie-overlay">
-            <button
-              className="play-overlay-button"
-              onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
-            >
-              <PlayCircleFilled style={{ fontSize: 70 }} />
-            </button>
+            <div className="attach">
+              <div className="type-movie">
+                {" "}
+                <span className="txt">2D</span>
+              </div>
+              <div className="age">
+                <span className="num">T{movie.do_tuoi_gioi_han || "T?"}</span>
+                <span className="txt2">
+                  {movie.do_tuoi_gioi_han > 18
+                    ? "ADULT"
+                    : movie.do_tuoi_gioi_han > 13
+                    ? "TEEN"
+                    : movie.do_tuoi_gioi_han > 0
+                    ? "KID"
+                    : "???"}
+                </span>
+              </div>
+            </div>
+            <div className="contentphimm">
+              <Link to={`/phim/${movie.slug || movie.id}`}>
+                <h4 className="movie-title1">
+                  {movie.title || movie.ten_phim}
+                </h4>
+              </Link>
+              <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
+                <CalendarOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.ngay_cong_chieu
+                  ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+                  : "Chưa cập nhật"}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <TagOutlined style={{ color: "yellow", marginRight: "5px" }} />{" "}
+                {parseGenres(movie)}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <ClockCircleOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.thoi_luong
+                  ? `${movie.thoi_luong} phút`
+                  : "Chưa cập nhật"}
+              </p>
+              <p style={{ fontSize: 12, color: "#fff" }}>
+                <CommentOutlined
+                  style={{ color: "yellow", marginRight: "5px" }}
+                />{" "}
+                {movie.ngon_ngu ? movie.ngon_ngu : "Chưa rõ phiên bản"}
+              </p>
+            </div>
           </div>
         </div>
 
         <Link to={`/phim/${movie.slug || movie.id}`}>
-          <h4 className="movie-title special-title">
-            {movie.title || movie.ten_phim}
-          </h4>
+          <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
         </Link>
 
-        <p style={{ fontSize: 12, color: "#ff6b35", fontWeight: "bold" }}>
-          <StarOutlined /> {movie.loai_suat_chieu}
-        </p>
-
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <CalendarOutlined /> :{" "}
-          {movie.ngay_cong_chieu
-            ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
-            : "Chưa cập nhật"}
-        </p>
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <TagOutlined /> :{" "}
-          {movie.the_loai_id
-            ? JSON.parse(movie.the_loai_id)
-                .map((genre: any) => genre.ten_the_loai)
-                .join(", ")
-            : movie.the_loai
-            ? movie.the_loai.join(", ")
-            : "Chưa cập nhật"}
-        </p>
-        <p style={{ fontSize: 12, color: "#888" }}>
-          <ClockCircleOutlined /> :{" "}
-          {movie.thoi_luong ? `${movie.thoi_luong}'` : "Chưa cập nhật"}
-        </p>
         <div className="movie-buttons">
           <button
-            className="play-button special-play-button"
+            className="play-button"
             onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
           >
             <PlayCircleOutlined style={{ marginRight: 8 }} />
             <span>Trailer</span>
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>
-            <button className="book-button special-book-button">
+            <button className="book-button">
               <span>ĐẶT VÉ NGAY</span>
             </button>
           </Link>
@@ -419,7 +503,19 @@ const Home = () => {
             </div>
           </>
         ) : (
-          <p>Không có phim đang chiếu.</p>
+          <Empty
+            description={
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "16px",
+                  fontFamily: "Alata, sans-serif",
+                }}
+              >
+                Không có phim đang chiếu.
+              </span>
+            }
+          />
         );
 
       case "upcoming":
@@ -444,7 +540,19 @@ const Home = () => {
             </div>
           </>
         ) : (
-          <p>Không có phim sắp chiếu.</p>
+          <Empty
+            description={
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "16px",
+                  fontFamily: "Alata, sans-serif",
+                }}
+              >
+                Không có phim sắp chiếu.
+              </span>
+            }
+          />
         );
 
       case "special":
@@ -469,7 +577,19 @@ const Home = () => {
             </div>
           </>
         ) : (
-          <p>Không có suất chiếu đặc biệt.</p>
+          <Empty
+            description={
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "16px",
+                  fontFamily: "Alata, sans-serif",
+                }}
+              >
+                Không có suất chiếu đặc biệt.
+              </span>
+            }
+          />
         );
 
       default:
@@ -533,7 +653,19 @@ const Home = () => {
             allowFullScreen
           />
         ) : (
-          <p style={{ padding: 20, textAlign: "center" }}>Không có trailer</p>
+          <Empty
+            description={
+              <span
+                style={{
+                  color: "black",
+                  fontSize: "16px",
+                  fontFamily: "Alata, sans-serif",
+                }}
+              >
+                Không có trailer.
+              </span>
+            }
+          />
         )}
       </Modal>
 

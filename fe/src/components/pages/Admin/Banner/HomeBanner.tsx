@@ -1,11 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { Carousel, CarouselRef } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { getPublicBanners } from "../../../provider/duProvider";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/effect-fade";
 import "./HomeBanner.css";
 
 type Banner = {
@@ -18,6 +14,7 @@ type Banner = {
 const HomeBanner = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const carouselRef = useRef<CarouselRef>(null);
 
   useEffect(() => {
     getPublicBanners()
@@ -32,47 +29,54 @@ const HomeBanner = () => {
       });
   }, []);
 
+  const handlePrev = () => {
+    carouselRef.current?.prev();
+  };
+
+  const handleNext = () => {
+    carouselRef.current?.next();
+  };
+
   if (isLoading) {
-    return null;
+    return (
+      <div className="hero-banner">
+        <div className="banner-loading">
+          <div className="loading-gradient"></div>
+        </div>
+      </div>
+    );
   }
 
   if (!banners.length) {
     return (
-      <div className="default-banner">
+      <div className="hero-banner">
+        <div className="default-banner">
+          <div className="banner-placeholder">
+            <svg className="placeholder-icon" viewBox="0 0 24 24">
+              <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+            </svg>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
     <section className="hero-banner">
-      <Swiper
-        modules={[Autoplay, Navigation, Pagination, EffectFade]}
-        autoplay={{
-          delay: 6000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        loop={true}
-        navigation={{
-          nextEl: ".hero-swiper-button-next",
-          prevEl: ".hero-swiper-button-prev",
-        }}
-        pagination={{
-          clickable: true,
-          dynamicBullets: true,
-          renderBullet: (index, className) => {
-            return `<span class="${className}">
-              <svg viewBox="0 0 12 12"><circle cx="6" cy="6" r="6"></circle></svg>
-            </span>`;
-          },
-        }}
-        effect="fade"
-        speed={1000}
-        className="hero-swiper"
-      >
-        {banners.map((banner) => (
-          <SwiperSlide key={banner.id}>
-            <div className="banner-item">
+      <div className="hero-carousel-wrapper">
+        <Carousel
+          ref={carouselRef}
+          autoplay
+          autoplaySpeed={6000}
+          speed={1000}
+          effect="fade"
+          dots={{
+            className: "hero-carousel-dots"
+          }}
+          className="hero-carousel"
+        >
+          {banners.map((banner) => (
+            <div key={banner.id} className="banner-item">
               <a href={banner.link_url || "#"} className="banner-link">
                 <img
                   src={`http://127.0.0.1:8000/storage/${banner.image_url}`}
@@ -86,20 +90,17 @@ const HomeBanner = () => {
                 />
               </a>
             </div>
-          </SwiperSlide>
-        ))}
-
-        <div className="hero-swiper-button-next">
-          <svg viewBox="0 0 24 24">
-            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-          </svg>
+          ))}
+        </Carousel>
+        
+        {/* Custom Navigation Arrows */}
+        <div className="hero-carousel-button-prev" onClick={handlePrev}>
+          <LeftOutlined />
         </div>
-        <div className="hero-swiper-button-prev">
-          <svg viewBox="0 0 24 24">
-            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
-          </svg>
+        <div className="hero-carousel-button-next" onClick={handleNext}>
+          <RightOutlined />
         </div>
-      </Swiper>
+      </div>
     </section>
   );
 };
