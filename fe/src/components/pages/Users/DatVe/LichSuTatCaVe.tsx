@@ -104,7 +104,7 @@ const LichSuTatCaVe = () => {
       dataIndex: "ma_giao_dich",
       key: "ma_giao_dich",
       render: (text: string) => (
-        <Tag color="blue" style={{ fontWeight: "bold" }}>
+        <Tag style={{ fontWeight: "bold", fontFamily: "Alata, sans-serif", borderRadius: "2px", color: '#000' }}>
           {text}
         </Tag>
       ),
@@ -119,7 +119,7 @@ const LichSuTatCaVe = () => {
       dataIndex: "ten_rap",
       key: "chi_nhanh",
       render: (text: string) => (
-        <Text strong style={{ color: "#1890ff" }}>
+        <Text strong style={{ color: "#000", fontFamily: "Alata, sans-serif" }}>
           {text}
         </Text>
       ),
@@ -134,7 +134,7 @@ const LichSuTatCaVe = () => {
       dataIndex: "created_at",
       key: "ngay",
       render: (text: string) => (
-        <Text style={{ color: "#666" }}>
+        <Text style={{ color: "#000", fontFamily: "Alata, sans-serif" }}>
           {moment(text).format("DD/MM/YYYY")}
         </Text>
       ),
@@ -149,8 +149,11 @@ const LichSuTatCaVe = () => {
       dataIndex: "tong_tien",
       key: "tong_cong",
       render: (value: number) => (
-        <Text strong style={{ color: "#52c41a", fontSize: "16px" }}>
-          {value.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+        <Text strong style={{ color: "#000", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>
+          {value.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
         </Text>
       ),
     },
@@ -188,14 +191,16 @@ const LichSuTatCaVe = () => {
 
   if (loadingLichSu) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        minHeight: "400px",
-      background: "linear-gradient(to bottom, #1a0933, #222222)",
-        borderRadius: "12px"
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "400px",
+          background: "linear-gradient(to bottom, #1a0933, #222222)",
+          borderRadius: "12px",
+        }}
+      >
         <Card style={{ textAlign: "center", padding: "40px" }}>
           <Spin size="large" />
           <div style={{ marginTop: "16px", color: "#666" }}>
@@ -206,42 +211,38 @@ const LichSuTatCaVe = () => {
     );
   }
 
-
-
   return (
-    <div style={{ 
-    background: "linear-gradient(to bottom, #1a0933, #222222)",
-      minHeight: "100vh",
-      padding: "24px"
-    }}>
+    <div
+      style={{
+        background: "linear-gradient(to bottom, #1a0933, #222222)",
+        padding: "24px",
+        margin: "0 auto",
+      }}
+    >
+      <div style={{ textAlign: "center", marginBottom: "32px" }}>
+        <Title
+          level={2}
+          style={{
+            fontFamily: "Anton, sans-serif",
+            margin: "30px 0",
+            fontSize: "40px",
+            fontWeight: "100",
+            color: "white",
+          }}
+        >
+          LỊCH SỬ MUA VÉ
+        </Title>
+      </div>
       <Row justify="center">
-        <Col xs={24} lg={20} xl={18}>
+        <Col xs={24} lg={20}>
           <Card
-           
+            style={{
+              background: "transparent",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              padding: "24px",
+            }}
           >
-            <div style={{ textAlign: "center", marginBottom: "32px" }}>
-              <Title
-                level={2}
-                style={{
-                  background: "linear-gradient(45deg, #1890ff, #722ed1)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  marginBottom: "8px",
-                  fontSize: "28px",
-                  fontWeight: "bold"
-                }}
-              >
-                LỊCH SỬ MUA VÉ
-              </Title>
-              <div style={{ 
-                width: "60px", 
-                height: "4px", 
-                background: "linear-gradient(45deg, #1890ff, #722ed1)",
-                // borderRadius: "2px",
-                margin: "0 auto"
-              }}></div>
-            </div>
-
             {mergedData.length === 0 ? (
               <Empty
                 description="Chưa có lịch sử mua vé nào"
@@ -259,7 +260,7 @@ const LichSuTatCaVe = () => {
                   showTotal: (total, range) =>
                     `${range[0]}-${range[1]} của ${total} đơn hàng`,
                 }}
-                style={{ 
+                style={{
                   background: "transparent",
                 }}
                 className="modern-table"
@@ -272,14 +273,13 @@ const LichSuTatCaVe = () => {
       {/* Modal Chi Tiết Vé */}
       <Modal
         title={
-          <div style={{
-            background: "linear-gradient(45deg, #1890ff, #722ed1)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontSize: "18px",
-            fontWeight: "bold"
-          }}>
-            <EyeOutlined style={{ marginRight: "8px", color: "#1890ff" }} />
+          <div
+            style={{
+              fontSize: "18px",
+              fontWeight: "100",
+              fontFamily: "Anton, sans-serif",
+            }}
+          >
             Chi tiết vé #{selectedId}
           </div>
         }
@@ -290,12 +290,14 @@ const LichSuTatCaVe = () => {
         style={{ top: 100 }}
       >
         {loadingChiTiet ? (
-          <div style={{ 
-            textAlign: "center", 
-            padding: "60px 0",
-            // background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-            borderRadius: "12px"
-          }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "60px 0",
+              // background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+              borderRadius: "12px",
+            }}
+          >
             <Spin size="large" />
             <div style={{ marginTop: "16px", color: "#666" }}>
               Đang tải chi tiết...
@@ -304,45 +306,46 @@ const LichSuTatCaVe = () => {
         ) : chiTietData ? (
           <Card
             style={{
-              // background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-              borderRadius: "12px",
-              border: "none"
+              borderRadius: "4px",
+              border: "none",
             }}
           >
             <Descriptions bordered column={1} size="middle">
-              <Descriptions.Item 
-                label={<Text strong>🎬 Phim</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Phim</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
                 <Text strong style={{ color: "#1890ff", fontSize: "16px" }}>
                   {chiTietData.data.dat_ve.lich_chieu.phim.ten_phim}
                 </Text>
               </Descriptions.Item>
-              <Descriptions.Item 
-                label={<Text strong>🏢 Rạp</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Rạp</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
                 <Text style={{ color: "#52c41a", fontSize: "15px" }}>
                   {chiTietData.data.dat_ve.lich_chieu.phong_chieu.rap.ten_rap}
                 </Text>
               </Descriptions.Item>
-              <Descriptions.Item 
-                label={<Text strong>🎭 Phòng</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Phòng</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
                 <Tag color="orange" style={{ fontSize: "14px" }}>
                   {chiTietData.data.dat_ve.lich_chieu.phong_chieu.ten_phong}
                 </Tag>
               </Descriptions.Item>
-              <Descriptions.Item 
-                label={<Text strong>⏱️ Thời lượng</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Thời lượng</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
-                <Text>{chiTietData.data.dat_ve.lich_chieu.phim.thoi_luong} phút</Text>
+                <Text>
+                  {chiTietData.data.dat_ve.lich_chieu.phim.thoi_luong} phút
+                </Text>
               </Descriptions.Item>
-              <Descriptions.Item 
-                label={<Text strong>🕐 Giờ chiếu</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Giờ chiếu</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
                 <Text strong style={{ color: "#1890ff" }}>
                   {moment(chiTietData.data.dat_ve.lich_chieu.gio_chieu).format(
@@ -350,49 +353,48 @@ const LichSuTatCaVe = () => {
                   )}
                 </Text>
               </Descriptions.Item>
-              <Descriptions.Item 
-                label={<Text strong>🏁 Giờ kết thúc</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Giờ kết thúc</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
                 <Text style={{ color: "#ff4d4f" }}>
-                  {moment(chiTietData.data.dat_ve.lich_chieu.gio_ket_thuc).format(
-                    "HH:mm DD/MM/YYYY"
-                  )}
+                  {moment(
+                    chiTietData.data.dat_ve.lich_chieu.gio_ket_thuc
+                  ).format("HH:mm DD/MM/YYYY")}
                 </Text>
               </Descriptions.Item>
-              <Descriptions.Item 
-                label={<Text strong>💺 Ghế đã đặt</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Ghế đã đặt</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
                 <Space wrap>
-                  {chiTietData.data.dat_ve.dat_ve_chi_tiet
-                    .map((item: any) => (
-                      <Tag 
-                        key={item.ghe_dat.so_ghe}
-                        color="green" 
-                        style={{ 
-                          fontSize: "14px", 
-                          padding: "4px 8px",
-                          fontWeight: "bold"
-                        }}
-                      >
-                        {item.ghe_dat.so_ghe}
-                      </Tag>
-                    ))}
+                  {chiTietData.data.dat_ve.dat_ve_chi_tiet.map((item: any) => (
+                    <Tag
+                      key={item.ghe_dat.so_ghe}
+                      color="green"
+                      style={{
+                        fontSize: "14px",
+                        padding: "4px 8px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.ghe_dat.so_ghe}
+                    </Tag>
+                  ))}
                 </Space>
               </Descriptions.Item>
-              <Descriptions.Item 
-                label={<Text strong>💰 Tổng tiền</Text>}
-                labelStyle={{  fontWeight: "bold" }}
+              <Descriptions.Item
+                label={<Text strong>Tổng tiền</Text>}
+                labelStyle={{ fontWeight: "bold" }}
               >
-                <Text 
-                  strong 
-                  style={{ 
-                    color: "#52c41a", 
+                <Text
+                  strong
+                  style={{
+                    color: "#52c41a",
                     fontSize: "18px",
                     background: "linear-gradient(45deg, #52c41a, #389e0d)",
                     WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent"
+                    WebkitTextFillColor: "transparent",
                   }}
                 >
                   {Number(chiTietData.data?.dat_ve?.tong_tien).toLocaleString(
@@ -414,13 +416,15 @@ const LichSuTatCaVe = () => {
       {/* Modal QR Code */}
       <Modal
         title={
-          <div style={{
-            background: "linear-gradient(45deg, #722ed1, #eb2f96)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            fontSize: "18px",
-            fontWeight: "bold"
-          }}>
+          <div
+            style={{
+              background: "linear-gradient(45deg, #722ed1, #eb2f96)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontSize: "18px",
+              fontWeight: "bold",
+            }}
+          >
             <QrcodeOutlined style={{ marginRight: "8px", color: "#722ed1" }} />
             Mã QR vé #{selectedId}
           </div>
@@ -432,11 +436,13 @@ const LichSuTatCaVe = () => {
         style={{ top: 150 }}
       >
         {loadingChiTiet ? (
-          <div style={{ 
-            textAlign: "center", 
-            padding: "60px 0",
-            borderRadius: "12px"
-          }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "60px 0",
+              borderRadius: "12px",
+            }}
+          >
             <Spin size="large" />
             <div style={{ marginTop: "16px", color: "#666" }}>
               Đang tải mã QR...
@@ -447,16 +453,18 @@ const LichSuTatCaVe = () => {
             style={{
               borderRadius: "12px",
               border: "none",
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
-            <div style={{ 
-              background: "white", 
-              padding: "20px", 
-              borderRadius: "12px",
-              display: "inline-block",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.1)"
-            }}>
+            <div
+              style={{
+                background: "white",
+                padding: "20px",
+                borderRadius: "12px",
+                display: "inline-block",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+              }}
+            >
               <Image
                 src={`${chiTietData.data.qr_code}`}
                 alt="QR Code"
@@ -465,8 +473,10 @@ const LichSuTatCaVe = () => {
                 style={{ borderRadius: "8px" }}
               />
             </div>
-            <div style={{ marginTop: "16px", color: "#666" }}>
-              <Text>Quét mã QR để check-in tại rạp</Text>
+            <div style={{ marginTop: "16px" }}>
+              <Text style={{ color: "#666", fontFamily: "Alata, sans-serif" }}>
+                Quét mã QR để check-in tại rạp.
+              </Text>
             </div>
           </Card>
         ) : (

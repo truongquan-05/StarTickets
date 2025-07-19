@@ -33,7 +33,7 @@ const NewsUser: React.FC = () => {
       >
         <Empty
           description={
-            <span style={{ color: "white" }}>Không có tin tức nào</span>
+            <span style={{ color: "white", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>Không có tin tức nào</span>
           }
         />
       </div>

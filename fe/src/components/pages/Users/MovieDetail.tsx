@@ -1,6 +1,6 @@
 // MovieDetailUser.tsx
 import { useCallback, useEffect, useState, useRef } from "react";
-import { Button, Spin, Image, Modal, message } from "antd";
+import { Button, Spin, Image, Modal, message, Empty } from "antd";
 import {
   ClockCircleOutlined,
   FieldTimeOutlined,
@@ -934,7 +934,11 @@ const MovieDetailUser = () => {
             allowFullScreen
           />
         ) : (
-          <p style={{ padding: 20, textAlign: "center" }}>Không có trailer</p>
+          <Empty
+              description={
+                <span style={{ color: "black", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>Không có trailer.</span>
+              }
+            />
         )}
       </Modal>
       <h3 className="lich-chieu-title">LỊCH CHIẾU</h3>
@@ -1239,7 +1243,7 @@ const MovieDetailUser = () => {
 
                 {selectedFoods.length === 0 ? (
                   <div className="empty-selection-message">
-                    Chưa có món ăn nào được chọn
+                    <Empty description={<span style={{ color: "white", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>Chưa có món ăn nào được chọn!</span>} />
                   </div>
                 ) : (
                   <>

@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 
 import "./LichChieu.css";
 import { ILichChieu } from "../../Admin/interface/lichchieu";
+import { CalendarTwoTone } from "@ant-design/icons";
 
 interface IRap {
   id: number;
@@ -63,16 +64,21 @@ const LichChieuDatVe: React.FC<LichChieuProps> = ({
   });
 
   return (
-    <div className="lichchieu">
+    <>
       {hasFutureShowtimes ? (
-        renderedShowtimes // Nếu có lịch chiếu, hiển thị các rạp và lịch chiếu
+        <div className="lichchieu">
+          {renderedShowtimes} {/* Nếu có lịch chiếu, hiển thị các rạp và lịch chiếu */}
+        </div>
       ) : (
         // Nếu không có bất kỳ lịch chiếu nào trong tương lai, hiển thị thông báo
-        <p style={{ textAlign: 'center', fontSize: '1.2em', color: '#888', padding: '20px',margin:"auto" }}>
-          Chưa có lịch chiếu nào cho phim này trong thời gian tới. Vui lòng quay lại sau!
+        <p style={{ textAlign: 'center', fontSize: '35px', color: 'yellow', padding: '20px',margin:"auto", fontFamily: "Anton, sans-serif" }}>
+          <CalendarTwoTone
+            twoToneColor="yellow"
+            style={{ fontSize: "35px", marginRight: "10px", zIndex: 1 }}
+          />HIỆN CHƯA CÓ LỊCH CHIẾU
         </p>
       )}
-    </div>
+    </>
   );
 };
 
