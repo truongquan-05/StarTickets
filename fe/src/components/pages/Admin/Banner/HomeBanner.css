@@ -1,8 +1,8 @@
-/* HomeBanner.css */
+/* HomeBanner.css - Updated for Ant Design Carousel */
 .hero-banner {
-  --banner-height: 560px;
+  --banner-height: 550px;
   --banner-radius: 12px;
-  --primary-color: yellow; /* Màu chủ đạo - có thể thay đổi */
+  --primary-color: yellow;
   --transition-speed: 0.6s;
   position: relative;
   width: 100%;
@@ -10,19 +10,32 @@
   overflow: hidden;
 }
 
-.hero-swiper {
+.hero-carousel-wrapper {
+  position: relative;
   width: 100%;
   height: var(--banner-height);
-  /* border-radius: var(--banner-radius); */
   overflow: hidden;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
               0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+.hero-carousel {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-carousel .ant-carousel .slick-slide {
+  height: var(--banner-height);
+}
+
+.hero-carousel .ant-carousel .slick-slide > div {
+  height: 100%;
+}
+
 .banner-item {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: var(--banner-height);
 }
 
 .banner-link {
@@ -39,10 +52,9 @@
   object-position: center;
 }
 
-
-/* Navigation Arrows */
-.hero-swiper-button-next,
-.hero-swiper-button-prev {
+/* Custom Navigation Arrows */
+.hero-carousel-button-next,
+.hero-carousel-button-prev {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -58,56 +70,58 @@
   justify-content: center;
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  color: white;
+  font-size: 20px;
 }
 
-.hero-swiper-button-next {
+.hero-carousel-button-next {
   right: 24px;
 }
 
-.hero-swiper-button-prev {
+.hero-carousel-button-prev {
   left: 24px;
 }
 
-.hero-swiper:hover .hero-swiper-button-next,
-.hero-swiper:hover .hero-swiper-button-prev {
+.hero-carousel-wrapper:hover .hero-carousel-button-next,
+.hero-carousel-wrapper:hover .hero-carousel-button-prev {
   opacity: 1;
 }
 
-.hero-swiper-button-next svg,
-.hero-swiper-button-prev svg {
-  width: 24px;
-  height: 24px;
-  fill: white;
-}
-
-.hero-swiper-button-next:hover,
-.hero-swiper-button-prev:hover {
+.hero-carousel-button-next:hover,
+.hero-carousel-button-prev:hover {
   transform: translateY(-50%) scale(1.1);
+  background: rgba(0, 0, 0, 0.5);
 }
 
-/* Pagination */
-.hero-swiper .swiper-pagination {
+/* Custom Dots Styling */
+.hero-carousel .ant-carousel .slick-dots {
   bottom: 24px !important;
 }
 
-.hero-swiper .swiper-pagination-bullet {
+.hero-carousel .ant-carousel .slick-dots li {
   width: 12px;
   height: 12px;
-  background: transparent;
-  opacity: 1;
+  margin: 0 6px;
+}
+
+.hero-carousel .ant-carousel .slick-dots li button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
   border: none;
-  margin: 0 6px !important;
+  opacity: 1;
   transition: all 0.3s ease;
 }
 
-.hero-swiper .swiper-pagination-bullet svg {
-  width: 100%;
-  height: 100%;
+.hero-carousel .ant-carousel .slick-dots li.slick-active button {
+  background: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2);
 }
 
-.hero-swiper .swiper-pagination-bullet-active {
-  background: #ddd;
-  border-color: none;
+.hero-carousel .ant-carousel .slick-dots li button:hover {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 /* Loading State */
@@ -166,15 +180,17 @@
   }
 }
 
-/* Fade Effect */
-.swiper-slide {
-  opacity: 0 !important;
+/* Fade Effect for Ant Design */
+.hero-carousel .ant-carousel .slick-slide {
   transition: opacity var(--transition-speed) ease-out;
 }
 
-.swiper-slide-active,
-.swiper-slide-duplicate-active {
-  opacity: 1 !important;
+.hero-carousel .ant-carousel .slick-slide:not(.slick-active) {
+  opacity: 0;
+}
+
+.hero-carousel .ant-carousel .slick-slide.slick-active {
+  opacity: 1;
 }
 
 /* Responsive Design */
@@ -191,10 +207,11 @@
     margin-bottom: 30px;
   }
   
-  .hero-swiper-button-next,
-  .hero-swiper-button-prev {
+  .hero-carousel-button-next,
+  .hero-carousel-button-prev {
     width: 48px;
     height: 48px;
+    font-size: 18px;
   }
 }
 
@@ -204,14 +221,15 @@
     margin-bottom: 24px;
   }
   
-  .hero-swiper-button-next,
-  .hero-swiper-button-prev {
+  .hero-carousel-button-next,
+  .hero-carousel-button-prev {
     width: 40px;
     height: 40px;
+    font-size: 16px;
     display: none; /* Ẩn navigation trên mobile */
   }
   
-  .hero-swiper .swiper-pagination {
+  .hero-carousel .ant-carousel .slick-dots {
     bottom: 12px !important;
   }
 }
@@ -222,13 +240,18 @@
     --banner-radius: 0;
   }
   
-  .hero-swiper {
+  .hero-carousel-wrapper {
     box-shadow: none;
   }
   
-  .hero-swiper .swiper-pagination-bullet {
+  .hero-carousel .ant-carousel .slick-dots li {
     width: 8px;
     height: 8px;
-    margin: 0 4px !important;
+    margin: 0 4px;
+  }
+  
+  .hero-carousel .ant-carousel .slick-dots li button {
+    width: 8px;
+    height: 8px;
   }
 }
