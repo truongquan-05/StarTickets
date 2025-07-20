@@ -20,7 +20,7 @@ class DoAnController extends Controller
 
     public function index(Request $request)
     {
-        $query = DoAn::with('rap');
+        $query = DoAn::with('rap')->FilterByRap('rap');
 
         // Tìm kiếm theo tên
         if ($request->has('search')) {

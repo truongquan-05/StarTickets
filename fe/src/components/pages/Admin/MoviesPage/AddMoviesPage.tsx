@@ -7,7 +7,6 @@ import {
   Form,
   Input,
   InputNumber,
-  message,
   Row,
   Select,
   // Typography,
@@ -205,15 +204,7 @@ const AddMoviesPage = () => {
                   <Upload
                     name="anh_poster"
                     listType="picture"
-                    beforeUpload={(file) => {
-                      const isValid = [
-                        "image/jpeg",
-                        "image/png",
-                        "image/gif",
-                      ].includes(file.type);
-                      if (!isValid) message.error("Chỉ hỗ trợ JPG/PNG/GIF");
-                      return isValid || Upload.LIST_IGNORE;
-                    }}
+                   
                     maxCount={1}
                   >
                     <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Phim;
 use App\Models\ChuyenNgu;
 use App\Models\Phongchieu;
+use App\Traits\FilterNhanVienRap;
 use Illuminate\Database\Eloquent\Model;
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -13,6 +14,7 @@ class LichChieu extends Model
 {
     // use SoftDeletes;
     protected $table = 'lich_chieu';
+    use FilterNhanVienRap;
     protected $fillable = [
         'phim_id',
         'phong_id',
@@ -37,6 +39,6 @@ class LichChieu extends Model
     public function giaVe()
     {
         return $this->belongsToMany(LoaiGhe::class, 'gia_ve', 'lich_chieu_id', 'loai_ghe_id')
-                ->withPivot('id','gia_ve');
+            ->withPivot('id', 'gia_ve');
     }
 }

@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\FilterNhanVienRap;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Rap extends Model
 {
     use SoftDeletes;
-
+    use FilterNhanVienRap;
     protected $table = 'rap';
-
     protected $fillable = [
         'ten_rap',
         'dia_chi',

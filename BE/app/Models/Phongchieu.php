@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\FilterNhanVienRap;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PhongChieu extends Model
 {
     use SoftDeletes;
+    use FilterNhanVienRap;
 
     protected $table = 'phong_chieu';
     protected $fillable = ['rap_id', 'ten_phong', 'loai_so_do', 'hang_thuong', 'hang_doi', 'hang_vip', 'ma_tran_ghe_id', 'trang_thai'];

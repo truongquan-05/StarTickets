@@ -32,6 +32,7 @@ use App\Http\Controllers\Client\RapController as ClientRapController;
 use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
+use App\Http\Controllers\Admin\NhanVienRap;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
@@ -139,17 +140,15 @@ Route::prefix('banners')->group(function () {
     Route::get('list/trash', [BannerController::class, 'trashed']);
     Route::get('list/het_han', [BannerController::class, 'hetHan']);
 });
-
 Route::get('handler-qr/{id}', [QRController::class, 'show']);
 Route::post('handler-qr/{id}', [QRController::class, 'update']);
-
 Route::get('thong_tin_admin/{id}', [AdminController::class, 'show']);
 Route::put('thong_tin_admin/{id}', [AdminController::class, 'update']);
-
 Route::post('forget-password', [QuenMatKhau::class, 'store']);
 Route::post('xac-nhan-ma', [QuenMatKhau::class, 'checkMaXacNhan']);
 Route::post('reset-password', [QuenMatKhau::class, 'update']);
-
+Route::post('add-rap', [NhanVienRap::class, 'store']);
+Route::get("add-rap/{id}", [NhanVienRap::class, 'show']);
 
 
 //-------------------CLIENT-------------------//

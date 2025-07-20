@@ -33,7 +33,7 @@ class LichChieuController extends Controller
     public function index()
     {
         $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'desc')->FilterByRap('phong_chieu.rap')
             ->paginate(10);
         return response()->json($lichChieus);
     }
@@ -252,7 +252,7 @@ class LichChieuController extends Controller
 
     public function show($id)
     {
-        $lichChieu = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])->find($id);
+        $lichChieu = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])->FilterByRap('phong_chieu.rap')->find($id);
         if (!$lichChieu) {
             return response()->json([
                 'message' => 'Lịch chiếu không tồn tại',

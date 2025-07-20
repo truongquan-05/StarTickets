@@ -285,10 +285,21 @@ return new class extends Migration {
         });
 
         Schema::create('dat_lai_mat_khau', function (Blueprint $table) {
+            $table->id();
             $table->string('email', 100);
             $table->string('token', 255);
             $table->timestamps();
         });
+
+
+        Schema::create('nhan_vien_rap', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('vai_tro_id')->constrained('vai_tro')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('rap_id')->constrained('rap')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
+        });
+
+
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);

@@ -32,7 +32,7 @@ class PhongChieuController extends Controller
         $perPage = $request->query('per_page', 10);
         $page = $request->query('page', 1);
 
-        $query = PhongChieu::with('ghes', 'rap')->whereNull('deleted_at');
+        $query = PhongChieu::with('ghes', 'rap')->FilterByRap('rap')->whereNull('deleted_at');
 
         if ($search) {
             $query->where('ten_phong', 'like', "%{$search}%");

@@ -124,7 +124,8 @@ export default function DonVeList() {
       align: "center" as const,
     },
     {
-      title: "Mã đơn hàng",
+      title: "Mã ĐH",
+       width: 120,
       render: (r: any) => (
         <div>
           <div style={{ fontWeight: 500 }}>{r.ma_giao_dich || "—"}</div>
