@@ -24,7 +24,7 @@ class LichChieuController extends Controller
      */
     public function index()
     {
-        $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])
+        $lichChieus = LichChieu::with(['phim', 'phong_chieu.rap', 'chuyenngu', 'giaVe'])
             ->orderBy('id', 'desc')
             ->paginate(10);
         return response()->json($lichChieus);

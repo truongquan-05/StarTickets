@@ -30,6 +30,7 @@ export interface Food {
   gia_ban: number;
   so_luong_ton: number;
   image?: string;
+   rap_id: number[];
 }
 
 export interface Rap {

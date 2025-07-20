@@ -18,7 +18,7 @@ class DiemThuongController extends Controller
         if (empty($data)) {
             return response()->json([
                 'message' => 'Chưa có điểm nào',
-            ], 422);
+            ], 200);
         }
         return response()->json(
             [
@@ -38,7 +38,7 @@ class DiemThuongController extends Controller
         if (!$userPoints) {
             return response()->json([
                 'message' => 'Bạn chưa có điểm thành viên nào.',
-            ], 404); // Dùng 404 nếu không tìm thấy resource điểm
+            ], 422); // Dùng 404 nếu không tìm thấy resource điểm
         }
 
         if (!$datVe) {

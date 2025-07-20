@@ -106,7 +106,8 @@ const AddLichChieu = () => {
   const handleChangePhim = (phimId: number) => {
     setSelectedPhimId(phimId);
     const phim = phimList.find((p: any) => p.id === phimId);
-    if (phim && typeof phim.thoi_luong === 'number') { // Kiểm tra kiểu dữ liệu thoi_luong
+    if (phim && typeof phim.thoi_luong === "number") {
+      // Kiểm tra kiểu dữ liệu thoi_luong
       setThoiLuongPhim(phim.thoi_luong);
       const gioChieuField = form.getFieldValue("gio_chieu");
       if (
@@ -144,7 +145,7 @@ const AddLichChieu = () => {
 
       values.gio_ket_thuc = gioKetThucTinh;
 
-        if (values.phong_id !== undefined && !Array.isArray(values.phong_id)) {
+      if (values.phong_id !== undefined && !Array.isArray(values.phong_id)) {
         values.phong_id = [values.phong_id];
       } else if (values.phong_id === undefined) {
         values.phong_id = [];
@@ -152,19 +153,19 @@ const AddLichChieu = () => {
 
       // Xử lý các lịch chiếu thêm
       const lichChieuThem = (values.lich_chieu_them || []).map((item: any) => ({
-        gio_chieu: item.gio_chieu && dayjs.isDayjs(item.gio_chieu)
-          ? item.gio_chieu.format("YYYY-MM-DD HH:mm:ss")
-          : null,
+        gio_chieu:
+          item.gio_chieu && dayjs.isDayjs(item.gio_chieu)
+            ? item.gio_chieu.format("YYYY-MM-DD HH:mm:ss")
+            : null,
         gio_ket_thuc: item.gio_ket_thuc || null,
         chuyen_ngu_id: item.chuyen_ngu_id || null,
-        gia_ve: item.gia_ve // Đảm bảo trường giá vé được gửi đi
+        gia_ve: item.gia_ve, // Đảm bảo trường giá vé được gửi đi
       }));
 
       const payload = {
         ...values,
         lich_chieu_them: lichChieuThem,
       };
-     
 
       // Kiểm tra trùng lịch
       const checkResult = await checkLichChieu({
@@ -232,14 +233,19 @@ const AddLichChieu = () => {
           // } else {
           //   message.error("Đã có lỗi xảy ra");
           // }
-          console.log(error)
+          console.log(error);
           setSubmitting(false);
         },
       });
     } catch (error: any) {
       console.error("Lỗi trong quá trình submit form:", error);
-      let errorMessage = "Đã có lỗi xảy ra trong quá trình kiểm tra lịch chiếu.";
-      if (error.response && error.response.data && error.response.data.message) {
+      let errorMessage =
+        "Đã có lỗi xảy ra trong quá trình kiểm tra lịch chiếu.";
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;
@@ -267,16 +273,16 @@ const AddLichChieu = () => {
     }
 
     // Vô hiệu hóa ngày trong quá khứ
-    if (current.isBefore(now.startOf('day'))) {
-        return {
-            disabledHours: () => Array.from({ length: 24 }, (_, i) => i),
-            disabledMinutes: () => Array.from({ length: 60 }, (_, i) => i),
-            disabledSeconds: () => Array.from({ length: 60 }, (_, i) => i),
-        };
+    if (current.isBefore(now.startOf("day"))) {
+      return {
+        disabledHours: () => Array.from({ length: 24 }, (_, i) => i),
+        disabledMinutes: () => Array.from({ length: 60 }, (_, i) => i),
+        disabledSeconds: () => Array.from({ length: 60 }, (_, i) => i),
+      };
     }
 
     // Vô hiệu hóa giờ, phút, giây trong quá khứ nếu là ngày hiện tại
-    if (current.isSame(now, 'day')) {
+    if (current.isSame(now, "day")) {
       return {
         disabledHours: () => Array.from({ length: now.hour() }, (_, i) => i),
         disabledMinutes: (selectedHour: number) => {
@@ -295,7 +301,6 @@ const AddLichChieu = () => {
     }
     return {};
   };
-
 
   return (
     <Card
@@ -377,7 +382,7 @@ const AddLichChieu = () => {
                 placeholder="Chọn phòng chiếu"
                 disabled={!selectedRapId}
                 showSearch
-                 mode="multiple"
+                mode="multiple"
                 optionFilterProp="children"
                 filterOption={(input, option) =>
                   (option?.children as unknown as string)
@@ -430,7 +435,8 @@ const AddLichChieu = () => {
                 {
                   validator: (_, value) => {
                     if (!value) return Promise.resolve();
-                    if (dayjs.isDayjs(value) && value.isBefore(dayjs())) { // Kiểm tra isDayjs trước khi so sánh
+                    if (dayjs.isDayjs(value) && value.isBefore(dayjs())) {
+                      // Kiểm tra isDayjs trước khi so sánh
                       return Promise.reject(
                         new Error("Không được chọn thời gian trong quá khứ")
                       );
@@ -444,8 +450,9 @@ const AddLichChieu = () => {
                 showTime={{ format: "HH:mm:ss" }}
                 format="YYYY-MM-DD HH:mm:ss"
                 style={{ width: "100%" }}
-                disabledDate={(current) =>
-                  current && current.isBefore(dayjs().startOf("day")) // Sử dụng isBefore thay vì <
+                disabledDate={
+                  (current) =>
+                    current && current.isBefore(dayjs().startOf("day")) // Sử dụng isBefore thay vì <
                 }
                 disabledTime={disabledDateTime}
                 onChange={handleChangeGioChieu}
@@ -481,7 +488,6 @@ const AddLichChieu = () => {
                 min={0}
                 max={1000000000}
                 step={1000}
-           
                 style={{ width: "100%" }}
               />
             </Form.Item>
@@ -500,7 +506,7 @@ const AddLichChieu = () => {
                     if (fields.length === 0) add();
                   }}
                   // Chỉ cho phép thêm lịch chiếu phụ khi đã chọn phim và phòng
-                  disabled={!selectedPhimId || !form.getFieldValue('phong_id')} 
+                  disabled={!selectedPhimId || !form.getFieldValue("phong_id")}
                 >
                   Thêm lịch chiếu khác
                 </Button>
@@ -527,29 +533,38 @@ const AddLichChieu = () => {
                           rules={[
                             { required: true, message: "Chọn giờ chiếu" },
                             {
-                                validator: (_, value) => {
-                                    if (!value) return Promise.resolve();
-                                    if (dayjs.isDayjs(value) && value.isBefore(dayjs())) {
-                                        return Promise.reject(
-                                            new Error("Không được chọn thời gian trong quá khứ")
-                                        );
-                                    }
-                                    return Promise.resolve();
-                                },
+                              validator: (_, value) => {
+                                if (!value) return Promise.resolve();
+                                if (
+                                  dayjs.isDayjs(value) &&
+                                  value.isBefore(dayjs())
+                                ) {
+                                  return Promise.reject(
+                                    new Error(
+                                      "Không được chọn thời gian trong quá khứ"
+                                    )
+                                  );
+                                }
+                                return Promise.resolve();
+                              },
                             },
                           ]}
                         >
                           <DatePicker
                             showTime={{ format: "HH:mm:ss" }}
                             disabledDate={(current) =>
-                                current && current.isBefore(dayjs().startOf("day"))
+                              current &&
+                              current.isBefore(dayjs().startOf("day"))
                             }
                             disabledTime={disabledDateTime} // Áp dụng cho các lịch chiếu phụ
                             format="YYYY-MM-DD HH:mm:ss"
                             style={{ width: "100%" }}
                             onChange={(value) => {
-                              const currentLichChieuThem = form.getFieldValue("lich_chieu_them") || [];
-                              const updatedLichChieuThem = [...currentLichChieuThem];
+                              const currentLichChieuThem =
+                                form.getFieldValue("lich_chieu_them") || [];
+                              const updatedLichChieuThem = [
+                                ...currentLichChieuThem,
+                              ];
                               if (value && thoiLuongPhim > 0) {
                                 const gio_ket_thuc = value.add(
                                   thoiLuongPhim,
@@ -600,8 +615,9 @@ const AddLichChieu = () => {
                           onClick={() => {
                             remove(name);
                             // Nếu không còn lịch chiếu phụ nào, ẩn Card
-                            if (fields.length === 1) { // 1 là số lượng field trước khi remove
-                                setShowMoreSchedule(false);
+                            if (fields.length === 1) {
+                              // 1 là số lượng field trước khi remove
+                              setShowMoreSchedule(false);
                             }
                           }}
                           style={{

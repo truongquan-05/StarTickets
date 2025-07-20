@@ -211,6 +211,7 @@ return new class extends Migration {
             $table->decimal('gia_nhap', 10, 2);
             $table->decimal('gia_ban', 10, 2);
             $table->integer('so_luong_ton');
+            $table->foreignId('rap_id')->constrained('rap')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

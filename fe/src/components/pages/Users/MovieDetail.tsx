@@ -457,6 +457,7 @@ const MovieDetailUser = () => {
       do_an_id: foodItem.id, // ID của món ăn
       so_luong: foodItem.quantity, // Số lượng món ăn
       gia_ban: foodItem.gia_ban, // Giá bán của món ăn (đảm bảo foodItem.gia_ban có trong SelectedFoodItem)
+      
     }));
 
     const payload = {
@@ -961,6 +962,7 @@ const MovieDetailUser = () => {
           setDisplaySelectedSeats([]);
           setTotalPrice(0);
           setSelectedFoods([]); // Reset foods when changing lich chieu
+          console.log(lichChieu)
         }}
         selectedLichChieuId={selectedLichChieuId}
       />

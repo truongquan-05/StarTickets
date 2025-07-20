@@ -1,15 +1,6 @@
 import axios from "axios";
 import { User } from "../types/Uses";
 
-// const token = localStorage.getItem("token");
-
-// const axiosClient = axios.create({
-//   baseURL: import.meta.env.VITE_API_URL,
-//   headers: {
-//     Authorization: token ? `Bearer ${token}` : "",
-//   },
-// });
-
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
@@ -94,7 +85,7 @@ export const getCreateFood = async ({ resource = "do_an", values }: Props) => {
 
 export const getUpdateFood = async ({ id, values }: any) => {
   values.append("_method", "PUT"); 
-  return await axios.post(`http://127.0.0.1:8000/api/do_an/${id}`, values, {
+  return await axiosClient.post(`http://127.0.0.1:8000/api/do_an/${id}`, values, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

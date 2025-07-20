@@ -11,6 +11,9 @@ import {
   InputNumber,
   Modal,
   Upload,
+  Select,
+  Col,
+  Row,
 } from "antd";
 import {
   DeleteOutlined,
@@ -26,6 +29,7 @@ import {
   useUpdateFood,
   useDeleteFood,
 } from "../../hook/duHook";
+import { useListCinemas } from "../../hook/hungHook";
 
 const { Title } = Typography;
 
@@ -79,6 +83,7 @@ const FoodList = () => {
       },
     });
   };
+  const { data: cinemas } = useListCinemas({ resource: "rap" });
 
   const onFinish = async (values: Food) => {
     const formData = new FormData();
@@ -87,6 +92,15 @@ const FoodList = () => {
     formData.append("gia_nhap", values.gia_nhap.toString());
     formData.append("gia_ban", values.gia_ban.toString());
     formData.append("so_luong_ton", values.so_luong_ton.toString());
+    if (Array.isArray(values.rap_id)) {
+      // Tạo mới - nhiều rạp
+      values.rap_id.forEach((id: number) => {
+        formData.append("rap_id[]", id.toString());
+      });
+    } else {
+      // Cập nhật - một rạp
+      formData.append("rap_id", values.rap_id.toString());
+    }
 
     if (fileList.length > 0 && fileList[0].originFileObj) {
       formData.append("image", fileList[0].originFileObj);
@@ -121,6 +135,11 @@ const FoodList = () => {
     },
     { title: "Tên món", dataIndex: "ten_do_an", key: "ten_do_an" },
     { title: "Mô tả", dataIndex: "mo_ta", key: "mo_ta" },
+    {
+      title: "Rạp",
+      key: "rap",
+      render: (_, record) => record.rap?.ten_rap || "—",
+    },
     {
       title: "Giá nhập",
       dataIndex: "gia_nhap",
@@ -198,55 +217,95 @@ const FoodList = () => {
         onCancel={() => setModalOpen(false)}
         footer={null}
         destroyOnClose
+        width={900}
       >
         <Form form={form} layout="vertical" onFinish={onFinish}>
-          <Form.Item
-            label="Tên món"
-            name="ten_do_an"
-            rules={[{ required: true, message: "Vui lòng nhập tên món!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Mô tả"
-            name="mo_ta"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item label="Hình ảnh">
-            <Upload
-              listType="picture"
-              fileList={fileList}
-              onChange={({ fileList }) => setFileList(fileList)}
-              onRemove={() => setFileList([])}
-              beforeUpload={() => false}
-              maxCount={1}
-            >
-              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item
-            label="Giá nhập (VND)"
-            name="gia_nhap"
-            rules={[{ required: true, message: "Vui lòng nhập giá nhập!" }]}
-          >
-            <InputNumber min={0} style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            label="Giá bán (VND)"
-            name="gia_ban"
-            rules={[{ required: true, message: "Vui lòng nhập giá bán!" }]}
-          >
-            <InputNumber min={0} style={{ width: "100%" }} />
-          </Form.Item>
-          <Form.Item
-            label="Số lượng tồn"
-            name="so_luong_ton"
-            rules={[{ required: true, message: "Vui lòng nhập số lượng tồn!" }]}
-          >
-            <InputNumber min={0} style={{ width: "100%" }} />
-          </Form.Item>
+          <Row gutter={24}>
+            <Col span={12}>
+              <Form.Item
+                label="Tên món"
+                name="ten_do_an"
+                rules={[{ required: true, message: "Vui lòng nhập tên món!" }]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                name="rap_id"
+                label="Rạp"
+                rules={[{ required: true, message: "Vui lòng chọn rạp" }]}
+              >
+                <Select
+                  mode={!editingItem ? "multiple" : undefined}
+                  placeholder="Chọn Rạp"
+                  showSearch
+                  optionFilterProp="label"
+                  options={
+                    cinemas?.map((rap) => ({
+                      label: rap.ten_rap,
+                      value: rap.id,
+                    })) || []
+                  }
+                  filterOption={(input, option) =>
+                    String(option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  loading={isLoading}
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Mô tả"
+                name="mo_ta"
+                rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
+              >
+                <Input.TextArea />
+              </Form.Item>
+
+              <Form.Item label="Hình ảnh">
+                <Upload
+                  listType="picture"
+                  fileList={fileList}
+                  onChange={({ fileList }) => setFileList(fileList)}
+                  onRemove={() => setFileList([])}
+                  beforeUpload={() => false}
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                </Upload>
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item
+                label="Giá nhập (VND)"
+                name="gia_nhap"
+                rules={[{ required: true, message: "Vui lòng nhập giá nhập!" }]}
+              >
+                <InputNumber min={0} style={{ width: "100%" }} />
+              </Form.Item>
+
+              <Form.Item
+                label="Giá bán (VND)"
+                name="gia_ban"
+                rules={[{ required: true, message: "Vui lòng nhập giá bán!" }]}
+              >
+                <InputNumber min={0} style={{ width: "100%" }} />
+              </Form.Item>
+
+              <Form.Item
+                label="Số lượng tồn"
+                name="so_luong_ton"
+                rules={[
+                  { required: true, message: "Vui lòng nhập số lượng tồn!" },
+                ]}
+              >
+                <InputNumber min={0} style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Button htmlType="submit" type="primary" block>
             {editingItem ? "Cập nhật" : "Thêm mới"}
           </Button>

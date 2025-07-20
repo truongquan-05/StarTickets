@@ -17,5 +17,10 @@ class DoAn extends Model
         'gia_ban',
         'so_luong_ton',
         'image',
+        'rap_id'
     ];
+    public function rap()
+    {
+        return $this->belongsTo(Rap::class, 'rap_id');
+    }
 }

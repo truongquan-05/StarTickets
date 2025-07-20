@@ -16,14 +16,14 @@ use Illuminate\Support\Facades\Validator;
 class LichChieuController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('IsAdmin');
-    //     $this->middleware('permission:LichChieu-read')->only(['index', 'show']);
-    //     $this->middleware('permission:LichChieu-create')->only(['store']);
-    //     $this->middleware('permission:LichChieu-update')->only(['update']);
-    //     $this->middleware('permission:LichChieu-delete')->only(['delete', 'destroy']);
-    // }
+    public function __construct()
+    {
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:LichChieu-read')->only(['index', 'show']);
+        $this->middleware('permission:LichChieu-create')->only(['store']);
+        $this->middleware('permission:LichChieu-update')->only(['update']);
+        $this->middleware('permission:LichChieu-delete')->only(['delete', 'destroy']);
+    }
 
 
 
