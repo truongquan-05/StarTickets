@@ -69,7 +69,6 @@ const HomeBanner = () => {
           autoplay
           autoplaySpeed={6000}
           speed={1000}
-          effect="fade"
           dots={{
             className: "hero-carousel-dots"
           }}
