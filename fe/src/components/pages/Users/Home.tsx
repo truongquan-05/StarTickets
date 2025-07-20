@@ -6,16 +6,13 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import featuredImage from "../../../assets/image.png";
 import { getCurrentMovies, getUpcomingMovies } from "../../provider/duProvider";
+import customImage from "./../../assets/img/Group.png";
 
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
-  PlayCircleOutlined,
   TagOutlined,
   CommentOutlined,
   PlayCircleTwoTone,
@@ -264,7 +261,10 @@ const Home = () => {
             className="play-button"
             onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
           >
-            <PlayCircleTwoTone twoToneColor="yellow" style={{ marginRight: 5, fontSize:"20px" }} />
+            <PlayCircleTwoTone
+              twoToneColor="yellow"
+              style={{ marginRight: 5, fontSize: "20px" }}
+            />
             <span>Trailer</span>
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>
@@ -357,7 +357,10 @@ const Home = () => {
             className="play-button"
             onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
           >
-            <PlayCircleTwoTone twoToneColor="yellow" style={{ marginRight: 5, fontSize:"20px" }} />
+            <PlayCircleTwoTone
+              twoToneColor="yellow"
+              style={{ marginRight: 5, fontSize: "20px" }}
+            />
             <span>Trailer</span>
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>
@@ -456,7 +459,10 @@ const Home = () => {
             className="play-button"
             onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
           >
-            <PlayCircleTwoTone twoToneColor="yellow" style={{ marginRight: 5, fontSize:"20px" }} />
+            <PlayCircleTwoTone
+              twoToneColor="yellow"
+              style={{ marginRight: 5, fontSize: "20px" }}
+            />
             <span>Trailer</span>
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>
@@ -510,15 +516,18 @@ const Home = () => {
           </>
         ) : (
           <Empty
+            image={customImage}
             description={
               <span
                 style={{
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "Alata, sans-serif",
+                  position: "relative",
+                  top: "20px",
+                  fontSize: "30px",
+                  color: "#f3ea28",
+                  fontFamily: "Anton, sans-serif",
                 }}
               >
-                Không có phim đang chiếu.
+                ĐANG CẬP NHẬT
               </span>
             }
           />
@@ -547,15 +556,18 @@ const Home = () => {
           </>
         ) : (
           <Empty
+            image={customImage}
             description={
               <span
                 style={{
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "Alata, sans-serif",
+                  position: "relative",
+                  top: "20px",
+                  fontSize: "30px",
+                  color: "#f3ea28",
+                  fontFamily: "Anton, sans-serif",
                 }}
               >
-                Không có phim sắp chiếu.
+                ĐANG CẬP NHẬT
               </span>
             }
           />
@@ -584,15 +596,18 @@ const Home = () => {
           </>
         ) : (
           <Empty
+            image={customImage}
             description={
               <span
                 style={{
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "Alata, sans-serif",
+                  position: "relative",
+                  top: "20px",
+                  fontSize: "30px",
+                  color: "#f3ea28",
+                  fontFamily: "Anton, sans-serif",
                 }}
               >
-                Không có suất chiếu đặc biệt.
+                ĐANG CẬP NHẬT
               </span>
             }
           />
