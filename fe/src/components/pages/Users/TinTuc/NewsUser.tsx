@@ -40,7 +40,15 @@ const NewsUser: React.FC = () => {
       >
         <Empty
           description={
-            <span style={{ color: "white", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>Không có tin tức nào</span>
+            <span
+              style={{
+                color: "white",
+                fontSize: "16px",
+                fontFamily: "Alata, sans-serif",
+              }}
+            >
+              Không có tin tức nào
+            </span>
           }
         />
       </div>
@@ -77,6 +85,16 @@ const NewsUser: React.FC = () => {
                   }
                   description={
                     <>
+                      <div
+                        className="news-card-content"
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            item.noi_dung.length > 100
+                              ? item.noi_dung.slice(0, 100) + "..."
+                              : item.noi_dung,
+                        }}
+                      ></div>
+
                       <a
                         href={`/news/${item.id}`}
                         className="news-readmore-btn"
