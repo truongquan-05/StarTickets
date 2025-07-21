@@ -37,13 +37,6 @@ const HeaderUser = () => {
         <Link to="/profile">Thông tin cá nhân</Link>
       </Menu.Item>
       <Menu.Item
-        key="history"
-        icon={<HistoryOutlined />}
-        className="menu-item-custom"
-      >
-        <Link to="history-all">Lịch Sử Đặt Vé</Link>
-      </Menu.Item>
-      <Menu.Item
         key="logout"
         icon={<LogoutOutlined />}
         onClick={logout}

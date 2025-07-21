@@ -1,7 +1,7 @@
 /* MovieDetail */
 .movie-detail-wrapper {
   width: 100%;
-  background: linear-gradient(to right, #1e0033, #0c0b1f); /* Deep, cinematic background */
+  background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%); /* Deep, cinematic background */
   padding: 1px 10%; /* Increased padding for better spacing */
   font-family: 'Alata', sans-serif;
   box-sizing: border-box;

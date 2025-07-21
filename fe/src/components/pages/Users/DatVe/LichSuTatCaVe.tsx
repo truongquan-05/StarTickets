@@ -17,10 +17,6 @@ import {
 import {
   EyeOutlined,
   QrcodeOutlined,
-  CalendarOutlined,
-  EnvironmentOutlined,
-  DollarOutlined,
-  FileTextOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import {
@@ -97,14 +93,20 @@ const LichSuTatCaVe = () => {
     {
       title: (
         <Space>
-          <FileTextOutlined />
           <span>Mã đơn</span>
         </Space>
       ),
       dataIndex: "ma_giao_dich",
       key: "ma_giao_dich",
       render: (text: string) => (
-        <Tag style={{ fontWeight: "bold", fontFamily: "Alata, sans-serif", borderRadius: "2px", color: '#000' }}>
+        <Tag
+          style={{
+            fontWeight: "bold",
+            fontFamily: "Alata, sans-serif",
+            borderRadius: "2px",
+            color: "#000",
+          }}
+        >
           {text}
         </Tag>
       ),
@@ -112,7 +114,6 @@ const LichSuTatCaVe = () => {
     {
       title: (
         <Space>
-          <EnvironmentOutlined />
           <span>Chi nhánh</span>
         </Space>
       ),
@@ -127,7 +128,6 @@ const LichSuTatCaVe = () => {
     {
       title: (
         <Space>
-          <CalendarOutlined />
           <span>Ngày mua</span>
         </Space>
       ),
@@ -142,14 +142,20 @@ const LichSuTatCaVe = () => {
     {
       title: (
         <Space>
-          <DollarOutlined />
           <span>Tổng cộng</span>
         </Space>
       ),
       dataIndex: "tong_tien",
       key: "tong_cong",
       render: (value: number) => (
-        <Text strong style={{ color: "#000", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>
+        <Text
+          strong
+          style={{
+            color: "#000",
+            fontSize: "16px",
+            fontFamily: "Alata, sans-serif",
+          }}
+        >
           {value.toLocaleString("vi-VN", {
             style: "currency",
             currency: "VND",
@@ -167,8 +173,9 @@ const LichSuTatCaVe = () => {
             icon={<QrcodeOutlined />}
             onClick={() => showModalQR(record.thanh_toan_id)}
             style={{
-              borderColor: "#722ed1",
-              color: "#722ed1",
+              borderColor: "#1a0933",
+              color: "#1a0933",
+              borderRadius: "4px"
             }}
           >
             Mã QR
@@ -178,8 +185,8 @@ const LichSuTatCaVe = () => {
             icon={<EyeOutlined />}
             onClick={() => showModalChiTiet(record.thanh_toan_id)}
             style={{
-              background: "linear-gradient(45deg, #1890ff, #096dd9)",
-              borderColor: "#1890ff",
+              background: "#1a0933",
+              borderRadius: "4px",
             }}
           >
             Chi tiết
@@ -197,11 +204,10 @@ const LichSuTatCaVe = () => {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "400px",
-          background: "linear-gradient(to bottom, #1a0933, #222222)",
-          borderRadius: "12px",
+          background: "#1a0933",
         }}
       >
-        <Card style={{ textAlign: "center", padding: "40px" }}>
+        <Card style={{ textAlign: "center", padding: "40px", background: "transparent", border: "none" }}>
           <Spin size="large" />
           <div style={{ marginTop: "16px", color: "#666" }}>
             Đang tải dữ liệu...
@@ -214,12 +220,11 @@ const LichSuTatCaVe = () => {
   return (
     <div
       style={{
-        background: "linear-gradient(to bottom, #1a0933, #222222)",
+        background: "linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%)",
         padding: "24px",
-        margin: "0 auto",
       }}
     >
-      <div style={{ textAlign: "center", marginBottom: "32px" }}>
+      <div style={{ textAlign: "center"}}>
         <Title
           level={2}
           style={{
@@ -237,9 +242,9 @@ const LichSuTatCaVe = () => {
         <Col xs={24} lg={20}>
           <Card
             style={{
-              background: "transparent",
+              background: "rgba(255, 255, 255, 0.08)",
               borderRadius: "4px",
-              border: "1px solid #ccc",
+              border: "1px solid #4b4b4b",
               padding: "24px",
             }}
           >
@@ -261,7 +266,7 @@ const LichSuTatCaVe = () => {
                     `${range[0]}-${range[1]} của ${total} đơn hàng`,
                 }}
                 style={{
-                  background: "transparent",
+                  background: "#fff",
                 }}
                 className="modern-table"
               />
@@ -295,7 +300,7 @@ const LichSuTatCaVe = () => {
               textAlign: "center",
               padding: "60px 0",
               // background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-              borderRadius: "12px",
+              borderRadius: "4px",
             }}
           >
             <Spin size="large" />
@@ -315,7 +320,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Phim</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text strong style={{ color: "#1890ff", fontSize: "16px" }}>
+                <Text strong style={{ color: "#000", fontSize: "16px" }}>
                   {chiTietData.data.dat_ve.lich_chieu.phim.ten_phim}
                 </Text>
               </Descriptions.Item>
@@ -323,7 +328,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Rạp</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text style={{ color: "#52c41a", fontSize: "15px" }}>
+                <Text style={{ color: "#000", fontSize: "15px" }}>
                   {chiTietData.data.dat_ve.lich_chieu.phong_chieu.rap.ten_rap}
                 </Text>
               </Descriptions.Item>
@@ -331,7 +336,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Phòng</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Tag color="orange" style={{ fontSize: "14px" }}>
+                <Tag color="#000" style={{ fontSize: "14px" }}>
                   {chiTietData.data.dat_ve.lich_chieu.phong_chieu.ten_phong}
                 </Tag>
               </Descriptions.Item>
@@ -347,7 +352,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Giờ chiếu</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text strong style={{ color: "#1890ff" }}>
+                <Text strong style={{ color: "#000" }}>
                   {moment(chiTietData.data.dat_ve.lich_chieu.gio_chieu).format(
                     "HH:mm DD/MM/YYYY"
                   )}
@@ -357,7 +362,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Giờ kết thúc</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text style={{ color: "#ff4d4f" }}>
+                <Text style={{ color: "#000" }}>
                   {moment(
                     chiTietData.data.dat_ve.lich_chieu.gio_ket_thuc
                   ).format("HH:mm DD/MM/YYYY")}
@@ -371,7 +376,7 @@ const LichSuTatCaVe = () => {
                   {chiTietData.data.dat_ve.dat_ve_chi_tiet.map((item: any) => (
                     <Tag
                       key={item.ghe_dat.so_ghe}
-                      color="green"
+                      color="#000"
                       style={{
                         fontSize: "14px",
                         padding: "4px 8px",
@@ -390,11 +395,9 @@ const LichSuTatCaVe = () => {
                 <Text
                   strong
                   style={{
-                    color: "#52c41a",
+                    color: "#000",
                     fontSize: "18px",
-                    background: "linear-gradient(45deg, #52c41a, #389e0d)",
                     WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
                   }}
                 >
                   {Number(chiTietData.data?.dat_ve?.tong_tien).toLocaleString(
@@ -418,14 +421,13 @@ const LichSuTatCaVe = () => {
         title={
           <div
             style={{
-              background: "linear-gradient(45deg, #722ed1, #eb2f96)",
+              color: "#1a0933",
               WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
               fontSize: "18px",
               fontWeight: "bold",
             }}
           >
-            <QrcodeOutlined style={{ marginRight: "8px", color: "#722ed1" }} />
+            <QrcodeOutlined style={{ marginRight: "8px", color: "#1a0933" }} />
             Mã QR vé #{selectedId}
           </div>
         }
@@ -440,7 +442,7 @@ const LichSuTatCaVe = () => {
             style={{
               textAlign: "center",
               padding: "60px 0",
-              borderRadius: "12px",
+              borderRadius: "4px",
             }}
           >
             <Spin size="large" />
@@ -451,7 +453,7 @@ const LichSuTatCaVe = () => {
         ) : chiTietData?.data?.qr_code ? (
           <Card
             style={{
-              borderRadius: "12px",
+              borderRadius: "4px",
               border: "none",
               textAlign: "center",
             }}
@@ -460,7 +462,7 @@ const LichSuTatCaVe = () => {
               style={{
                 background: "white",
                 padding: "20px",
-                borderRadius: "12px",
+                borderRadius: "4px",
                 display: "inline-block",
                 boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
               }}
@@ -470,7 +472,7 @@ const LichSuTatCaVe = () => {
                 alt="QR Code"
                 width={250}
                 preview={false}
-                style={{ borderRadius: "8px" }}
+                style={{ borderRadius: "4px" }}
               />
             </div>
             <div style={{ marginTop: "16px" }}>
@@ -486,10 +488,13 @@ const LichSuTatCaVe = () => {
 
       <style jsx>{`
         .modern-table .ant-table-thead > tr > th {
-          background: linear-gradient(135deg, #e6f7ff 0%, #f0f5ff 100%);
-          border-bottom: 2px solid #1890ff;
-          font-weight: bold;
-          color: #1890ff;
+          background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%); 
+          border-bottom: 2px solid #4b4b4b;
+          font-weight: 100;
+          font-size: 18px;
+          font-family: "Anton", sans-serif;
+          color: #fff;  
+          text-align: center;
         }
         .modern-table .ant-table-tbody > tr:hover > td {
           background: linear-gradient(135deg, #f0f5ff 0%, #e6f7ff 100%);
@@ -497,6 +502,7 @@ const LichSuTatCaVe = () => {
         .modern-table .ant-table-tbody > tr > td {
           border-bottom: 1px solid #f0f0f0;
           padding: 16px;
+          text-align: center;
         }
       `}</style>
     </div>
