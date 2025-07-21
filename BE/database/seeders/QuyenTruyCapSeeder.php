@@ -33,7 +33,9 @@ class QuyenTruyCapSeeder extends Seeder
             'LichChieu-read',
             'PhongChieu-read',
             'Phim-read',
-            'DoAn-read'
+            'DoAn-read',
+            'Rap-read',
+            'DanhGia-read',
         ];
         foreach ($staffPermissions as $perm) {
             DB::table('quyen_truy_cap')->insert([

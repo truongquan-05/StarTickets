@@ -16,14 +16,14 @@ use Illuminate\Support\Facades\Validator;
 class LichChieuController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     $this->middleware('IsAdmin');
-    //     $this->middleware('permission:LichChieu-read')->only(['index', 'show']);
-    //     $this->middleware('permission:LichChieu-create')->only(['store']);
-    //     $this->middleware('permission:LichChieu-update')->only(['update']);
-    //     $this->middleware('permission:LichChieu-delete')->only(['delete', 'destroy']);
-    // }
+    public function __construct()
+    {
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:LichChieu-read')->only(['index', 'show']);
+        $this->middleware('permission:LichChieu-create')->only(['store']);
+        $this->middleware('permission:LichChieu-update')->only(['update']);
+        $this->middleware('permission:LichChieu-delete')->only(['delete', 'destroy']);
+    }
 
 
 
@@ -33,7 +33,7 @@ class LichChieuController extends Controller
     public function index()
     {
         $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'desc')->FilterByRap('phong_chieu.rap')
             ->paginate(10);
         return response()->json($lichChieus);
     }
@@ -252,7 +252,7 @@ class LichChieuController extends Controller
 
     public function show($id)
     {
-        $lichChieu = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])->find($id);
+        $lichChieu = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])->FilterByRap('phong_chieu.rap')->find($id);
         if (!$lichChieu) {
             return response()->json([
                 'message' => 'Lịch chiếu không tồn tại',

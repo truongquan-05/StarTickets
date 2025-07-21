@@ -12,15 +12,15 @@ class DoAnController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['IsAdmin','permission:DoAn-read'])->only(['show']);
-        $this->middleware(['IsAdmin','permission:DoAn-create'])->only(['store']);
-        $this->middleware(['IsAdmin','permission:DoAn-update'])->only(['update']);
-        $this->middleware(['IsAdmin','permission:DoAn-delete'])->only(['delete']);
+        $this->middleware(['IsAdmin', 'permission:DoAn-read'])->only(['show']);
+        $this->middleware(['IsAdmin', 'permission:DoAn-create'])->only(['store']);
+        $this->middleware(['IsAdmin', 'permission:DoAn-update'])->only(['update']);
+        $this->middleware(['IsAdmin', 'permission:DoAn-delete'])->only(['delete']);
     }
-    
+
     public function index(Request $request)
     {
-        $query = DoAn::query();
+        $query = DoAn::with('rap')->FilterByRap('rap');
 
         // Tìm kiếm theo tên
         if ($request->has('search')) {
@@ -47,10 +47,13 @@ class DoAnController extends Controller
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('uploads', 'public');
         }
+        $rap = $request->input('rap_id');
+        foreach ($rap as $id) {
+            $data['rap_id'] = $id;
+            $item = DoAn::create($data);
+        }
 
-
-        $item = DoAn::create($data);
-        return response()->json(['message' => 'Thêm món thành công!', 'data' => $item]);
+        return response()->json(['message' => 'Thêm món thành công!', 'data' => $rap]);
     }
 
     public function update(DoAnRequest $request, $id)

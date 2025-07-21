@@ -24,9 +24,7 @@
   height: 100%;
 }
 
-.hero-carousel .ant-carousel .slick-slide {
-  height: var(--banner-height);
-}
+ 
 
 .hero-carousel .ant-carousel .slick-slide > div {
   height: 100%;
@@ -180,19 +178,13 @@
   }
 }
 
-/* Fade Effect for Ant Design */
+
 .hero-carousel .ant-carousel .slick-slide {
-  transition: opacity var(--transition-speed) ease-out;
+  opacity: 1 !important;
+  transition: transform var(--transition-speed) ease;
 }
 
-.hero-carousel .ant-carousel .slick-slide:not(.slick-active) {
-  opacity: 0;
-}
-
-.hero-carousel .ant-carousel .slick-slide.slick-active {
-  opacity: 1;
-}
-
+ 
 /* Responsive Design */
 @media (max-width: 1200px) {
   .hero-banner {

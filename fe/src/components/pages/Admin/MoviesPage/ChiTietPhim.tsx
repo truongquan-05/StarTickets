@@ -22,13 +22,23 @@ const MovieDetail = () => {
   const { data, isLoading } = useMovieDetail(id);
   const BASE_URL = "http://127.0.0.1:8000";
 
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: "center", padding: "50px 0" }}>
-        <Spin size="large" tip="Đang tải phim..." />
-      </div>
-    );
-  }
+ if (isLoading) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center", // căn giữa ngang
+        alignItems: "center",     // căn giữa dọc
+        height: "80vh",          // chiều cao toàn màn hình
+        flexDirection: "column",  // để tip nằm dưới spinner
+        backgroundColor:"white"
+      }}
+    >
+      <Spin size="large" tip="Đang tải phim..." />
+    </div>
+  );
+}
+
 
   const movie: IMovies = data;
   if (!movie) return <div>Không tìm thấy phim</div>;
@@ -52,16 +62,15 @@ const MovieDetail = () => {
   return (
     <Card style={{ maxWidth: 1500, margin: "0 auto", padding: 24 }}>
       <Row gutter={24}>
-        <Col span={8}>
-          <Image
-            src={`${BASE_URL}/storage/${movie.anh_poster}`}
-            alt={movie.ten_phim}
-            width={"100%"}
-            height={400}
-            style={{ objectFit: "cover", borderRadius: 8 }}
-            fallback="https://via.placeholder.com/240x360?text=No+Image"
-          />
-        </Col>
+          <Col span={8}>
+            <Image
+              src={`${BASE_URL}/storage/${movie.anh_poster}`}
+              alt={movie.ten_phim}
+              width={"100%"}
+              style={{ objectFit: "cover", borderRadius: 8, maxHeight: "675px"}}
+              fallback="https://via.placeholder.com/240x360?text=No+Image"
+            />
+          </Col>
 
         <Col span={16}>
           <Title level={2}>{movie.ten_phim}</Title>

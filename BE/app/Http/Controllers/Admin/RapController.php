@@ -16,7 +16,7 @@ class RapController extends Controller
         $this->middleware('permission:Rap-read')->only(['index', 'show']);
         $this->middleware('permission:Rap-create')->only(['store']);
         $this->middleware('permission:Rap-update')->only(['update']);
-        $this->middleware('permission:Rap-delete')->only(['destroy']);
+        $this->middleware('permission:Rap-delete')->only(['destroy','softDelete','restore']);
     }
     
     public function index(Request $request)
@@ -48,7 +48,7 @@ class RapController extends Controller
             });
         }
 
-        $raps = $query->orderBy($sortBy, 'DESC')->paginate($perPage);
+        $raps = $query->FilterByRap()->orderBy($sortBy, 'DESC')->paginate($perPage);
 
         return response()->json([
             'success' => true,

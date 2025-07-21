@@ -58,6 +58,7 @@ import RedirectAdminAccess from "../pages/auth/RedirectAdminAccess";
 import PhanQuyen from "../pages/NguoiDung/PhanQuyen";
 import BannerHetHan from "../pages/Admin/Banner/BannerHetHan";
 import ListVoucher from "../pages/Users/ListVoucher";
+import ProfileAdmin from "../pages/Admin/Profile/ProfileAdmin";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -129,6 +130,9 @@ const Routermain = () => {
         { path: "users", element: <UserList /> },
         { path: "vaitro", element: <VaiTro /> },
         { path: "phanquyen", element: <PhanQuyen /> },
+
+        { path: "profile", element: <ProfileAdmin /> },
+
 
         { path: "genre", element: <GenresManager /> },
 

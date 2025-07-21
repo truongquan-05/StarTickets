@@ -1,15 +1,6 @@
 import axios from "axios";
 
 
-// const token = localStorage.getItem("token");
-
-// const axiosClient = axios.create({
-//   baseURL: import.meta.env.VITE_API_URL,
-//   headers: {
-//     Authorization: token ? `Bearer ${token}` : "",
-//   },
-// });
-
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
@@ -22,7 +13,6 @@ axiosClient.interceptors.request.use((config) => {
   }
   return config;
 });
-
 export type Props = {
   resource: string; 
   id?: number | string;

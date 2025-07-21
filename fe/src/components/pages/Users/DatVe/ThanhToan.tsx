@@ -171,6 +171,7 @@ const ThanhToan: React.FC = () => {
 
   // Lấy thông tin lịch chiếu và rạp
   useEffect(() => {
+    const token = localStorage.getItem("token");
     if (!bookingData?.lich_chieu_id || !rapList) {
       // Nếu không có lich_chieu_id (chỉ mua đồ ăn), tạo lichChieuInfo mặc định
       if (
@@ -188,7 +189,14 @@ const ThanhToan: React.FC = () => {
       return;
     }
     setLoading(true);
-    fetch(`http://127.0.0.1:8000/api/lich_chieu/${bookingData.lich_chieu_id}`)
+    fetch(`http://127.0.0.1:8000/api/lich_chieu/${bookingData.lich_chieu_id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data: LichChieuInfo) => {
         setLichChieuInfo(data);
@@ -387,7 +395,13 @@ const ThanhToan: React.FC = () => {
                 <>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
+                      <span
+                        style={{
+                          color: "white",
+                          fontWeight: 100,
+                          fontFamily: "Alata, sans-serif",
+                        }}
+                      >
                         Họ và tên
                       </span>
                     }
@@ -404,7 +418,13 @@ const ThanhToan: React.FC = () => {
                   </Form.Item>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
+                      <span
+                        style={{
+                          color: "white",
+                          fontWeight: 100,
+                          fontFamily: "Alata, sans-serif",
+                        }}
+                      >
                         Email
                       </span>
                     }
@@ -422,7 +442,13 @@ const ThanhToan: React.FC = () => {
                   </Form.Item>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
+                      <span
+                        style={{
+                          color: "white",
+                          fontWeight: 100,
+                          fontFamily: "Alata, sans-serif",
+                        }}
+                      >
                         * Mã giảm giá (nếu có)
                       </span>
                     }
@@ -511,13 +537,25 @@ const ThanhToan: React.FC = () => {
                   </Form.Item>
                   <Form.Item
                     label={
-                      <span style={{ color: "white", fontWeight: 100, fontFamily: "Alata, sans-serif" }}>
+                      <span
+                        style={{
+                          color: "white",
+                          fontWeight: 100,
+                          fontFamily: "Alata, sans-serif",
+                        }}
+                      >
                         * Điểm của bạn: {listDiem?.data?.diem}
                       </span>
                     }
                     name="diem"
                   >
-                    <Input style={{ height: "50px", borderRadius: "1px", fontWeight: 100, fontFamily: "Alata, sans-serif" }}
+                    <Input
+                      style={{
+                        height: "50px",
+                        borderRadius: "1px",
+                        fontWeight: 100,
+                        fontFamily: "Alata, sans-serif",
+                      }}
                       placeholder="Nhập điểm tích lũy (nếu có)"
                       onFocus={(e) => {
                         valueWhenFocused.current = e.target.value;
@@ -697,7 +735,7 @@ const ThanhToan: React.FC = () => {
                   {bookingData.lich_chieu.phim.ten_phim}
                 </h2>
                 <div className="countdown-timer">
-                  THỜI GIAN GIỮ VÉ  {formatTime(countdown)}
+                  THỜI GIAN GIỮ VÉ {formatTime(countdown)}
                 </div>
               </div>
 
@@ -735,7 +773,6 @@ const ThanhToan: React.FC = () => {
                   <Row className="booking-details-row">
                     <Col span={8}>
                       <Text
-                        
                         style={{
                           color: "yellow",
                           fontFamily: "'Alata', sans-serif",
@@ -755,7 +792,6 @@ const ThanhToan: React.FC = () => {
                     </Col>
                     <Col span={8}>
                       <Text
-                        
                         style={{
                           color: "yellow",
                           fontFamily: "'Alata', sans-serif",
@@ -778,7 +814,6 @@ const ThanhToan: React.FC = () => {
                   <Row className="booking-details-row">
                     <Col span={8}>
                       <Text
-                        
                         style={{
                           color: "yellow",
                           fontFamily: "'Alata', sans-serif",
@@ -798,7 +833,6 @@ const ThanhToan: React.FC = () => {
                     </Col>
                     <Col span={8}>
                       <Text
-                        
                         style={{
                           color: "yellow",
                           fontFamily: "'Alata', sans-serif",
@@ -823,7 +857,6 @@ const ThanhToan: React.FC = () => {
               {/* HIỂN THỊ THÔNG TIN ĐỒ ĂN Ở ĐÂY */}
               <div className="food-drinks-section">
                 <Text
-                  
                   style={{
                     color: "yellow",
                     fontFamily: "'Alata', sans-serif",

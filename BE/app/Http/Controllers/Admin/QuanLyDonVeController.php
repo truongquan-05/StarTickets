@@ -32,7 +32,7 @@ class QuanLyDonVeController extends Controller
             'datVe.lichChieu',
             'datVe.lichChieu.phim',
             'datVe.lichChieu.phong_chieu.rap',
-        ])->latest()->get();
+        ])->FilterByRap('datVe.lichChieu.phong_chieu.rap')->latest()->get();
 
         return response()->json([
             'success' => true,
