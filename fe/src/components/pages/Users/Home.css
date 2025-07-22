@@ -18,6 +18,7 @@
   padding: 15px 10%;
   font-family: "Alata", sans-serif;
   box-sizing: border-box;
+   min-height: 350px;
 }
 
 .section h3 {
