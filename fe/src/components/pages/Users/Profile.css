@@ -13,20 +13,26 @@
 
 /* Loading container */
 .profile-loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
   background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%);
+  /* Deep, cinematic background */
+  padding: 50px 10%;
+  /* Increased padding for better spacing */
+  font-family: "Alata", sans-serif;
+  box-sizing: border-box;
 }
 
 .profile-loading-card {
   text-align: center;
-  padding: 40px;
+  padding: 100px;
+  background-color: transparent;
+  border: none;
 }
 
 .profile-loading-text {
-  font-size: 16px;
+  font-size: 20px;
   color: #666;
+  font-family: "Alata", sans-serif;
 }
 
 /* Header card */
@@ -74,7 +80,7 @@
   font-weight: 100;
   font-family: "Alata", sans-serif;
   letter-spacing: 1px;
-  font-size: 15px;
+  font-size: 13px;
   margin: 0;
   text-align: left;
   word-break: break-word; /* Bắt buộc xuống dòng khi tên quá dài */
@@ -111,15 +117,16 @@
 }
 
 .profile-poin2 {
+  color: yellow;
+  font-family: "Alata", sans-serif;
+}
+.profile-total-poin {
   -webkit-text-fill-color: transparent;
   background: linear-gradient(90deg, #ff296e 3.69%, #fbc821 75.91%);
   background-clip: text;
   -webkit-background-clip: text;
   font-family: "Alata", sans-serif;
-}
-.profile-total-poin {
-  color: yellow;
-  font-size: 20px;
+  font-size: 25px;
   font-family: "Alata", sans-serif;
   margin-bottom: 10px;
 }
@@ -144,7 +151,7 @@
 .profile-menu-icon {
   color: #fff;
   font-size: 16px;
-  margin-right: 10px;
+  margin-right: 8px;
   width: 16px;
 }
 
@@ -185,6 +192,14 @@
   backdrop-filter: blur(10px);
   border-radius: 4px;
   margin-bottom: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.profile-content-cardd {
+  background: rgb(255, 255, 255);
+  backdrop-filter: blur(10px);
+  border-radius: 4px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   border: none;
 }
@@ -255,11 +270,6 @@
   letter-spacing: 1px;
 }
 
-.profile-input-success {
-  border-radius: 4px;
-  border: 1px solid #52c41a;
-}
-
 .profile-input-danger {
   border-radius: 1px;
   border: 1px solid #ddd;
@@ -284,13 +294,14 @@
   font-family: "Anton", sans-serif;
   height: 40px;
   border-radius: 0 1px 1px 0 !important;
-  border: 1px solid #52c41a;
+  border: none;
   font-weight: 100;
 }
 
 .profile-verification-button-active {
   background: linear-gradient(to right, #5d14cb, #4c238e);
   color: white;
+  border: 1px solid #f4f4f4;
 }
 
 .profile-verification-button-disabled {
@@ -311,10 +322,13 @@
   padding: 0 32px;
   height: 40px;
 }
-
+.profile-button-primary:hover{
+  background-color: #18191e;
+  color: white;
+}
 .profile-button-secondary {
   border-radius: 4px;
-  border: none;
+  border: 1px solid #f4f4f4;
   background: #ddd;
   font-family: "Anton", sans-serif;
   letter-spacing: 1px;

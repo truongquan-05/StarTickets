@@ -486,7 +486,7 @@ const LichSuTatCaVe = () => {
         )}
       </Modal>
 
-      <style jsx>{`
+      <style>{`
         .modern-table .ant-table-thead > tr > th {
           background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%); 
           border-bottom: 2px solid #4b4b4b;

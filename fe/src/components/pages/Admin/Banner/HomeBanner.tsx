@@ -94,6 +94,7 @@ const HomeBanner = () => {
           <RightOutlined />
         </div>
       </div>
+      <button className="hero-banner-button"><span>ĐẶT VÉ NGAY</span></button>
     </section>
   );
 };
