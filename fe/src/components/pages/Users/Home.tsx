@@ -23,6 +23,7 @@ import {
 import ContactForm from "./PhanHoiKhachHang";
 import HomeBanner from "../Admin/Banner/HomeBanner";
 import axios from "axios";
+import customImage from "./../../assets/img/404.png"; 
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -510,19 +511,23 @@ const Home = () => {
           </>
         ) : (
           <Empty
+            image={customImage}
             description={
               <span
                 style={{
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "Alata, sans-serif",
+                  position: "relative",
+                  top: "20px",
+                  fontSize: "30px",
+                  color: "#f3ea28",
+                  fontFamily: "Anton, sans-serif",
                 }}
               >
-                Không có phim đang chiếu.
+                ĐANG CẬP NHẬT
               </span>
             }
           />
         );
+        
 
       case "upcoming":
         return Array.isArray(PhimSapChieu) && PhimSapChieu.length > 0 ? (
@@ -547,18 +552,22 @@ const Home = () => {
           </>
         ) : (
           <Empty
+            image={customImage}
             description={
               <span
                 style={{
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "Alata, sans-serif",
+                  position: "relative",
+                  top: "20px",
+                  fontSize: "30px",
+                  color: "#f3ea28",
+                  fontFamily: "Anton, sans-serif",
                 }}
               >
-                Không có phim sắp chiếu.
+                ĐANG CẬP NHẬT
               </span>
             }
           />
+        
         );
 
       case "special":
@@ -583,16 +592,19 @@ const Home = () => {
             </div>
           </>
         ) : (
-          <Empty
+        <Empty
+            image={customImage}
             description={
               <span
                 style={{
-                  color: "white",
-                  fontSize: "16px",
-                  fontFamily: "Alata, sans-serif",
+                  position: "relative",
+                  top: "20px",
+                  fontSize: "30px",
+                  color: "#f3ea28",
+                  fontFamily: "Anton, sans-serif",
                 }}
               >
-                Không có suất chiếu đặc biệt.
+                ĐANG CẬP NHẬT
               </span>
             }
           />
