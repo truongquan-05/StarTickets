@@ -579,6 +579,9 @@
     transform: translateY(0);
   }
 }
+:where(.css-dev-only-do-not-override-vrrzze).ant-empty .ant-empty-image {
+  height: 230px;
+}
 
 /* ==========================
    PHẦN LIÊN HỆ
