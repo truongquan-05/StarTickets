@@ -18,6 +18,9 @@ import {
   HistoryOutlined,
   LogoutOutlined,
   SettingOutlined,
+  SolutionOutlined,
+  LoadingOutlined,
+  IdcardOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import "./Profile.css";
@@ -158,6 +161,7 @@ const ProfilePage = () => {
     return (
       <div className="profile-loading-container">
         <Card className="profile-loading-card">
+          <LoadingOutlined  style={{fontSize: "100px", marginBottom:"30px", color: "yellow"}}/>
           <div className="profile-loading-text">
             Đang tải thông tin người dùng...
           </div>
@@ -171,14 +175,17 @@ const ProfilePage = () => {
       <Row gutter={24}>
         {/* Sidebar bên trái - Avatar và Email */}
         <Col xs={24} md={8} lg={6}>
-          <Card className="profile-sidebar-card" style={{ position: "sticky", top: "130px" }}>
+          <Card
+            className="profile-sidebar-card"
+            style={{ position: "sticky", top: "130px" }}
+          >
             <div
               className="profile-sidebar-content"
               style={{ textAlign: "center" }}
             >
               <div className="thongtinavtten">
                 <Avatar
-                  size={50}
+                  size={40}
                   src={user.anh_dai_dien || undefined}
                   icon={!user.avatar && <UserOutlined />}
                   className="profile-avatar"
@@ -202,7 +209,7 @@ const ProfilePage = () => {
                 to="/profile"
                 className="profile-menu-item profile-menu-textttkh"
               >
-                <UserOutlined
+                <SolutionOutlined
                   className="profile-menu-icon"
                   style={{ color: "yellow" }}
                 />
@@ -226,11 +233,8 @@ const ProfilePage = () => {
                 <span className="profile-menu-text">Lịch sử mua hàng</span>
               </Link>
 
-              {[1, 3, 4, 99].includes(user?.vai_tro_id) && (
-                <Link
-                  to="/admin"
-                  className="profile-menu-item profile-logout"
-                >
+              {user?.vai_tro_id !== 2 && ( //chỉ vai_tro_id = 2 mới không có nút còn lại các id khác đều vào được
+                <Link to="/admin" className="profile-menu-item profile-logout">
                   <SettingOutlined className="profile-menu-icon" />
                   <span className="profile-menu-logout">Trang quản trị</span>
                 </Link>
@@ -383,7 +387,7 @@ const ProfilePage = () => {
           </Card>
 
           {/* Đổi mật khẩu */}
-          <Card className="profile-content-card">
+          <Card className="profile-content-cardd">
             <div className="profile-card-header">
               <Title level={3} className="profile-card-title">
                 Đổi mật khẩu

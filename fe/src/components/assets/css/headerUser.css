@@ -208,10 +208,11 @@
 
 
 .menu-item-custom {
+  font-family: "Alata", sans-serif;
   padding: 8px 18px !important;
-  font-weight: 600 !important;
+  font-weight: 100;
   font-size: 14px !important;
-  color: #ffff !important;
+  color: #ffff;
   background-color: #0c0b1f !important;
 }
 
