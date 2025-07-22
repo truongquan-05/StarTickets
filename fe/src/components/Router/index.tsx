@@ -59,6 +59,8 @@ import PhanQuyen from "../pages/NguoiDung/PhanQuyen";
 import BannerHetHan from "../pages/Admin/Banner/BannerHetHan";
 import ListVoucher from "../pages/Users/ListVoucher";
 import ProfileAdmin from "../pages/Admin/Profile/ProfileAdmin";
+import QuenMatKhau from "../pages/Users/QuenMatKhau";
+import DoiMatKhau from "../pages/Users/DoiMatKhau";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -82,6 +84,8 @@ const Routermain = () => {
         { path: "check", element: <CheckDatVe /> },
         { path: "banner", element: <HomeBanner /> },
         { path: "list-voucher", element: <ListVoucher /> },
+        { path: "/forgot-password", element: <QuenMatKhau /> },
+        { path: "/change-password", element: <DoiMatKhau /> },
         {
           path: "redirect-admin",
           element: <RedirectAdminAccess />,
