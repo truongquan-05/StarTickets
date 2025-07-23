@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\XacNhan;
 use App\Models\NguoiDung;
 use App\Mail\MaXacNhanMail;
 use Illuminate\Http\Request;
 use App\Jobs\XoaMaXacNhanJob;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -22,10 +23,10 @@ class NguoiDungController extends Controller
     public function __construct()
     {
 
-        $this->middleware(['IsAdmin','permission:TaiKhoan-read'])->only(['index', 'show']);
-        $this->middleware(['IsAdmin','permission:TaiKhoan-create'])->only(['store']);
-        $this->middleware(['IsAdmin','permission:TaiKhoan-update'])->only(['update']);
-        $this->middleware(['IsAdmin','permission:TaiKhoan-delete'])->only(['destroy']);
+        $this->middleware(['IsAdmin', 'permission:TaiKhoan-read'])->only(['index', 'show']);
+        $this->middleware(['IsAdmin', 'permission:TaiKhoan-create'])->only(['store']);
+        $this->middleware(['IsAdmin', 'permission:TaiKhoan-update'])->only(['update']);
+        $this->middleware(['IsAdmin', 'permission:TaiKhoan-delete'])->only(['destroy']);
     }
 
 
@@ -126,9 +127,18 @@ class NguoiDungController extends Controller
     public function update(Request $request, string $id)
     {
         $nguoiDung = NguoiDung::find($id);
+        if ($nguoiDung->google_id != null) {
+            return response()->json([
+                'errors' => [
+                    'message' => ['Tài khoản Google không thể cập nhật'],
+                ]
+            ], 422);
+        }
         if (!$nguoiDung) {
             return response()->json([
-                'message' => 'Người dùng không tồn tại',
+                'errors' => [
+                    'message' => ['Người dùng không tồn tại'],
+                ]
             ], 404);
         }
         if ($request->has('ma_xac_nhan')) {
@@ -213,6 +223,15 @@ class NguoiDungController extends Controller
                 'message' => 'Dữ liệu không hợp lệ',
                 'errors' => $validatedData->errors()
             ], 422);
+        }
+        $anh = $request->input('anh_dai_dien');
+        $isUrl = is_string($anh) && (str_starts_with($anh, 'http://') || str_starts_with($anh, 'https://'));
+        if (
+            $nguoiDung->anh_dai_dien &&
+            Storage::disk('public')->exists($nguoiDung->anh_dai_dien) &&
+            $isUrl
+        ) {
+            Storage::disk('public')->delete($nguoiDung->anh_dai_dien);
         }
 
         //  Nếu hợp lệ thì cập nhật

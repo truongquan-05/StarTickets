@@ -75,9 +75,13 @@ const List = () => {
 
   useEffect(() => {
     if (isModalOpen && editingItem) {
-      const the_loai_ids = editingItem.the_loai_id
-        ? JSON.parse(editingItem.the_loai_id).map((item: any) => item.id)
-        : [];
+      const the_loai_ids =
+        editingItem.the_loai_id
+          ? (typeof editingItem.the_loai_id === "string"
+              ? JSON.parse(editingItem.the_loai_id)
+              : editingItem.the_loai_id
+            ).map((item: any) => item.id)
+          : [];
 
       form.setFieldsValue({
         ...editingItem,

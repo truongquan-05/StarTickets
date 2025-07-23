@@ -5,9 +5,6 @@ import {
   FullscreenOutlined,
   FullscreenExitOutlined,
   UserOutlined,
-  ScanOutlined,
-  MoonOutlined,
-  SunOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -19,7 +16,9 @@ import {
   theme as antdTheme,
   Menu,
 } from "antd";
-import { useState } from "react";
+import axios from "axios";
+import "./Header.css";
+import { useEffect, useState } from "react";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -32,7 +31,6 @@ const HeaderAdmin = ({
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const { token } = antdTheme.useToken();
 
   const toggleFullScreen = async () => {
@@ -45,23 +43,77 @@ const HeaderAdmin = ({
     }
   };
 
-  const toggleDarkMode = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    document.body.setAttribute("data-theme", newMode ? "dark" : "light");
+  const getVaiTroById = async (id: any) => {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/lay-vaitro/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
   };
 
+  const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const [vaiTro, setVaiTro] = useState("");
+
+  useEffect(() => {
+    const fetchVaiTro = async () => {
+      try {
+        const res = await getVaiTroById(storedUser.vai_tro_id);
+        setVaiTro(res.data.ten_vai_tro); // hoặc data.name tuỳ theo API trả về
+      } catch (error) {
+        console.error("Lỗi lấy vai trò:", error);
+      }
+    };
+
+    if (storedUser.vai_tro_id) {
+      fetchVaiTro();
+    }
+  }, [storedUser.vai_tro_id]);
   const user = {
-    name: "Nguyễn Văn A",
-    role: "Quản trị viên",
-    avatar: "",
+    name: storedUser.ten || "",
+    role: vaiTro || "Admin",
+    avatar: storedUser.anh_dai_dien || "",
+  };
+
+  const logout = async () => {
+    const token = localStorage.getItem("token");
+    await axios.post("http://127.0.0.1:8000/api/logout", null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/";
   };
   const sidebarWidth = 250;
+  // Menu vẫn như cũ
   const accountMenu = (
     <Menu
+      className="custom-dropdown-menu"
       items={[
-        { key: "1", label: "Thông tin cá nhân" },
-        { key: "2", label: "Đăng xuất" },
+        {
+          key: "1",
+          label: (
+            <a style={{ color: "black" }} href="/admin/profile">
+              Thông tin cá nhân
+            </a>
+          ),
+        },
+        {
+          key: "2",
+          label: (
+            <span onClick={logout} style={{ color: "red" }}>
+              Đăng xuất
+            </span>
+          ),
+        },
       ]}
     />
   );
@@ -90,7 +142,6 @@ const HeaderAdmin = ({
         style={{ fontSize: 20 }}
       />
       <Space size="middle">
-        <Button type="text" icon={<ScanOutlined />} style={{ fontSize: 20 }} />
         <Button
           type="text"
           icon={
@@ -99,19 +150,19 @@ const HeaderAdmin = ({
           onClick={toggleFullScreen}
           style={{ fontSize: 20 }}
         />
-        <Button
-          type="text"
-          icon={darkMode ? <MoonOutlined /> : <SunOutlined />}
-          onClick={toggleDarkMode}
-          style={{ fontSize: 20 }}
-        />
+
         <Dropdown overlay={accountMenu} placement="bottomRight">
           <Space>
             <Avatar
               icon={<UserOutlined />}
-              src={user.avatar}
+              src={
+                user?.avatar?.startsWith("http")
+                  ? user.avatar
+                  : `http://127.0.0.1:8000/storage/${user?.avatar}`
+              }
               style={{ backgroundColor: "#87d068" }}
             />
+
             <div style={{ lineHeight: 1 }}>
               <Text strong>Xin chào: {user.name}</Text>
               <br />

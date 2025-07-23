@@ -86,10 +86,13 @@ export const GoogleAuthProvider = ({ children }: GoogleAuthProviderProps) => {
 
       if (!userId) throw new Error("Không tìm thấy user.id");
 
-    // 🚀 Gọi backend để lấy thông tin người dùng theo ID
-    const res = await axios.get(`http://127.0.0.1:8000/api/client/nguoi_dung/${userId}`, {
-      headers: { Authorization: `Bearer ${parsedToken}` },
-    });
+      // 🚀 Gọi backend để lấy thông tin người dùng theo ID
+      const res = await axios.get(
+        `http://127.0.0.1:8000/api/client/nguoi_dung/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${parsedToken}` },
+        }
+      );
 
       const fullUser = res.data?.data || res.data;
 
@@ -107,11 +110,18 @@ export const GoogleAuthProvider = ({ children }: GoogleAuthProviderProps) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const token = localStorage.getItem("token");
+    await axios.post("http://127.0.0.1:8000/api/logout", null, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     setAccessToken(null);
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    window.location.href = "/"; 
   };
 
   return (

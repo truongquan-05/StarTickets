@@ -18,7 +18,8 @@
   padding: 15px 10%;
   font-family: "Alata", sans-serif;
   box-sizing: border-box;
-   min-height: 350px;
+  min-height: 350px;
+
 }
 
 .section h3 {
@@ -72,8 +73,10 @@
   transition: width 0.3s ease;
   opacity: 0;
 }
+
 .tab-btn.active {
-  color: yellow; /* Màu chữ trùng màu gạch dưới */
+  color: yellow;
+  /* Màu chữ trùng màu gạch dưới */
 }
 
 .tab-btn.active::after {
@@ -94,7 +97,8 @@
   flex-direction: column;
   overflow: hidden;
 }
-.movie-card:hover h4{
+
+.movie-card:hover h4 {
   color: yellow;
 }
 
@@ -105,6 +109,7 @@
   overflow: hidden;
   border-radius: 4px;
 }
+
 /* Nút chuyển trang */
 .swiper-button-next,
 .swiper-button-prev {
@@ -115,8 +120,10 @@
   transform: translateY(-50%);
   width: 40px;
   height: 40px;
-  background-color: rgba(0, 0, 0, 0.4); /* màu nền mờ */
-  border-radius: 50%; /* tạo khung tròn */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* màu nền mờ */
+  border-radius: 50%;
+  /* tạo khung tròn */
   z-index: 10;
 }
 
@@ -172,12 +179,14 @@
 
 .contentphimm {
   position: relative;
-  transform: translateY(10%); /* Giảm xuống từ 100% → 30% là hợp lý hơn */
+  transform: translateY(10%);
+  /* Giảm xuống từ 100% → 30% là hợp lý hơn */
   opacity: 0;
   z-index: 2;
   text-align: left;
   width: 100%;
-  padding: 0px 30px; /* đẩy nội dung cách lề trái một chút cho đẹp */
+  padding: 0px 30px;
+  /* đẩy nội dung cách lề trái một chút cho đẹp */
   box-sizing: border-box;
 }
 
@@ -195,16 +204,20 @@
   position: absolute;
   top: 0;
   left: 0;
-  transform: translateY(0); /* vị trí ban đầu */
-  opacity: 1;               /* hiển thị */
+  transform: translateY(0);
+  /* vị trí ban đầu */
+  opacity: 1;
+  /* hiển thị */
   transition: transform 0.4s ease, opacity 0.4s ease;
   z-index: 0;
 }
 
 .attach2 {
-  transform: translateY(0); /* vị trí ban đầu */
-  opacity: 1;               /* hiển thị */
-  
+  transform: translateY(0);
+  /* vị trí ban đầu */
+  opacity: 1;
+  /* hiển thị */
+
   position: absolute;
   top: 0;
   right: 0;
@@ -223,7 +236,7 @@
   transform: rotate(45deg);
   font-family: var(--font-title);
   padding: 6px 0;
-  box-shadow: 0 0 4px rgba(0,0,0,0.9);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.9);
 }
 
 .txtt {
@@ -237,12 +250,17 @@
 
 /* Khi hover: trượt lên và biến mất */
 .movie-poster-wrapper:hover .attach {
-  transform: translateY(-100%); /* Trượt lên trên khung */
-  opacity: 0;                   /* Mờ dần */
+  transform: translateY(-100%);
+  /* Trượt lên trên khung */
+  opacity: 0;
+  /* Mờ dần */
 }
+
 .movie-poster-wrapper:hover .attach2 {
-  transform: translateY(-100%); /* Trượt lên trên khung */
-  opacity: 0;                   /* Mờ dần */
+  transform: translateY(-100%);
+  /* Trượt lên trên khung */
+  opacity: 0;
+  /* Mờ dần */
   transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
@@ -255,6 +273,7 @@
   padding: 0.4rem;
   text-transform: uppercase;
 }
+
 .txt {
   align-items: center;
   border: 0.2rem solid #000;
@@ -266,6 +285,7 @@
   width: 2.2rem;
   font-family: "Anton", sans-serif;
 }
+
 .age {
   background-color: #f03;
   display: flex;
@@ -277,6 +297,7 @@
   text-align: center;
   text-transform: uppercase;
 }
+
 .num {
   font-size: 1.6em;
   letter-spacing: 0.18rem;
@@ -284,6 +305,7 @@
   text-indent: 0.18rem;
   font-family: "Anton", sans-serif;
 }
+
 .txt2 {
   margin-top: 2px;
   align-items: center;
@@ -311,6 +333,7 @@
   white-space: nowrap;
   font-family: "Alata", sans-serif !important;
 }
+
 .movie-title {
   font-size: 20px;
   font-weight: 600;
@@ -323,9 +346,11 @@
   white-space: nowrap;
   font-family: "Alata", sans-serif !important;
 }
+
 .movie-title:hover {
   color: yellow;
 }
+
 .movie-card h4 {
   margin: 20px 0;
   font-size: 20px;
@@ -358,7 +383,8 @@
   padding: 0 25px;
   position: relative;
   height: 40px;
-  background-color: #ffeb3b; /* màu nền ban đầu */
+  background-color: #ffeb3b;
+  /* màu nền ban đầu */
   color: #000;
   border: none;
   cursor: pointer;
@@ -377,7 +403,8 @@
   padding: 0 25px;
   position: relative;
   height: 40px;
-  background-color: transparent; /* màu nền ban đầu */
+  background-color: transparent;
+  /* màu nền ban đầu */
   color: #fff !important;
   cursor: pointer;
   border-radius: 4px;
@@ -409,7 +436,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  background: linear-gradient(to right, #531dab, #9254de);
+  /* màu khi hover */
   z-index: 0;
   transform: scaleX(0);
   transform-origin: left;
@@ -475,7 +503,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  background: linear-gradient(to right, #531dab, #9254de);
+  /* màu khi hover */
   z-index: 0;
   transform: scaleX(0);
   transform-origin: left;
@@ -494,6 +523,7 @@
   position: relative;
   z-index: 1;
 }
+
 /* ==========================
    PHẦN GIỚI THIỆU ĐẶC BIỆT
 ========================== */
@@ -574,11 +604,16 @@
     opacity: 0;
     transform: translateY(40px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
+:where(.css-dev-only-do-not-override-vrrzze).ant-empty .ant-empty-image {
+  height: 230px;
+}
+
 :where(.css-dev-only-do-not-override-vrrzze).ant-empty .ant-empty-image {
   height: 230px;
 }
@@ -615,6 +650,7 @@
 .social-icon img {
   width: 200px;
 }
+
 .social-icon span {
   font-size: 40px;
   color: #fff;
@@ -636,7 +672,8 @@
 .contact-right {
   flex: 1;
   background-color: rgba(51, 102, 204, 0.8);
-  padding: 40px; /* padding đều 4 phía */
+  padding: 40px;
+  /* padding đều 4 phía */
   border-radius: 4px;
   box-shadow: 0 8px 24px rgb(149 157 165 / 20%);
   color: #fff;
@@ -721,7 +758,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, #531dab, #9254de); /* màu khi hover */
+  background: linear-gradient(to right, #531dab, #9254de);
+  /* màu khi hover */
   z-index: 0;
   transform: scaleX(0);
   transform-origin: left;
@@ -777,6 +815,7 @@
     text-align: left;
   }
 }
+
 /* search */
 .session-search {
   width: 100%;
@@ -785,6 +824,7 @@
   font-family: "Alata", sans-serif;
   box-sizing: border-box;
 }
+
 .search-page {
   padding: 40px;
   background-color: #12092b;
@@ -798,6 +838,7 @@
   border-radius: 10px;
   background-color: #37297b;
 }
+
 /*lọc phim*/
 
 .loading-spinner {
@@ -806,6 +847,7 @@
   align-items: center;
   min-height: 100px;
 }
+
 /* Tiêu đề */
 .quick-booking-title {
   font-weight: 800;

@@ -37,32 +37,18 @@ const { Title } = Typography;
 const UserList = () => {
   // Lấy dữ liệu người dùng
   const { data, isLoading, refetch } = useListUsers({ resource: "nguoi_dung" });
-  const dataSource = data?.data || [];
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const currentUserId = currentUser?.id;
+
+  const dataSource = (data?.data || []).filter(
+    (user: any) => user.id !== currentUserId
+  );
 
   // Lấy dữ liệu vai trò từ hook useListVaiTro
   const { data: rolesData, isLoading: rolesLoading } = useListVaiTro({
     resource: "vai_tro",
   });
   const roles = rolesData?.data || [];
-
-  // Xoá người dùng
-  // const { mutate: deleteUser } = useDeleteUser({ resource: "nguoi_dung" });
-  // const handleDelete = async (id: number) => {
-  //   try {
-  //     deleteUser(id, {
-  //       onSuccess: () => {
-  //         message.success("Xoá người dùng thành công");
-  //         refetch();
-  //       },
-  //       onError: () => {
-  //         message.error("Xoá thất bại, vui lòng thử lại");
-  //       },
-  //     });
-  //   } catch (error) {
-  //     message.error("Xoá thất bại, vui lòng thử lại");
-  //     console.log(error);
-  //   }
-  // };
 
   // Modal và form
   const [form] = Form.useForm();
@@ -103,14 +89,10 @@ const UserList = () => {
               </div>
             ),
           });
-
         },
       });
-    }
-    else{
-   
-
-       updateUser(
+    } else {
+      updateUser(
         { id: editingItem.id, values },
         {
           onSuccess: () => {
@@ -137,7 +119,6 @@ const UserList = () => {
         }
       );
     }
-    
   };
   const { mutate: updateUser } = useUpdateUser({ resource: "nguoi_dung" });
   const handleToggleStatus = (user: User) => {
@@ -183,19 +164,26 @@ const UserList = () => {
       title: "Ảnh đại diện",
       dataIndex: "anh_dai_dien",
       key: "anh_dai_dien",
-      render: (url: string) => (
-        <img
-          src={url}
-          alt="avatar"
-          style={{
-            width: 50,
-            height: 50,
-            objectFit: "cover",
-            borderRadius: "50%",
-          }}
-        />
-      ),
+      render: (url: string) => {
+        const fullUrl = url.startsWith("http")
+          ? url
+          : `http://localhost:8000/storage/${url}`;
+
+        return (
+          <img
+            src={fullUrl}
+            alt="avatar"
+            style={{
+              width: 50,
+              height: 50,
+              objectFit: "cover",
+              borderRadius: "50%",
+            }}
+          />
+        );
+      },
     },
+
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "SĐT", dataIndex: "so_dien_thoai", key: "so_dien_thoai" },
 
