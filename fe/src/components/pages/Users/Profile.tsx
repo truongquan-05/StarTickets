@@ -195,7 +195,7 @@ const ProfilePage = () => {
                 </h2>
               </div>
               <button className="profile-role-button">
-                {user.vaitro}
+                {user.vaitro.ten_vai_tro}
               </button>
               <div className="profile-poin-wrapper">
                 <p className="profile-poin">Tích điểm:</p>
