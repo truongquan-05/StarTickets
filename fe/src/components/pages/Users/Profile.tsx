@@ -13,14 +13,21 @@ import {
 } from "antd";
 import {
   UserOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  LockOutlined,
-  SafetyOutlined,
   EditOutlined,
+  StarOutlined,
+  HistoryOutlined,
+  LogoutOutlined,
+  SettingOutlined,
+  SolutionOutlined,
+  LoadingOutlined,
+  IdcardOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import "./Profile.css";
+import { useListDiem } from "../../hook/hungHook";
+import { Link, useNavigate } from "react-router-dom";
+import { color } from "framer-motion";
+import { useGoogleAuth } from "../auth/GoogleAuth";
 
 const { Title, Text } = Typography;
 
@@ -30,7 +37,14 @@ const ProfilePage = () => {
   const [user, setUser] = useState<any>(null);
   const [countdown, setCountdown] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
+  const { data: listDiem } = useListDiem({ resource: "diem_thanh_vien" });
+  const { logout } = useGoogleAuth();
+  const navigate = useNavigate();
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   const handleSendCode = async () => {
     if (countdown > 0) return;
 
@@ -147,6 +161,7 @@ const ProfilePage = () => {
     return (
       <div className="profile-loading-container">
         <Card className="profile-loading-card">
+          <LoadingOutlined  style={{fontSize: "100px", marginBottom:"30px", color: "yellow"}}/>
           <div className="profile-loading-text">
             Đang tải thông tin người dùng...
           </div>
@@ -160,28 +175,92 @@ const ProfilePage = () => {
       <Row gutter={24}>
         {/* Sidebar bên trái - Avatar và Email */}
         <Col xs={24} md={8} lg={6}>
-          <Card className="profile-sidebar-card">
-            <div className="profile-sidebar-content" style={{ textAlign: "center" }}>
-              <Avatar
-                size={120}
-                src={user.anh_dai_dien || undefined}
-                icon={!user.avatar && <UserOutlined />}
-                className="profile-avatar"
-              />
-              <Title level={2} className="profile-username">
-                {user.ten || "Chưa cập nhật"}
-              </Title>
+          <Card
+            className="profile-sidebar-card"
+            style={{ position: "sticky", top: "130px" }}
+          >
+            <div
+              className="profile-sidebar-content"
+              style={{ textAlign: "center" }}
+            >
+              <div className="thongtinavtten">
+                <Avatar
+                  size={40}
+                  src={user.anh_dai_dien || undefined}
+                  icon={!user.avatar && <UserOutlined />}
+                  className="profile-avatar"
+                />
+                <h2 className="profile-username">
+                  {user.ten || "Chưa cập nhật"}
+                </h2>
+              </div>
+              <button className="profile-role-button">
+                {user.vaitro}
+              </button>
+              <div className="profile-poin-wrapper">
+                <p className="profile-poin">Tích điểm:</p>
+                <p className="profile-poin2">Thành viên</p>
+              </div>
+              <p className="profile-total-poin">{listDiem?.data?.diem}</p>
+            </div>
+            {/* Menu Navigation */}
+            <div className="profile-menu">
+              <Link
+                to="/profile"
+                className="profile-menu-item profile-menu-textttkh"
+              >
+                <SolutionOutlined
+                  className="profile-menu-icon"
+                  style={{ color: "yellow" }}
+                />
+                <span className="profile-menu-text" style={{ color: "yellow" }}>
+                  Thông tin khách hàng
+                </span>
+              </Link>
+
+              <Link to="#" className="profile-menu-item">
+                <StarOutlined className="profile-menu-icon" />
+                <span className="profile-menu-text">
+                  Thành viên StarTickets
+                </span>
+              </Link>
+
+              <Link
+                to="/history-all"
+                className="profile-menu-item profile-menu-textht"
+              >
+                <HistoryOutlined className="profile-menu-icon" />
+                <span className="profile-menu-text">Lịch sử mua hàng</span>
+              </Link>
+
+              {user?.vai_tro_id !== 2 && ( //chỉ vai_tro_id = 2 mới không có nút còn lại các id khác đều vào được
+                <Link to="/admin" className="profile-menu-item profile-logout">
+                  <SettingOutlined className="profile-menu-icon" />
+                  <span className="profile-menu-logout">Trang quản trị</span>
+                </Link>
+              )}
+              <div
+                className="profile-menu-item profile-logout"
+                onClick={handleLogout}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && logout()} // hỗ trợ accessibility
+              >
+                <LogoutOutlined className="profile-menu-icon" />
+                <span className="profile-menu-logout">Đăng xuất</span>
+              </div>
             </div>
           </Card>
         </Col>
 
         {/* Nội dung chính bên phải */}
+
         <Col xs={24} md={16} lg={18}>
+          <h1 className="profile-title-ttkh">THÔNG TIN KHÁCH HÀNG</h1>
           {/* Thông tin cá nhân */}
           <Card className="profile-content-card">
             <div className="profile-card-header">
               <Title level={3} className="profile-card-title">
-                <UserOutlined className="profile-form-label-icon" />
                 Thông tin cá nhân
               </Title>
               <Button
@@ -201,10 +280,7 @@ const ProfilePage = () => {
                 <Col xs={24} md={12}>
                   <Form.Item
                     label={
-                      <Text className="profile-form-label">
-                        <UserOutlined className="profile-form-label-icon" />
-                        Họ và tên
-                      </Text>
+                      <Text className="profile-form-label">Họ và tên</Text>
                     }
                     name="ten"
                   >
@@ -221,10 +297,7 @@ const ProfilePage = () => {
                 <Col xs={24} md={12}>
                   <Form.Item
                     label={
-                      <Text className="profile-form-label">
-                        <PhoneOutlined className="profile-form-label-icon" />
-                        Số điện thoại
-                      </Text>
+                      <Text className="profile-form-label">Số điện thoại</Text>
                     }
                     name="so_dien_thoai"
                   >
@@ -241,12 +314,7 @@ const ProfilePage = () => {
               </Row>
 
               <Form.Item
-                label={
-                  <Text className="profile-form-label">
-                    <MailOutlined className="profile-form-label-icon" />
-                    Email
-                  </Text>
-                }
+                label={<Text className="profile-form-label">Email</Text>}
                 name="email"
               >
                 <Input
@@ -263,10 +331,7 @@ const ProfilePage = () => {
                 <>
                   <Form.Item
                     label={
-                      <Text className="profile-form-label-success">
-                        <SafetyOutlined className="profile-form-label-icon" />
-                        Mã xác nhận
-                      </Text>
+                      <Text className="profile-form-label">Mã xác nhận</Text>
                     }
                     required
                   >
@@ -295,11 +360,10 @@ const ProfilePage = () => {
                         onClick={handleSendCode}
                         disabled={countdown > 0}
                       >
-                        {countdown > 0 ? `${countdown}s` : "Gửi mã"}
+                        {countdown > 0 ? `GỬI LẠI (${countdown}s)` : "GỬI MÃ"}
                       </Button>
                     </Input.Group>
                   </Form.Item>
-
                   <Form.Item className="profile-form-actions">
                     <Space>
                       <Button
@@ -307,13 +371,13 @@ const ProfilePage = () => {
                         htmlType="submit"
                         className="profile-button-primary"
                       >
-                        Cập nhật thông tin
+                        LƯU THÔNG TIN
                       </Button>
                       <Button
                         onClick={() => setIsEditing(false)}
                         className="profile-button-secondary"
                       >
-                        Hủy
+                        HỦY
                       </Button>
                     </Space>
                   </Form.Item>
@@ -323,11 +387,12 @@ const ProfilePage = () => {
           </Card>
 
           {/* Đổi mật khẩu */}
-          <Card className="profile-content-card">
-            <Title level={3} className="profile-card-title-password">
-              <LockOutlined className="profile-form-label-icon" />
-              Đổi mật khẩu
-            </Title>
+          <Card className="profile-content-cardd">
+            <div className="profile-card-header">
+              <Title level={3} className="profile-card-title">
+                Đổi mật khẩu
+              </Title>
+            </div>
 
             <Form
               layout="vertical"
@@ -335,32 +400,21 @@ const ProfilePage = () => {
               onFinish={handleChangePassword}
             >
               <Form.Item
-                label={
-                  <Text className="profile-form-label-danger">
-                    <LockOutlined className="profile-form-label-icon" />
-                    Mật khẩu cũ
-                  </Text>
-                }
+                label={<Text className="profile-form-label">Mật khẩu cũ</Text>}
                 name="mat_khau_cu"
                 rules={[
                   { required: true, message: "Vui lòng nhập mật khẩu cũ!" },
                   { min: 8, message: "Mật khẩu tối thiểu 8 ký tự!" },
                 ]}
               >
-                <Input.Password
-                  className="profile-input-danger"
-                  placeholder="Nhập mật khẩu cũ"
-                />
+                <Input.Password className="profile-input-danger" />
               </Form.Item>
 
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
                     label={
-                      <Text className="profile-form-label-danger">
-                        <LockOutlined className="profile-form-label-icon" />
-                        Mật khẩu mới
-                      </Text>
+                      <Text className="profile-form-label">Mật khẩu mới</Text>
                     }
                     name="mat_khau_moi"
                     rules={[
@@ -386,17 +440,13 @@ const ProfilePage = () => {
                       }),
                     ]}
                   >
-                    <Input.Password
-                      className="profile-input-danger"
-                      placeholder="Nhập mật khẩu mới"
-                    />
+                    <Input.Password className="profile-input-danger" />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
                   <Form.Item
                     label={
-                      <Text className="profile-form-label-danger">
-                        <SafetyOutlined className="profile-form-label-icon" />
+                      <Text className="profile-form-label">
                         Xác thực mật khẩu
                       </Text>
                     }
@@ -422,21 +472,14 @@ const ProfilePage = () => {
                       }),
                     ]}
                   >
-                    <Input.Password
-                      className="profile-input-danger"
-                      placeholder="Nhập lại mật khẩu mới"
-                    />
+                    <Input.Password className="profile-input-danger" />
                   </Form.Item>
                 </Col>
               </Row>
 
               <Form.Item className="profile-password-form-actions">
-                <Button
-                  type="danger"
-                  htmlType="submit"
-                  className="profile-button-danger"
-                >
-                  Đổi mật khẩu
+                <Button htmlType="submit" className="profile-button-primary">
+                  ĐỔI MẬT KHẨU
                 </Button>
               </Form.Item>
             </Form>

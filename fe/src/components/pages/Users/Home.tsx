@@ -20,6 +20,7 @@ import {
 import ContactForm from "./PhanHoiKhachHang";
 import HomeBanner from "../Admin/Banner/HomeBanner";
 import axios from "axios";
+import customImage from "./../../assets/img/404.png"; 
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -532,6 +533,7 @@ const Home = () => {
             }
           />
         );
+        
 
       case "upcoming":
         return Array.isArray(PhimSapChieu) && PhimSapChieu.length > 0 ? (
@@ -571,6 +573,7 @@ const Home = () => {
               </span>
             }
           />
+        
         );
 
       case "special":
@@ -595,7 +598,7 @@ const Home = () => {
             </div>
           </>
         ) : (
-          <Empty
+        <Empty
             image={customImage}
             description={
               <span

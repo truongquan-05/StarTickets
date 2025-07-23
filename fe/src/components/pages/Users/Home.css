@@ -19,6 +19,7 @@
   font-family: "Alata", sans-serif;
   box-sizing: border-box;
   min-height: 350px;
+
 }
 
 .section h3 {
@@ -609,6 +610,9 @@
     transform: translateY(0);
   }
 }
+:where(.css-dev-only-do-not-override-vrrzze).ant-empty .ant-empty-image {
+  height: 230px;
+}
 
 :where(.css-dev-only-do-not-override-vrrzze).ant-empty .ant-empty-image {
   height: 230px;
@@ -883,4 +887,23 @@
   font-weight: bold;
   border: none;
   height: 32px;
+}
+
+.section-trangcon{
+  margin: 50px 0;
+}
+.section-title-phimdangchieu{
+  color: #fff;
+  font-family: 'Anton', sans-serif;
+  font-weight: 100;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
 }

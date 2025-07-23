@@ -208,6 +208,11 @@ export const getPhimCoLichChieu = async () => {
   const { data } = await axiosClient.get("/admin/don-ve-phim");
   return data;
 };
+// thông tin cá nhân bên admin
+export const getAdminProfile = () => axios.get("/admin/profile");
+export const updateAdminProfile = (data: any) => axios.put("/admin/profile", data);
+export const changeAdminPassword = (data: any) => axios.post("/admin/change-password", data);
+
 
 
 

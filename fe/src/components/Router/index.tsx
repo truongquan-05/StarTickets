@@ -58,6 +58,12 @@ import RedirectAdminAccess from "../pages/auth/RedirectAdminAccess";
 import PhanQuyen from "../pages/NguoiDung/PhanQuyen";
 import BannerHetHan from "../pages/Admin/Banner/BannerHetHan";
 import ListVoucher from "../pages/Users/ListVoucher";
+import ProfileAdmin from "../pages/Admin/Profile/ProfileAdmin";
+import PhimDangChieu from "../pages/Users/PhimDangChieu";
+import PhimSapChieu from "../pages/Users/PhimSapChieu";
+import PhimDacBiet from "../pages/Users/PhimDacBiet";
+import QuenMatKhau from "../pages/Users/QuenMatKhau";
+import DoiMatKhau from "../pages/Users/DoiMatKhau";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -81,6 +87,11 @@ const Routermain = () => {
         { path: "check", element: <CheckDatVe /> },
         { path: "banner", element: <HomeBanner /> },
         { path: "list-voucher", element: <ListVoucher /> },
+        { path: "/forgot-password", element: <QuenMatKhau /> },
+        { path: "/change-password", element: <DoiMatKhau /> },
+        { path: "phim-dang-chieu", element: <PhimDangChieu /> },
+        { path: "phim-sap-chieu", element: <PhimSapChieu /> },
+        { path: "suat-chieu-dac-biet", element: <PhimDacBiet /> },
         {
           path: "redirect-admin",
           element: <RedirectAdminAccess />,
@@ -129,6 +140,9 @@ const Routermain = () => {
         { path: "users", element: <UserList /> },
         { path: "vaitro", element: <VaiTro /> },
         { path: "phanquyen", element: <PhanQuyen /> },
+
+        { path: "profile", element: <ProfileAdmin /> },
+
 
         { path: "genre", element: <GenresManager /> },
 
