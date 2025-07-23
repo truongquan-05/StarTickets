@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import featuredImage from "../../../assets/image.png";
 import { getCurrentMovies, getUpcomingMovies } from "../../provider/duProvider";
-import customImage from "./../../assets/img/Group.png";
 
 import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
