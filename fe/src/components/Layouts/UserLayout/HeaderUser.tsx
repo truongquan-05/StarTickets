@@ -10,7 +10,6 @@ import {
   CaretDownOutlined,
   EnvironmentOutlined,
   FormOutlined,
-  HistoryOutlined,
   LoginOutlined,
   LogoutOutlined,
   UserOutlined,
@@ -21,7 +20,10 @@ const HeaderUser = () => {
   const { user, logout } = useGoogleAuth();
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
-
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   const handleSearch = () => {
     if (searchValue.trim()) {
       navigate(`/search?keyword=${encodeURIComponent(searchValue)}`);
@@ -39,7 +41,7 @@ const HeaderUser = () => {
       <Menu.Item
         key="logout"
         icon={<LogoutOutlined />}
-        onClick={logout}
+        onClick={handleLogout}
         className="menu-item-custom logout-item"
       >
         Đăng xuất
@@ -100,12 +102,16 @@ const HeaderUser = () => {
 
         <div className="header-actions">
           <Space>
-            <button className="btn-ticket">
-              <span>🎫 ĐẶT VÉ NGAY</span>
-            </button>
-            <button className="btn-popcorn">
-              <span>🍿 ĐẶT BẮP NƯỚC</span>
-            </button>
+            <Link to="/dat-ve-ngay">
+              <button className="btn-ticket">
+                <span>🎫 ĐẶT VÉ NGAY</span>
+              </button>
+            </Link>
+            <Link to="/dat-bap-nuoc">
+              <button className="btn-popcorn">
+                <span>🍿 ĐẶT BẮP NƯỚC</span>
+              </button>
+            </Link>
           </Space>
         </div>
 

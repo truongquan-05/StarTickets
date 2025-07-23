@@ -36,12 +36,16 @@ const FooterUser = () => {
           <p>BE HAPPY, BE A STAR</p>
           <div className="header-actions">
             <Space>
-              <button className="btn-tickett">
-                <span>🎫 ĐẶT VÉ NGAY</span>
-              </button>
-              <button className="btn-popcorn2">
-                <span>🍿 ĐẶT BẮP NƯỚC</span>
-              </button>
+              <Link to="/dat-ve-ngay">
+                <button className="btn-ticket">
+                  <span>🎫 ĐẶT VÉ NGAY</span>
+                </button>
+              </Link>
+              <Link to="/dat-bap-nuoc">
+                <button className="btn-popcorn">
+                  <span>🍿 ĐẶT BẮP NƯỚC</span>
+                </button>
+              </Link>
             </Space>
           </div>
           <div className="social-icons">
@@ -91,13 +95,13 @@ const FooterUser = () => {
             <h4>XEM PHIM</h4>
             <ul>
               <li>
-                <a href="#">Phim đang chiếu</a>
+                <a href="phim-dang-chieu">Phim đang chiếu</a>
               </li>
               <li>
-                <a href="#">Phim sắp chiếu</a>
+                <a href="phim-sap-chieu">Phim sắp chiếu</a>
               </li>
               <li>
-                <a href="#">Suất chiếu đặc biệt</a>
+                <a href="suat-chieu-dac-biet">Suất chiếu đặc biệt</a>
               </li>
             </ul>
           </div>
