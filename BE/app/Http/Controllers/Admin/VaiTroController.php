@@ -149,6 +149,20 @@ class VaiTroController extends Controller
 
         ]);
     }
+
+    public function getVaiTro(string $id)
+    {
+        $data = VaiTro::find($id);
+        if (!$data) {
+            return response()->json([
+                'message' => 'Không tìm thấy vai trò'
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Thông tin vai trò',
+            'data' => $data
+        ]);
+    }
     //Xóa mềm + Khôi phục
     // public function restore(string $id)
     // {

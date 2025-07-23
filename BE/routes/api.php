@@ -33,6 +33,7 @@ use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
 use App\Http\Controllers\Admin\NhanVienRap;
+use App\Http\Controllers\Admin\Profile;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
@@ -149,6 +150,8 @@ Route::post('xac-nhan-ma', [QuenMatKhau::class, 'checkMaXacNhan']);
 Route::post('reset-password', [QuenMatKhau::class, 'update']);
 Route::post('add-rap', [NhanVienRap::class, 'store']);
 Route::get("add-rap/{id}", [NhanVienRap::class, 'show']);
+Route::apiResource('admin/profile',Profile::class);
+Route::get('lay-vaitro/{id}', [VaiTroController::class, 'getVaiTro']);
 
 
 //-------------------CLIENT-------------------//

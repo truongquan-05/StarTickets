@@ -20,13 +20,11 @@ import {
   SettingOutlined,
   SolutionOutlined,
   LoadingOutlined,
-  IdcardOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import "./Profile.css";
 import { useListDiem } from "../../hook/hungHook";
 import { Link, useNavigate } from "react-router-dom";
-import { color } from "framer-motion";
 import { useGoogleAuth } from "../auth/GoogleAuth";
 
 const { Title, Text } = Typography;
@@ -104,7 +102,7 @@ const ProfilePage = () => {
       const payload = {
         ...values,
         id: user.id,
-        email: user.email, // để đảm bảo email gửi đúng (nếu không sửa)
+        email: user.email, 
       };
 
       await axios.put(
@@ -112,7 +110,6 @@ const ProfilePage = () => {
         payload
       );
 
-      // 🔁 Gộp user cũ với dữ liệu vừa sửa
       const updatedUser = {
         ...user,
         ten: values.ten,
@@ -194,9 +191,9 @@ const ProfilePage = () => {
                   {user.ten || "Chưa cập nhật"}
                 </h2>
               </div>
-              <button className="profile-role-button">
+              {/* <button className="profile-role-button">
                 {user.vaitro}
-              </button>
+              </button> */}
               <div className="profile-poin-wrapper">
                 <p className="profile-poin">Tích điểm:</p>
                 <p className="profile-poin2">Thành viên</p>

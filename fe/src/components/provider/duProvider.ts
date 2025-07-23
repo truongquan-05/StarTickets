@@ -20,28 +20,37 @@ export type Props = {
   values?: any;
 };
 
-export const getListUsers = async ({resource = "nguoi_dung"} : Props) => {
-  const {data} = await axiosClient.get(resource);
-  return data
-}
-export const getListVaiTro = async ({resource = "vai_tro"} : Props) => {
-  const {data} = await axiosClient.get(resource);
+export const getListUsers = async ({ resource = "nguoi_dung" }: Props) => {
+  const { data } = await axiosClient.get(resource);
   return data;
-}
-
-export const getDeleteUsers = async ({resource = "nguoi_dung" , id} : Props) => {
-  if(!id) return;
-  const {data} = await axiosClient.delete(`${resource}/${id}`)
+};
+export const getListVaiTro = async ({ resource = "vai_tro" }: Props) => {
+  const { data } = await axiosClient.get(resource);
   return data;
-}
+};
 
-export const getCreateUsers = async ({ resource = "nguoi_dung", values }: Props) => {
+export const getDeleteUsers = async ({
+  resource = "nguoi_dung",
+  id,
+}: Props) => {
+  if (!id) return;
+  const { data } = await axiosClient.delete(`${resource}/${id}`);
+  return data;
+};
+
+export const getCreateUsers = async ({
+  resource = "nguoi_dung",
+  values,
+}: Props) => {
   const { data } = await axiosClient.post(resource, values);
   return data;
 };
 
-
-export const getUpdateUsers = async ({ resource = "nguoi_dung", id, values }: Props) => {
+export const getUpdateUsers = async ({
+  resource = "nguoi_dung",
+  id,
+  values,
+}: Props) => {
   if (!id || !values) return;
 
   if (values instanceof FormData) {
@@ -54,7 +63,6 @@ export const getUpdateUsers = async ({ resource = "nguoi_dung", id, values }: Pr
     });
     console.log("Response from update user API:", data);
     return data;
-    
   } else {
     // gửi PUT hoặc PATCH với JSON
     const { data } = await axiosClient.put(`${resource}/${id}`, values);
@@ -79,17 +87,20 @@ export const getDeleteFood = async ({ resource = "do_an", id }: Props) => {
 };
 
 export const getCreateFood = async ({ resource = "do_an", values }: Props) => {
-  
   return await axiosClient.post(`${resource}`, values);
 };
 
 export const getUpdateFood = async ({ id, values }: any) => {
-  values.append("_method", "PUT"); 
-  return await axiosClient.post(`http://127.0.0.1:8000/api/do_an/${id}`, values, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  values.append("_method", "PUT");
+  return await axiosClient.post(
+    `http://127.0.0.1:8000/api/do_an/${id}`,
+    values,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 };
 
 // Hiển thị phim
@@ -186,7 +197,6 @@ export const forceDeleteBanner = async (id: number) => {
   return data;
 };
 
-
 // Đơn vé
 export const getListDonVe = async () => {
   const res = await axiosClient.get("/admin/don-ve");
@@ -198,7 +208,6 @@ export const getDonVeById = async (id: number | string) => {
   return res.data.data;
 };
 
-
 export const locDonVe = async (values: any) => {
   const { data } = await axiosClient.post("/admin/don-ve/loc", values);
   return data;
@@ -209,20 +218,20 @@ export const getPhimCoLichChieu = async () => {
   return data;
 };
 // thông tin cá nhân bên admin
-export const getAdminProfile = () => axios.get("/admin/profile");
-export const updateAdminProfile = (data: any) => axios.put("/admin/profile", data);
-export const changeAdminPassword = (data: any) => axios.post("/admin/change-password", data);
+export const getAdminProfile = (id: any) =>
+  axiosClient.get(`http://127.0.0.1:8000/api/admin/profile/${id}`);
+export const updateAdminProfile = (data: any, id: any) => {
+  if (data instanceof FormData) {
+    data.append("_method", "PUT"); // Laravel hỗ trợ PUT qua POST
+    return axiosClient.post(`http://127.0.0.1:8000/api/admin/profile/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 
+  return axiosClient.put(`http://127.0.0.1:8000/api/admin/profile/${id}`, data);
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
+export const changeAdminPassword = (data: any, id: any) =>
+  axiosClient.put(`http://127.0.0.1:8000/api/admin/profile/${id}`, data);
