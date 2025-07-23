@@ -7,12 +7,15 @@ import moment from "moment";
 import featuredImage from "../../../assets/image.png";
 import { getCurrentMovies, getUpcomingMovies } from "../../provider/duProvider";
 
-
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
+  PlayCircleOutlined,
   TagOutlined,
   CommentOutlined,
   PlayCircleTwoTone,
@@ -37,7 +40,7 @@ const convertYouTubeUrlToEmbed = (url: string): string => {
   return match ? `https://www.youtube.com/embed/${match[1]}` : "";
 };
 
-const Home = () => {
+const DatVeNgay = () => {
   const [currentMovies, setCurrentMovies] = useState<any[]>([]);
   const [upcomingMovies, setUpcomingMovies] = useState<any[]>([]);
   const [specialMovies, setSpecialMovies] = useState<any[]>([]);
@@ -639,7 +642,6 @@ const Home = () => {
 
   return (
     <div className="home-wrapper">
-      <HomeBanner />
 
       <QuickBooking />
 
@@ -709,65 +711,8 @@ const Home = () => {
         )}
       </Modal>
 
-      <div className="featured-movie">
-        <img src={featuredImage} alt="phim nổi bật" className="featured-img" />
-        <div className="featured-overlay">
-          <div className="featured-content">
-            <h2>Bạn chưa có tài khoản ?</h2>
-            <p>
-              Hãy đăng ký ngay để trải nghiệm những bộ phim mới nhất và nhận
-              nhiều ưu đãi hấp dẫn từ StarTickets!
-            </p>
-            <button className="featured-button">
-              <a href="/register">Đăng ký ngay</a>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Thông tin liên hệ */}
-      <div className="contact-section">
-        <div className="contact-left">
-          <p>LIÊN HỆ VỚI CHÚNG TÔI</p>
-          <div className="social-icon fb-icon">
-            <a href="https://www.facebook.com/hthinh575">
-              <img
-                src="https://cinestar.com.vn/assets/images/ct-1.webp"
-                alt="facebook"
-              />
-              <span>FACEBOOK</span>
-            </a>
-          </div>
-          <div className="social-icon zl-icon">
-            <a href="#">
-              <span>ZALO CHAT</span>
-              <img
-                src="https://cinestar.com.vn/assets/images/ct-2.webp"
-                alt="ZALO CHAT"
-              />
-            </a>
-          </div>
-        </div>
-
-        <div className="contact-right">
-          <h2>THÔNG TIN LIÊN HỆ</h2>
-          <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-1.svg" alt="" />
-            cskh@movigo.com
-          </p>
-          <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-2.svg" alt="" />
-            1900.0085
-          </p>
-          <p>
-            <img src="https://cinestar.com.vn/assets/images/ct-3.svg" alt="" />
-            135 Hai Bà Trưng, phường Bến Nghé, Quận 1, TP.HCM
-          </p>
-          <ContactForm />
-        </div>
-      </div>
     </div>
   );
 };
 
-export default Home;
+export default DatVeNgay;

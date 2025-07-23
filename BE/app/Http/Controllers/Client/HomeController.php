@@ -198,9 +198,7 @@ class HomeController extends Controller
             });
         }
 
-        $phim = $query
-            ->distinct()
-            ->get()
+        $phim = $query->get()
             ->map(function ($item) {
                 $item->the_loai_id = json_decode($item->the_loai_id, true);
                 return $item;
