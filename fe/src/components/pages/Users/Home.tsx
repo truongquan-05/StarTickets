@@ -7,11 +7,15 @@ import moment from "moment";
 import featuredImage from "../../../assets/image.png";
 import { getCurrentMovies, getUpcomingMovies } from "../../provider/duProvider";
 
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "./Home.css";
 import QuickBooking from "../CinemasPage/QuickBooking";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
+  PlayCircleOutlined,
   TagOutlined,
   CommentOutlined,
   PlayCircleTwoTone,
@@ -19,12 +23,12 @@ import {
 import ContactForm from "./PhanHoiKhachHang";
 import HomeBanner from "../Admin/Banner/HomeBanner";
 import axios from "axios";
-import customImage from "./../../assets/img/404.png"; 
+import customImage from "./../../assets/img/404.png";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
 const getImageUrl = (path: string | null | undefined) => {
-  if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
+  if (!path) return "";
   if (path.startsWith("http")) return path;
   return `${BASE_URL}/storage/${path}`;
 };
@@ -194,8 +198,14 @@ const Home = () => {
               )}
               alt={movie.title || movie.ten_phim}
               onError={(e) => {
-                e.currentTarget.src =
-                  "https://via.placeholder.com/220x280?text=No+Image";
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = ""; // Không đặt ảnh thay thế
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.display = "flex";
+                e.currentTarget.style.alignItems = "center";
+                e.currentTarget.style.justifyContent = "center";
+                e.currentTarget.style.fontSize = "14px";
+                e.currentTarget.alt = "Loading image...";
               }}
             />
           </Link>
@@ -288,8 +298,14 @@ const Home = () => {
               )}
               alt={movie.title || movie.ten_phim}
               onError={(e) => {
-                e.currentTarget.src =
-                  "https://via.placeholder.com/220x280?text=No+Image";
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = ""; // Không đặt ảnh thay thế
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.display = "flex";
+                e.currentTarget.style.alignItems = "center";
+                e.currentTarget.style.justifyContent = "center";
+                e.currentTarget.style.fontSize = "14px";
+                e.currentTarget.alt = "Loading image...";
               }}
             />
           </Link>
@@ -385,8 +401,14 @@ const Home = () => {
               )}
               alt={movie.title || movie.ten_phim}
               onError={(e) => {
-                e.currentTarget.src =
-                  "https://via.placeholder.com/220x280?text=No+Image";
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = ""; // Không đặt ảnh thay thế
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.display = "flex";
+                e.currentTarget.style.alignItems = "center";
+                e.currentTarget.style.justifyContent = "center";
+                e.currentTarget.style.fontSize = "14px";
+                e.currentTarget.alt = "Loading image...";
               }}
             />
           </Link>
@@ -532,7 +554,6 @@ const Home = () => {
             }
           />
         );
-        
 
       case "upcoming":
         return Array.isArray(PhimSapChieu) && PhimSapChieu.length > 0 ? (
@@ -572,7 +593,6 @@ const Home = () => {
               </span>
             }
           />
-        
         );
 
       case "special":
@@ -597,7 +617,7 @@ const Home = () => {
             </div>
           </>
         ) : (
-        <Empty
+          <Empty
             image={customImage}
             description={
               <span
