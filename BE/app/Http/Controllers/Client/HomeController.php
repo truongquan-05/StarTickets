@@ -199,12 +199,8 @@ class HomeController extends Controller
         }
 
         $phim = $query->select(
-            'phim.id',
-            'phim.ten_phim',
-            'phim.mo_ta',
-            'phim.ngay_cong_chieu',
-            'phim.thoi_luong',
-            'phim.the_loai_id'
+            '*'
+            
         )
             ->distinct()
             ->get()
