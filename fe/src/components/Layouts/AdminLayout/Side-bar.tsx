@@ -61,7 +61,6 @@ const SideBar: React.FC<SideBarProps> = ({
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
       setSidebarWidth(calculateSidebarWidth());
     };
     handleResize();

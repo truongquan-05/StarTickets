@@ -133,7 +133,11 @@ const HeaderUser = () => {
             <div className="header-login">
               {user?.anh_dai_dien ? (
                 <img
-                  src={user.anh_dai_dien}
+                  src={
+                    user?.anh_dai_dien?.startsWith("http")
+                      ? user.anh_dai_dien
+                      : `http://127.0.0.1:8000/storage/${user?.anh_dai_dien}`
+                  }
                   alt={user.ten}
                   style={{
                     width: 30,

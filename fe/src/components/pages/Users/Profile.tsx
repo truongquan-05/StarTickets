@@ -114,6 +114,7 @@ const handleCancel = () => {
         ...values,
         id: user.id,
         email: user.email,
+        email: user.email,
       };
 
       await axios.put(
@@ -172,6 +173,9 @@ const handleCancel = () => {
           <LoadingOutlined
             style={{ fontSize: "100px", marginBottom: "30px", color: "yellow" }}
           />
+          <LoadingOutlined
+            style={{ fontSize: "100px", marginBottom: "30px", color: "yellow" }}
+          />
           <div className="profile-loading-text">
             Đang tải thông tin người dùng...
           </div>
@@ -196,7 +200,11 @@ const handleCancel = () => {
               <div className="thongtinavtten">
                 <Avatar
                   size={40}
-                  src={user.anh_dai_dien || undefined}
+                  src={
+                    user?.anh_dai_dien?.startsWith("http")
+                      ? user.anh_dai_dien
+                      : `http://127.0.0.1:8000/storage/${user?.anh_dai_dien}`
+                  }
                   icon={!user.avatar && <UserOutlined />}
                   className="profile-avatar"
                 />
