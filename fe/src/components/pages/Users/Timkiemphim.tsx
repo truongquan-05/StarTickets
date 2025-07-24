@@ -179,7 +179,7 @@ const TimKiemPhim = () => {
                   </button>
                   <Link to={`/phim/${movie.slug || movie.id}`}>
                     <button className="book-button">
-                      <span>XEM CHI TIẾT</span>
+                      <span>ĐẶT VÉ NGAY</span>
                     </button>
                   </Link>
                 </div>

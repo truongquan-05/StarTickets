@@ -10,6 +10,7 @@ import {
   Avatar,
   Typography,
   Space,
+  Modal,
 } from "antd";
 import {
   UserOutlined,
@@ -20,6 +21,8 @@ import {
   SettingOutlined,
   SolutionOutlined,
   LoadingOutlined,
+  GiftOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import "./Profile.css";
@@ -38,7 +41,15 @@ const ProfilePage = () => {
   const { data: listDiem } = useListDiem({ resource: "diem_thanh_vien" });
   const { logout } = useGoogleAuth();
   const navigate = useNavigate();
+const [isModalVisible, setIsModalVisible] = useState(false);
 
+const showModal = () => {
+  setIsModalVisible(true);
+};
+
+const handleCancel = () => {
+  setIsModalVisible(false);
+};
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -102,7 +113,7 @@ const ProfilePage = () => {
       const payload = {
         ...values,
         id: user.id,
-        email: user.email, 
+        email: user.email,
       };
 
       await axios.put(
@@ -158,7 +169,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-loading-container">
         <Card className="profile-loading-card">
-          <LoadingOutlined  style={{fontSize: "100px", marginBottom:"30px", color: "yellow"}}/>
+          <LoadingOutlined
+            style={{ fontSize: "100px", marginBottom: "30px", color: "yellow" }}
+          />
           <div className="profile-loading-text">
             Đang tải thông tin người dùng...
           </div>
@@ -194,13 +207,35 @@ const ProfilePage = () => {
               {/* <button className="profile-role-button">
                 {user.vaitro}
               </button> */}
-              <div className="profile-poin-wrapper">
-                <p className="profile-poin">Tích điểm:</p>
-                <p className="profile-poin2">Thành viên</p>
-              </div>
-              <p className="profile-total-poin">{listDiem?.data?.diem || 0}</p>
-              {/* <p className="profile-total-poin">{listDiem?.data?.diem ?? 0}</p> */}
+              <div className="box-poin">
+  <div className="profile-poin-wrapper">
+    <p className="profile-poin">
+      <GiftOutlined className="profile-menu-icon" style={{ color: "#fff" }} />
+      Tích điểm:
+    </p>
+    <p className="profile-poin2">
+      Thành viên{" "}
+      <QuestionCircleOutlined
+        style={{ color: "#1890ff", marginLeft: 3, cursor: "pointer" }}
+        onClick={showModal}
+      />
+    </p>
+  </div>
+  <p className="profile-total-poin">{listDiem?.data?.diem || 0}</p>
 
+  {/* Modal hiển thị mô tả cách tích điểm */}
+  <Modal
+    title="Cách tích điểm"
+    open={isModalVisible}
+    onCancel={handleCancel}
+    footer={null}
+    centered
+  >
+    <p>- Bạn sẽ nhận được điểm khi mua vé xem phim.</p>
+    <p>- 1.000đ = 1 điểm.</p>
+    <p>- Điểm có thể dùng để giảm giá vé trực tiếp khi bạn thanh toán.</p>
+  </Modal>
+</div>
             </div>
             {/* Menu Navigation */}
             <div className="profile-menu">
