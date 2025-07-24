@@ -962,7 +962,6 @@ const MovieDetailUser = () => {
           setDisplaySelectedSeats([]);
           setTotalPrice(0);
           setSelectedFoods([]); // Reset foods when changing lich chieu
-          console.log(lichChieu)
         }}
         selectedLichChieuId={selectedLichChieuId}
       />
@@ -1234,6 +1233,7 @@ const MovieDetailUser = () => {
 
                 <div className="food-list-scroll">
                   <FoodSelectionDisplay
+                  phongId={selectedPhong.id}
                     onFoodQuantityChange={handleFoodQuantityChange}
                   />
                 </div>

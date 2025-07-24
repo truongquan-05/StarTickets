@@ -114,7 +114,6 @@ const handleCancel = () => {
         ...values,
         id: user.id,
         email: user.email,
-        email: user.email,
       };
 
       await axios.put(
