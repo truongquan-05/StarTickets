@@ -102,7 +102,7 @@ const ProfilePage = () => {
       const payload = {
         ...values,
         id: user.id,
-        email: user.email, 
+        email: user.email,
       };
 
       await axios.put(
@@ -158,7 +158,9 @@ const ProfilePage = () => {
     return (
       <div className="profile-loading-container">
         <Card className="profile-loading-card">
-          <LoadingOutlined  style={{fontSize: "100px", marginBottom:"30px", color: "yellow"}}/>
+          <LoadingOutlined
+            style={{ fontSize: "100px", marginBottom: "30px", color: "yellow" }}
+          />
           <div className="profile-loading-text">
             Đang tải thông tin người dùng...
           </div>
@@ -183,7 +185,11 @@ const ProfilePage = () => {
               <div className="thongtinavtten">
                 <Avatar
                   size={40}
-                  src={user.anh_dai_dien || undefined}
+                  src={
+                    user?.anh_dai_dien?.startsWith("http")
+                      ? user.anh_dai_dien
+                      : `http://127.0.0.1:8000/storage/${user?.anh_dai_dien}`
+                  }
                   icon={!user.avatar && <UserOutlined />}
                   className="profile-avatar"
                 />
@@ -200,7 +206,6 @@ const ProfilePage = () => {
               </div>
               <p className="profile-total-poin">{listDiem?.data?.diem || 0}</p>
               {/* <p className="profile-total-poin">{listDiem?.data?.diem ?? 0}</p> */}
-
             </div>
             {/* Menu Navigation */}
             <div className="profile-menu">

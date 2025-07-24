@@ -120,9 +120,9 @@
   transform: translateY(-50%);
   width: 40px;
   height: 40px;
-  background-color: rgba(0, 0, 0, 0.4);
+  /* background-color: rgba(0, 0, 0, 0.4); */
   /* màu nền mờ */
-  border-radius: 50%;
+  /* border-radius: 50%; */
   /* tạo khung tròn */
   z-index: 10;
 }

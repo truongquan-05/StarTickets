@@ -15,6 +15,7 @@ import {
   Dropdown,
   theme as antdTheme,
   Menu,
+  Grid,
 } from "antd";
 import axios from "axios";
 import "./Header.css";
@@ -22,6 +23,7 @@ import { useEffect, useState } from "react";
 
 const { Header } = Layout;
 const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const HeaderAdmin = ({
   collapsed,
@@ -32,6 +34,7 @@ const HeaderAdmin = ({
 }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const { token } = antdTheme.useToken();
+  const screens = useBreakpoint();
 
   const toggleFullScreen = async () => {
     if (!document.fullscreenElement) {
@@ -45,7 +48,6 @@ const HeaderAdmin = ({
 
   const getVaiTroById = async (id: any) => {
     const token = localStorage.getItem("token");
-
     const response = await axios.get(
       `http://127.0.0.1:8000/api/lay-vaitro/${id}`,
       {
@@ -54,7 +56,6 @@ const HeaderAdmin = ({
         },
       }
     );
-
     return response.data;
   };
 
@@ -65,7 +66,7 @@ const HeaderAdmin = ({
     const fetchVaiTro = async () => {
       try {
         const res = await getVaiTroById(storedUser.vai_tro_id);
-        setVaiTro(res.data.ten_vai_tro); // hoặc data.name tuỳ theo API trả về
+        setVaiTro(res.data.ten_vai_tro);
       } catch (error) {
         console.error("Lỗi lấy vai trò:", error);
       }
@@ -75,6 +76,7 @@ const HeaderAdmin = ({
       fetchVaiTro();
     }
   }, [storedUser.vai_tro_id]);
+
   const user = {
     name: storedUser.ten || "",
     role: vaiTro || "Admin",
@@ -92,8 +94,9 @@ const HeaderAdmin = ({
     localStorage.removeItem("user");
     window.location.href = "/";
   };
+
   const sidebarWidth = 250;
-  // Menu vẫn như cũ
+
   const accountMenu = (
     <Menu
       className="custom-dropdown-menu"
@@ -141,6 +144,7 @@ const HeaderAdmin = ({
         onClick={() => setCollapsed(!collapsed)}
         style={{ fontSize: 20 }}
       />
+
       <Space size="middle">
         <Button
           type="text"
@@ -162,14 +166,15 @@ const HeaderAdmin = ({
               }
               style={{ backgroundColor: "#87d068" }}
             />
-
-            <div style={{ lineHeight: 1 }}>
-              <Text strong>Xin chào: {user.name}</Text>
-              <br />
-              <Text type="secondary" style={{ fontSize: 12 }}>
-                {user.role}
-              </Text>
-            </div>
+            {screens.md && (
+              <div style={{ lineHeight: 1 }}>
+                <Text strong>Xin chào: {user.name}</Text>
+                <br />
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  {user.role}
+                </Text>
+              </div>
+            )}
           </Space>
         </Dropdown>
       </Space>
