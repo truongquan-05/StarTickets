@@ -67,6 +67,7 @@
 
 .thongtinavtten {
   display: flex;
+  padding-bottom: 20px;
   align-items: center;
   justify-content: flex-start;
   gap: 12px;
@@ -105,9 +106,15 @@
   font-family: "Anton", sans-serif;
   font-weight: 100;
 }
+.box-poin{
+  border-top: 0.1rem solid rgba(248, 250, 252, 0.2);
+    width: 100%;
+    max-width: 280px;
+    align-content: center;
+}
 .profile-poin-wrapper {
   display: flex;
-  align-items: center;
+  padding: 19px 0 0 8px;
   gap: 4px; /* khoảng cách giữa 2 phần tử */
   margin-bottom: -12px;
 }

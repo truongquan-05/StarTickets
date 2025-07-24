@@ -15,13 +15,10 @@ import QuickBooking from "../CinemasPage/QuickBooking";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
-  PlayCircleOutlined,
   TagOutlined,
   CommentOutlined,
   PlayCircleTwoTone,
 } from "@ant-design/icons";
-import ContactForm from "./PhanHoiKhachHang";
-import HomeBanner from "../Admin/Banner/HomeBanner";
 import axios from "axios";
 import customImage from "./../../assets/img/404.png";
 
@@ -641,7 +638,7 @@ const DatVeNgay = () => {
   };
 
   return (
-    <div className="home-wrapper">
+    <div className="home-wrapper" style={{marginBottom:"50px"}}>
 
       <QuickBooking />
 

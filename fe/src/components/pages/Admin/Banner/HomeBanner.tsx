@@ -3,6 +3,7 @@ import { Carousel, CarouselRef } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { getPublicBanners } from "../../../provider/duProvider";
 import "./HomeBanner.css";
+import { Link } from "react-router-dom";
 
 type Banner = {
   id: number;
@@ -94,7 +95,11 @@ const HomeBanner = () => {
           <RightOutlined />
         </div>
       </div>
-      <button className="hero-banner-button"><span>ĐẶT VÉ NGAY</span></button>
+      <Link to="/dat-ve-ngay">
+              <button className="hero-banner-button">
+                <span>ĐẶT VÉ NGAY</span>
+              </button>
+            </Link>
     </section>
   );
 };
