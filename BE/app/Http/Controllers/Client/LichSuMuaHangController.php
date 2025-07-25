@@ -41,6 +41,7 @@ class LichSuMuaHangController extends Controller
             'datVe.lichChieu.phong_chieu.rap',
             'datVe.DatVeChiTiet.GheDat',
             'phuongThuc',
+            'datVe.DonDoAn.DoAn'
         ])->find($id);
 
 
