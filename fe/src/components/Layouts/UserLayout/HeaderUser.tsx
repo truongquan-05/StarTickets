@@ -176,14 +176,14 @@ const HeaderUser = () => {
           </a>
           <div className="dropdown-content">
             {rapList.map((rap) => (
-              <a key={rap.id} href="#">
+              <Link key={rap.id} to={`/rap/${rap.id}`}>
                 {rap.ten_rap}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
 
-        <a href="#">
+        <a href="/lich-chieu">
           <CalendarOutlined /> Lịch chiếu
         </a>
         <a href="/list-voucher" className="khuyen_mai">
