@@ -27,6 +27,8 @@ import {
   getDestroyPhongChieu,
   getDestroyVoucher,
   getDetailTinTuc,
+  getDoanhThuNam,
+  getDoanhThuPhim,
   getListCategoryChair,
   getListChair,
   getListCheckGheByGhe,
@@ -53,6 +55,7 @@ import {
   getRestorePhongChieu,
   getShowQuyen,
   getSoftDeleteMovies,
+  getTongQuan,
   getUpdateCategoryChair,
   getUpdateCheckGhe,
   getUpdateLichChieu,
@@ -835,5 +838,27 @@ export const useShowQuyenHanTheoID = ({
     queryKey: [resource, id],
     queryFn: () => getQuyenHanId({ resource, id }),
     enabled: !!id,
+  });
+};
+
+
+export const useTongQuan = ({ resource = "tong-quan" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getTongQuan({ resource }),
+  });
+};
+
+export const useDoanhThuNam = ({ resource = "doanh-thu-nam" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getDoanhThuNam({ resource }),
+  });
+};
+
+export const useDoanhThuPhim = ({ resource = "doanh-thu-phim" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getDoanhThuPhim({ resource }),
   });
 };

@@ -32,6 +32,7 @@ use App\Http\Controllers\Client\RapController as ClientRapController;
 use App\Http\Controllers\Client\DoAnController as ClientDoAnController;
 use App\Http\Controllers\Client\MaGiamGiaController as MaGiamGiaClient;
 use App\Http\Controllers\Admin\DanhGiaController as AdminDanhGiaController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NhanVienRap;
 use App\Http\Controllers\Admin\Profile;
 use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
@@ -39,6 +40,7 @@ use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
 use App\Http\Controllers\Client\QuenMatKhau;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 //-------------------ADMIN-------------------//
 
@@ -152,6 +154,10 @@ Route::post('add-rap', [NhanVienRap::class, 'store']);
 Route::get("add-rap/{id}", [NhanVienRap::class, 'show']);
 Route::apiResource('admin/profile',Profile::class);
 Route::get('lay-vaitro/{id}', [VaiTroController::class, 'getVaiTro']);
+Route::get('tong-quan',[DashboardController::class,'index']);
+Route::get('doanh-thu-nam',[DashboardController::class,'DoanhThuNam']);
+Route::get('doanh-thu-phim',[DashboardController::class,'PhimDoanhThuCaoNhat']);
+
 
 
 //-------------------CLIENT-------------------//

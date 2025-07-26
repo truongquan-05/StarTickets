@@ -423,5 +423,20 @@ export const getQuyenHanId = async ({resource = "get-quyen",id} : Props) => {
   return data;
 }
 
+export const getTongQuan = async ({resource = "tong-quan"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getDoanhThuNam = async ({resource = "doanh-thu-nam"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
+export const getDoanhThuPhim = async ({resource = "doanh-thu-phim"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
 
 

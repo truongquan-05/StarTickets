@@ -7,6 +7,7 @@ use App\Models\QuyenTruyCap;
 use App\Models\QuyenHan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\NguoiDung;
 use Illuminate\Support\Facades\Auth;
 
 class AddQuyenController extends Controller
@@ -79,7 +80,14 @@ class AddQuyenController extends Controller
      */
     public function destroy(string $id)
     {
+        $userId = Auth::guard('sanctum')->id();
+        $nguoiDung = NguoiDung::find($userId);
         $data = QuyenTruyCap::find($id);
+        if ($nguoiDung->vai_tro_id  == $data->vai_tro_id) {
+            return response()->json([
+                'message' => "Không thể gỡ quyền của mình",
+            ], 422);
+        }
         if (!$data) {
             return response()->json([
                 'message' => "Không tồn tại",
@@ -116,5 +124,4 @@ class AddQuyenController extends Controller
             'data' => $dataQuyen
         ]);
     }
-
 }
