@@ -1,5 +1,5 @@
 import { Space } from "antd";
-import logo from "../../../assets/logodone-Photoroom.png";
+import logo from "../../../assets/logofilallday.png";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -33,7 +33,7 @@ const FooterUser = () => {
           <Link to="">
             <img src={logo} alt="Cinestar Logo" />
           </Link>
-          <p>BE HAPPY, BE A STAR</p>
+          <p style={{fontFamily:"'Alata'", letterSpacing:"1px"}}>BE HAPPY, BE A STAR</p>
           <div className="header-actions">
             <Space>
               <Link to="/dat-ve-ngay">
@@ -149,7 +149,7 @@ const FooterUser = () => {
 
       <div className="footer-bottom">
         <div className="footer-bottom-left">
-          <p>© 2025 Cinestar. All rights reserved.</p>
+          <p>© 2025 StarTickets. All rights reserved.</p>
         </div>
         <div className="footer-bottom-right">
           <p>Chính sách bảo mật | Tin điện ảnh | Hỏi và đáp</p>

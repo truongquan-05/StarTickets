@@ -297,7 +297,7 @@ const SideBar: React.FC<SideBarProps> = ({
               whiteSpace: "nowrap",
             }}
           >
-            StarTicket
+            StarTickets
           </h2>
         )}
       </div>

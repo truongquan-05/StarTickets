@@ -20,10 +20,10 @@ const FooterAdmin = () => {
       }}
     >
       <div style={{ flex: '1 1 auto', textAlign: 'left', minWidth: 150 }}>
-        ©{new Date().getFullYear()} Copyright 2025 © StarTicket.
+        ©{new Date().getFullYear()} Copyright © StarTickets.
       </div>
       <div style={{ flex: '1 1 auto', textAlign: 'right', minWidth: 150 }}>
-        All rights reserved. Hand crafted & made by Thinh
+        All rights reserved. Hand crafted & made by StarTickets.
       </div>
     </Footer>
   );

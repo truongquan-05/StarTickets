@@ -164,7 +164,10 @@ const UserList = () => {
       title: "Ảnh đại diện",
       dataIndex: "anh_dai_dien",
       key: "anh_dai_dien",
-      render: (url: string) => {
+      render: (url: string | null) => {
+  if (!url) {
+    return <span>Không có ảnh</span>; // hoặc ảnh mặc định
+  }
         const fullUrl = url.startsWith("http")
           ? url
           : `http://localhost:8000/storage/${url}`;

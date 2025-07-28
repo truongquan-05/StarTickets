@@ -166,7 +166,7 @@ const PhimDangChieu = () => {
           </button>
           <Link to={`/phim/${movie.slug || movie.id}`}>
             <button className="book-button">
-              <span>ĐẶT VÉ NGAY</span>
+              <span>ĐẶT VÉ</span>
             </button>
           </Link>
         </div>
