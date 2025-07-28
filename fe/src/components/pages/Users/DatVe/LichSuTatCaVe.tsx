@@ -236,7 +236,7 @@ const LichSuTatCaVe = () => {
       style={{
         background:
           "linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%)",
-        padding: "24px",
+        padding: "24px 10%",
       }}
     >
       <div style={{ textAlign: "center" }}>
@@ -254,13 +254,12 @@ const LichSuTatCaVe = () => {
         </Title>
       </div>
       <Row justify="center">
-        <Col xs={24} lg={20}>
+        <Col xs={24} lg={30}>
           <Card
             style={{
               background: "transparent",
               borderRadius: "4px",
               border: "none",
-              padding: "24px",
             }}
           >
             {mergedData.length === 0 ? (

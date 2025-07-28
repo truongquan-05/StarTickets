@@ -380,7 +380,7 @@
   font-family: "Anton", sans-serif;
   font-weight: 100;
   font-size: 15px;
-  padding: 0 25px;
+  padding: 0 40px;
   position: relative;
   height: 40px;
   background-color: #ffeb3b;
@@ -400,7 +400,7 @@
   font-weight: 100;
   text-decoration: underline;
   font-size: 15px;
-  padding: 0 25px;
+  padding: 0 10px;
   position: relative;
   height: 40px;
   background-color: transparent;

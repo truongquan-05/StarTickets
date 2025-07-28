@@ -65,6 +65,7 @@ import PhimDacBiet from "../pages/Users/PhimDacBiet";
 import QuenMatKhau from "../pages/Users/QuenMatKhau";
 import DoiMatKhau from "../pages/Users/DoiMatKhau";
 import DatVeNgay from "../pages/Users/DatVeNgay";
+import LichChieuUser from "../pages/Users/LichChieuUser";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -94,6 +95,7 @@ const Routermain = () => {
         { path: "phim-sap-chieu", element: <PhimSapChieu /> },
         { path: "suat-chieu-dac-biet", element: <PhimDacBiet /> },
         { path: "dat-ve-ngay", element: <DatVeNgay /> },
+        { path: "lich-chieu", element: <LichChieuUser /> },
         {
           path: "redirect-admin",
           element: <RedirectAdminAccess />,

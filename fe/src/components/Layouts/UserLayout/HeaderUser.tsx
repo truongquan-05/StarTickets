@@ -1,4 +1,4 @@
-import logo from "../../../assets/logodone.png";
+import logo from "../../../assets/logofilallday.png";
 import flag from "../../../assets/cờ.jpg";
 import { Input, Space, Dropdown, Menu } from "antd";
 import { Link, useNavigate } from "react-router-dom";
@@ -176,14 +176,14 @@ const HeaderUser = () => {
           </a>
           <div className="dropdown-content">
             {rapList.map((rap) => (
-              <a key={rap.id} href="#">
+              <Link key={rap.id} to={`/rap/${rap.id}`}>
                 {rap.ten_rap}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
 
-        <a href="#">
+        <a href="/lich-chieu">
           <CalendarOutlined /> Lịch chiếu
         </a>
         <a href="/list-voucher" className="khuyen_mai">
