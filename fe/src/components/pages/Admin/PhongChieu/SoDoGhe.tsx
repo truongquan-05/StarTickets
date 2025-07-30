@@ -478,10 +478,12 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                   style={{
                     width: 86,
                     height: 32,
-                    display: trangThaiPhong === 3 && isHidden ? "none" : "flex",
+                    display: "flex",
                     position: "relative",
                     margin: "5px 13.5px",
-                    opacity: isHidden ? 0.7 : opacity,
+                    opacity: trangThaiPhong === 3 && isHidden ? 0 : opacity,
+                    pointerEvents:
+                      trangThaiPhong === 3 && isHidden ? "none" : "auto",
                     cursor: cursor,
                     userSelect: "none",
                     backgroundColor: "transparent",
@@ -603,13 +605,22 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 style={{
                   width: ghe.loai_ghe_id === 3 ? 0 : 40,
                   height: ghe.loai_ghe_id === 3 ? 0 : 29,
-                  opacity: ghe.loai_ghe_id === 3 ? 0 : isHidden ? 0.7 : opacity,
+                  opacity:
+                    ghe.loai_ghe_id === 3
+                      ? 0
+                      : trangThaiPhong === 3 && isHidden
+                      ? 0
+                      : isHidden
+                      ? 1
+                      : opacity,
                   visibility: ghe.loai_ghe_id === 3 ? "hidden" : "visible",
-                  pointerEvents: ghe.loai_ghe_id === 3 ? "none" : "auto",
+                  pointerEvents:
+                    trangThaiPhong === 3 && isHidden ? "none" : "auto",
                   backgroundColor: isHidden ? "lightgray" : bgColor,
                   borderRadius: 8,
                   border: `1.5px solid ${borderColor}`,
-                  display: trangThaiPhong === 3 && isHidden ? "none" : "flex",
+                  display: "flex",
+
                   alignItems: "center",
                   justifyContent: "center",
                   userSelect: "none",
