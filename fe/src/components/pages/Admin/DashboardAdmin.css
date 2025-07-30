@@ -133,14 +133,14 @@
   text-overflow: ellipsis;
 }
 
-.movie-content {
+.movie-contentv2 {
   display: flex;
   padding: 16px;
   gap: 16px;
 }
 
-.movie-poster,
-.movie-content img {
+.movie-posterv2,
+.movie-contentv2 img {
   width: 160px;
   height: 230px;
   border-radius: 0 !important;

@@ -1,4 +1,3 @@
-// MovieDetailUser.tsx
 import { useCallback, useEffect, useState, useRef } from "react";
 import { Button, Spin, Image, Modal, message, Empty } from "antd";
 import {
@@ -59,7 +58,7 @@ function convertYouTubeUrlToEmbed(url: string) {
 }
 
 const MovieDetailUser = () => {
-  const TIMEOUT_MINUTES = 1;
+  const TIMEOUT_MINUTES = 5;
   const location = useLocation();
   const previousPathnameRef = useRef<string>(location.pathname);
   const { id } = useParams();

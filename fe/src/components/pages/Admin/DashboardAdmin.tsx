@@ -1,4 +1,4 @@
-// import "./DashboardAdmin.css";
+import "./DashboardAdmin.css";
 import {
   useDoanhThuNam,
   useDoanhThuPhim,
@@ -187,9 +187,9 @@ const MainContent = () => {
                     {item?.phim?.ten_phim ?? "Không rõ"}
                   </h4>
                 </div>
-                <div className="movie-content">
+                <div className="movie-contentv2">
                   <img
-                    className="movie-poster"
+                    className="movie-posterv2"
                     src={`${BASE_URL}/storage/${item?.phim?.anh_poster}`}
                     alt="poster"
                   />

@@ -237,7 +237,7 @@ const ThanhToan: React.FC = () => {
       return;
     }
     const payload = {
-      tong_tien: tongTienData?.data?.tong_tien,
+      tong_tien: Number(tongTienSauVoucher),
       dat_ve_id: bookingData.id,
       nguoi_dung_id: user.id,
       phuong_thuc_thanh_toan_id: phuongThucThanhToanId.current,
