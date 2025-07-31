@@ -158,6 +158,7 @@ Route::get('lay-vaitro/{id}', [VaiTroController::class, 'getVaiTro']);
 Route::get('tong-quan',[DashboardController::class,'index']);
 Route::get('doanh-thu-nam',[DashboardController::class,'DoanhThuNam']);
 Route::get('doanh-thu-phim',[DashboardController::class,'PhimDoanhThuCaoNhat']);
+Route::post('doanh-thu',[DashboardController::class,'DoanhThu']);
 
 
 
