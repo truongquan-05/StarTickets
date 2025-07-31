@@ -51,10 +51,7 @@ class DiemThuongController extends Controller
         $diemCu = (float)$request->input('diemCu', 0); // Lấy điểm cũ, mặc định là 0 nếu rỗng
 
 
-        if ($diemCu > 0) {
-            $userPoints->diem += $diemCu;
-            $userPoints->save(); // Cập nhật ngay điểm của thành viên
-        }
+
 
         if ($diemMuonDung <= 0) {
 
@@ -93,8 +90,6 @@ class DiemThuongController extends Controller
         $datVe->tong_tien = $tongTienMoi;
         $datVe->save();
 
-        $userPoints->diem -= $diemMuonDung;
-        $userPoints->save();
         return response()->json([
             'message' => 'Áp dụng điểm thành công.',
             'current_total_price' => $datVe->tong_tien,

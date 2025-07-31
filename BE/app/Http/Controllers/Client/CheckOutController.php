@@ -61,6 +61,7 @@ class CheckOutController extends Controller
             $diem = $request->input('diem', null);
             $nguoi_dung_id = $request->input('nguoi_dung_id');
             $email = $request->input('email');
+            $diem_thanh_vien = $request->input('diem_thanh_vien',0);
             $ho_ten = $request->input('ho_ten');
             $orderId = time() . "";
             $redirectUrl = "http://localhost:8000/api/momo-ipn";
@@ -77,6 +78,7 @@ class CheckOutController extends Controller
                 'diem' => $diem,
                 'email' => $email,
                 'ho_ten' => $ho_ten,
+                'diem_thanh_vien' => $diem_thanh_vien,
             ]);
 
             // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
@@ -123,6 +125,8 @@ class CheckOutController extends Controller
             $email = $request->input('email');
             $ho_ten = $request->input('ho_ten');
             $diem = $request->input('diem', null);
+            $diem_thanh_vien = $request->input('diem_thanh_vien',0);
+
 
             $vnp_Returnurl = "http://localhost:8000/api/momo-ipn?"
                 . "dat_ve_id={$dat_ve_id}"
@@ -131,7 +135,8 @@ class CheckOutController extends Controller
                 . "&ma_giam_gia_id=" . ($ma_giam_gia_id ?? null)
                 . "&email={$email}"
                 . "&diem={$diem}"
-                . "&ho_ten=" . ($ho_ten);
+                . "&ho_ten=" . ($ho_ten)
+                . "&diem_thanh_vien=" . ($diem_thanh_vien);;
 
 
 
@@ -223,7 +228,7 @@ class CheckOutController extends Controller
                         $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
                         if ($DiemThanhVien) {
-                            $DiemThanhVien->diem += $diemCong;
+                            $DiemThanhVien->diem += $diemCong - $extraData['diem_thanh_vien'];
                             $DiemThanhVien->save();
                         } else {
                             DiemThanhVien::create([
@@ -261,6 +266,13 @@ class CheckOutController extends Controller
                                     }
                                 });
                             }
+                            if ($dataVe['ma_giam_gia_id']) {
+                                $MaGiamGia = MaGiamGia::find($dataVe['ma_giam_gia_id']);
+                                if ($MaGiamGia->so_lan_da_su_dung > 0) {
+                                    $MaGiamGia->so_lan_da_su_dung -= 1;
+                                    $MaGiamGia->save();
+                                }
+                            }
                             if ($don_do_an->isNotEmpty()) {
                                 $don_do_an->each(function ($item) {
                                     $doAn = DoAn::find($item->do_an_id);
@@ -296,7 +308,7 @@ class CheckOutController extends Controller
                     $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
                     if ($DiemThanhVien) {
-                        $DiemThanhVien->diem += $diemCong;
+                        $DiemThanhVien->diem += $diemCong - $data['diem_thanh_vien'];
                         $DiemThanhVien->save();
                     } else {
                         DiemThanhVien::create([
@@ -328,6 +340,13 @@ class CheckOutController extends Controller
                                 $checkGhe->update(['trang_thai' => 'trong']);
                             }
                         });
+                    }
+                    if ($data['ma_giam_gia_id']) {
+                        $MaGiamGia = MaGiamGia::find($data['ma_giam_gia_id']);
+                        if ($MaGiamGia->so_lan_da_su_dung > 0) {
+                            $MaGiamGia->so_lan_da_su_dung -= 1;
+                            $MaGiamGia->save();
+                        }
                     }
                     if ($don_do_an->isNotEmpty()) {
                         $don_do_an->each(function ($item) {
@@ -372,7 +391,7 @@ class CheckOutController extends Controller
             }
 
             $dataVe->delete();
-   
+
             return redirect("http://localhost:5173/check?error=1");
         }
     }

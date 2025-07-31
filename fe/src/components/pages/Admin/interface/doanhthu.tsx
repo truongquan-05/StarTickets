@@ -1,9 +1,9 @@
 export interface IDoanhThu{
-  DoAnVsThangtruoc:string,
+  DoAnVsThangtruoc:string ,
   DoanhThuVsThangtruoc:string,
   NguoiDungThangNay:number,
   NguoiDungVsThangtruoc:string,
-  VeVsThangtruoc:string,
+  VeVsThangtruoc:string ,
   doAnThangNay:number,
   tongDoanhThuNay:number,
   veThangNay:number
