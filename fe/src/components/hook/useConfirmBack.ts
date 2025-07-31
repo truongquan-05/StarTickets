@@ -77,19 +77,26 @@ export function useBackConfirm(selectedCheckGhe: any[]) {
   }, [selectedCheckGhe.length]);
 }
 
-
-
-export function useBackDelete(dat_ve_id: number | undefined, shouldTrigger: boolean) {
+export function useBackDelete(
+  dat_ve_id: number | undefined,
+  shouldTrigger: boolean,
+  voucherId: number | null = null
+) {
   const confirmedRef = useRef(false);
   const hasFakeState = useRef(false);
   const hasTriggeredOnce = useRef(false);
 
   useEffect(() => {
-     if (!dat_ve_id || !shouldTrigger) return;
-      const sendDataBeforeLeave = () => {
+    if (!dat_ve_id || !shouldTrigger ) return;
+    const sendDataBeforeLeave = () => {
       if (!dat_ve_id || hasTriggeredOnce.current) return;
       hasTriggeredOnce.current = true;
-      navigator.sendBeacon(`http://127.0.0.1:8000/api/delete-dat-ve/${dat_ve_id}`);
+      navigator.sendBeacon(
+        `http://127.0.0.1:8000/api/delete-dat-ve/${dat_ve_id}`
+      );
+      navigator.sendBeacon(
+        `http://127.0.0.1:8000/api/delete-voucher/${voucherId}`
+      );
     };
 
     const handlePopState = () => {
@@ -97,7 +104,11 @@ export function useBackDelete(dat_ve_id: number | undefined, shouldTrigger: bool
 
       const confirmed = window.confirm("Bạn có chắc chắn muốn quay lại không?");
       if (!confirmed) {
-        window.history.pushState({ __keep: true }, "", window.location.pathname);
+        window.history.pushState(
+          { __keep: true },
+          "",
+          window.location.pathname
+        );
         hasFakeState.current = true;
       } else {
         confirmedRef.current = true;
@@ -132,7 +143,5 @@ export function useBackDelete(dat_ve_id: number | undefined, shouldTrigger: bool
       confirmedRef.current = false;
       hasFakeState.current = false;
     };
-  }, [dat_ve_id,shouldTrigger]);
+  }, [dat_ve_id, voucherId, shouldTrigger]);
 }
-
-

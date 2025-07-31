@@ -24,7 +24,21 @@ class MaGiamGiaController extends Controller
             ]
         );
     }
+    // XÓA KHI BACK TRANG
+    public function BackDelete($id)
+    {
+        if ($id == null) {
+            return;
+        }
+        $data = MaGiamGia::find($id);
+        if (!$data) {
+            return;
+        }
+        $data->so_lan_da_su_dung = $data->so_lan_da_su_dung - 1;
+        $data->save();
 
+        return;
+    }
 
     public function checkVoucher(Request $request)
     {

@@ -150,9 +150,8 @@ const ThanhToan: React.FC = () => {
   >(undefined);
 
   // Gọi luôn hook, không cần điều kiện
-  useBackDelete(bookingData?.id, selectedPaymentMethod === undefined);
+  useBackDelete(bookingData?.id, selectedPaymentMethod === undefined , selectedVoucherId );
 
-  // eslint-disable-next-line
 
   // Đếm ngược thời gian
   useEffect(() => {
@@ -237,13 +236,14 @@ const ThanhToan: React.FC = () => {
       return;
     }
     const payload = {
-      tong_tien: Number(tongTienSauVoucher),
+      tong_tien: Number(tongTienData?.data?.tong_tien),
       dat_ve_id: bookingData.id,
       nguoi_dung_id: user.id,
       phuong_thuc_thanh_toan_id: phuongThucThanhToanId.current,
       ho_ten: formStep1Data.fullName,
       email: formStep1Data.email,
       ma_giam_gia_id: formStep1Data.ma_giam_gia_id,
+      diem_thanh_vien : checkDiem.variables.diem
     };
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
@@ -523,6 +523,10 @@ const ThanhToan: React.FC = () => {
                                 onSuccess: () => {
                                   message.success("Áp dụng mã thành công!");
                                   refetchTongTien(); // Gọi lại API để cập nhật tổng tiền mới
+                                },
+                                onError: (err: any) => {
+                                  message.error(err.response?.data.message);
+                                  form.setFieldsValue({ ma_giam_gia_id: null });
                                 },
                               }
                             );

@@ -127,6 +127,7 @@ Route::apiResource('dat_ve', DatVeController::class);
 Route::post('/momo-pay', [CheckOutController::class, 'momo_payment']);
 Route::get('/momo-ipn', [CheckOutController::class, 'handleIpn']);
 Route::POST('delete-dat-ve/{id}', [DatVeController::class, 'BackDelete']);
+Route::POST('delete-voucher/{id}', [MaGiamGiaClient::class, 'BackDelete']);
 Route::post('ma_xac_thuc/{id}', [NguoiDungController::class, 'TaoMaXacNhan']);
 Route::get('get_ma_xac_nhan/{id}', [NguoiDungController::class, 'getMaXacNhan']);
 Route::apiResource('quyen_truy_cap', AddQuyenController::class);
