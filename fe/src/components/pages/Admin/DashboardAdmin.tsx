@@ -17,10 +17,10 @@ import {
 import { FallOutlined, RiseOutlined } from "@ant-design/icons";
 
 const MainContent = () => {
-  const { data: dataTongQuan } = useTongQuan({ resource: "tong-quan" });
+  const { data: dataTongQuan, isLoading: isLoadingTongQuan, } = useTongQuan({ resource: "tong-quan" });
   const dataTongQuanSource = dataTongQuan as IDoanhThu;
   const BASE_URL = "http://127.0.0.1:8000";
-  const { data: dataDoanhThuNam } = useDoanhThuNam({
+  const { data: dataDoanhThuNam ,   isLoading: isLoadingDoanhThuNam,} = useDoanhThuNam({
     resource: "doanh-thu-nam",
   });
   const dataDoanhThuNamSource = dataDoanhThuNam?.data as
@@ -33,12 +33,47 @@ const MainContent = () => {
       doanhThu: Number(value),
     })
   );
-  const { data: dataDoanhThuPhim } = useDoanhThuPhim({
+  const { data: dataDoanhThuPhim, isLoading: isLoadingDoanhThuPhim, } = useDoanhThuPhim({
     resource: "doanh-thu-phim",
   });
   const dataDoanhThuPhimSource = dataDoanhThuPhim?.data as any | undefined;
 
   const formatNumber = (num?: number) => num?.toLocaleString("vi-VN") ?? "--";
+const isLoading =
+  isLoadingTongQuan || isLoadingDoanhThuNam || isLoadingDoanhThuPhim;
+
+
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor:"white"
+        }}
+      >
+        <div
+          style={{
+            border: "6px solid #f3f3f3",
+            borderTop: "6px solid #3498db",
+            borderRadius: "50%",
+            width: "50px",
+            height: "50px",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+        <style>
+          {`@keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+          }`}
+        </style>
+      </div>
+    );
+  }
 
   return (
     <div className="main-content">

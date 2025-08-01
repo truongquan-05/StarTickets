@@ -68,7 +68,7 @@ const PhimSapChieu = () => {
 
   const fetchMovies = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/home/sap-chieu");
+      const res = await axios.get("http://127.0.0.1:8000/api/phim-sap-chieu");
       setMovies(res.data || []);
     } catch (error) {
       console.error("Lỗi khi fetch danh sách phim sắp chiếu:", error);

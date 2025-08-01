@@ -13,6 +13,9 @@ class QuyenHanSeeder extends Seeder
             // Toàn quyền
             ['quyen' => 'All', 'mo_ta' => 'Toàn quyền hệ thống'],
 
+            ['quyen' => 'Dashboard', 'mo_ta' => 'Xem thống kê'],
+            ['quyen' => 'Dashboard-read', 'mo_ta' => 'Xem tổng quan'],
+
             // Quản lý phim
             ['quyen' => 'Phim-create', 'mo_ta' => 'Thêm phim'],
             ['quyen' => 'Phim-update', 'mo_ta' => 'Sửa phim'],

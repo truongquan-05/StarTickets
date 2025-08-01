@@ -3,12 +3,12 @@ import ReactDOM from "react-dom";
 import React from "react";
 
 // Component TicketContent (đã cập nhật để xử lý đối tượng tổng hợp)
-const TicketContent = React.forwardRef(({ ticketInfo }, ref) => {
+const TicketContent = React.forwardRef<HTMLDivElement, { ticketInfo: any }>(({ ticketInfo }, ref) => {
   if (!ticketInfo) {
     return null;
   }
 
-  const formatDateTime = (dateTimeString :any) => {
+  const formatDateTime = (dateTimeString: any) => {
     if (!dateTimeString) return "N/A";
     const date = new Date(dateTimeString);
     return (
@@ -22,7 +22,7 @@ const TicketContent = React.forwardRef(({ ticketInfo }, ref) => {
     );
   };
 
-  const formatCurrency = (amount:any) => {
+  const formatCurrency = (amount: any) => {
     if (!amount) return "N/A";
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -34,65 +34,83 @@ const TicketContent = React.forwardRef(({ ticketInfo }, ref) => {
     <div
       ref={ref}
       style={{
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "'Courier New', Courier, monospace",
+        backgroundColor: "#fff0f0",
         padding: "20px",
-        border: "1px dashed #333",
-        maxWidth: "400px",
-        margin: "20px auto",
-        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        backgroundColor: "#fff",
-        pageBreakInside: "avoid",
+        border: "2px dashed #e60012",
+        borderRadius: "12px",
+        maxWidth: "340px",
+        margin: "30px auto",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        textAlign: "center",
+        color: "#000",
       }}
-      className="ticket-container"
     >
       <h2
         style={{
-          textAlign: "center",
-          color: "#333",
-          borderBottom: "1px solid #eee",
-          paddingBottom: "10px",
+          fontWeight: "bold",
+          fontSize: "18px",
+          marginBottom: "6px",
+          letterSpacing: "1px",
+          color: "#e60012",
         }}
       >
-        CHI TIẾT ĐƠN VÉ
+        VÉ XEM PHIM
       </h2>
 
-      <div style={{ marginBottom: "15px" }}>
-        {" "}
+      <div
+        style={{
+          borderTop: "1px dashed #999",
+          borderBottom: "1px dashed #999",
+          padding: "12px 0",
+          fontSize: "13px",
+          textAlign: "left",
+          lineHeight: "1.6",
+        }}
+      >
         <p>
-          <strong>Rạp:</strong> {ticketInfo.rap || "N/A"}
+          <strong>🎬 Rạp:</strong> {ticketInfo.rap || "N/A"}
         </p>
         <p>
-          <strong>Địa chỉ rạp:</strong> {ticketInfo.diaChi || "N/A"}
-        </p><p>
-          <strong>Mã giao dịch:</strong> {ticketInfo.ma_don_hang || "N/A"}
+          <strong>📍 Địa chỉ:</strong> {ticketInfo.diaChi || "N/A"}
         </p>
         <p>
-          <strong>Khách Hàng:</strong> {ticketInfo.ten || "N/A"}
+          <strong>🆔 Mã đơn hàng:</strong> {ticketInfo.ma_don_hang || "N/A"}
         </p>
         <p>
-          <strong>Phim:</strong> {ticketInfo.phim || "N/A"}
+          <strong>👤 Khách hàng:</strong> {ticketInfo.ten || "N/A"}
         </p>
         <p>
-          <strong>Thời gian:</strong> {formatDateTime(ticketInfo.thoigian)}
+          <strong>🎞️ Phim:</strong> {ticketInfo.phim || "N/A"}
         </p>
         <p>
-          <strong>Ghế:</strong> {ticketInfo.ghe || "N/A"}
+          <strong>🕒 Thời gian:</strong> {formatDateTime(ticketInfo.thoigian)}
         </p>
         <p>
-          <strong>Đồ ăn:</strong> {ticketInfo.doAn || "N/A"}
+          <strong>💺 Ghế:</strong> {ticketInfo.ghe || "N/A"}
         </p>
         <p>
-          <strong>Tổng tiền:</strong> {formatCurrency(ticketInfo.tongTien)}
+          <strong>🍿 Đồ ăn:</strong> {ticketInfo.doAn || "Không có"}
+        </p>
+        <p>
+          <strong>💵 Tổng tiền:</strong> {formatCurrency(ticketInfo.tongTien)}
         </p>
       </div>
 
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        {ticketInfo.qr_code_data_url && (
+      {ticketInfo.qr_code_data_url && (
+        <div
+          style={{
+            marginTop: "16px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <div
             style={{
-              padding: "10px",
-              border: "1px solid #ddd",
-              display: "inline-block",
+              border: "2px solid #e60012",
+              padding: "8px",
+              borderRadius: "8px",
+              backgroundColor: "#fff",
             }}
           >
             <img
@@ -101,14 +119,25 @@ const TicketContent = React.forwardRef(({ ticketInfo }, ref) => {
               style={{ width: 128, height: 128 }}
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      <p
+        style={{
+          fontSize: "11px",
+          marginTop: "18px",
+          color: "#555",
+          fontStyle: "italic",
+        }}
+      >
+        Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!
+      </p>
     </div>
   );
 });
 
 // Hàm in nhiều vé (giữ nguyên như bạn đã cung cấp)
-export const printTicket = (ticketInfoArray:any) => {
+export const printTicket = (ticketInfoArray: any) => {
   if (!Array.isArray(ticketInfoArray) || ticketInfoArray.length === 0) {
     console.warn("Không có thông tin vé để in.");
     return;
@@ -116,7 +145,9 @@ export const printTicket = (ticketInfoArray:any) => {
 
   const printWindow = window.open("", "", "height=600,width=800");
   if (!printWindow) {
-    console.error("Không thể mở cửa sổ in. Vui lòng kiểm tra trình duyệt của bạn.");
+    console.error(
+      "Không thể mở cửa sổ in. Vui lòng kiểm tra trình duyệt của bạn."
+    );
     return;
   }
   printWindow.document.write("<html><head><title>In Vé</title>");
@@ -154,14 +185,16 @@ export const printTicket = (ticketInfoArray:any) => {
   printWindow.print();
 };
 
-export const printSingleTicket = (ticketInfo) => {
+export const printSingleTicket = (ticketInfo : any) => {
   if (!ticketInfo) {
     console.warn("Không có thông tin vé để in.");
     return;
   }
   const printWindow = window.open("", "", "height=600,width=800");
   if (!printWindow) {
-    console.error("Không thể mở cửa sổ in. Vui lòng kiểm tra trình duyệt của bạn.");
+    console.error(
+      "Không thể mở cửa sổ in. Vui lòng kiểm tra trình duyệt của bạn."
+    );
     return;
   }
   printWindow.document.write("<html><head><title>In Vé</title>");

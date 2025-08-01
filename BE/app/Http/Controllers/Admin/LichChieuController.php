@@ -152,6 +152,7 @@ class LichChieuController extends Controller
                         'lich_chieu_id' => $item['id'],
                         'ghe_id' => $value['id'],
                         'trang_thai' => 'trong', // Trạng thái ghế ban đầu là "trống"
+                        'created_at'=>now()->format('Y-m-d H:i:s')
                     ];
                 }
             }

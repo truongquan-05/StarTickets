@@ -36,6 +36,7 @@ class QuyenTruyCapSeeder extends Seeder
             'DoAn-read',
             'Rap-read',
             'DanhGia-read',
+            'Dashboard'
         ];
         foreach ($staffPermissions as $perm) {
             DB::table('quyen_truy_cap')->insert([
@@ -63,6 +64,7 @@ class QuyenTruyCapSeeder extends Seeder
             'DoAn-delete',
             'DoAn-read',
             'Phim-read',
+            'Dashboard'
 
         ];
         foreach ($theaterStaffPermissions as $perm) {
