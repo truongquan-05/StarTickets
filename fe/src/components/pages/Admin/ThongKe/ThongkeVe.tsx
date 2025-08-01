@@ -148,13 +148,14 @@ const ThongKeVe = () => {
     );
   }
 
-  const chartData = data?.tyLeDat.map(
+  const chartData = data?.tyLeDat?.map(
     (item: { rap: string; daDatChiem: number }) => ({
       name: item.rap,
       gheDaDat: item.daDatChiem,
       gheTrong: +(100 - item.daDatChiem).toFixed(2),
     })
-  );
+  ) || [];
+
 
   const COLORSS = {
     gheDaDat: "#00c0ef",
@@ -170,18 +171,21 @@ const ThongKeVe = () => {
     "#2D3436",
   ];
 
-  const ticketTypeData = [
-    { name: "Ghế VIP", value: data.phanLoaiGhe[0].gheVip },
-    { name: "Ghế Thường", value: data.phanLoaiGhe[0].gheThuong },
-    { name: "Ghế Đôi", value: data.phanLoaiGhe[0].gheDoi },
-  ];
+  const ticketTypeData =
+    data?.phanLoaiGhe?.[0] != null
+      ? [
+          { name: "Ghế VIP", value: data?.phanLoaiGhe?.[0]?.gheVip || 0 },
+          { name: "Ghế Thường", value: data?.phanLoaiGhe?.[0]?.gheThuong || 0 },
+          { name: "Ghế Đôi", value: data?.phanLoaiGhe?.[0]?.gheDoi || 0 },
+        ]
+      : [];
 
-  const peakHourData = data.gioCaoDiemTop5.map(
+  const peakHourData = data?.gioCaoDiemTop5?.map(
     (item: { gio: number; so_luong: number }) => ({
       hour: `${item.gio.toString().padStart(2, "0")}:00`,
       value: item.so_luong,
     })
-  );
+  ) || [];
 
   const COLORS = [
     "#3f51b5",
@@ -194,19 +198,19 @@ const ThongKeVe = () => {
     "#8bc34a",
   ];
 
-  const dataLineChart = Object.entries(data?.xuHuongve).map(
+  const dataLineChart = Object.entries(data?.xuHuongve || {}).map(
     ([time, value]) => ({
       date: time,
       value,
     })
   );
 
-  const dataPieChart = data?.phimBanChay.map(
+  const dataPieChart = data?.phimBanChay?.map(
     (item: { phim: string; phan_tram: number }) => ({
       name: item.phim,
       value: item.phan_tram,
     })
-  );
+  ) || [];
 
   const stats = [
     {

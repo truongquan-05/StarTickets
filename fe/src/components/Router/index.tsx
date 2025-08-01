@@ -67,6 +67,7 @@ import DoiMatKhau from "../pages/Users/DoiMatKhau";
 import DatVeNgay from "../pages/Users/DatVeNgay";
 import LichChieuUser from "../pages/Users/LichChieuUser";
 import ThongKeVe from "../pages/Admin/ThongKe/ThongkeVe";
+import ThongKeDoanhThu from "../pages/Admin/ThongKe/ThongKeDoanhThu";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -113,6 +114,7 @@ const Routermain = () => {
       children: [
         { path: "", element: <DashboardAdmin /> },
         { path: "thong-ke/ve", element: < ThongKeVe/> },
+        { path: "thong-ke/doanh-thu", element: < ThongKeDoanhThu/> },
         { path: "movies/list", element: <List /> },
         { path: "movies/detail/:id", element: <MovieDetail /> },
         { path: "movies/add", element: <AddMoviesPage /> },
