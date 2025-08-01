@@ -26,7 +26,7 @@ class QuyenHanSeeder extends Seeder
             ['quyen' => 'Rap-create', 'mo_ta' => 'Thêm rạp'],
             ['quyen' => 'Rap-update', 'mo_ta' => 'Sửa rạp'],
             ['quyen' => 'Rap-delete', 'mo_ta' => 'Xóa rạp'],
-            ['quyen' => 'Rap-read', 'mo_ta' => 'Xóa rạp'],
+            ['quyen' => 'Rap-read', 'mo_ta' => 'Xem rạp'],
 
             // Quản lý phòng chiếu
             ['quyen' => 'PhongChieu-create', 'mo_ta' => 'Thêm phòng chiếu'],

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Button, Spin } from "antd";
-import { useListFoods } from "../../../hook/duHook";
+import { useListFoodsClient } from "../../../hook/duHook";
 import { Food } from "../../../types/Uses";
 import {  useListPhongChieuClien } from "../../../hook/hungHook";
 
@@ -20,7 +20,7 @@ interface Props {
 }
 
 const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }) => {
-  const { data: foodData, isLoading: isLoadingFoods } = useListFoods();
+  const { data: foodData, isLoading: isLoadingFoods } = useListFoodsClient();
   const { data: phongData } = useListPhongChieuClien({resource:"client/phong_chieu"});
 
   const foodList = foodData?.data || [];

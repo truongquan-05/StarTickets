@@ -34,7 +34,7 @@ class LichChieuController extends Controller
     {
         $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])
             ->orderBy('id', 'desc')->FilterByRap('phong_chieu.rap')
-            ->paginate(10);
+            ->paginate(11);
         return response()->json($lichChieus);
     }
 
@@ -406,7 +406,7 @@ class LichChieuController extends Controller
             if ($item['trang_thai'] == 'da_dat') {
                 return response()->json([
                     'message' => 'Lịch chiếu này đã có vé được đặt, không thể xóa',
-                ]);
+                ],422);
             }
         }
 

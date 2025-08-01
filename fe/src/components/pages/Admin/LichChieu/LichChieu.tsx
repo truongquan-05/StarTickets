@@ -182,7 +182,7 @@ const LichChieu = () => {
             cancelText="Huỷ"
             onConfirm={() => {
               deleteCategoryChair(record.id);
-              message.success("Xóa thành công");
+              // message.success("Xóa thành công");
             }}
           >
             <Button

@@ -114,9 +114,10 @@ const ListPhongChieu = () => {
 
   const rapMap = new Map<number, string>();
 
-  rapData.forEach((r: IRap) => {
-    rapMap.set(r.id, r.ten_rap);
-  });
+const rapArray = Array.isArray(rapData) ? rapData : [];
+rapArray.forEach((r: IRap) => {
+  rapMap.set(r.id, r.ten_rap);
+});
 
   const openModal = (phong: IPhongChieu) => {
     setSelectedPhong(phong);

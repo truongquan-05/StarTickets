@@ -440,7 +440,11 @@ export const useDeleteLichChieu = ({ resource = "lich_chieu" }: Props) => {
     mutationFn: (id?: string | number) => getDeleteLichChieu({ resource, id }),
     onSuccess: () => {
       queryclient.invalidateQueries({ queryKey: [resource] });
+      message.success('Thành công!')
     },
+    onError:(error:any)=>{
+      message.error(error.response?.data.message || "Có lỗi")
+    }
   });
 };
 export const useCreateLichChieu = ({ resource = "lich_chieu" }: Props) => {

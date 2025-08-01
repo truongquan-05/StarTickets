@@ -82,6 +82,11 @@ export const getListFoods = async ({ resource = "do_an" }: Props) => {
   return data;
 };
 
+export const getListFoodsClient = async ({ resource = "client/do_an" }: Props) => {
+  const { data } = await axios.get(`http://127.0.0.1:8000/api/${resource}`);
+  return data;
+};
+
 export const getDeleteFood = async ({ resource = "do_an", id }: Props) => {
   return await axiosClient.delete(`${resource}/${id}`);
 };

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DoAn extends Model
 {
-    // use SoftDeletes;
     use FilterNhanVienRap;
     protected $table = 'do_an';
 

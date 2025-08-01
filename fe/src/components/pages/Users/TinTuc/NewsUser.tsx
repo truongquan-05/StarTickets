@@ -32,7 +32,7 @@ const NewsUser: React.FC = () => {
       <div
         className="news-wrapper"
         style={{
-          height: "60px",
+          height: "190px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",

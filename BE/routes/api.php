@@ -39,6 +39,7 @@ use App\Http\Controllers\Client\DanhGiaController as ClientDanhGiaController;
 use App\Http\Controllers\Client\LichChieuController as ClientLichChieuController;
 use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController;
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
+use App\Http\Controllers\Client\DoAnController as DoAnControllerClient;
 use App\Http\Controllers\Client\QuenMatKhau;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -203,3 +204,4 @@ Route::post('diem_thanh_vien', [DiemThuongController::class, 'checkDiem']);
 Route::apiResource('client/lich_chieu', ClientLichChieuController::class);
 Route::apiResource('client/phong_chieu', ClientPhongChieuController::class);
 Route::get('/client/rap', [ClientRapController::class, 'index']);
+Route::get('/client/do_an', [DoAnControllerClient::class, 'index']);
