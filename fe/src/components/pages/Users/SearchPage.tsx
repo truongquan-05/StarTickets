@@ -1,15 +1,70 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Spin, Card, Row, Col, Typography, Button } from "antd";
+import { Spin, Empty, Modal } from "antd";
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  TagOutlined,
+  CommentOutlined,
+  PlayCircleTwoTone,
+} from "@ant-design/icons";
 import axios from "axios";
-import "./Home.css"; // tạo thêm CSS riêng
+import moment from "moment";
+import "./Home.css";
 
-const { Title, Paragraph } = Typography;
+const BASE_URL = "http://127.0.0.1:8000";
+
+const getImageUrl = (path: string | null | undefined): string => {
+  if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}/storage/${path}`;
+};
+
+const convertYouTubeUrlToEmbed = (url: string): string => {
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+};
+
+const parseGenres = (movie: any) => {
+  try {
+    if (movie.the_loai_id) {
+      const genres = JSON.parse(movie.the_loai_id);
+      if (Array.isArray(genres)) {
+        return genres.map((genre: any) => genre.ten_the_loai).join(", ");
+      }
+    }
+
+    if (movie.the_loai && Array.isArray(movie.the_loai)) {
+      return movie.the_loai.join(", ");
+    }
+
+    return "Chưa cập nhật";
+  } catch {
+    return "Chưa cập nhật";
+  }
+};
 
 const SearchPage = () => {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState("");
+  const [trailerTitle, setTrailerTitle] = useState("");
+
   const location = useLocation();
+
+  const handleShowTrailer = (url: string, title: string) => {
+    setTrailerUrl(url);
+    setTrailerTitle(title);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setTrailerUrl("");
+  };
 
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -35,37 +90,139 @@ const SearchPage = () => {
   }, [location.search]);
 
   return (
-    <div className="search-page">
-      {loading ? (
-        <Spin />
-      ) : results.length === 0 ? (
-        <p>Không tìm thấy kết quả nào phù hợp.</p>
-      ) : (
-        <Row gutter={[24, 24]}>
-          {results.map((phim) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={phim.id}>
-              <Card
-                hoverable
-                cover={
-                  <img
-                    alt={phim.ten_phim}
-                    src={`http://127.0.0.1:8000/storage/${phim.anh_poster}`}
-                    className="poster-image"
-                  />
-                }
-              >
-                <Title level={4}>{phim.ten_phim}</Title>
-                <Paragraph ellipsis={{ rows: 2 }}>{phim.mo_ta}</Paragraph>
-                <Link to={`/chi-tiet-phim/${phim.id}`}>
-                  <Button type="primary" block>
-                    Xem chi tiết
-                  </Button>
+    <div className="home-wrapper">
+      <div className="section section-trangcon">
+        <h2 className="section-title-phimdangchieu">KẾT QUẢ TÌM KIẾM PHIM</h2>
+        {loading ? (
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <Spin size="large" />
+          </div>
+        ) : results.length === 0 ? (
+          <Empty
+            description={
+              <span style={{ color: "white", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>
+                Không tìm thấy phim phù hợp.
+              </span>
+            }
+          />
+        ) : (
+          <div className="movie-grid">
+            {results.map((movie, index) => (
+              <div key={index} className="movie-card">
+                <div className="movie-poster-wrapper">
+                  <Link to={`/chi-tiet-phim/${movie.id}`}>
+                    <img
+                      src={getImageUrl(movie.anh_poster)}
+                      alt={movie.ten_phim}
+                      onError={(e) => {
+                        e.currentTarget.src = "https://via.placeholder.com/220x280?text=No+Image";
+                      }}
+                    />
+                  </Link>
+                  <div className="movie-overlay">
+                    <div className="attach">
+                      <div className="type-movie">
+                        <span className="txt">2D</span>
+                      </div>
+                      <div className="age">
+                        <span className="num">T{movie.do_tuoi_gioi_han || "?"}</span>
+                        <span className="txt2">
+                          {movie.do_tuoi_gioi_han >= 18
+                            ? "ADULT"
+                            : movie.do_tuoi_gioi_han >= 13
+                            ? "TEEN"
+                            : movie.do_tuoi_gioi_han > 0
+                            ? "KID"
+                            : "???"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="contentphimm">
+                      <Link to={`/chi-tiet-phim/${movie.id}`}>
+                        <h5 className="movie-title1">{movie.ten_phim}</h5>
+                      </Link>
+                      <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
+                        <CalendarOutlined style={{ color: "yellow", marginRight: "5px" }} />
+                        {movie.ngay_cong_chieu
+                          ? moment(movie.ngay_cong_chieu).format("DD/MM/YYYY")
+                          : "Chưa có ngày chiếu"}
+                      </p>
+                      <p style={{ fontSize: 12, color: "#fff" }}>
+                        <TagOutlined style={{ color: "yellow", marginRight: "5px" }} />
+                        {parseGenres(movie)}
+                      </p>
+                      <p style={{ fontSize: 12, color: "#fff" }}>
+                        <ClockCircleOutlined style={{ color: "yellow", marginRight: "5px" }} />
+                        {movie.thoi_luong ? `${movie.thoi_luong} phút` : "Chưa cập nhật"}
+                      </p>
+                      <p style={{ fontSize: 12, color: "#fff" }}>
+                        <CommentOutlined style={{ color: "yellow", marginRight: "5px" }} />
+                        {movie.ngon_ngu || "Chưa rõ phiên bản"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <Link to={`/phim/${movie.id}`}>
+                  <h4 className="movie-title">{movie.ten_phim}</h4>
                 </Link>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
+
+                <div className="movie-buttons">
+                  <button
+                    className="play-button"
+                    onClick={() => handleShowTrailer(movie.trailer, movie.ten_phim)}
+                  >
+                    <PlayCircleTwoTone twoToneColor="yellow" style={{ marginRight: 5, fontSize: "20px" }} />
+                    <span>Trailer</span>
+                  </button>
+                  <Link to={`/phim/${movie.id}`}>
+                    <button className="book-button">
+                      <span>ĐẶT VÉ</span>
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <Modal
+          title={`Trailer - ${trailerTitle}`}
+          open={isModalVisible}
+          onCancel={handleCloseModal}
+          footer={null}
+          width={800}
+          bodyStyle={{ padding: 0, height: 450 }}
+          destroyOnClose
+          centered
+          style={{
+            fontFamily: "Anton, sans-serif",
+            fontWeight: 100,
+            fontSize: 50,
+            borderRadius: 4,
+          }}
+        >
+          {trailerUrl ? (
+            <iframe
+              width="100%"
+              height="100%"
+              src={convertYouTubeUrlToEmbed(trailerUrl)}
+              title="Trailer"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <Empty
+              description={
+                <span style={{ color: "black", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>
+                  Không có trailer.
+                </span>
+              }
+            />
+          )}
+        </Modal>
+      </div>
     </div>
   );
 };
