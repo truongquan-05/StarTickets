@@ -159,7 +159,7 @@ Route::get('tong-quan',[DashboardController::class,'index']);
 Route::get('doanh-thu-nam',[DashboardController::class,'DoanhThuNam']);
 Route::get('doanh-thu-phim',[DashboardController::class,'PhimDoanhThuCaoNhat']);
 Route::post('doanh-thu',[DashboardController::class,'DoanhThu']);
-
+Route::post('thong-ke-ve',[DashboardController::class,'thongKeVe']);
 
 
 //-------------------CLIENT-------------------//
@@ -173,6 +173,7 @@ Route::get('/home/dac-biet', [HomeController::class, 'getPhimDacBiet']);
 
 Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
 Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
+Route::get('/phim-dac-biet', [HomeController::class, 'getAllPhimDacBiet']);
 Route::get('/search', [HomeController::class, 'search']);
 Route::get('/chi-tiet-phim/{id}', [HomeController::class, 'show']);
 Route::post('/loc', [HomeController::class, 'locPhimTheoRapNgayTheLoai']);

@@ -93,7 +93,6 @@ class HomeController extends Controller
     public function getAllPhimDacBiet()
     {
         $phimDacBiet = Phim::where('loai_suat_chieu', 'Đặc biệt')
-            ->take(9)
             ->get();
         return response()->json($phimDacBiet);
     }
@@ -104,11 +103,12 @@ class HomeController extends Controller
         $today = $now->toDateString();
 
         $phimSapChieu = Phim::whereDate('ngay_cong_chieu', '>', $today)
-            ->take(9)
+
             ->get();
 
         return response()->json($phimSapChieu);
     }
+
     public function search(Request $request)
     {
         $query = Phim::query();

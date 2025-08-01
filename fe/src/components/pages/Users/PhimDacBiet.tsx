@@ -67,7 +67,7 @@ const PhimDacBiet = () => {
 
   const fetchMovies = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/home/dac-biet");
+      const res = await axios.get("http://127.0.0.1:8000/api/phim-dac-biet");
       setMovies(res.data || []);
     } catch (error) {
       console.error("Lỗi khi fetch danh sách suất chiếu đặc biệt:", error);
