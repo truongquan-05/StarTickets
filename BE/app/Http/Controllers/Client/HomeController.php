@@ -117,8 +117,7 @@ class HomeController extends Controller
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
             $query->where(function ($q) use ($keyword) {
-                $q->where('ten_phim', 'like', "%$keyword%")
-                    ->orWhere('mo_ta', 'like', "%$keyword%");
+                $q->where('ten_phim', 'like', "%$keyword%");
             });
         }
 
