@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Button, Spin } from "antd";
 import { useListFoods } from "../../../hook/duHook";
 import { Food } from "../../../types/Uses";
-import { useListPhongChieu, useListPhongChieuClien } from "../../../hook/hungHook";
+import {  useListPhongChieuClien } from "../../../hook/hungHook";
 
 export interface SelectedFoodItem extends Food {
   quantity: number;
@@ -57,9 +57,11 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }
 
   const handleQuantityChange = (food: Food, change: number) => {
     setFoodQuantities((prev) => {
+      
       const newMap = new Map(prev);
       const current = newMap.get(food.id) || 0;
       const updated = Math.max(0, current + change);
+
       newMap.set(food.id, updated);
       onFoodQuantityChange({ ...food, quantity: updated });
       return newMap;
@@ -97,6 +99,7 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }
               <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <div style={{ fontSize: 15, color: "black", paddingBottom: 10 }}>{food.ten_do_an}</div>
                 <div style={{ color: "#555", fontSize: 14 }}>{food.gia_ban.toLocaleString("vi-VN")} VNĐ</div>
+                <div style={{ color: "#555", fontSize: 10 }}>Số lượng: {food.so_luong_ton} </div>
               </div>
               <div
                 style={{

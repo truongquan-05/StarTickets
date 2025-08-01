@@ -61,7 +61,7 @@ class CheckOutController extends Controller
             $diem = $request->input('diem', null);
             $nguoi_dung_id = $request->input('nguoi_dung_id');
             $email = $request->input('email');
-            $diem_thanh_vien = $request->input('diem_thanh_vien',0);
+            $diem_thanh_vien = $request->input('diem_thanh_vien', 0);
             $ho_ten = $request->input('ho_ten');
             $orderId = time() . "";
             $redirectUrl = "http://localhost:8000/api/momo-ipn";
@@ -125,7 +125,7 @@ class CheckOutController extends Controller
             $email = $request->input('email');
             $ho_ten = $request->input('ho_ten');
             $diem = $request->input('diem', null);
-            $diem_thanh_vien = $request->input('diem_thanh_vien',0);
+            $diem_thanh_vien = $request->input('diem_thanh_vien', 0);
 
 
             $vnp_Returnurl = "http://localhost:8000/api/momo-ipn?"
@@ -206,6 +206,7 @@ class CheckOutController extends Controller
 
     public function handleIpn(Request $request)
     {
+        XoaDonHang::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
 
         try {
             $data = $request->all();

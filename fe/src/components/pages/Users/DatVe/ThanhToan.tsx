@@ -242,7 +242,7 @@ const ThanhToan: React.FC = () => {
       ho_ten: formStep1Data.fullName,
       email: formStep1Data.email,
       ma_giam_gia_id: formStep1Data.ma_giam_gia_id,
-      diem_thanh_vien : checkDiem.variables.diem || null
+      diem_thanh_vien : checkDiem.variables?.diem || null
     };
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {

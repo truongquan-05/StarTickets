@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, useRef } from "react";
-import { Button, Spin, Image, Modal, message, Empty } from "antd";
+import {  Spin, Image, Modal, message, Empty } from "antd";
 import {
-  ClockCircleOutlined,
   FieldTimeOutlined,
   GlobalOutlined,
   PlayCircleOutlined,
@@ -12,9 +11,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../../provider/duProvider";
 import {
-  useListLichChieu,
-  useListPhongChieu,
-  useListCinemas,
+
   useListGhe,
   useListCheckGhe,
   useUpdateCheckGhe,
@@ -409,8 +406,8 @@ const MovieDetailUser = () => {
         style={{
           display: "flex",
           height: "40vh",
-          justifyContent: "center"  ,
-          alignItems: "center"  ,
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Spin size="large" /> {/* Bạn có thể điều chỉnh kích thước của Spin */}
@@ -459,7 +456,6 @@ const MovieDetailUser = () => {
       do_an_id: foodItem.id, // ID của món ăn
       so_luong: foodItem.quantity, // Số lượng món ăn
       gia_ban: foodItem.gia_ban, // Giá bán của món ăn (đảm bảo foodItem.gia_ban có trong SelectedFoodItem)
-      
     }));
 
     const payload = {
@@ -476,7 +472,7 @@ const MovieDetailUser = () => {
 
     createDatVe(payload, {
       onSuccess: (response) => {
-        message.success("Đặt vé thành công!");
+        // message.success("Đặt vé thành công!");
         // Xóa thông tin ghế đã chọn khỏi sessionStorage sau khi đã đặt vé thành công
         sessionStorage.removeItem("selectedSeats");
         sessionStorage.removeItem("selectedLichChieuId");
@@ -487,11 +483,9 @@ const MovieDetailUser = () => {
         });
         setIsProcessingPayment(false);
       },
-      onError: (error) => {
+      onError: (error: any) => {
         console.error("Lỗi thanh toán:", error); // Log lỗi chi tiết để debug
-        message.error(
-          "Thanh toán thất bại: " + (error.message || "Lỗi không xác định")
-        );
+        message.error(error?.response?.data.message || "Lỗi không xác định");
         setIsProcessingPayment(false);
         // Nếu thanh toán thất bại, quan trọng là đặt lại cờ để cho phép giải phóng ghế nếu người dùng thoát
         sessionStorage.setItem("justNavigatedFromThanhToan", "false");
@@ -940,10 +934,18 @@ const MovieDetailUser = () => {
           />
         ) : (
           <Empty
-              description={
-                <span style={{ color: "black", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>Không có trailer.</span>
-              }
-            />
+            description={
+              <span
+                style={{
+                  color: "black",
+                  fontSize: "16px",
+                  fontFamily: "Alata, sans-serif",
+                }}
+              >
+                Không có trailer.
+              </span>
+            }
+          />
         )}
       </Modal>
       <h3 className="lich-chieu-title">LỊCH CHIẾU</h3>
@@ -1235,7 +1237,7 @@ const MovieDetailUser = () => {
 
                 <div className="food-list-scroll">
                   <FoodSelectionDisplay
-                  phongId={selectedPhong.id}
+                    phongId={selectedPhong.id}
                     onFoodQuantityChange={handleFoodQuantityChange}
                   />
                 </div>
@@ -1249,7 +1251,19 @@ const MovieDetailUser = () => {
 
                 {selectedFoods.length === 0 ? (
                   <div className="empty-selection-message">
-                    <Empty description={<span style={{ color: "white", fontSize: "16px", fontFamily: "Alata, sans-serif" }}>Chưa có món ăn nào được chọn!</span>} />
+                    <Empty
+                      description={
+                        <span
+                          style={{
+                            color: "white",
+                            fontSize: "16px",
+                            fontFamily: "Alata, sans-serif",
+                          }}
+                        >
+                          Chưa có món ăn nào được chọn!
+                        </span>
+                      }
+                    />
                   </div>
                 ) : (
                   <>
@@ -1418,7 +1432,7 @@ const MovieDetailUser = () => {
                   textTransform: "uppercase",
                 }}
                 disabled={
-                  (selectedSeats.length === 0 && selectedFoods.length === 0) ||
+                  (selectedSeats.length === 0 ) ||
                   isProcessingPayment
                 }
               >

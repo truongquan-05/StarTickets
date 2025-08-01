@@ -97,6 +97,7 @@ const PhimDangChieu = () => {
               }}
             />
           </Link>
+          <Link to={`/phim/${movie.slug || movie.id}`}>
           <div className="movie-overlay">
             <div className="attach">
               <div className="type-movie">
@@ -116,11 +117,11 @@ const PhimDangChieu = () => {
               </div>
             </div>
             <div className="contentphimm">
-              <Link to={`/phim/${movie.slug || movie.id}`}>
+              
                 <h5 className="movie-title1">
                   {movie.title || movie.ten_phim}
                 </h5>
-              </Link>
+             
               <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
                 <CalendarOutlined
                   style={{ color: "yellow", marginRight: "5px" }}
@@ -147,6 +148,7 @@ const PhimDangChieu = () => {
               </p>
             </div>
           </div>
+           </Link>
         </div>
 
         <Link to={`/phim/${movie.slug || movie.id}`}>

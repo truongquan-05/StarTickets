@@ -24,13 +24,8 @@ class DashboardController extends Controller
 
     public function __construct()
     {
-        $user = Auth::guard('sanctum')->user();
         $this->middleware('IsAdmin');
-        if ($user->vai_tro_id == 3) {
-            $this->middleware('permission:Dashboard')->only('index', 'DoanhThuNam', 'PhimDoanhThuCaoNhat');
-        } else {
-            $this->middleware('permission:Dashboard-read');
-        }
+        $this->middleware('permission:Dashboard-read')->only('thongKeVe', 'DoanhThu');
     }
 
 
@@ -401,7 +396,7 @@ class DashboardController extends Controller
     public function thongKeVe(Request $request)
     {
         $filter = $request->all();
-        if (empty($filter)) {
+        if (empty($filter) || empty($filter['bat_dau'])) {
             $VeBanRa = DatVeChiTiet::count();
 
             $VeBanRaThang = DatVeChiTiet::whereMonth('created_at', Carbon::now()->month)
@@ -411,7 +406,10 @@ class DashboardController extends Controller
                 ->orderByDesc('gio')
                 ->first();
 
-            $dataGioCaoDiem = str_pad($gioCaoDiem->gio, 2, '0', STR_PAD_LEFT) . ':00';
+            $dataGioCaoDiem = $gioCaoDiem
+                ? str_pad($gioCaoDiem->gio, 2, '0', STR_PAD_LEFT) . ':00'
+                : '--:--';
+
 
             $lapDayRap = CheckGhe::count();
             $gheDaDat = $lapDayRap > 0

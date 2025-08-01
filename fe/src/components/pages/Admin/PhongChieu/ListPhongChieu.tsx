@@ -113,6 +113,7 @@ const ListPhongChieu = () => {
     );
 
   const rapMap = new Map<number, string>();
+
   rapData.forEach((r: IRap) => {
     rapMap.set(r.id, r.ten_rap);
   });
