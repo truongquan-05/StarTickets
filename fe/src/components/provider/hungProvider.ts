@@ -438,5 +438,10 @@ export const getDoanhThuPhim = async ({resource = "doanh-thu-phim"} : Props) => 
   return data;
 }
 
+export const getThongKeDoanhThu = async ({resource = "doanh-thu"} : Props) => {
+  const {data} = await axiosClient.get(resource);
+  return data;
+}
+
 
 

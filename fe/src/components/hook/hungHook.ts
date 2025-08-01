@@ -55,6 +55,7 @@ import {
   getRestorePhongChieu,
   getShowQuyen,
   getSoftDeleteMovies,
+  getThongKeDoanhThu,
   getTongQuan,
   getUpdateCategoryChair,
   getUpdateCheckGhe,
@@ -860,5 +861,12 @@ export const useDoanhThuPhim = ({ resource = "doanh-thu-phim" }) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getDoanhThuPhim({ resource }),
+  });
+};
+
+export const useThongKeDoanhThu = ({ resource = "doanh-thu" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getThongKeDoanhThu({ resource }),
   });
 };
