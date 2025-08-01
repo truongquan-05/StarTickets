@@ -19,6 +19,9 @@ import {
   useListCheckGhe,
   useUpdateCheckGhe,
   useCreateDatVe,
+  useListPhongChieuClien,
+  useListCinemasClient,
+  useListLichChieuClient,
 } from "../../hook/hungHook";
 import "./MovieDetailUser.css";
 import { ILichChieu } from "../Admin/interface/lichchieu";
@@ -89,9 +92,9 @@ const MovieDetailUser = () => {
       id: selectedLichChieuId ?? undefined,
     });
   const { data: lichChieuList = [], isLoading: loadingLichChieu } =
-    useListLichChieu({ resource: "client/lich_chieu" });
-  const phongQuery = useListPhongChieu({ resource: "client/phong_chieu" });
-  const rapQuery = useListCinemas({ resource: "client/rap" });
+    useListLichChieuClient({ resource: "client/lich_chieu" });
+  const phongQuery = useListPhongChieuClien({ resource: "client/phong_chieu" });
+  const rapQuery = useListCinemasClient({ resource: "client/rap" });
   const phongList = phongQuery.data?.data || [];
   const rapList = rapQuery.data || [];
   const { mutate: createDatVe } = useCreateDatVe({ resource: "dat_ve" });

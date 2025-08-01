@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use App\Models\Rap;
 use App\Models\Phim;
 use App\Models\DatVe;
 use App\Models\DonDoAn;
+use App\Models\CheckGhe;
 use App\Models\NguoiDung;
 use App\Models\ThanhToan;
 use App\Models\DatVeChiTiet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\CheckGhe;
-use App\Models\Rap;
+use Illuminate\Support\Facades\Auth;
 
 
 class DashboardController extends Controller
@@ -23,10 +24,13 @@ class DashboardController extends Controller
 
     public function __construct()
     {
-
+        $user = Auth::guard('sanctum')->user();
         $this->middleware('IsAdmin');
-        $this->middleware('permission:Dashboard-read');
-        $this->middleware('permission:Dashboard')->only('index','DoanhThuNam','PhimDoanhThuCaoNhat');
+        if ($user->vai_tro_id == 3) {
+            $this->middleware('permission:Dashboard')->only('index', 'DoanhThuNam', 'PhimDoanhThuCaoNhat');
+        } else {
+            $this->middleware('permission:Dashboard-read');
+        }
     }
 
 
@@ -34,6 +38,7 @@ class DashboardController extends Controller
 
     public function index()
     {
+
         $now = Carbon::now();
         $thang = $now->month;
         $nam = $now->year;

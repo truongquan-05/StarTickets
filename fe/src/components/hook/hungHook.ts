@@ -34,16 +34,19 @@ import {
   getListCheckGheByGhe,
   getListChuyenNgu,
   getListCinemas,
+  getListCinemasClient,
   getListDatVe,
   getListDiem,
   getListGhe,
   getListLichChieu,
+  getListLichChieuClient,
   getListLichSuDonHang,
   getListLichSuDonHangChiTiet,
   getListMovies,
   getListNews,
   getListPhanHoiNguoiDung,
   getListPhongChieu,
+  getListPhongChieuClient,
   getListQuyen,
   getListTongTien,
   getListTrashMovies,
@@ -281,6 +284,13 @@ export const useListPhongChieu = ({ resource = "phong_chieu" }) => {
     queryFn: () => getListPhongChieu({ resource }),
   });
 };
+
+export const useListPhongChieuClien = ({ resource = "client/phong_chieu" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getListPhongChieuClient({ resource }),
+  });
+};
 export const useCreatePhongChieu = ({ resource = "phong_chieu" }: Props) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -363,6 +373,16 @@ export const useListCinemas = ({ resource = "rap" }: Props) => {
   });
 };
 
+export const useListCinemasClient = ({ resource = "client/rap" }: Props) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: async () => {
+      const res = await getListCinemasClient({ resource });
+      return res.data || res;
+    },
+  });
+};
+
 export const useListGhe = ({ resource = "ghe", phong_id }: Props) => {
   return useQuery({
     queryKey: [resource, phong_id], // refetch khi phong_id thay đổi
@@ -404,6 +424,12 @@ export const useListLichChieu = ({ resource = "lich_chieu" }) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getListLichChieu({ resource }),
+  });
+};
+export const useListLichChieuClient = ({ resource = "client/lich_chieu" }) => {
+  return useQuery({
+    queryKey: [resource],
+    queryFn: () => getListLichChieuClient({ resource }),
   });
 };
 

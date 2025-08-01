@@ -135,6 +135,10 @@ export const getListPhongChieu = async ({ resource = "phong_chieu" }: Props) => 
   const { data } = await axiosClient.get(resource);
   return data;
 };
+export const getListPhongChieuClient = async ({ resource = "client/phong_chieu" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
 export const getCreatePhongChieu = async ({resource = "phong_chieu" , values} : Props) => {
   const {data} = await  axiosClient.post(resource,values);
   return data;
@@ -171,6 +175,13 @@ export const getListCinemas = async ({ resource = "rap" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
 };
+export const getListCinemasClient = async ({ resource = "client/rap" }: Props) => {
+  const { data } = await axiosClient.get(resource);
+  return data;
+};
+
+
+
 export const getListChair = async ({ resource = "rap" }: Props) => {
   const { data } = await axiosClient.get(resource);
   return data;
@@ -211,6 +222,10 @@ export const getDeleteLichChieu  = async ({resource = "lich_chieu" , id} : Props
 }
 
 export const getListLichChieu = async ({ resource = "lich_chieu" }: Props) => {
+  const res = await axiosClient.get(resource);
+  return res.data.data;  // nếu backend bọc trong data.data
+};
+export const getListLichChieuClient = async ({ resource = "client/lich_chieu" }: Props) => {
   const res = await axiosClient.get(resource);
   return res.data.data;  // nếu backend bọc trong data.data
 };
