@@ -1,4 +1,4 @@
-import  { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Table, Button, Modal, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -74,8 +74,36 @@ const ListPhongChieu = () => {
     phong_id: selectedPhong?.id,
   });
 
-  if (isLoadingPhong || isLoadingRap)
-    return <div style={{ padding: 20, fontSize: 16 }}>Đang tải dữ liệu...</div>;
+
+  if (isLoadingPhong || isLoadingRap) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <div
+          style={{
+            border: "6px solid #f3f3f3",
+            borderTop: "6px solid #3498db",
+            borderRadius: "50%",
+            width: "50px",
+            height: "50px",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+        <style>
+          {`@keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+          }`}
+        </style>
+      </div>
+    );
+  }
 
   if (isErrorPhong || isErrorRap)
     return (
@@ -189,7 +217,6 @@ const ListPhongChieu = () => {
         onCancel={() => setOpen(false)}
         footer={null}
         width={1300}
-        
         bodyStyle={{
           display: "flex",
           flexDirection: "column",

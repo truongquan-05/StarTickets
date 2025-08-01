@@ -19,6 +19,19 @@ use App\Models\Rap;
 class DashboardController extends Controller
 {
 
+
+
+    public function __construct()
+    {
+
+        $this->middleware('IsAdmin');
+        $this->middleware('permission:Dashboard-read');
+        $this->middleware('permission:Dashboard')->only('index','DoanhThuNam','PhimDoanhThuCaoNhat');
+    }
+
+
+
+
     public function index()
     {
         $now = Carbon::now();
@@ -520,7 +533,14 @@ class DashboardController extends Controller
                 return $tong > 0 ? round($daDat / $tong * 100, 2) : 0;
             });
 
+            $dataLapDayRap = collect();
 
+            foreach ($tyLeDat as $k => $v) {
+                $dataLapDayRap->push([
+                    'rap' => Rap::select('ten_rap')->find($k)->ten_rap,
+                    'daDatChiem' => $v
+                ]);
+            }
 
             return response()->json([
                 'tongVe' => $VeBanRa,
@@ -531,7 +551,7 @@ class DashboardController extends Controller
                 'phimBanChay' => $phimBanChay,
                 'phanLoaiGhe' => $phanLoaiGhe,
                 'gioCaoDiemTop5' => $gioCaoDiemTop5,
-                'tyLeDat' => $tyLeDat
+                'tyLeDat' => $dataLapDayRap
             ]);
         } else {
             $batdau = Carbon::parse($filter['bat_dau'])->startOfDay();
@@ -762,6 +782,15 @@ class DashboardController extends Controller
                 return 0;
             });
 
+            $dataLapDayRap = collect();
+
+            foreach ($tyLeDat as $k => $v) {
+                $dataLapDayRap->push([
+                    'rap' => Rap::select('ten_rap')->find($k)->ten_rap,
+                    'daDatChiem' => $v
+                ]);
+            }
+
 
 
             return response()->json([
@@ -773,7 +802,7 @@ class DashboardController extends Controller
                 'phimBanChay' => $phimBanChay,
                 'phanLoaiGhe' => $phanLoaiGhe,
                 'gioCaoDiemTop5' => $gioCaoDiemTop5,
-                'tyLeDat' => $tyLeDat
+                'tyLeDat' => $dataLapDayRap
             ]);
         }
     }

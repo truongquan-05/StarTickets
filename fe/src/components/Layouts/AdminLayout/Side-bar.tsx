@@ -27,6 +27,8 @@ import {
   PaperClipOutlined,
   DeleteOutlined,
   StopOutlined,
+  PieChartOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logoStar.png";
@@ -79,6 +81,15 @@ const SideBar: React.FC<SideBarProps> = ({
       <Menu.Item key="/admin" icon={<HomeOutlined />}>
         <Link to="/admin">Dashboard</Link>
       </Menu.Item>
+
+      <Menu.SubMenu key="thong-ke" icon={<PieChartOutlined />} title="Thống kê">
+        <Menu.Item key="/admin/thong-ke/ve" icon={<BarChartOutlined />}>
+          <Link to="/admin/thong-ke/ve">Thống kê vé</Link>
+        </Menu.Item>
+        <Menu.Item key="/" icon={<InsertRowAboveOutlined />}>
+          <Link to="/admin/">Ghế</Link>
+        </Menu.Item>
+      </Menu.SubMenu>
 
       <Menu.Item key="/admin/don-ve" icon={<ShoppingOutlined />}>
         <Link to="/admin/don-ve">Đơn vé</Link>

@@ -66,6 +66,7 @@ import QuenMatKhau from "../pages/Users/QuenMatKhau";
 import DoiMatKhau from "../pages/Users/DoiMatKhau";
 import DatVeNgay from "../pages/Users/DatVeNgay";
 import LichChieuUser from "../pages/Users/LichChieuUser";
+import ThongKeVe from "../pages/Admin/ThongKe/ThongkeVe";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -111,21 +112,19 @@ const Routermain = () => {
       ),
       children: [
         { path: "", element: <DashboardAdmin /> },
+        { path: "thong-ke/ve", element: < ThongKeVe/> },
         { path: "movies/list", element: <List /> },
         { path: "movies/detail/:id", element: <MovieDetail /> },
         { path: "movies/add", element: <AddMoviesPage /> },
         { path: "category_chair/list", element: <ListCategoryChair /> },
         { path: "movies/trash", element: <TrashMovies /> },
-
         { path: "banner", element: <BannerList /> },
         { path: "banner/create", element: <BannerForm /> },
         { path: "banner/edit/:id", element: <BannerEdit /> },
         { path: "banner/trash", element: <TrashBanners /> },
         { path: "banner/het-han", element: <BannerHetHan /> },
-
         { path: "don-ve", element: <DonVeList /> },
         { path: "don-ve/:id", element: <DonVeDetail /> },
-
         { path: "chair/list", element: <Chair /> },
         { path: "lichchieu/list", element: <LichChieu /> },
         { path: "lichchieucu/list", element: <LichChieuCu /> },
@@ -137,19 +136,13 @@ const Routermain = () => {
         { path: "room/list/chuaxuat", element: <PhongChieuChuaXuat /> },
         { path: "room/trashed/list", element: <PhongChieuXoaMem /> },
         { path: "room/add", element: <AddPhongChieu /> },
-
         { path: "comment/phanhoinguoidung", element: <PhanHoiNguoiDung /> },
         { path: "comment/list", element: <Comment /> },
-
         { path: "users", element: <UserList /> },
         { path: "vaitro", element: <VaiTro /> },
         { path: "phanquyen", element: <PhanQuyen /> },
-
         { path: "profile", element: <ProfileAdmin /> },
-
-
         { path: "genre", element: <GenresManager /> },
-
         { path: "food", element: <FoodList /> },
         { path: "food/add", element: <FoodAdd /> },
         { path: "food/edit/:id", element: <FoodEdit /> },
