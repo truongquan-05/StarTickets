@@ -32,7 +32,7 @@ class UpdateGheJob implements ShouldQueue
                 'nguoi_dung_id' => null,
                 'trang_thai' => 'trong'
             ]);
+            Log::info('[UpdateGheJob] Kết thúc job cho ghế ' . $data);
         }
-        Log::info('[UpdateGheJob] Kết thúc job cho ghế ' . $data);
     }
 }
