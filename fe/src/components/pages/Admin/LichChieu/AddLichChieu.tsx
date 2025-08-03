@@ -233,7 +233,6 @@ const AddLichChieu = () => {
           // } else {
           //   message.error("Đã có lỗi xảy ra");
           // }
-          console.log(error);
           setSubmitting(false);
         },
       });

@@ -40,7 +40,6 @@ const LichSuTatCaVe = () => {
     resource: "lich-su-ve",
     id: selectedId ?? undefined,
   });
-  console.log(chiTietData);
 
   const showModalChiTiet = (id: number) => {
     setSelectedId(id);

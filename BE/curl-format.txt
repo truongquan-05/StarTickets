@@ -1,0 +1,5 @@
+\n
+DNS Lookup     : %{time_namelookup}s
+TCP Connection : %{time_connect}s
+Server Process : %{time_starttransfer}s
+Total Time     : %{time_total}s

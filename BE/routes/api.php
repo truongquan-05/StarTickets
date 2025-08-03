@@ -41,7 +41,6 @@ use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
 use App\Http\Controllers\Client\DoAnController as DoAnControllerClient;
 use App\Http\Controllers\Client\QuenMatKhau;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 //-------------------ADMIN-------------------//
 
@@ -197,7 +196,6 @@ Route::get('voucher', [MaGiamGiaClient::class, 'index']);
 Route::put('voucher/destroy/{id}', [MaGiamGiaClient::class, 'destroy']);
 Route::post('voucher-check', [MaGiamGiaClient::class, 'checkVoucher']);
 Route::get('phuong_thuc_thanh_toan', [DatVeController::class, 'getPhuongThucThanhToan']);
-
 Route::apiResource('lich-su-ve', LichSuMuaHangController::class);
 Route::get('diem_thanh_vien', [DiemThuongController::class, 'index']);
 Route::post('diem_thanh_vien', [DiemThuongController::class, 'checkDiem']);
@@ -205,3 +203,4 @@ Route::apiResource('client/lich_chieu', ClientLichChieuController::class);
 Route::apiResource('client/phong_chieu', ClientPhongChieuController::class);
 Route::get('/client/rap', [ClientRapController::class, 'index']);
 Route::get('/client/do_an', [DoAnControllerClient::class, 'index']);
+Route::get('/client/rap-phim/{id}', [ClientRapController::class, 'show']);

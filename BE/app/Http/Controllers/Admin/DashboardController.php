@@ -174,7 +174,7 @@ class DashboardController extends Controller
     public function DoanhThu(Request $request)
     {
         $filter = $request->all();
-        if (empty($filter)) {
+        if (empty($filter) || empty($filter['bat_dau'])) {
             $DoanhThu = ThanhToan::with('datVe')->get();
             $tongDoanhThu = $DoanhThu->sum(fn($tt) => $tt->datVe->tong_tien ?? 0);
 
@@ -313,7 +313,12 @@ class DashboardController extends Controller
             })->sortByDesc('tong_doanh_thu')->first();
 
 
-            $tongSoLuong = ThanhToan::whereBetween('created_at', [$batdau, $ketthuc])->count();
+            $tongSoLuong = ThanhToan::whereBetween('created_at', [$batdau, $ketthuc])->when($RapId !== null, function ($query) use ($RapId) {
+                $query->whereHas('datVe.lichChieu.phong_chieu', function ($q) use ($RapId) {
+                    $q->where('rap_id', $RapId);
+                });
+            })
+                ->count();
 
             if ($tongSoLuong === 0) {
                 $phuongThucTT = null;
@@ -348,8 +353,6 @@ class DashboardController extends Controller
                 ];
             });
 
-
-
             $now = Carbon::now();
             $nam = $now->year;
 
@@ -359,6 +362,7 @@ class DashboardController extends Controller
                         $q->where('rap_id', $RapId);
                     });
                 })
+                ->whereBetween('created_at', [$batdau, $ketthuc])
                 ->whereYear('created_at', $nam)
                 ->selectRaw('DATE_FORMAT(created_at, "%m-%Y") as thang, SUM(tong_tien) as doanh_thu')
                 ->groupBy('thang')
@@ -372,7 +376,7 @@ class DashboardController extends Controller
             }
 
 
-            $DoanhThuPhim = $groupPhim->map(function ($item, $i) {
+            $DoanhThuPhim[] = $groupPhim->map(function ($item, $i) {
                 return [
                     'phim_id' => Phim::find($i),
                     'tong_doanh_thu' => $item->sum('tong_tien')

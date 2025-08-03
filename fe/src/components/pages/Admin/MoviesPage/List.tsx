@@ -2,6 +2,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   ExportOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import {
   Space,
@@ -24,6 +25,8 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { IMovies, MoviesForm } from "../interface/movies";
+import type { FilterDropdownProps } from "antd/es/table/interface";
+
 // import { Link } from "react-router-dom";
 import "./Phim.css";
 import {
@@ -75,13 +78,12 @@ const List = () => {
 
   useEffect(() => {
     if (isModalOpen && editingItem) {
-      const the_loai_ids =
-        editingItem.the_loai_id
-          ? (typeof editingItem.the_loai_id === "string"
-              ? JSON.parse(editingItem.the_loai_id)
-              : editingItem.the_loai_id
-            ).map((item: any) => item.id)
-          : [];
+      const the_loai_ids = editingItem.the_loai_id
+        ? (typeof editingItem.the_loai_id === "string"
+            ? JSON.parse(editingItem.the_loai_id)
+            : editingItem.the_loai_id
+          ).map((item: any) => item.id)
+        : [];
 
       form.setFieldsValue({
         ...editingItem,
@@ -159,13 +161,18 @@ const List = () => {
       );
     }
   };
+  const [searchText, setSearchText] = useState("");
 
-  // const getGenreName = (id: number) => {
-  //   const item = genre.find((g) => g.id === id);
-  //   return item ? item.ten_the_loai : "Chưa cập nhật";
+  const handleSearch = (selectedKeys:any, confirm:any) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+  };
+
+  // const handleReset = (clearFilters:any) => {
+  //   clearFilters();
+  //   setSearchText("");
   // };
 
-  // Định nghĩa cột cho Ant Design Table
   const columns = [
     {
       title: "#",
@@ -198,6 +205,46 @@ const List = () => {
       dataIndex: "ten_phim",
       key: "info",
       width: 520,
+
+      filteredValue: searchText ? [searchText] : null,
+      onFilter: (value:any, record:any) =>
+        record.ten_phim.toLowerCase().includes(value.toLowerCase()),
+     filterDropdown: ({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+}: FilterDropdownProps) => (
+  <div style={{ padding: 8 }}>
+    <Input
+      placeholder="Tìm theo tên phim"
+      value={selectedKeys[0]}
+      onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+      onPressEnter={() => handleSearch(selectedKeys as string[], confirm)}
+      style={{ marginBottom: 8, display: "block" }}
+    />
+    <Space>
+      <Button
+        type="primary"
+        onClick={() => handleSearch(selectedKeys as string[], confirm)}
+        icon={<SearchOutlined />}
+        size="small"
+        style={{ width: 90 }}
+      >
+        Tìm
+      </Button>
+      <Button
+        onClick={() => clearFilters?.()}
+        size="small"
+      >
+        Xóa
+      </Button>
+    </Space>
+  </div>
+),
+      filterIcon: (filtered:any) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
       render: (_: any, record: IMovies) => (
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
           <Text strong style={{ fontSize: 16 }}>
@@ -329,7 +376,7 @@ const List = () => {
             onConfirm={() =>
               softDeleteMovie(record.id, {
                 onError: () => {
-                  message.error("Xóa mềm thất bại");
+                  // message.error("Xóa mềm thất bại");
                 },
               })
             }
@@ -390,9 +437,7 @@ const List = () => {
             .then((values) => {
               onCreateOrUpdate(values);
             })
-            .catch((info) => {
-              console.log("Validate Failed:", info);
-            });
+            .catch(() => {});
         }}
         width={1200}
         style={{ marginTop: "-60px" }}
@@ -403,7 +448,7 @@ const List = () => {
           layout="vertical"
           name="movieForm"
           initialValues={{ trang_thai: 1, do_tuoi_gioi_han: 0 }}
-          style={{ maxHeight: "70vh", overflowY: "auto" , overflowX: "hidden"}}
+          style={{ maxHeight: "70vh", overflowY: "auto", overflowX: "hidden" }}
           className="custom-scroll"
         >
           <Row gutter={24}>

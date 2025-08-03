@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useRef } from "react";
-import {  Spin, Image, Modal, message, Empty } from "antd";
+import { Spin, Image, Modal, message, Empty } from "antd";
 import {
   FieldTimeOutlined,
   GlobalOutlined,
@@ -11,7 +11,6 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../../provider/duProvider";
 import {
-
   useListGhe,
   useListCheckGhe,
   useUpdateCheckGhe,
@@ -70,6 +69,9 @@ const MovieDetailUser = () => {
   const [selectedLichChieuId, setSelectedLichChieuId] = useState<number | null>(
     null
   );
+  const newSeatsRef = useRef<any>(null);
+  const [isLoadingsss, setIsLoadingsss] = useState(false);
+  const [gheData, setGheData] = useState(null);
   const [selectedLichChieu, setSelectedLichChieu] = useState<ILichChieu | null>(
     null
   );
@@ -78,10 +80,13 @@ const MovieDetailUser = () => {
   const { mutate: updateCheckGhe } = useUpdateCheckGhe({
     resource: "check_ghe",
   });
+
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [displaySelectedSeats, setDisplaySelectedSeats] = useState<
     SelectedSeatWithPrice[]
   >([]);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
+
   const [totalPrice, setTotalPrice] = useState<number>(0);
   // const [hasGap, setHasGap] = useState(false);
   const { data: checkGheList = [], isLoading: loadingCheckGhe } =
@@ -153,6 +158,17 @@ const MovieDetailUser = () => {
   useEffect(() => {
     checkGheListRef.current = checkGheList;
   }, [checkGheList]);
+
+  useEffect(() => {
+    if (gheData &&  errorStatus !== 422  && !isLoadingsss && newSeatsRef.current) {
+      setIsLoadingsss(false);
+      setSelectedSeats(newSeatsRef.current);
+
+      newSeatsRef.current = null;
+    }
+  }, [gheData, isLoadingsss]);
+
+
   useEffect(() => {}, [checkGheList]);
   // Hàm core để giải phóng ghế trên API
   const releaseSeatsApiCore = useCallback(
@@ -175,6 +191,7 @@ const MovieDetailUser = () => {
               item.ghe_id === ghe.id &&
               item.lich_chieu_id === lichChieuIdToProcess
           );
+
           if (
             correspondingCheckGhe &&
             correspondingCheckGhe.trang_thai === "dang_dat"
@@ -808,7 +825,9 @@ const MovieDetailUser = () => {
         return;
       }
     }
-    setSelectedSeats(newSelectedSeats);
+    // setSelectedSeats(newSelectedSeats);
+    newSeatsRef.current = newSelectedSeats;
+
     // THÊM ĐOẠN NÀY NGAY SAU setSelectedSeats(newSelectedSeats);
     if (newSelectedSeats.length === 0) {
       setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
@@ -821,11 +840,28 @@ const MovieDetailUser = () => {
           x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
       );
       if (found) {
-        updateCheckGhe({
-          id: found.id,
-          values: { trang_thai: newTrangThai, nguoi_dung_id: user?.id || null },
-          lichChieuId: selectedLichChieuId,
-        });
+        setIsLoadingsss(true);
+        updateCheckGhe(
+          {
+            id: found.id,
+            values: {
+              trang_thai: newTrangThai,
+              nguoi_dung_id: user?.id || null,
+            },
+            lichChieuId: selectedLichChieuId,
+          },
+          {
+            onSuccess: (data) => {
+              setGheData(data);
+              setErrorStatus(null);
+              setIsLoadingsss(false);
+            },
+            onError: (error: any) => {
+              setErrorStatus(error?.response?.status || null);
+              setIsLoadingsss(false); // ❗️fix chỗ này
+            },
+          }
+        );
       }
     });
   };
@@ -1431,10 +1467,7 @@ const MovieDetailUser = () => {
                       : 0.6,
                   textTransform: "uppercase",
                 }}
-                disabled={
-                  (selectedSeats.length === 0 ) ||
-                  isProcessingPayment
-                }
+                disabled={selectedSeats.length === 0 || isProcessingPayment}
               >
                 <span>Đặt vé</span>
               </button>

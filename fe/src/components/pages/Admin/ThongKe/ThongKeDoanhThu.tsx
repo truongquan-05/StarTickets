@@ -1,8 +1,8 @@
 import {
-  CalendarOutlined,
-  ClockCircleOutlined,
+  CreditCardOutlined,
   EuroCircleOutlined,
-  LineChartOutlined,
+  HomeOutlined,
+  VideoCameraOutlined,
 } from "@ant-design/icons";
 import {
   DatePicker,
@@ -13,7 +13,6 @@ import {
   Form,
   Card,
   Statistic,
-  Table,
   Typography,
 } from "antd";
 import {
@@ -29,7 +28,6 @@ import {
   Pie,
   BarChart,
   Bar,
-  CartesianGrid,
 } from "recharts";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -99,11 +97,15 @@ const ThongKeDoanhThu = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://127.0.0.1:8000/api/doanh-thu", payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/doanh-thu",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setData(res.data);
     } catch (error) {
       console.error("Lỗi POST khi lọc doanh-thu:", error);
@@ -143,28 +145,6 @@ const ThongKeDoanhThu = () => {
     );
   }
 
-  // Xử lý dữ liệu cho các phần
-
-  // Doanh thu theo phim
-  const doanhThuPhimData = data?.DoanhThuPhim
-    ? Object.values(data.DoanhThuPhim).map((item: any, index: number) => ({
-        key: index,
-        tenPhim: item.phim_id?.ten_phim || `Phim ${index + 1}`,
-        doanhThu: item.tong_doanh_thu || 0,
-      }))
-    : [];
-
-  // Doanh thu theo rạp
-  const doanhThuRapData = data?.doanhthurap
-    ? Object.values(data.doanhthurap).map((item: any, index: number) => ({
-        key: index,
-        tenRap: item.rap_id?.ten_rap || "Không rõ",
-        diaChi: item.rap_id?.dia_chi || "-",
-        doanhThu: item.tong_doanh_thu || 0,
-      }))
-    : [];
-
-  // Doanh thu theo tháng (chuyển object thành array)
   const doanhThuTheoThangData = data?.doanhthutheothang
     ? Object.entries(data.doanhthutheothang).map(([month, val]) => ({
         month,
@@ -172,41 +152,79 @@ const ThongKeDoanhThu = () => {
       }))
     : [];
 
-  // Phim doanh thu max
-  const phimMax = data?.phimDoanhThuMax?.phim_id;
-
-  // Phương thức thanh toán (đưa object thành mảng 1 phần tử)
-  const phuongThucTTData = data?.phuongThucTT ? [data.phuongThucTT] : [];
-
-  const columnsPhuongThucTT = [
+  const thongTinRap = data?.rap?.rap;
+  const stats = [
     {
-      title: "Phương thức thanh toán",
-      dataIndex: ["phuong_thuc", "ten"],
-      key: "phuong_thuc",
-      render: (text: any) => text || "Không xác định",
+      icon: <EuroCircleOutlined style={{ color: "#52c41a", fontSize: 24 }} />,
+      title: "TỔNG DOANH THU",
+      value: data?.doanhThu,
+      suffix: "",
+      description: "",
     },
-    { title: "Số lượng", dataIndex: "so_luong", key: "so_luong" },
     {
-      title: "Phần trăm",
-      dataIndex: "phan_tram",
-      key: "phan_tram",
-      render: (val: string) => `${parseFloat(val).toFixed(2)}%`,
+      icon: <HomeOutlined style={{ color: "#1890ff", fontSize: 24 }} />,
+      title: "RẠP CÓ DOANH THU CAO NHẤT",
+      value: data?.rap?.rap_id?.ten_rap || '0',
+      suffix: "",
+      description: ``,
+    },
+    {
+      icon: <VideoCameraOutlined style={{ color: "#faad14", fontSize: 24 }} />,
+      title: "PHIM CÓ DOANH THU NHIỀU NHẤT",
+      value: data?.phimDoanhThuMax?.phim_id?.ten_phim || "Không có dữ liệu",
+      suffix: "",
+      description: "",
+    },
+    {
+      icon: <CreditCardOutlined style={{ color: "#722ed1", fontSize: 24 }} />,
+      title: "PHƯƠNG THỨC THANH TOÁN PHỔ BIẾN",
+      value: data?.phuongThucTT?.phuong_thuc?.nha_cung_cap || 0,
+      suffix: "",
+      description: `${data?.phuongThucTT?.phan_tram || 0}%`,
     },
   ];
 
-  // Thông tin rạp
-  const thongTinRap = data?.rap?.rap;
+  const dataPhim = Object.values(data?.DoanhThuPhim || {}).map((item: any) => ({
+    tenPhim: item?.phim_id?.ten_phim,
+    doanhThu: item?.tong_doanh_thu,
+  }));
+
+  const dataRaps = Object.values(data?.doanhthurap || {}).map((item: any) => ({
+    name: item.rap_id.ten_rap,
+    value: item.chiem,
+  }));
+
+  const COLORS = [
+    "#2f54eb",
+    "#fa186bff",
+    "#faad14",
+    "#f5222d",
+    "#9254de",
+    "#52c41a",
+    "#1890ff",
+    "#73d13d",
+  ];
+  const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram);
+  const momoPercent = 100 - vnpayPercent;
+
+  const Pay = [
+    { name: data?.phuongThucTT?.phuong_thuc?.ten, value: vnpayPercent },
+    { name: "MOMO", value: momoPercent },
+  ];
+
+  const COLORSS = ["#2F3A8F", "#1db80fff"]; // màu gần giống trong ảnh
 
   return (
     <Card style={{ maxWidth: 1500, margin: "0 auto", padding: 24 }}>
-      {/* Form lọc */}
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Row gutter={16} align="bottom">
           <Col span={6}>
             <Form.Item
               label="Ngày bắt đầu"
               name="startDate"
-              rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn ngày bắt đầu" },
+              ]}
             >
               <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
             </Form.Item>
@@ -215,14 +233,20 @@ const ThongKeDoanhThu = () => {
             <Form.Item
               label="Ngày kết thúc"
               name="endDate"
-              rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn ngày kết thúc" },
+              ]}
             >
               <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item label="Rạp chiếu" name="rap">
-              <Select allowClear placeholder="--- Tất cả ---" style={{ width: "100%" }}>
+              <Select
+                allowClear
+                placeholder="--- Tất cả ---"
+                style={{ width: "100%" }}
+              >
                 {dataRap.data.map((rap: any) => (
                   <Option key={rap.id} value={rap.id}>
                     {rap.ten_rap}
@@ -233,54 +257,178 @@ const ThongKeDoanhThu = () => {
           </Col>
           <Col span={4}>
             <Form.Item>
-              <Button type="primary" htmlType="submit" style={{ marginTop: 30 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ marginTop: 30 }}
+              >
                 Lọc
               </Button>
             </Form.Item>
           </Col>
         </Row>
       </Form>
+      <Row gutter={[16, 16]}>
+        {stats.map((stat, index) => (
+          <Col xs={24} sm={12} lg={6} key={index}>
+            <Card>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div>{stat.icon}</div>
+                <div>
+                  <div style={{ fontSize: 12, color: "#888", fontWeight: 500 }}>
+                    {stat.title}
+                  </div>
 
-      {/* Bảng Doanh Thu Theo Phim */}
-      <Card title="Doanh Thu Theo Phim" style={{ marginTop: 16 }}>
-        <Table
-          dataSource={doanhThuPhimData}
-          columns={[
-            { title: "Tên phim", dataIndex: "tenPhim", key: "tenPhim" },
-            {
-              title: "Doanh thu",
-              dataIndex: "doanhThu",
-              key: "doanhThu",
-              render: (val: any) =>
-                val != null ? val.toLocaleString("vi-VN") + " VND" : "0 VND",
-            },
-          ]}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
-          locale={{ emptyText: "Không có dữ liệu" }}
-        />
-      </Card>
+                  {/* Nếu là dạng chuỗi nhiều dòng */}
+                  {typeof stat.value === "string" ? (
+                    <div
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 600,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        lineHeight: "1.5em",
+                        maxHeight: "4.5em",
+                      }}
+                    >
+                      {stat.value}
+                    </div>
+                  ) : (
+                    // Nếu vẫn dùng số, vẫn giữ Statistic
+                    <Statistic
+                      value={stat.value}
+                      suffix={stat.suffix}
+                      valueStyle={{ fontSize: 20, marginBottom: 0 }}
+                    />
+                  )}
 
-      {/* Bảng Doanh Thu Theo Rạp */}
-      <Card title="Doanh Thu Theo Rạp" style={{ marginTop: 16 }}>
-        <Table
-          dataSource={doanhThuRapData}
-          columns={[
-            { title: "Tên rạp", dataIndex: "tenRap", key: "tenRap" },
-            { title: "Địa chỉ", dataIndex: "diaChi", key: "diaChi" },
-            {
-              title: "Doanh thu",
-              dataIndex: "doanhThu",
-              key: "doanhThu",
-              render: (val: any) =>
-                val != null ? val.toLocaleString("vi-VN") + " VND" : "0 VND",
-            },
-          ]}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
-          locale={{ emptyText: "Không có dữ liệu" }}
-        />
-      </Card>
+                  <div style={{ fontSize: 12, color: "#aaa" }}>
+                    {stat.description}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      <Row gutter={16}>
+        <Col xs={24} md={12}>
+          <Card title="Doanh thu theo rạp">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={dataRaps}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={100}
+                  paddingAngle={3}
+                  dataKey="value"
+                  label={({ name, percent }) =>
+                    `${name}: ${(percent * 100).toFixed(1)}%`
+                  }
+                >
+                  {dataRaps.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend verticalAlign="bottom" height={36} />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+        <Col xs={24} md={12}>
+          <div style={{ textAlign: "center" }}>
+            <h3>Phương thức thanh toán</h3>
+            <p>Tỷ lệ sử dụng các phương thức thanh toán</p>
+            <PieChart width={400} height={300}>
+              <Pie
+                data={Pay}
+                cx="50%"
+                cy="50%"
+                label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
+                outerRadius={100}
+                dataKey="value"
+              >
+                {Pay.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORSS[index]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </div>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col xs={24}>
+          {" "}
+          <Card title="Doanh thu theo phim">
+            <ResponsiveContainer
+              width="100%"
+              height={Math.max(dataPhim.length * 50, 150)}
+            >
+              <BarChart
+                layout="vertical"
+                data={dataPhim}
+                margin={{ top: 20, right: 20, left: 100, bottom: 10 }}
+              >
+                <XAxis type="number" domain={[0, "dataMax"]} />
+                <YAxis
+                  type="category"
+                  dataKey="tenPhim"
+                  tick={{ fontSize: 14 }}
+                  width={200}
+                />
+                <Tooltip />
+                <Bar dataKey="doanhThu" barSize={30}>
+                  {dataPhim.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+
+            <div style={{ display: "flex", flexWrap: "wrap", marginTop: 12 }}>
+              {dataPhim.map((phim, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginRight: 16,
+                    marginBottom: 8,
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 12,
+                      height: 12,
+                      backgroundColor: COLORS[index % COLORS.length],
+                      marginRight: 6,
+                      borderRadius: 2,
+                    }}
+                  />
+                  <span style={{ fontSize: 12 }}>{phim.tenPhim}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </Col>
+      </Row>
+
+
 
       {/* Biểu đồ doanh thu theo tháng */}
       <Card title="Doanh Thu Theo Tháng" style={{ marginTop: 16 }}>
@@ -304,35 +452,7 @@ const ThongKeDoanhThu = () => {
         </ResponsiveContainer>
       </Card>
 
-      {/* Phim doanh thu cao nhất */}
-      <Card title="Phim Doanh Thu Cao Nhất" style={{ marginTop: 16 }}>
-        <Paragraph>
-          {phimMax ? phimMax.ten_phim || "Không xác định" : "Không có dữ liệu"}
-        </Paragraph>
-      </Card>
 
-      {/* Phương thức thanh toán */}
-      <Card title="Phương Thức Thanh Toán" style={{ marginTop: 16 }}>
-        <Table
-          dataSource={phuongThucTTData}
-          columns={columnsPhuongThucTT}
-          pagination={false}
-          locale={{ emptyText: "Không có dữ liệu" }}
-          rowKey="phuong_thuc_thanh_toan_id"
-        />
-      </Card>
-
-      {/* Thông tin rạp */}
-      {thongTinRap && (
-        <Card title="Thông Tin Rạp" style={{ marginTop: 16 }}>
-          <Paragraph>
-            <b>Tên rạp:</b> {thongTinRap.ten_rap} <br />
-            <b>Địa chỉ:</b> {thongTinRap.dia_chi} <br />
-            <b>Số điện thoại:</b> {thongTinRap.so_dien_thoai || "-"} <br />
-            <b>Email:</b> {thongTinRap.email || "-"} <br />
-          </Paragraph>
-        </Card>
-      )}
     </Card>
   );
 };

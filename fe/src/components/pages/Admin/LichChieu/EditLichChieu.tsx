@@ -153,9 +153,9 @@ const EditLichChieu = () => {
             navigate("/admin/lichchieu/list");
           },
           onError: (error: any) => {
-         
-            message.error(error.response.data.message.error[0] ||
-              "Cập nhật thất bại do lỗi hệ thống");
+            navigate("/admin/lichchieu/list");
+            message.error(error.response.data.message);
+
             setSubmitting(false);
           },
         }

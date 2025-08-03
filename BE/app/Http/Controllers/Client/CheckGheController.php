@@ -41,7 +41,7 @@ class CheckGheController extends Controller
     public function update(Request $request, string $id)
     {
         $dataGhe = CheckGhe::find($id);
-
+        UpdateGheJob::dispatch($id)->delay(now()->addMinutes(5));
         if (!$dataGhe) {
             return response()->json([
                 'message' => 'Ghế không tồn tại'
@@ -54,7 +54,7 @@ class CheckGheController extends Controller
             (int) $dataGhe->id === (int) $id
         ) {
             return response()->json([
-                'message' => 'Ghế đã có người chọn'                
+                'message' => 'Ghế đã có người chọn'
             ], 422);
         }
 
@@ -64,7 +64,7 @@ class CheckGheController extends Controller
             'trang_thai' => $request->trang_thai,
         ]);
 
-        UpdateGheJob::dispatch($id)->delay(now()->addMinutes(5));
+
 
         if ($request->trang_thai === 'trong') {
             $dataGhe->update(['nguoi_dung_id' => null]);

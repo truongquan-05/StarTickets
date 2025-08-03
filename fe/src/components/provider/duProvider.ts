@@ -61,7 +61,6 @@ export const getUpdateUsers = async ({
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log("Response from update user API:", data);
     return data;
   } else {
     // gửi PUT hoặc PATCH với JSON

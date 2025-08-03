@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+
 use App\Models\Rap;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+
+
+
+
 
 class RapController extends Controller
 {
@@ -16,50 +22,17 @@ class RapController extends Controller
         $this->middleware('permission:Rap-read')->only(['index', 'show']);
         $this->middleware('permission:Rap-create')->only(['store']);
         $this->middleware('permission:Rap-update')->only(['update']);
-        $this->middleware('permission:Rap-delete')->only(['destroy','softDelete','restore']);
+        $this->middleware('permission:Rap-delete')->only(['destroy', 'softDelete', 'restore']);
     }
-    
-    public function index(Request $request)
+
+    public function index()
     {
-        $validator = Validator::make($request->all(), [
-            'keyword' => 'nullable|string|max:100',
-            'sort_by' => 'nullable|in:id,ten_rap,dia_chi',
-            'per_page' => 'nullable|integer|min:1|max:100',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Lỗi tham số đầu vào',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $keyword = $request->input('keyword');
-        $sortBy = $request->input('sort_by', 'id');
-        $perPage = $request->input('per_page', 10);
-
         $query = Rap::query();
-
-        if ($keyword) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('ten_rap', 'LIKE', "%{$keyword}%")
-                    ->orWhere('dia_chi', 'LIKE', "%{$keyword}%");
-            });
-        }
-
-        $raps = $query->FilterByRap()->orderBy($sortBy, 'DESC')->paginate($perPage);
-
+        $raps = $query->FilterByRap()->orderByDesc('id')->get();
         return response()->json([
-            'success' => true,
             'message' => 'Danh sách rạp',
-            'data' => $raps->items(),
-            'pagination' => [
-                'current_page' => $raps->currentPage(),
-                'per_page' => $raps->perPage(),
-                'total' => $raps->total(),
-                'last_page' => $raps->lastPage(),
-            ]
+            'data' => $raps,
+
         ], 200);
     }
 

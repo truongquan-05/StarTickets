@@ -440,11 +440,11 @@ export const useDeleteLichChieu = ({ resource = "lich_chieu" }: Props) => {
     mutationFn: (id?: string | number) => getDeleteLichChieu({ resource, id }),
     onSuccess: () => {
       queryclient.invalidateQueries({ queryKey: [resource] });
-      message.success('Thành công!')
+      message.success("Thành công!");
     },
-    onError:(error:any)=>{
-      message.error(error.response?.data.message || "Có lỗi")
-    }
+    onError: (error: any) => {
+      message.error(error.response?.data.message || "Có lỗi");
+    },
   });
 };
 export const useCreateLichChieu = ({ resource = "lich_chieu" }: Props) => {
@@ -645,8 +645,8 @@ export const useSoftDeleteMovies = ({ resource = "phim" }: Props) => {
       message.success("Xóa mềm thành công");
       queryClient.invalidateQueries({ queryKey: [resource] });
     },
-    onError: () => {
-      message.error("Xóa mềm thất bại");
+    onError: (err:any) => {
+      message.error(err?.response?.data?.message);
     },
   });
 };
@@ -871,7 +871,6 @@ export const useShowQuyenHanTheoID = ({
     enabled: !!id,
   });
 };
-
 
 export const useTongQuan = ({ resource = "tong-quan" }) => {
   return useQuery({

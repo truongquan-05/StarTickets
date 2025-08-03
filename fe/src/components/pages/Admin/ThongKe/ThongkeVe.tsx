@@ -28,7 +28,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  LabelList,
 } from "recharts";
 const { Option } = Select;
 import { useEffect, useState } from "react";
@@ -156,17 +155,92 @@ const ThongKeVe = () => {
     );
   }
 
-  const chartData =
-    data?.tyLeDat?.map((item: { rap: string; daDatChiem: number }) => ({
-      name: item.rap,
-      gheDaDat: item.daDatChiem,
-      gheTrong: +(100 - item.daDatChiem).toFixed(2),
-    })) || [];
+  const chartData = data?.tyLeDat?.map((item:any) => ({
+    name: item.rap,
+    value: 100,
+    daDat: item.daDatChiem,
+  }));
 
   const COLORSS = {
     gheDaDat: "#00c0ef",
     gheTrong: "#3c8dbc",
   };
+  const CustomBar = (props:any) => {
+    const { x, y, width, height, payload } = props;
+    const daDat = payload?.daDat ?? 0;
+    const daDatHeight = (daDat / 100) * height;
+    const chuaDatHeight = height - daDatHeight;
+
+    const centerX = x + width / 2;
+    const centerY = y + height / 2;
+
+    return (
+      <g>
+        {/* Lớp nền 100% */}
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fill="#2c3e91"
+          rx={6}
+          ry={6}
+        />
+        {/* Lớp phủ (đã đặt) */}
+        <rect
+          x={x}
+          y={y + chuaDatHeight}
+          width={width}
+          height={daDatHeight}
+          fill="#00c2ff"
+          rx={6}
+          ry={6}
+        />
+        <text
+          x={centerX}
+          y={centerY}
+          fill="#fff"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          style={{ fontSize: 14, fontWeight: "bold" }}
+        >
+          {`${daDat}%`}
+        </text>
+      </g>
+    );
+  };
+
+  const legendItems = [
+    { color: COLORSS.gheDaDat, label: "Ghế đã đặt" },
+    { color: COLORSS.gheTrong, label: "Ghế trống" },
+  ];
+
+  const Legends = () => (
+    <div
+      style={{
+        display: "flex",
+        gap: 24,
+        alignItems: "center",
+        marginTop: 16,
+        justifyContent: "center",
+      }}
+    >
+      {legendItems.map((item, index) => (
+        <div key={index} style={{ display: "flex", alignItems: "center" }}>
+          <div
+            style={{
+              width: 16,
+              height: 16,
+              backgroundColor: item.color,
+              borderRadius: 2,
+              marginRight: 6,
+            }}
+          />
+          <span style={{ fontWeight: 500, color: "#333" }}>{item.label}</span>
+        </div>
+      ))}
+    </div>
+  );
 
   const COLORS_TICKET_TYPE = ["#2C3E50", "#1ABC9C", "#F39C12"];
   const COLORS_PEAK_HOUR = [
@@ -229,7 +303,7 @@ const ThongKeVe = () => {
       title: "TRUNG BÌNH MỖI NGÀY",
       value: data?.trungBinhNgay,
       suffix: "",
-      description: "",
+      description: `Tháng ${new Date().getMonth() + 1}`,
     },
     {
       icon: <ClockCircleOutlined style={{ color: "#faad14", fontSize: 24 }} />,
@@ -325,7 +399,7 @@ const ThongKeVe = () => {
       <Row gutter={16}>
         <Col xs={24} md={12}>
           <Card title="Xu Hướng Bán Vé" extra={extraText}>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={350}>
               <LineChart data={dataLineChart}>
                 <XAxis dataKey="date" />
                 <YAxis />
@@ -342,7 +416,7 @@ const ThongKeVe = () => {
         </Col>
         <Col xs={24} md={12}>
           <Card title="Top Phim Bán Chạy" extra={extraPhim}>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={350}>
               <PieChart>
                 <Pie
                   data={dataPieChart}
@@ -372,7 +446,6 @@ const ThongKeVe = () => {
         </Col>
       </Row>
       <div style={{ display: "flex", gap: 20 }}>
-        {/* Biểu đồ Phân Loại Vé */}
         <Card
           title="Phân Loại Vé"
           extra="Phân bố theo loại vé"
@@ -399,7 +472,6 @@ const ThongKeVe = () => {
           </ResponsiveContainer>
         </Card>
 
-        {/* Biểu đồ Giờ Cao Điểm */}
         <Card
           title="Giờ Cao Điểm"
           extra="Số lượng vé bán ra theo giờ trong hôm nay"
@@ -422,44 +494,23 @@ const ThongKeVe = () => {
         </Card>
       </div>
       <Card title="Tỷ Lệ Lấp Đầy Rạp" extra="Tỷ lệ ghế đã đặt trên tổng số ghế">
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            barSize={100}
-            data={chartData}
-            margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
-            barGap={8}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
-            <Tooltip formatter={(value: any) => `${value}%`} />
-            <Legend />
-            <Bar
-              dataKey="gheDaDat"
-              stackId="a"
-              fill={COLORSS.gheDaDat}
-              name="Ghế đã đặt"
+        <>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
             >
-              <LabelList
-                dataKey="gheDaDat"
-                position="center"
-                formatter={(v) => `${v}%`}
-                style={{
-                  fill: "#fff",
-                  fontWeight: "bold",
-                  fontSize: 14,
-                }}
+              <XAxis dataKey="name" />
+              <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} />
+              <Tooltip formatter={(value:any) => `${value}%`} />
+              <Bar
+                dataKey="value"
+                shape={(props :any) => <CustomBar {...props} />}
               />
-            </Bar>
-
-            <Bar
-              dataKey="gheTrong"
-              stackId="a"
-              fill={COLORSS.gheTrong}
-              name="Ghế trống"
-            />
-          </BarChart>
-        </ResponsiveContainer>
+            </BarChart>
+          </ResponsiveContainer>
+          <Legends />
+        </>
       </Card>
     </Card>
   );

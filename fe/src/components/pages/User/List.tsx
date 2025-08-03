@@ -11,7 +11,7 @@ const ListUser = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    getUsers().then((res) => setUsers(res.data));
+    getUsers().then((res:any) => setUsers(res.data));
   }, []);
 
   const handleDelete = async (id: number) => {
@@ -21,7 +21,6 @@ const ListUser = () => {
       message.success("Đã xoá thành công");
     } catch (error) {
       message.error("Xoá thất bại, vui lòng thử lại");
-      console.log(error);
     }
   };
 

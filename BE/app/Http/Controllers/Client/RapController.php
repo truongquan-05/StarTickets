@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Models\Rap;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\LichChieu;
 use Illuminate\Support\Facades\Validator;
 
 class RapController extends Controller
@@ -58,17 +59,26 @@ class RapController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+
+        $data = LichChieu::with('phim', 'phong_chieu.rap')
+            ->get()
+            ->filter(function ($item) use ($id) {
+                return $item->phong_chieu && $item->phong_chieu->rap && $item->phong_chieu->rap->id == $id;
+            })
+            ->groupBy('phim_id')
+            ->map(fn($group) => $group->first())
+            ->values();
+
+        return response()->json([
+            'data' => $data,
+        ], 200);
     }
 
     /**
