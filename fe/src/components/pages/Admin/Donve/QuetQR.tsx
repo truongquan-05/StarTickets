@@ -20,7 +20,6 @@ const QRCodeScanner = () => {
       setScannedSuccessfully(true);
       setShowScannerModal(false);
       setLoadingScan(false);
-      console.log("Mã QR đã quét:", scannedCode);
 
       try {
         const response = await axios.get(

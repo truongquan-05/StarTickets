@@ -41,7 +41,6 @@ const LichChieu = () => {
   const lichChieu: ILichChieu[] = Array.isArray(lichChieuResponse)
     ? lichChieuResponse
     : [];
-  console.log(lichChieuResponse);
 
   const { data: phimResponse } = useQuery({
     queryKey: ["phim"],

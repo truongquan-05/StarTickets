@@ -174,7 +174,7 @@ class DashboardController extends Controller
     public function DoanhThu(Request $request)
     {
         $filter = $request->all();
-        if (empty($filter)) {
+        if (empty($filter) || empty($filter['bat_dau'])) {
             $DoanhThu = ThanhToan::with('datVe')->get();
             $tongDoanhThu = $DoanhThu->sum(fn($tt) => $tt->datVe->tong_tien ?? 0);
 

@@ -19,7 +19,6 @@ const BannerHetHan = () => {
       setLoading(true);
       const res = await getListBannersHetHan();
       setBanners(res || []);
-      console.log(res);
     } catch (err) {
       message.error("Không thể tải danh sách banner");
     } finally {

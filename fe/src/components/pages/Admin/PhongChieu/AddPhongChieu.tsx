@@ -52,7 +52,6 @@ const AddPhongChieu = () => {
       } else {
         formData.append(key, value);
       }
-      console.log("Giá trị gửi đi:", values.trang_thai);
     });
 
     createMutate(formData, {

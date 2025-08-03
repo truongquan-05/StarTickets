@@ -163,15 +163,12 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     }
     if (trangThaiPhong !== 0) return; // Chỉ cho phép sửa khi trangThaiPhong là 0
     if ((gheHienTai as IGheDoi).ghe_doi) {
-      console.log(`Ghế ${soGhe} là ghế đôi, không thể đổi loại bằng click.`);
       return;
     }
 
     const gheDon = gheHienTai as IGhe;
     if (gheDon.loai_ghe_id !== 1 && gheDon.loai_ghe_id !== 2) {
-      console.log(
-        `Ghế ${gheDon.so_ghe} không thuộc loại có thể đổi (chỉ Ghế thường và VIP).`
-      );
+     
       return;
     }
     const newLoaiGheId = gheDon.loai_ghe_id === 1 ? 2 : 1;
@@ -187,9 +184,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
             ...ghe,
             loai_ghe_id: newLoaiGheId,
           }));
-          console.log(
-            `Đã cập nhật loại ghế ${gheDon.so_ghe} thành ${newLoaiGheId}`
-          );
+       
         },
         onError: (error) => {
           console.error("Lỗi khi cập nhật loại ghế:", error);
@@ -297,11 +292,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                 : ghe;
             });
 
-            console.log(
-              `Đã cập nhật trạng thái ghế ${soGheLog} (ID: ${gheId}) thành ${
-                newTrangThai ? "hiện" : "ẩn"
-              }.`
-            );
+          
           },
           onError: (error) => {
             console.error(

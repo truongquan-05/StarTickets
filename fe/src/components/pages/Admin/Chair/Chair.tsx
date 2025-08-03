@@ -9,17 +9,14 @@ import { IPhongChieu } from "../interface/phongchieu";
 const Chair = () => {
   // Danh sách ghế
   const { data: gheResponse, isLoading, isError } = useListChair({ resource: "ghe" });
-  console.log("Ghe response:", gheResponse);
   const gheList: IGhe[] = gheResponse?.data || [];
 
   // Danh sách phòng chiếu
   const { data: phongResponse } = useListPhongChieu({ resource: "phong_chieu" });
-  console.log("Phong response:", phongResponse);
   const phongList: IPhongChieu[] = phongResponse?.data || [];
 
   // Danh sách loại ghế
   const { data: loaiGheResponse } = useListCategoryChair({ resource: "loai_ghe" });
-  console.log("Loai ghe response:", loaiGheResponse);
   const loaiGheList: ICategoryChair[] = loaiGheResponse?.data || [];
 
   // Hàm lấy tên phòng

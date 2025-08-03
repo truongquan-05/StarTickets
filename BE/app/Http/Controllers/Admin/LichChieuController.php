@@ -152,7 +152,7 @@ class LichChieuController extends Controller
                         'lich_chieu_id' => $item['id'],
                         'ghe_id' => $value['id'],
                         'trang_thai' => 'trong', // Trạng thái ghế ban đầu là "trống"
-                        'created_at'=>now()->format('Y-m-d H:i:s')
+                        'created_at' => now()->format('Y-m-d H:i:s')
                     ];
                 }
             }
@@ -296,7 +296,6 @@ class LichChieuController extends Controller
                     $validator->errors()->add('error', 'Ngày chiếu không được sau ngày kết thúc của phim.');
                 }
             }
-
         });
 
         if ($validator->fails()) {
@@ -310,7 +309,7 @@ class LichChieuController extends Controller
             if ($item['trang_thai'] == 'da_dat') {
                 return response()->json([
                     'message' => 'Lịch chiếu này đã có vé được đặt, không thể sửa',
-                ]);
+                ], 422);
             }
         }
 
@@ -323,7 +322,7 @@ class LichChieuController extends Controller
         }
 
         //CHECK THỜI GIAN UPDATE LỊCH
-        $phongId = $request->get('phong_id'); // rõ ràng hơn so với $IdPhong
+    $phongId = $request->get('phong_id'); // rõ ràng hơn so với $IdPhong
         $ngayChieu = Carbon::parse($request->get('gio_chieu'))->toDateString(); // rõ nghĩa: chỉ ngày
         $gioChieu = Carbon::parse($request->get('gio_chieu'))->format('Y-m-d H:i:s');
         $gioKetThuc = Carbon::parse($request->get('gio_ket_thuc'))->format('Y-m-d H:i:s');
@@ -406,7 +405,7 @@ class LichChieuController extends Controller
             if ($item['trang_thai'] == 'da_dat') {
                 return response()->json([
                     'message' => 'Lịch chiếu này đã có vé được đặt, không thể xóa',
-                ],422);
+                ], 422);
             }
         }
 

@@ -164,7 +164,7 @@ const ThongKeDoanhThu = () => {
     {
       icon: <HomeOutlined style={{ color: "#1890ff", fontSize: 24 }} />,
       title: "RẠP CÓ DOANH THU CAO NHẤT",
-      value: data?.rap?.rap_id?.ten_rap || null,
+      value: data?.rap?.rap_id?.ten_rap || '0',
       suffix: "",
       description: ``,
     },
@@ -178,9 +178,9 @@ const ThongKeDoanhThu = () => {
     {
       icon: <CreditCardOutlined style={{ color: "#722ed1", fontSize: 24 }} />,
       title: "PHƯƠNG THỨC THANH TOÁN PHỔ BIẾN",
-      value: data?.phuongThucTT?.phuong_thuc?.nha_cung_cap || null,
+      value: data?.phuongThucTT?.phuong_thuc?.nha_cung_cap || 0,
       suffix: "",
-      description: `${data?.phuongThucTT?.phan_tram || null}%`,
+      description: `${data?.phuongThucTT?.phan_tram || 0}%`,
     },
   ];
 
@@ -453,17 +453,6 @@ const ThongKeDoanhThu = () => {
       </Card>
 
 
-      {/* Thông tin rạp */}
-      {thongTinRap && (
-        <Card title="Thông Tin Rạp" style={{ marginTop: 16 }}>
-          <Paragraph>
-            <b>Tên rạp:</b> {thongTinRap.ten_rap} <br />
-            <b>Địa chỉ:</b> {thongTinRap.dia_chi} <br />
-            <b>Số điện thoại:</b> {thongTinRap.so_dien_thoai || "-"} <br />
-            <b>Email:</b> {thongTinRap.email || "-"} <br />
-          </Paragraph>
-        </Card>
-      )}
     </Card>
   );
 };

@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePhimRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdatePhimRequest;
+use App\Models\DatVe;
+use App\Models\LichChieu;
 use App\Models\TheLoai;
 
 class PhimController extends Controller
@@ -169,7 +171,15 @@ class PhimController extends Controller
         if (!$phim) {
             return response()->json(['message' => 'Phim không tồn tại hoặc đã bị xóa'], 200); // Không 404
         }
-
+        $phimCoLich = LichChieu::where('phim_id', $id)->get();
+        foreach ($phimCoLich as $item) {
+            $hasDatVe = DatVe::where('lich_chieu_id', $item->id)->exists();
+            if ($hasDatVe) {
+                return response()->json([
+                    'message' => 'Đã có vé được đặt không thể xóa phim'
+                ],422);
+            }
+        }
         $phim->delete();
 
         return response()->json(['message' => 'Phim đã được xóa mềm']);
