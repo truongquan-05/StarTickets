@@ -220,7 +220,10 @@ class DashboardController extends Controller
                         $tongSoLuong > 0
                             ? "ROUND(COUNT(id) * 100.0 / {$tongSoLuong}, 2) as phan_tram"
                             : "0 as phan_tram"
-                    )
+                    ),
+                    DB::raw('SUM((SELECT tong_tien FROM dat_ve WHERE dat_ve.id = thanh_toan.dat_ve_id)) as doanh_thu')
+
+
                 )
                 ->groupBy('phuong_thuc_thanh_toan_id')
                 ->orderByDesc('so_luong')
