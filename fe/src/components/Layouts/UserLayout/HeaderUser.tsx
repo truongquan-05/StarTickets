@@ -176,7 +176,7 @@ const HeaderUser = () => {
           </a>
           <div className="dropdown-content">
             {rapList.map((rap) => (
-              <Link key={rap.id} to={`/rap/${rap.id}`}>
+              <Link key={rap.id} to={`/rap-phim/${rap.id}`}>
                 {rap.ten_rap}
               </Link>
             ))}
