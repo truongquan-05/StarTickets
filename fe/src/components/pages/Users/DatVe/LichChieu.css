@@ -1,62 +1,130 @@
-.lichchieu {
+.lichchieu-container {
   max-width: 1200px;
-  width: 100%;
-  margin: auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  background: transparent;
-  border-radius: 8px;
-  box-sizing: border-box;
+  margin: 20px 10%;
+  font-family: 'Anton', sans-serif;
 }
 
-.lichchieu-box {
-  border: none;
+/* Date Selector Styles */
+.date-selector-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.date-box {
+  width: 100px;
+  padding: 20px 0px;
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 16px;
-  min-width: 220px;
-  background: linear-gradient(to right, #5d0eeb, #a943ec);
-  box-shadow: 0 2px 8px rgb(24 144 255 / 0.15);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.date-box:hover {
+  border-color: yellow;
+}
+
+.date-box.selected {
+  background-color: yellow;
+  color: #5d0eeb;
+  font-weight: bold;
+  border-color: yellow;
+}
+
+.date-day {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.date-weekday {
+  display: block;
+  font-size: 14px;
+  font-family: 'Alata', sans-serif;
+  text-transform: capitalize;
+}
+
+/* Theater List Styles */
+.rap-list-wrapper {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
-.rap-title {
-  font-family: 'Anton', sans-serif;
-  margin-bottom: 12px;
-  border-bottom: 1px solid yellow;
-  padding-bottom: 10px;
-  color: yellow;
-  font-weight: 100;
-  text-align: center;
+.rap-box {
+  background: linear-gradient(to right, #5d0eeb, #a943ec);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  color: white;
+}
+
+.rap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+}
+
+.rap-header .rap-title-2 {
   font-size: 20px;
+  margin: 0;
+  color: yellow;
+  letter-spacing: 1px;
 }
 
-.lich-chieu-buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.rap-header .rap-address {
+  font-size: 15px;
+  color: #eee;
+  margin: 0;
+  font-family: 'Alata', sans-serif;
+  padding-top: 10px;
+}
+
+.rap-header .anticon {
+  font-size: 24px;
+  color: yellow;
+}
+
+.lich-chieu-buttons-horizontal {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  justify-content: center;
   margin-top: 12px;
 }
 
 .lich-chieu-button {
   font-family: 'Anton', sans-serif;
-  width: 100%;
-  padding: 10px 15px;
+  padding: 5px 12px;
   border-radius: 4px;
   border: 2px solid yellow;
   background-color: transparent;
   color: yellow;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-/* Thêm style cho nút khi được chọn */
+.lich-chieu-button:hover {
+  background-color: yellow;
+  color: #5d0eeb;
+}
+
 .lich-chieu-button.selected {
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5); /* Thêm hiệu ứng đổ bóng nhẹ */
-  color: #5d079b;
-  background-color: yellow; /* Giữ nền trong suốt */
+  background-color: yellow;
+  color: #5d0eeb;
+  box-shadow: 0 0 8px yellow(255, 215, 0, 0.5);
 }
 
+.lichchieu-box.no-showtimes {
+    display: none;
+}
