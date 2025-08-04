@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Spin, Modal, Empty } from "antd";
+import { SwiperSlide } from "swiper/react";
 import axios from 'axios';
 import './DatVeTheoRap.css';
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  TagOutlined,
+  CommentOutlined,
+  PlayCircleTwoTone,
+} from "@ant-design/icons";
+
+const BASE_URL = "http://127.0.0.1:8000";
 
 // Type definitions for better type safety
 interface Rap {
@@ -15,6 +26,8 @@ interface PhongChieu {
 }
 
 interface Phim {
+  id?: string | number;
+  slug?: string;
   ten_phim: string;
   anh_poster: string;
   mo_ta: string;
@@ -26,6 +39,10 @@ interface Phim {
   ngon_ngu?: string;
   chuyen_ngu?: string;
   ngay_cong_chieu?: string;
+  trailer?: string;
+  title?: string;
+  image?: string;
+  hinh_anh?: string;
 }
 
 interface LichChieuItem {
@@ -36,56 +53,41 @@ interface LichChieuItem {
   gio_ket_thuc: string;
 }
 
-interface GroupedShowtimes {
-  [movieId: string]: {
-    phim: Phim;
-    showtimes: {
-      [date: string]: LichChieuItem[];
-    };
-  };
-}
+const getImageUrl = (path: string | null | undefined) => {
+  if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}/storage/${path}`;
+};
+
+const convertYouTubeUrlToEmbed = (url: string): string => {
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]{11})/
+  );
+  return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+};
 
 const DatVeTheoRap: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const rapId = id;
-  const [lichChieu, setLichChieu] = useState<LichChieuItem[]>([]);
+  const [phimList, setPhimList] = useState<Phim[]>([]);
   const [loading, setLoading] = useState(false);
   const [rapName, setRapName] = useState<string>('');
   const [message, setMessage] = useState<{ type: 'error' | 'info' | 'success'; text: string } | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState("");
+  const [trailerTitle, setTrailerTitle] = useState("");
 
-  useEffect(() => {
-    if (!id) return;
-
-    console.log('rapId from URL:', id);
-
-    const fetchLichChieu = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/client/rap-phim/${rapId}`);
-        const data = response.data.data || [];
-        setLichChieu(data);
-        
-        if (data.length > 0) {
-          setRapName(data[0].phong_chieu.rap.ten_rap);
-        }
-      } catch (error) {
-        console.error('Error fetching showtimes:', error);
-        showMessage('error', 'Lỗi tải dữ liệu suất chiếu');
-        setLichChieu([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLichChieu();
-  }, [id]);
-
-  const showMessage = (type: 'error' | 'info' | 'success', text: string) => {
-    setMessage({ type, text });
-    setTimeout(() => setMessage(null), 3000);
+  const handleShowTrailer = (url: string, title: string) => {
+    setTrailerUrl(url);
+    setTrailerTitle(title);
+    setIsModalVisible(true);
   };
 
-  // Parse genres like in PhimDacBiet component
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setTrailerUrl("");
+  };
+
   const parseGenres = (movie: Phim) => {
     try {
       if (movie.the_loai_id) {
@@ -105,90 +107,156 @@ const DatVeTheoRap: React.FC = () => {
     }
   };
 
-  // Get age rating display
-  const getAgeRatingDisplay = (movie: Phim) => {
-    const age = movie.do_tuoi_gioi_han || movie.do_tuoi;
-    if (!age) return "K";
-    
-    if (typeof age === 'number') {
-      return `T${age}`;
-    }
-    
-    if (typeof age === 'string') {
-      // If it's already formatted like "T13", return as is
-      if (age.startsWith('T')) return age;
-      // If it's just a number string, add T prefix
-      const numAge = parseInt(age);
-      if (!isNaN(numAge)) return `T${numAge}`;
-    }
-    
-    return age.toString();
-  };
+  useEffect(() => {
+    if (!id) return;
 
-  // Format release date
-  const formatReleaseDate = (dateString?: string) => {
-    if (!dateString) return "Sắp chiếu";
-    try {
-      return new Date(dateString).toLocaleDateString('vi-VN');
-    } catch {
-      return "Sắp chiếu";
-    }
-  };
+    console.log('rapId from URL:', id);
 
-  // Group showtimes by movie and date
-  const groupShowtimes = (data: LichChieuItem[]): GroupedShowtimes => {
-    return data.reduce((acc, item) => {
-      const movieId = item.phim.ten_phim;
-      const showDate = new Date(item.gio_chieu).toDateString();
-
-      if (!acc[movieId]) {
-        acc[movieId] = {
-          phim: item.phim,
-          showtimes: {}
-        };
+    const fetchPhimInRap = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/client/rap-phim/${rapId}`);
+        const data = response.data.data || [];
+        
+        // Extract unique movies from showtimes
+        const uniqueMovies = data.reduce((acc: Phim[], item: LichChieuItem) => {
+          const existingMovie = acc.find(movie => 
+            (movie.ten_phim || movie.title) === (item.phim.ten_phim || item.phim.title)
+          );
+          
+          if (!existingMovie) {
+            acc.push(item.phim);
+          }
+          
+          return acc;
+        }, []);
+        
+        setPhimList(uniqueMovies);
+        
+        if (data.length > 0) {
+          setRapName(data[0].phong_chieu.rap.ten_rap);
+        }
+      } catch (error) {
+        console.error('Error fetching movies in cinema:', error);
+        showMessage('error', 'Lỗi tải dữ liệu phim');
+        setPhimList([]);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      if (!acc[movieId].showtimes[showDate]) {
-        acc[movieId].showtimes[showDate] = [];
-      }
+    fetchPhimInRap();
+  }, [id]);
 
-      acc[movieId].showtimes[showDate].push(item);
-      return acc;
-    }, {} as GroupedShowtimes);
+  const showMessage = (type: 'error' | 'info' | 'success', text: string) => {
+    setMessage({ type, text });
+    setTimeout(() => setMessage(null), 3000);
   };
 
-  // Format date for display
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-      weekday: 'short',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  };
+  const renderMovieCard = (movie: Phim, index: number) => (
+    <SwiperSlide key={index}>
+      <div className="movie-card">
+        <div className="movie-poster-wrapper">
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <img
+              src={getImageUrl(
+                movie.image || movie.hinh_anh || movie.anh_poster
+              )}
+              alt={movie.title || movie.ten_phim}
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://via.placeholder.com/220x280?text=No+Image";
+              }}
+            />
+          </Link>
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <div className="movie-overlay">
+              <div className="attach">
+                <div className="type-movie">
+                  <span className="txt">2D</span>
+                </div>
+                <div className="age">
+                  <span className="num">T{movie.do_tuoi_gioi_han || "?"}</span>
+                  <span className="txt2">
+                    {movie.do_tuoi_gioi_han && movie.do_tuoi_gioi_han >= 18
+                      ? "ADULT"
+                      : movie.do_tuoi_gioi_han && movie.do_tuoi_gioi_han >= 13
+                      ? "TEEN"
+                      : movie.do_tuoi_gioi_han && movie.do_tuoi_gioi_han > 0
+                      ? "KID"
+                      : "???"}
+                  </span>
+                </div>
+              </div>
+              <div className="contentphimm">
+                <h5 className="movie-title1">
+                  {movie.title || movie.ten_phim}
+                </h5>
+                <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
+                  <CalendarOutlined
+                    style={{ color: "yellow", marginRight: "5px" }}
+                  />{" "}
+                  Đang khởi chiếu
+                </p>
+                <p style={{ fontSize: 12, color: "#fff" }}>
+                  <TagOutlined style={{ color: "yellow", marginRight: "5px" }} />{" "}
+                  {parseGenres(movie)}
+                </p>
+                <p style={{ fontSize: 12, color: "#fff" }}>
+                  <ClockCircleOutlined
+                    style={{ color: "yellow", marginRight: "5px" }}
+                  />{" "}
+                  {movie.thoi_luong
+                    ? `${movie.thoi_luong} phút`
+                    : "Chưa cập nhật"}
+                </p>
+                <p style={{ fontSize: 12, color: "#fff" }}>
+                  <CommentOutlined
+                    style={{ color: "yellow", marginRight: "5px" }}
+                  />{" "}
+                  {movie.ngon_ngu || "Chưa rõ phiên bản"}
+                </p>
+              </div>
+            </div>
+          </Link>
+        </div>
 
-  // Format time for showtime buttons
-  const formatTime = (dateString: string): string => {
-    return new Date(dateString).toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+        <Link to={`/phim/${movie.slug || movie.id}`}>
+          <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
+        </Link>
+
+        <div className="movie-buttons">
+          <button
+            className="play-button"
+            onClick={() => handleShowTrailer(movie.trailer || "", movie.ten_phim)}
+          >
+            <PlayCircleTwoTone
+              twoToneColor="yellow"
+              style={{ marginRight: 5, fontSize: "20px" }}
+            />
+            <span>Trailer</span>
+          </button>
+          <Link to={`/phim/${movie.slug || movie.id}`}>
+            <button className="book-button">
+              <span>ĐẶT VÉ</span>
+            </button>
+          </Link>
+        </div>
+      </div>
+    </SwiperSlide>
+  );
 
   if (loading) {
     return (
       <div className="dvtr__loading-container">
-        <div className="dvtr__spinner"></div>
+        <Spin size="large" />
         <p className="dvtr__loading-text">Đang tải dữ liệu...</p>
       </div>
     );
   }
 
-  const groupedData = groupShowtimes(lichChieu);
-
   return (
-    <div className="dvtr__main-container">
+    <div className="home-wrapper">
       {/* Message Toast */}
       {message && (
         <div className={`dvtr__message dvtr__message--${message.type}`}>
@@ -196,116 +264,75 @@ const DatVeTheoRap: React.FC = () => {
         </div>
       )}
 
-      <div className="dvtr__content-wrapper">
-        <h1 className="dvtr__page-title">
-          {rapName ? `Lịch chiếu tại rạp ${rapName}` : 'Lịch chiếu tại rạp'}
-        </h1>
+      <div className="section section-trangcon">
+        <h2 className="section-title-phimdangchieu">
+          {rapName ? `PHIM TẠI RẠP ${rapName.toUpperCase()}` : 'PHIM TẠI RẠP'}
+        </h2>
         
-        {Object.keys(groupedData).length === 0 ? (
-          <div className="dvtr__empty-state">
-            <div className="dvtr__empty-icon">📽️</div>
-            <p className="dvtr__empty-text">Không có suất chiếu nào</p>
+        {phimList.length > 0 ? (
+          <div className="movie-grid">
+            {phimList.map((movie: Phim, i: number) =>
+              renderMovieCard(movie, i)
+            )}
           </div>
         ) : (
-          <div className="dvtr__movies-grid">
-            {Object.entries(groupedData).map(([movieId, movieData]) => (
-              <div key={movieId} className="dvtr__movie-card">
-                {/* Movie Poster - Left Side */}
-                <div className="dvtr__poster-container">
-                  <img
-                    className="dvtr__poster-image"
-                    alt={movieData.phim.ten_phim}
-                    src={`http://127.0.0.1:8000/storage/${movieData.phim.anh_poster}`}
-                    onError={(e) => {
-                      e.currentTarget.src = '/placeholder-movie.jpg';
-                    }}
-                  />
-                  {/* Age Rating Badge */}
-                  {movieData.phim.do_tuoi_gioi_han && (
-                    <span className="dvtr__age-badge">
-                      {getAgeRatingDisplay(movieData.phim)}
-                    </span>
-                  )}
-                </div>
-
-                {/* Movie Info & Showtimes - Right Side */}
-                <div className="dvtr__movie-info">
-                  {/* Movie Title */}
-                  <div className="dvtr__movie-header">
-                    <h2 className="dvtr__movie-title">
-                      {movieData.phim.ten_phim}
-                    </h2>
-
-                    {/* Movie Details */}
-                    <div className="dvtr__movie-details">
-                      <div className="dvtr__detail-row">
-                        <span className="dvtr__detail-icon">🎭</span>
-                        <span className="dvtr__detail-text">
-                          {movieData.phim.the_loai || 'Kinh Dị'}
-                        </span>
-                        <span className="dvtr__detail-icon">⏱️</span>
-                        <span className="dvtr__detail-text">
-                          {movieData.phim.thoi_luong || 102} phút
-                        </span>
-                        <span className="dvtr__detail-icon">🎬</span>
-                        <span className="dvtr__detail-text">Khác</span>
-                      </div>
-                      
-                      <div className="dvtr__detail-row">
-                        <span className="dvtr__detail-icon">📺</span>
-                        <span className="dvtr__detail-text">Phụ Đề</span>
-                      </div>
-
-                      <div className="dvtr__detail-row">
-                        <span className="dvtr__detail-icon">⚠️</span>
-                        <span className="dvtr__warning-text">
-                          K: Phim dành cho khán giả từ dưới 13 tuổi với điều kiện xem cùng cha, mẹ hoặc người giám hộ
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Showtimes */}
-                  <div className="dvtr__showtimes">
-                    {Object.entries(movieData.showtimes).map(([date, showtimes]) => (
-                      <div key={date} className="dvtr__showtime-group">
-                        <div className="dvtr__date-header">
-                          <span className="dvtr__date-text">
-                            {formatDate(date)}
-                          </span>
-                          <button className="dvtr__expand-btn">⌄</button>
-                        </div>
-                        
-                        <div className="dvtr__showtime-content">
-                          <span className="dvtr__showtime-label">STANDARD</span>
-                          <div className="dvtr__time-buttons">
-                            {showtimes.map((showtime) => (
-                              <button
-                                key={showtime.id}
-                                className="dvtr__time-btn"
-                                onClick={() => {
-                                  showMessage('info', `Đặt vé suất ${formatTime(showtime.gio_chieu)} - Phòng ${showtime.phong_chieu.ten_phong}`);
-                                }}
-                              >
-                                {formatTime(showtime.gio_chieu)}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    
-                    <Link to={`/phim/${movieData.phim.slug || movieData.phim.id || movieId}`}>
-                      <button className="dvtr__more-showtimes-btn">
-                        Xem thêm lịch chiếu
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Empty
+            description={
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "16px",
+                  fontFamily: "Alata, sans-serif",
+                }}
+              >
+                Không có phim nào tại rạp này.
+              </span>
+            }
+          />
         )}
+
+        <Modal
+          title={`Trailer - ${trailerTitle}`}
+          open={isModalVisible}
+          onCancel={handleCloseModal}
+          footer={null}
+          width={800}
+          bodyStyle={{ padding: 0, height: 450 }}
+          destroyOnClose
+          centered
+          style={{
+            fontFamily: "Anton, sans-serif",
+            fontWeight: 100,
+            fontSize: 50,
+            borderRadius: 4,
+          }}
+        >
+          {trailerUrl ? (
+            <iframe
+              width="100%"
+              height="100%"
+              src={convertYouTubeUrlToEmbed(trailerUrl)}
+              title="Trailer"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <Empty
+              description={
+                <span
+                  style={{
+                    color: "black",
+                    fontSize: "16px",
+                    fontFamily: "Alata, sans-serif",
+                  }}
+                >
+                  Không có trailer.
+                </span>
+              }
+            />
+          )}
+        </Modal>
       </div>
     </div>
   );
