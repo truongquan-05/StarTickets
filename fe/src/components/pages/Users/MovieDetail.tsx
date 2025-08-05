@@ -1109,6 +1109,39 @@ const MovieDetailUser = () => {
                 style={{
                   width: "40px",
                   height: "29px",
+                  backgroundColor: "#1E90FF",
+                  borderRadius: "8px",
+                  border: "none",
+                  opacity: 1,
+                  visibility: "visible",
+                  pointerEvents: "auto",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  userSelect: "none",
+                  margin: "3px 0",
+                  position: "relative",
+                }}
+              ></div>
+
+              {/* Chữ "Ghế thường" */}
+              <span
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 500,
+                  color: "#fff",
+                  userSelect: "none",
+                }}
+              >
+                Ghế Người Khác Đang Chọn
+              </span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              {/* Ghế chọn */}
+              <div
+                style={{
+                  width: "40px",
+                  height: "29px",
                   backgroundColor: "#302c4c",
                   borderRadius: "8px",
                   border: "none",
