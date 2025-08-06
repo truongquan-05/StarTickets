@@ -5,6 +5,7 @@ import {
   FullscreenOutlined,
   FullscreenExitOutlined,
   UserOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -97,29 +98,33 @@ const HeaderAdmin = ({
 
   const sidebarWidth = 250;
 
-  const accountMenu = (
-    <Menu
-      className="custom-dropdown-menu"
-      items={[
-        {
-          key: "1",
-          label: (
-            <a style={{ color: "black" }} href="/admin/profile">
-              Thông tin cá nhân
-            </a>
-          ),
-        },
-        {
-          key: "2",
-          label: (
-            <span onClick={logout} style={{ color: "red" }}>
-              Đăng xuất
-            </span>
-          ),
-        },
-      ]}
-    />
-  );
+const accountMenu = (
+  <Menu
+    className="custom-dropdown-menu"
+    items={[
+      {
+        key: "1",
+        label: (
+          <a href="/admin/profile" style={{ color: "black", display: "flex", alignItems: "center", gap: 8 }}>
+            <UserOutlined /> Thông Tin Cá Nhân
+          </a>
+        ),
+      },
+      {
+        key: "2",
+        label: (
+          <span
+            onClick={logout}
+            style={{ color: "red", display: "flex", alignItems: "center", gap: 8 }}
+          >
+            <LogoutOutlined /> Đăng Xuất
+          </span>
+        ),
+      },
+    ]}
+  />
+);
+
 
   return (
     <Header
@@ -167,8 +172,20 @@ const HeaderAdmin = ({
               style={{ backgroundColor: "#87d068" }}
             />
             {screens.md && (
-              <div style={{ lineHeight: 1 }}>
-                <Text strong>Xin chào: {user.name}</Text>
+              <div style={{ lineHeight: 1, maxWidth: 150 }}>
+                <Text
+                  strong
+                  style={{
+                    display: "inline-block",
+                    maxWidth: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    verticalAlign: "bottom",
+                  }}
+                >
+                  Xin Chào | {user.name}
+                </Text>
                 <br />
                 <Text type="secondary" style={{ fontSize: 12 }}>
                   {user.role}

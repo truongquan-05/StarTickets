@@ -41,15 +41,15 @@ const ProfilePage = () => {
   const { data: listDiem } = useListDiem({ resource: "diem_thanh_vien" });
   const { logout } = useGoogleAuth();
   const navigate = useNavigate();
-const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-const showModal = () => {
-  setIsModalVisible(true);
-};
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
 
-const handleCancel = () => {
-  setIsModalVisible(false);
-};
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -198,7 +198,7 @@ const handleCancel = () => {
             >
               <div className="thongtinavtten">
                 <Avatar
-                  size={40}
+                  size={50}
                   src={
                     user?.anh_dai_dien?.startsWith("http")
                       ? user.anh_dai_dien
@@ -215,34 +215,46 @@ const handleCancel = () => {
                 {user.vaitro}
               </button> */}
               <div className="box-poin">
-  <div className="profile-poin-wrapper">
-    <p className="profile-poin">
-      <GiftOutlined className="profile-menu-icon" style={{ color: "#fff" }} />
-      Tích điểm:
-    </p>
-    <p className="profile-poin2">
-      Thành viên{" "}
-      <QuestionCircleOutlined
-        style={{ color: "#1890ff", marginLeft: 3, cursor: "pointer" }}
-        onClick={showModal}
-      />
-    </p>
-  </div>
-  <p className="profile-total-poin">{listDiem?.data?.diem || 0}</p>
+                <div className="profile-poin-wrapper">
+                  <p className="profile-poin">
+                    <GiftOutlined
+                      className="profile-menu-icon"
+                      style={{ color: "#fff" }}
+                    />
+                    Tích điểm:
+                  </p>
+                  <p className="profile-poin2">
+                    Thành viên{" "}
+                    <QuestionCircleOutlined
+                      style={{
+                        color: "#1890ff",
+                        marginLeft: 3,
+                        cursor: "pointer",
+                      }}
+                      onClick={showModal}
+                    />
+                  </p>
+                </div>
+                <p className="profile-total-poin">
+                  {listDiem?.data?.diem || 0}
+                </p>
 
-  {/* Modal hiển thị mô tả cách tích điểm */}
-  <Modal
-    title="Cách tích điểm"
-    open={isModalVisible}
-    onCancel={handleCancel}
-    footer={null}
-    centered
-  >
-    <p>- Bạn sẽ nhận được điểm khi mua vé xem phim.</p>
-    <p>- 1.000đ = 1 điểm.</p>
-    <p>- Điểm có thể dùng để giảm giá vé trực tiếp khi bạn thanh toán.</p>
-  </Modal>
-</div>
+                {/* Modal hiển thị mô tả cách tích điểm */}
+                <Modal
+                  title="Cách tích điểm"
+                  open={isModalVisible}
+                  onCancel={handleCancel}
+                  footer={null}
+                  centered
+                >
+                  <p>- Bạn sẽ nhận được điểm khi mua vé xem phim.</p>
+                  <p>- 1.000đ = 1 điểm.</p>
+                  <p>
+                    - Điểm có thể dùng để giảm giá vé trực tiếp khi bạn thanh
+                    toán.
+                  </p>
+                </Modal>
+              </div>
             </div>
             {/* Menu Navigation */}
             <div className="profile-menu">
