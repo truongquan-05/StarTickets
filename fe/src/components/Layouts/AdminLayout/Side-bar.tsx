@@ -5,7 +5,6 @@ import {
   HomeOutlined,
   BankOutlined,
   TagsOutlined,
-  FileTextOutlined,
   UserOutlined,
   GiftOutlined,
   CommentOutlined,
@@ -20,7 +19,6 @@ import {
   CoffeeOutlined,
   VideoCameraAddOutlined,
   MailOutlined,
-  EditOutlined,
   StarOutlined,
   ShoppingOutlined,
   GoldOutlined,
@@ -29,9 +27,14 @@ import {
   StopOutlined,
   PieChartOutlined,
   BarChartOutlined,
+  LineChartOutlined,
+  UsergroupAddOutlined,
+  CarryOutOutlined,
+  CloseSquareOutlined,
+  LaptopOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
-import logoStar from "../../../assets/logoStar.png";
+import logoStar from "../../../assets/logonho2.png";
 import "../App.css";
 const { Sider } = Layout;
 
@@ -82,17 +85,17 @@ const SideBar: React.FC<SideBarProps> = ({
         <Link to="/admin">Dashboard</Link>
       </Menu.Item>
 
-      <Menu.SubMenu key="thong-ke" icon={<PieChartOutlined />} title="Thống kê">
+      <Menu.SubMenu key="thong-ke" icon={<PieChartOutlined />} title="Thống Kê">
         <Menu.Item key="/admin/thong-ke/ve" icon={<BarChartOutlined />}>
-          <Link to="/admin/thong-ke/ve">Thống kê vé</Link>
+          <Link to="/admin/thong-ke/ve">Thống Kê Vé</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/thong-ke/doanh-thu" icon={<BarChartOutlined />}>
-          <Link to="/admin/thong-ke/doanh-thu">Thống kê doanh thu</Link>
+        <Menu.Item key="/admin/thong-ke/doanh-thu" icon={<LineChartOutlined />}>
+          <Link to="/admin/thong-ke/doanh-thu">Thống Kê Doanh Thu</Link>
         </Menu.Item>
       </Menu.SubMenu>
 
       <Menu.Item key="/admin/don-ve" icon={<ShoppingOutlined />}>
-        <Link to="/admin/don-ve">Đơn vé</Link>
+        <Link to="/admin/don-ve">Quản Lý Đơn Vé</Link>
       </Menu.Item>
 
       <Menu.SubMenu
@@ -106,18 +109,18 @@ const SideBar: React.FC<SideBarProps> = ({
         {/*  */}
 
         <Menu.Item key="/admin/movies/trash" icon={<DeleteOutlined />}>
-          <Link to="/admin/movies/trash">Thùng rác</Link>
+          <Link to="/admin/movies/trash">Thùng Rác</Link>
         </Menu.Item>
         <Menu.Item key="/admin/genre" icon={<WindowsOutlined />}>
-          <Link to="/admin/genre">Thể loại phim</Link>
+          <Link to="/admin/genre">Thể Loại Phim</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/lichchieu/list" icon={<CalendarOutlined />}>
-          <Link to="/admin/lichchieu/list">Lịch Chiếu phim</Link>
+        <Menu.Item key="/admin/lichchieu/list" icon={<CarryOutOutlined />}>
+          <Link to="/admin/lichchieu/list">Lịch Chiếu Phim</Link>
         </Menu.Item>
         <Menu.Item key="/admin/lichchieucu/list" icon={<CalendarOutlined />}>
           <Link to="/admin/lichchieucu/list">Lịch Chiếu Cũ</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/lichchieu/add" icon={<CalendarOutlined />}>
+        <Menu.Item key="/admin/lichchieu/add" icon={<VideoCameraAddOutlined />}>
           <Link to="/admin/lichchieu/add">Thêm Lịch Chiếu</Link>
         </Menu.Item>
       </Menu.SubMenu>
@@ -140,23 +143,23 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/vaitro" icon={<IdcardOutlined />}>
           <Link to="/admin/vaitro">Vai Trò</Link>
         </Menu.Item>
-        <Menu.Item key="/admin/phanquyen" icon={<IdcardOutlined />}>
-          <Link to="/admin/phanquyen">Thêm quyền</Link>
+        <Menu.Item key="/admin/phanquyen" icon={<UsergroupAddOutlined />}>
+          <Link to="/admin/phanquyen">Thêm Quyền</Link>
         </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
         key="food"
         icon={<GiftOutlined />}
-        title="Dịch vụ và ưu đãi"
+        title="Quản Lý Dịch vụ"
       >
         <Menu.Item key="/admin/food" icon={<CoffeeOutlined />}>
-          <Link to="/admin/food">Quản lý đồ ăn</Link>
+          <Link to="/admin/food">Quản Lý Đồ Ăn</Link>
         </Menu.Item>
         <Menu.Item key="/admin/vouchers/list" icon={<TagsOutlined />}>
-          <Link to="/admin/vouchers/list">Quản lý vouchers</Link>
+          <Link to="/admin/vouchers/list">Quản Lý Vouchers</Link>
         </Menu.Item>
         <Menu.Item key="/admin/news" icon={<PaperClipOutlined />}>
-          <Link to="/admin/news">Quản lý Tin Tức</Link>
+          <Link to="/admin/news">Quản Lý Tin Tức</Link>
         </Menu.Item>
       </Menu.SubMenu>
 
@@ -165,7 +168,7 @@ const SideBar: React.FC<SideBarProps> = ({
           <Link to="/admin/cinemas/list">Danh Sách Rạp</Link>
         </Menu.Item>
         <Menu.Item key="/admin/cinemas/add" icon={<PlusCircleOutlined />}>
-          <Link to="/admin/cinemas/add">Thêm Mới rạp</Link>
+          <Link to="/admin/cinemas/add">Thêm Mới Rạp</Link>
         </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
@@ -178,12 +181,12 @@ const SideBar: React.FC<SideBarProps> = ({
         </Menu.Item>
         <Menu.Item
           key="/admin/room/list/chuaxuat"
-          icon={<UnorderedListOutlined />}
+          icon={<CloseSquareOutlined />}
         >
           <Link to="/admin/room/list/chuaxuat">Phòng Chiếu Chưa Xuất</Link>
         </Menu.Item>
         <Menu.Item key="/admin/room/add" icon={<PlusCircleOutlined />}>
-          <Link to="/admin/room/add">Thêm mới Phòng Chiếu</Link>
+          <Link to="/admin/room/add">Thêm Mới Phòng Chiếu</Link>
         </Menu.Item>
       </Menu.SubMenu>
       <Menu.SubMenu
@@ -191,31 +194,28 @@ const SideBar: React.FC<SideBarProps> = ({
         icon={<MailOutlined />}
         title="Quản Lý Phản Hồi"
       >
-        <Menu.Item key="" icon={<CommentOutlined />}>
+        <Menu.Item key="/admin/comment/phanhoinguoidung" icon={<CommentOutlined />}>
           <Link to="/admin/comment/phanhoinguoidung">Phản Hồi Người Dùng</Link>
         </Menu.Item>
-        <Menu.Item key="" icon={<StarOutlined />}>
-          <Link to="/admin/danh-gia/list">Quản lý đánh giá</Link>
-        </Menu.Item>
-        <Menu.Item key="" icon={<EditOutlined />}>
-          <Link to="/admin/comment/phanhoinguoidung">Quản lý bình luận</Link>
+        <Menu.Item key="/admin/danh-gia/list" icon={<StarOutlined />}>
+          <Link to="/admin/danh-gia/list">Quản Lý Đánh Giá</Link>
         </Menu.Item>
       </Menu.SubMenu>
 
       <Menu.SubMenu
         key="banner"
-        icon={<FileTextOutlined />}
-        title="Quản lý Banner"
+        icon={<LaptopOutlined />}
+        title="Quản Lý Banners"
       >
-        <Menu.Item key="" icon={<UnorderedListOutlined />}>
-          <Link to="/admin/banner">Danh sách Banner</Link>
+        <Menu.Item key="/admin/banner" icon={<UnorderedListOutlined />}>
+          <Link to="/admin/banner">Danh Sách Banners</Link>
         </Menu.Item>
 
-        <Menu.Item key="" icon={<StopOutlined />}>
-          <Link to="/admin/banner/het-han">Banner hết hạn</Link>
+        <Menu.Item key="/admin/banner/het-han" icon={<StopOutlined />}>
+          <Link to="/admin/banner/het-han">Banner Hết Hạn</Link>
         </Menu.Item>
-        <Menu.Item key="" icon={<DeleteOutlined />}>
-          <Link to="/admin/banner/trash">Thùng rác</Link>
+        <Menu.Item key="/admin/banner/trash" icon={<DeleteOutlined />}>
+          <Link to="/admin/banner/trash">Thùng Rác</Link>
         </Menu.Item>
       </Menu.SubMenu>
     </Menu>
@@ -244,7 +244,7 @@ const SideBar: React.FC<SideBarProps> = ({
           <img
             src={logoStar}
             alt="Logo"
-            style={{ width: 120, height: 40, objectFit: "contain" }}
+            style={{ width: 100, height: 30, objectFit: "contain" }}
           />
         </div>
         {menuContent}
@@ -289,8 +289,8 @@ const SideBar: React.FC<SideBarProps> = ({
           src={logoStar}
           alt="Logo"
           style={{
-            width: 50, // logo to hơn
-            height: 50,
+            width: 38, // logo to hơn
+            height: 38,
             objectFit: "contain",
             transition: "all 0.3s ease",
             marginRight: collapsed ? 0 : 10, // có khoảng cách khi mở

@@ -11,7 +11,7 @@ const FooterAdmin = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 24px',
-        height: 50,
+        height: 48,
         fontSize: 16,
         fontWeight: 600,
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",

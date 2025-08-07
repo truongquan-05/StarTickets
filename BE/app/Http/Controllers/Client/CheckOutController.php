@@ -140,8 +140,8 @@ class CheckOutController extends Controller
 
 
 
-            $vnp_TmnCode = "BRIPD10R";
-            $vnp_HashSecret = "MXJDN4WW0M516FX3L2JQKQPDUF3XDQS6";
+            $vnp_TmnCode = "0YDOPCOD";
+            $vnp_HashSecret = "4QBR5J042GRID1BWUREA2SMOV6CI216M";
 
             $vnp_TxnRef = $code_cart;
             $vnp_OrderInfo = 'Thanh toán đơn hàng ';
