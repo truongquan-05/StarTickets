@@ -70,6 +70,7 @@ import ThongKeVe from "../pages/Admin/ThongKe/ThongkeVe";
 import ThongKeDoanhThu from "../pages/Admin/ThongKe/ThongKeDoanhThu";
 import DatVeTheoRap from "../pages/Users/DatVe/DatVeTheoRap";
 import NotFound from "../pages/Users/NotFound";
+import GopY from "../pages/Users/GopY";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -101,6 +102,7 @@ const Routermain = () => {
         { path: "dat-ve-ngay", element: <DatVeNgay /> },
         { path: "lich-chieu", element: <LichChieuUser /> },
         { path: "/rap-phim/:id", element: <DatVeTheoRap /> },
+        { path: "/contact", element: <GopY /> },
         {
           path: "redirect-admin",
           element: <RedirectAdminAccess />,

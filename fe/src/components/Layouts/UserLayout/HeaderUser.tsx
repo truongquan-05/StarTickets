@@ -186,12 +186,13 @@ const HeaderUser = () => {
         <a href="/lich-chieu">
           <CalendarOutlined /> Lịch chiếu
         </a>
-        <a href="/list-voucher" className="khuyen_mai">
+        
+        <a href="/about" className="khuyen_mai">Giới thiệu</a>
+        <a href="/contact">Liên hệ</a>
+        <a href="/news">Tin tức</a>
+        <a href="/list-voucher">
           Khuyến mãi
         </a>
-        <a href="#">Thuê sự kiện</a>
-        <a href="/news">Tin tức</a>
-        <a href="/about">Giới thiệu</a>
       </div>
     </header>
   );

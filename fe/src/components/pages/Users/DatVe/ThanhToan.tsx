@@ -930,8 +930,10 @@ const ThanhToan: React.FC = () => {
                   SỐ TIỀN CẦN THANH TOÁN
                 </Text>
                 <Text className="total-price">
-                  {(tongTienData?.data?.tong_tien ?? 0).toLocaleString("vi-VN")}{" "}
-                  VNĐ
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(tongTienData?.data?.tong_tien ?? 0)}
                 </Text>
               </div>
             </Card>
