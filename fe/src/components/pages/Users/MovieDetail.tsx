@@ -160,14 +160,18 @@ const MovieDetailUser = () => {
   }, [checkGheList]);
 
   useEffect(() => {
-    if (gheData &&  errorStatus !== 422  && !isLoadingsss && newSeatsRef.current) {
+    if (
+      gheData &&
+      errorStatus !== 422 &&
+      !isLoadingsss &&
+      newSeatsRef.current
+    ) {
       setIsLoadingsss(false);
       setSelectedSeats(newSeatsRef.current);
 
       newSeatsRef.current = null;
     }
   }, [gheData, isLoadingsss]);
-
 
   useEffect(() => {}, [checkGheList]);
   // Hàm core để giải phóng ghế trên API
@@ -602,12 +606,26 @@ const MovieDetailUser = () => {
     }
 
     const getTrangThai = (soGhe: string): string => {
+      // Nếu ghế đang được chọn (mới toggle)
       if (newSelectedSeats.includes(soGhe)) return "dang_dat";
+
+      // Tìm trong checkGheList
       const inDb = checkGheList.find(
         (x: any) =>
           x.ghe.so_ghe === soGhe && x.lich_chieu_id === selectedLichChieuId
       );
-      return inDb?.trang_thai || "trong";
+
+      // Nếu tìm thấy, kiểm tra userId
+      if (inDb) {
+        if (inDb.nguoi_dung_id === null) {
+          // Ghế không có người đặt => trạng thái 'trong'
+          return "trong";
+        }
+        return inDb.trang_thai;
+      }
+
+      // Mặc định không tìm thấy => 'trong'
+      return "trong";
     };
 
     if (
