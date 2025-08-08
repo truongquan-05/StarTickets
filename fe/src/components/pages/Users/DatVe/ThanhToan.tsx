@@ -251,7 +251,7 @@ const ThanhToan: React.FC = () => {
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
       onSuccess: async (response) => {
-        if (response?.data?.resultCode == 0) {
+        if (response?.data?.resultCode == 0 || response?.data?.code == "01") {
           window.location.href = response?.data?.payUrl;
         } else {
           message.error(response?.data?.message);

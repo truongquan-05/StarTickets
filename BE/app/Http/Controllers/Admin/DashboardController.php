@@ -14,7 +14,6 @@ use App\Models\DatVeChiTiet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 
 class DashboardController extends Controller
@@ -27,7 +26,6 @@ class DashboardController extends Controller
         $this->middleware('IsAdmin');
         $this->middleware('permission:Dashboard-read')->only('thongKeVe', 'DoanhThu');
     }
-
 
 
 
@@ -53,6 +51,7 @@ class DashboardController extends Controller
             ->get();
 
         $tongDoanhThuNay = $donHangThangNay->sum(fn($tt) => $tt->datVe->tong_tien ?? 0);
+
         $tongDoanhThuTruoc = $donHangThangtruoc->sum(fn($tt) => $tt->datVe->tong_tien ?? 0);
 
         $DoanhThuVsThangtruoc = $tongDoanhThuTruoc > 0
@@ -330,7 +329,8 @@ class DashboardController extends Controller
                     ->select(
                         'phuong_thuc_thanh_toan_id',
                         DB::raw('COUNT(id) as so_luong'),
-                        DB::raw("ROUND(COUNT(id) * 100.0 / {$tongSoLuong}, 2) as phan_tram")
+                        DB::raw("ROUND(COUNT(id) * 100.0 / {$tongSoLuong}, 2) as phan_tram"),
+                        DB::raw('SUM((SELECT tong_tien FROM dat_ve WHERE dat_ve.id = thanh_toan.dat_ve_id)) as doanh_thu')
                     )
                     ->whereBetween('created_at', [$batdau, $ketthuc])
                     ->when($RapId !== null, function ($query) use ($RapId) {
@@ -344,7 +344,6 @@ class DashboardController extends Controller
             }
 
 
-
             $tongRap = $groupRap->map(function ($item, $i) use ($tongDoanhThu) {
                 $rap = Rap::find($i);
                 $doanhThu = $item->sum('tong_tien');
@@ -355,9 +354,8 @@ class DashboardController extends Controller
                     'chiem' => $tongDoanhThu > 0 ? round($doanhThu / $tongDoanhThu * 100, 1) : 0
                 ];
             });
-
-            $now = Carbon::now();
-            $nam = $now->year;
+            $startYear = $batdau->year;
+            $endYear = $ketthuc->year;
 
             $rawData = DatVe::query()
                 ->when($RapId, function ($query) use ($RapId) {
@@ -366,16 +364,18 @@ class DashboardController extends Controller
                     });
                 })
                 ->whereBetween('created_at', [$batdau, $ketthuc])
-                ->whereYear('created_at', $nam)
                 ->selectRaw('DATE_FORMAT(created_at, "%m-%Y") as thang, SUM(tong_tien) as doanh_thu')
                 ->groupBy('thang')
                 ->orderByRaw('STR_TO_DATE(thang, "%m-%Y")')
                 ->pluck('doanh_thu', 'thang');
 
             $doanhthunam = collect();
-            for ($i = 1; $i <= 12; $i++) {
-                $thang = str_pad($i, 2, '0', STR_PAD_LEFT) . '-' . $nam;
-                $doanhthunam->put($thang, $rawData[$thang] ?? 0);
+
+            for ($year = $startYear; $year <= $endYear; $year++) {
+                for ($month = 1; $month <= 12; $month++) {
+                    $thang = str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . $year;
+                    $doanhthunam->put($thang, $rawData[$thang] ?? 0);
+                }
             }
 
 
