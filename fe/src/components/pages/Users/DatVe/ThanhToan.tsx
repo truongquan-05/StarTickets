@@ -31,6 +31,7 @@ import { IVoucher } from "../../Admin/interface/vouchers";
 import { DonDoAn, Food } from "../../../types/Uses";
 import { useBackDelete } from "../../../hook/useConfirmBack";
 import { EyeInvisibleTwoTone, TagsOutlined } from "@ant-design/icons";
+import axios from "axios";
 // IMPORT CÁC INTERFACE CỦA BẠN TẠI ĐÂY
 
 const { Title, Text } = Typography;
@@ -249,12 +250,24 @@ const ThanhToan: React.FC = () => {
     };
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
-      onSuccess: (response) => {
-        window.location.href = response.data.payUrl;
+      onSuccess: async (response) => {
+        if (response?.data?.resultCode == 0 || response?.data?.code == "01") {
+          window.location.href = response?.data?.payUrl;
+        } else {
+          message.error(response?.data?.message);
+          try {
+            await axios.delete(`http://127.0.0.1:8000/api/dat_ve/${bookingData.id}`);
+            await axios.post(
+              `http://127.0.0.1:8000/api/delete-voucher/${formStep1Data.ma_giam_gia_id}`
+            );
+            navigate(`/phim/${bookingData?.lich_chieu?.phim_id}`)
+          } catch (error) {
+            console.error("Xử lý khi lỗi thanh toán thất bại:", error);
+          }
+        }
       },
       onError: () => {
         message.error("Thanh toán thất bại. Vui lòng thử lại!");
-        // Không còn logic giải phóng ghế ở đây
       },
     });
   };

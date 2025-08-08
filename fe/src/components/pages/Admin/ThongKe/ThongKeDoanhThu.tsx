@@ -152,7 +152,6 @@ const ThongKeDoanhThu = () => {
       }))
     : [];
 
-  const thongTinRap = data?.rap?.rap;
   const stats = [
     {
       icon: <EuroCircleOutlined style={{ color: "#52c41a", fontSize: 24 }} />,
@@ -164,7 +163,7 @@ const ThongKeDoanhThu = () => {
     {
       icon: <HomeOutlined style={{ color: "#1890ff", fontSize: 24 }} />,
       title: "RẠP CÓ DOANH THU CAO NHẤT",
-      value: data?.rap?.rap_id?.ten_rap || '0',
+      value: data?.rap?.rap_id?.ten_rap || "0",
       suffix: "",
       description: ``,
     },
@@ -192,6 +191,7 @@ const ThongKeDoanhThu = () => {
   const dataRaps = Object.values(data?.doanhthurap || {}).map((item: any) => ({
     name: item.rap_id.ten_rap,
     value: item.chiem,
+    doanh_thu: item.tong_doanh_thu,
   }));
 
   const COLORS = [
@@ -204,13 +204,25 @@ const ThongKeDoanhThu = () => {
     "#1890ff",
     "#73d13d",
   ];
-  const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram);
-  const momoPercent = 100 - vnpayPercent;
+const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram ?? 0);
+const vnpayName = data?.phuongThucTT?.phuong_thuc?.ten ?? "VNPAY";
+const vnpayDoanhThu = data?.phuongThucTT?.doanh_thu ?? 0;
 
-  const Pay = [
-    { name: data?.phuongThucTT?.phuong_thuc?.ten, value: vnpayPercent },
-    { name: "MOMO", value: momoPercent },
-  ];
+const momoPercent = 100 - vnpayPercent;
+
+const Pay = [
+  { 
+    name: vnpayName, 
+    value: vnpayPercent,
+    doanhthu: vnpayDoanhThu
+  },
+  { 
+    name: "MOMO", 
+    value: momoPercent,
+    doanhthu: 0
+  },
+];
+
 
   const COLORSS = ["#2F3A8F", "#1db80fff"]; // màu gần giống trong ảnh
 
@@ -339,7 +351,27 @@ const ThongKeDoanhThu = () => {
                     />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const { name, value, doanh_thu } = payload[0].payload;
+                      return (
+                        <div
+                          style={{
+                            backgroundColor: "#fff",
+                            border: "1px solid #ccc",
+                            padding: "8px",
+                          }}
+                        >
+                          <p>{`${name}: ${value} %`}</p>
+                          <p>{`Doanh thu: ${doanh_thu.toLocaleString()}đ`}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+
                 <Legend verticalAlign="bottom" height={36} />
               </PieChart>
             </ResponsiveContainer>
@@ -349,7 +381,8 @@ const ThongKeDoanhThu = () => {
           <div style={{ textAlign: "center" }}>
             <h3>Phương thức thanh toán</h3>
             <p>Tỷ lệ sử dụng các phương thức thanh toán</p>
-            <PieChart width={400} height={300}>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
               <Pie
                 data={Pay}
                 cx="50%"
@@ -362,9 +395,30 @@ const ThongKeDoanhThu = () => {
                   <Cell key={`cell-${index}`} fill={COLORSS[index]} />
                 ))}
               </Pie>
-              <Tooltip />
+             <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const { name, value, doanhthu } = payload[0].payload;
+                      return (
+                        <div
+                          style={{
+                            backgroundColor: "#fff",
+                            border: "1px solid #ccc",
+                            padding: "8px",
+                          }}
+                        >
+                          <p>{`${name}: ${value} %`}</p>
+                          <p>{`Doanh thu: ${doanhthu.toLocaleString()}đ`}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
               <Legend />
             </PieChart>
+            </ResponsiveContainer>
+          
           </div>
         </Col>
       </Row>
@@ -428,8 +482,6 @@ const ThongKeDoanhThu = () => {
         </Col>
       </Row>
 
-
-
       {/* Biểu đồ doanh thu theo tháng */}
       <Card title="Doanh Thu Theo Tháng" style={{ marginTop: 16 }}>
         <ResponsiveContainer width="100%" height={300}>
@@ -451,8 +503,6 @@ const ThongKeDoanhThu = () => {
           </LineChart>
         </ResponsiveContainer>
       </Card>
-
-
     </Card>
   );
 };
