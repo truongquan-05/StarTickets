@@ -160,14 +160,18 @@ const MovieDetailUser = () => {
   }, [checkGheList]);
 
   useEffect(() => {
-    if (gheData &&  errorStatus !== 422  && !isLoadingsss && newSeatsRef.current) {
+    if (
+      gheData &&
+      errorStatus !== 422 &&
+      !isLoadingsss &&
+      newSeatsRef.current
+    ) {
       setIsLoadingsss(false);
       setSelectedSeats(newSeatsRef.current);
 
       newSeatsRef.current = null;
     }
   }, [gheData, isLoadingsss]);
-
 
   useEffect(() => {}, [checkGheList]);
   // Hàm core để giải phóng ghế trên API
@@ -537,20 +541,23 @@ const MovieDetailUser = () => {
   const handleCloseModal = () => {
     setIsModalVisible(false);
   };
-  const handleClickCheckGhe = (gheId: number, currentTrangThai: string) => {
+  const handleClickCheckGhe = (gheId: number, isSelected: boolean) => {
+    // 1. Kiểm tra trạng thái đăng nhập
     const userStr = localStorage.getItem("user");
     const user = userStr ? JSON.parse(userStr) : null;
     if (!user) {
-      message.error("Bạn chưa đăng nhập!");
+      message.error("Vui lòng đăng nhập để chọn ghế!");
       return;
     }
 
+    // 2. Tìm ghế và xác định các ghế cần xử lý (ghế đơn hoặc ghế đôi)
     const ghe = danhSachGhe.find((g: any) => g.id === gheId);
-
-    if (!ghe) return;
+    if (!ghe) {
+      message.error("Không tìm thấy ghế.");
+      return;
+    }
 
     let seatsToToggle: IGhe[] = [ghe];
-
     if (ghe.loai_ghe_id === 3) {
       const row = ghe.so_ghe[0];
       const col = parseInt(ghe.so_ghe.slice(1));
@@ -566,6 +573,37 @@ const MovieDetailUser = () => {
       seatsToToggle.push(pair);
     }
 
+    // 3. Chuẩn bị trạng thái mới
+    const newTrangThai = isSelected ? "trong" : "dang_dat";
+    const toggleSoGhe = seatsToToggle.map((s) => s.so_ghe);
+    let newSelectedSeats: string[] = [];
+
+    // Tính toán danh sách ghế mới sẽ được chọn
+    if (newTrangThai === "dang_dat") {
+      newSelectedSeats = [...selectedSeats, ...toggleSoGhe];
+    } else {
+      newSelectedSeats = selectedSeats.filter((s) => !toggleSoGhe.includes(s));
+    }
+
+    // 4. Hàm helper để kiểm tra trạng thái ghế sau khi click
+    // Hàm này rất quan trọng để mô phỏng trạng thái mới trước khi cập nhật
+    const getTrangThai = (soGhe: string): string => {
+      // Nếu ghế đang được chọn (mới toggle)
+      if (newSelectedSeats.includes(soGhe)) return "dang_dat";
+
+      // Tìm trong checkGheList
+      const inDb = checkGheList.find(
+        (x: any) =>
+          x.ghe.so_ghe === soGhe && x.lich_chieu_id === selectedLichChieuId
+      );
+      if (inDb) {
+        return inDb.trang_thai;
+      }
+      return "trong"; // Mặc định không tìm thấy => 'trong'
+    };
+
+    // 5. Áp dụng các quy tắc kiểm tra nghiệp vụ phức tạp của bạn
+    // Kiểm tra ghế đã bán
     const anySeatSold = seatsToToggle.some((st) =>
       checkGheList.some(
         (item: any) =>
@@ -579,109 +617,7 @@ const MovieDetailUser = () => {
       return;
     }
 
-    const newTrangThai =
-      currentTrangThai === "trong"
-        ? "dang_dat"
-        : currentTrangThai === "dang_dat"
-        ? "trong"
-        : "";
-
-    if (!newTrangThai) return;
-
-    let newSelectedSeats = [...selectedSeats];
-    const toggleSoGhe = seatsToToggle.map((s) => s.so_ghe);
-
-    if (newTrangThai === "dang_dat") {
-      toggleSoGhe.forEach((s) => {
-        if (!newSelectedSeats.includes(s)) newSelectedSeats.push(s);
-      });
-    } else {
-      newSelectedSeats = newSelectedSeats.filter(
-        (s) => !toggleSoGhe.includes(s)
-      );
-    }
-
-    const getTrangThai = (soGhe: string): string => {
-      if (newSelectedSeats.includes(soGhe)) return "dang_dat";
-      const inDb = checkGheList.find(
-        (x: any) =>
-          x.ghe.so_ghe === soGhe && x.lich_chieu_id === selectedLichChieuId
-      );
-      return inDb?.trang_thai || "trong";
-    };
-
-    if (
-      newTrangThai === "dang_dat" &&
-      (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
-    ) {
-      const row = ghe.so_ghe[0];
-      const num = parseInt(ghe.so_ghe.slice(1));
-
-      const rowSeats = danhSachGhe
-        .filter(
-          (g: any) =>
-            g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
-        )
-        .sort(
-          (a: any, b: any) =>
-            parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
-        );
-
-      const min = parseInt(rowSeats[0].so_ghe.slice(1));
-      const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
-
-      const isSecondFromLeft = num === min + 1;
-      const isSecondFromRight = num === max - 1;
-
-      const ghe3FromLeft = `${row}${min + 2}`;
-      const ghe3FromRight = `${row}${max - 2}`;
-      const tGhe3Left = getTrangThai(ghe3FromLeft);
-      const tGhe3Right = getTrangThai(ghe3FromRight);
-
-      if (isSecondFromLeft && tGhe3Left !== "da_dat") {
-        const ghe1 = `${row}${min}`;
-        const ghe3 = `${row}${min + 2}`;
-        const t1 = getTrangThai(ghe1);
-        const t3 = getTrangThai(ghe3);
-        if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
-          message.warning("Không được để lại 1 ghế trống đơn lẻ ở đầu hàng!");
-          return;
-        }
-      }
-
-      if (isSecondFromRight && tGhe3Right !== "da_dat") {
-        const ghe1 = `${row}${max}`;
-        const ghe3 = `${row}${max - 2}`;
-        const t1 = getTrangThai(ghe1);
-        const t3 = getTrangThai(ghe3);
-        if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
-          message.warning("Không được để lại 1 ghế trống đơn lẻ ở cuối hàng!");
-          return;
-        }
-      }
-
-      // ❌ THÊM TRƯỜNG HỢP: A3 đã mua, A4-A6 đều trống, cấm chọn A5
-      const gheIndex = rowSeats.findIndex((g: any) => g.id === ghe.id);
-      const prev2 = rowSeats[gheIndex - 2];
-      const prev1 = rowSeats[gheIndex - 1];
-      const next1 = rowSeats[gheIndex + 1];
-
-      if (
-        prev2 &&
-        prev1 &&
-        next1 &&
-        getTrangThai(prev2.so_ghe) === "da_dat" &&
-        getTrangThai(prev1.so_ghe) === "trong" &&
-        getTrangThai(ghe.so_ghe) === "trong" &&
-        getTrangThai(next1.so_ghe) === "trong"
-      ) {
-        message.warning(
-          "Không được chọn ghế nếu phía trước đã bán và kèm 2 ghế trống liên tiếp."
-        );
-        return;
-      }
-    }
-
+    // Logic kiểm tra các ghế đơn và ghế vip trong cùng một hàng
     const row = ghe.so_ghe[0];
     const rowSeats = danhSachGhe
       .filter(
@@ -692,65 +628,105 @@ const MovieDetailUser = () => {
         (a: any, b: any) =>
           parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
       );
-    const gheIndex = rowSeats.findIndex((g: any) => g.id === ghe.id);
-    const prev = rowSeats[gheIndex - 1];
-    const next = rowSeats[gheIndex + 1];
 
-    const tPrev = prev ? getTrangThai(prev.so_ghe) : null;
-    const tNext = next ? getTrangThai(next.so_ghe) : null;
-
-    // ❌ Trường hợp không được huỷ: [da_dat][dang_dat-1][dang_dat-2]
+    // Kiểm tra ghế trống đơn lẻ ở đầu/cuối hàng
     if (
+      newTrangThai === "dang_dat" &&
+      (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
+    ) {
+      const num = parseInt(ghe.so_ghe.slice(1));
+      const min = parseInt(rowSeats[0].so_ghe.slice(1));
+      const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
+      const isSecondFromLeft = num === min + 1;
+      const isSecondFromRight = num === max - 1;
+
+      if (isSecondFromLeft) {
+        const t1 = getTrangThai(`${row}${min}`);
+        const t3 = getTrangThai(`${row}${min + 2}`);
+        if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
+          message.warning("Không được để lại 1 ghế trống đơn lẻ ở đầu hàng!");
+          return;
+        }
+      }
+      if (isSecondFromRight) {
+        const t1 = getTrangThai(`${row}${max}`);
+        const t3 = getTrangThai(`${row}${max - 2}`);
+        if (t1 === "trong" && !(t3 === "dang_dat" || t3 === "da_dat")) {
+          message.warning("Không được để lại 1 ghế trống đơn lẻ ở cuối hàng!");
+          return;
+        }
+      }
+    }
+
+    // Kiểm tra không để ghế đã bán kẹp giữa 2 ghế trống liên tiếp
+    const gheIndex = rowSeats.findIndex((g: any) => g.id === ghe.id);
+    const prev2 = rowSeats[gheIndex - 2];
+    const prev1 = rowSeats[gheIndex - 1];
+    const next1 = rowSeats[gheIndex + 1];
+
+    if (
+      prev2 &&
+      prev1 &&
+      next1 &&
+      getTrangThai(prev2.so_ghe) === "da_dat" &&
+      getTrangThai(prev1.so_ghe) === "trong" &&
+      getTrangThai(ghe.so_ghe) === "trong" &&
+      getTrangThai(next1.so_ghe) === "trong"
+    ) {
+      message.warning(
+        "Không được chọn ghế nếu phía trước đã bán và kèm 2 ghế trống liên tiếp."
+      );
+      return;
+    }
+
+    // Kiểm tra không được hủy ghế đang chọn nếu sẽ để ghế đã bán kẹp giữa ghế đang chọn
+    const tPrev = prev1 ? getTrangThai(prev1.so_ghe) : null;
+    const tNext = next1 ? getTrangThai(next1.so_ghe) : null;
+    if (
+      newTrangThai === "trong" &&
       tPrev === "da_dat" &&
-      tNext === "dang_dat" &&
-      toggleSoGhe.includes(ghe.so_ghe)
+      tNext === "dang_dat"
     ) {
       message.warning(
         "Không thể huỷ ghế đang chọn vì sẽ để ghế đã bán kẹp giữa ghế đang chọn!"
       );
       return;
     }
-    const emptySeats = rowSeats.filter(
-      (g: any) => getTrangThai(g.so_ghe) === "trong"
-    );
 
-    if (emptySeats.length > 2) {
-      const hasFloatingMiddle = rowSeats.some((g: any, i: number) => {
-        const cur = g;
-        const prev = rowSeats[i - 1];
-        const next = rowSeats[i + 1];
+    // Kiểm tra ghế trống bị kẹp giữa 2 ghế đang chọn, xung quanh cũng trống
+    const hasFloatingMiddle = rowSeats.some((g: any, i: number) => {
+      const cur = g;
+      const prev = rowSeats[i - 1];
+      const next = rowSeats[i + 1];
 
-        if (!prev || !next) return false;
+      if (!prev || !next) return false;
 
-        const tPrev = getTrangThai(prev.so_ghe);
-        const tCur = getTrangThai(cur.so_ghe);
-        const tNext = getTrangThai(next.so_ghe);
+      const tPrev = getTrangThai(prev.so_ghe);
+      const tCur = getTrangThai(cur.so_ghe);
+      const tNext = getTrangThai(next.so_ghe);
 
-        if (tPrev === "dang_dat" && tNext === "dang_dat" && tCur === "trong") {
-          const tPrev2 =
-            i - 2 >= 0 ? getTrangThai(rowSeats[i - 2].so_ghe) : null;
-          const tNext2 =
-            i + 2 < rowSeats.length
-              ? getTrangThai(rowSeats[i + 2].so_ghe)
-              : null;
-
-          if (
-            (!tPrev2 || tPrev2 === "trong") &&
-            (!tNext2 || tNext2 === "trong")
-          ) {
-            return true;
-          }
+      if (tPrev === "dang_dat" && tNext === "dang_dat" && tCur === "trong") {
+        const tPrev2 = i - 2 >= 0 ? getTrangThai(rowSeats[i - 2].so_ghe) : null;
+        const tNext2 =
+          i + 2 < rowSeats.length ? getTrangThai(rowSeats[i + 2].so_ghe) : null;
+        if (
+          (!tPrev2 || tPrev2 === "trong") &&
+          (!tNext2 || tNext2 === "trong")
+        ) {
+          return true;
         }
-        return false;
-      });
-
-      if (hasFloatingMiddle) {
-        message.warning(
-          "Không được để 1 ghế trống bị kẹp giữa 2 ghế chọn, xung quanh cũng trống."
-        );
-        return;
       }
+      return false;
+    });
+
+    if (hasFloatingMiddle) {
+      message.warning(
+        "Không được để 1 ghế trống bị kẹp giữa 2 ghế chọn, xung quanh cũng trống."
+      );
+      return;
     }
+
+    // Kiểm tra trường hợp: đã mua - trống - đang mua - trống
     const isInvalidSoldGapSelectedGap = rowSeats.some((g: any, i: number) => {
       const g1 = g;
       const g2 = rowSeats[i + 1];
@@ -758,7 +734,6 @@ const MovieDetailUser = () => {
       const g4 = rowSeats[i + 3];
 
       if (!g1 || !g2 || !g3 || !g4) return false;
-
       const t1 = getTrangThai(g1.so_ghe);
       const t2 = getTrangThai(g2.so_ghe);
       const t3 = getTrangThai(g3.so_ghe);
@@ -769,26 +744,24 @@ const MovieDetailUser = () => {
         t2 === "trong" &&
         t3 === "dang_dat" &&
         t4 === "trong";
-
       const caseRightToLeft =
         t1 === "trong" &&
         t2 === "dang_dat" &&
         t3 === "trong" &&
         t4 === "da_dat";
-
       return caseLeftToRight || caseRightToLeft;
     });
-
     if (isInvalidSoldGapSelectedGap) {
       message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
       return;
     }
+
+    // Kiểm tra không để trống ghế giữa các ghế đang đặt
     const isGapBetweenDangDat = rowSeats.some((g: any, i: number) => {
       const t1 = getTrangThai(rowSeats[i]?.so_ghe);
       const t2 = getTrangThai(rowSeats[i + 1]?.so_ghe);
       const t3 = getTrangThai(rowSeats[i + 2]?.so_ghe);
       const t4 = getTrangThai(rowSeats[i + 3]?.so_ghe);
-
       return (
         t1 === "dang_dat" &&
         t2 === "dang_dat" &&
@@ -796,43 +769,38 @@ const MovieDetailUser = () => {
         t4 === "dang_dat"
       );
     });
-
     if (isGapBetweenDangDat) {
       message.warning("Không được để trống ghế giữa các ghế đang đặt.");
       return;
     }
+
+    // Kiểm tra không thể hủy ghế ở giữa 2 ghế đang chọn
     if (newTrangThai === "trong") {
       const isMiddleUnselect = rowSeats.some((g: any, i: number) => {
         const prev = rowSeats[i - 1];
         const next = rowSeats[i + 1];
-
         if (!prev || !next) return false;
-
         const tPrev = getTrangThai(prev.so_ghe);
         const tCur = g.so_ghe;
         const tNext = getTrangThai(next.so_ghe);
-
-        // Nếu ghế hiện tại là ghế đang bỏ chọn và bị kẹp giữa 2 ghế đang giữ
         return (
           toggleSoGhe.includes(tCur) &&
           tPrev === "dang_dat" &&
           tNext === "dang_dat"
         );
       });
-
       if (isMiddleUnselect) {
         message.warning("Không thể hủy ghế ở giữa 2 ghế đang chọn!");
         return;
       }
     }
-    // setSelectedSeats(newSelectedSeats);
-    newSeatsRef.current = newSelectedSeats;
 
-    // THÊM ĐOẠN NÀY NGAY SAU setSelectedSeats(newSelectedSeats);
+    // 6. Nếu tất cả các kiểm tra pass, cập nhật state và gọi API
+    setSelectedSeats(newSelectedSeats);
+
     if (newSelectedSeats.length === 0) {
-      setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
+      setSelectedFoods([]);
     }
-    // KẾT THÚC ĐOẠN THÊM
 
     seatsToToggle.forEach((gheToggle) => {
       const found = checkGheList.find(
@@ -840,25 +808,22 @@ const MovieDetailUser = () => {
           x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
       );
       if (found) {
-        setIsLoadingsss(true);
         updateCheckGhe(
           {
             id: found.id,
             values: {
               trang_thai: newTrangThai,
-              nguoi_dung_id: user?.id || null,
+              nguoi_dung_id: newTrangThai ? user?.id : null,
             },
             lichChieuId: selectedLichChieuId,
           },
           {
-            onSuccess: (data) => {
-              setGheData(data);
-              setErrorStatus(null);
-              setIsLoadingsss(false);
+            onSuccess: () => {
+              message.success(`Đã chọn ghế ${gheToggle.so_ghe}`);
             },
             onError: (error: any) => {
-              setErrorStatus(error?.response?.status || null);
-              setIsLoadingsss(false); // ❗️fix chỗ này
+              console.error("Lỗi cập nhật ghế:", error);
+              message.error("Cập nhật ghế thất bại.");
             },
           }
         );
@@ -1053,6 +1018,7 @@ const MovieDetailUser = () => {
                 trangThaiPhong={3}
                 danhSachCheckGhe={checkGheList}
                 onClickCheckGhe={handleClickCheckGhe}
+                selectedSeats={selectedSeats}
               />
 
               {/* Chú thích ghế */}
