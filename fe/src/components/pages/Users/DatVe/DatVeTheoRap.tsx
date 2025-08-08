@@ -10,14 +10,26 @@ import {
   TagOutlined,
   CommentOutlined,
   PlayCircleTwoTone,
+  EnvironmentOutlined,
+  PhoneOutlined,
+  GlobalOutlined,
 } from "@ant-design/icons";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
 // Type definitions for better type safety
 interface Rap {
+  id?: string | number;
   ten_rap: string;
   dia_chi: string;
+  so_dien_thoai?: string;
+  website?: string;
+  hinh_anh?: string;
+  mo_ta?: string;
+  gio_mo_cua?: string;
+  gio_dong_cua?: string;
+  thanh_pho?: string;
+  quan_huyen?: string;
 }
 
 interface PhongChieu {
@@ -70,8 +82,8 @@ const DatVeTheoRap: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const rapId = id;
   const [phimList, setPhimList] = useState<Phim[]>([]);
+  const [rapInfo, setRapInfo] = useState<Rap | null>(null);
   const [loading, setLoading] = useState(false);
-  const [rapName, setRapName] = useState<string>('');
   const [message, setMessage] = useState<{ type: 'error' | 'info' | 'success'; text: string } | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [trailerUrl, setTrailerUrl] = useState("");
@@ -107,19 +119,30 @@ const DatVeTheoRap: React.FC = () => {
     }
   };
 
+  // Fetch detailed cinema information
+  const fetchRapInfo = async (rapId: string) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/client/rap/${rapId}`);
+      setRapInfo(response.data.data);
+    } catch (error) {
+      console.error('Error fetching cinema info:', error);
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
 
     console.log('rapId from URL:', id);
 
-    const fetchPhimInRap = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/client/rap-phim/${rapId}`);
-        const data = response.data.data || [];
+        // Fetch movies in cinema
+        const moviesResponse = await axios.get(`${BASE_URL}/api/client/rap-phim/${rapId}`);
+        const moviesData = moviesResponse.data.data || [];
         
         // Extract unique movies from showtimes
-        const uniqueMovies = data.reduce((acc: Phim[], item: LichChieuItem) => {
+        const uniqueMovies = moviesData.reduce((acc: Phim[], item: LichChieuItem) => {
           const existingMovie = acc.find(movie => 
             (movie.ten_phim || movie.title) === (item.phim.ten_phim || item.phim.title)
           );
@@ -133,19 +156,25 @@ const DatVeTheoRap: React.FC = () => {
         
         setPhimList(uniqueMovies);
         
-        if (data.length > 0) {
-          setRapName(data[0].phong_chieu.rap.ten_rap);
+        // Set basic rap info from movies data if available
+        if (moviesData.length > 0) {
+          const basicRapInfo = moviesData[0].phong_chieu.rap;
+          setRapInfo(basicRapInfo);
         }
+
+        // Fetch detailed cinema information
+        await fetchRapInfo(rapId!);
+        
       } catch (error) {
-        console.error('Error fetching movies in cinema:', error);
-        showMessage('error', 'Lỗi tải dữ liệu phim');
+        console.error('Error fetching data:', error);
+        showMessage('error', 'Lỗi tải dữ liệu');
         setPhimList([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPhimInRap();
+    fetchData();
   }, [id]);
 
   const showMessage = (type: 'error' | 'info' | 'success', text: string) => {
@@ -246,11 +275,65 @@ const DatVeTheoRap: React.FC = () => {
     </SwiperSlide>
   );
 
+  const renderRapHeader = () => {
+    if (!rapInfo) return null;
+
+    return (
+      <div className="rap-header-section">
+        <div className="rap-banner">
+          <div className="rap-info">
+            <div className="rap-content">
+              <h1 className="rap-title">
+                {rapInfo.ten_rap.toUpperCase()}
+                {rapInfo.thanh_pho && ` (${rapInfo.thanh_pho.toUpperCase()})`}
+              </h1>
+              
+              <div className="rap-details">
+                <div className="rap-detail-item">
+                  <EnvironmentOutlined style={{ color: "yellow", marginRight: "8px", fontSize: "16px" }} />
+                  <span>{rapInfo.dia_chi}</span>
+                </div>
+                
+                {rapInfo.so_dien_thoai && (
+                  <div className="rap-detail-item">
+                    <PhoneOutlined style={{ color: "yellow", marginRight: "8px", fontSize: "16px" }} />
+                    <span>{rapInfo.so_dien_thoai}</span>
+                  </div>
+                )}
+                
+                {rapInfo.website && (
+                  <div className="rap-detail-item">
+                    <GlobalOutlined style={{ color: "yellow", marginRight: "8px", fontSize: "16px" }} />
+                    <a href={rapInfo.website} target="_blank" rel="noopener noreferrer">
+                      {rapInfo.website}
+                    </a>
+                  </div>
+                )}
+                
+                {(rapInfo.gio_mo_cua && rapInfo.gio_dong_cua) && (
+                  <div className="rap-detail-item">
+                    <ClockCircleOutlined style={{ color: "yellow", marginRight: "8px", fontSize: "16px" }} />
+                    <span>Giờ hoạt động: {rapInfo.gio_mo_cua} - {rapInfo.gio_dong_cua}</span>
+                  </div>
+                )}
+              </div>
+              
+              {rapInfo.mo_ta && (
+                <div className="rap-description">
+                  <p>{rapInfo.mo_ta}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="dvtr__loading-container">
         <Spin size="large" />
-        <p className="dvtr__loading-text">Đang tải dữ liệu...</p>
       </div>
     );
   }
@@ -264,9 +347,12 @@ const DatVeTheoRap: React.FC = () => {
         </div>
       )}
 
+      {/* Rap Header Section */}
+      {renderRapHeader()}
+
       <div className="section section-trangcon">
         <h2 className="section-title-phimdangchieu">
-          {rapName ? `PHIM TẠI RẠP ${rapName.toUpperCase()}` : 'PHIM TẠI RẠP'}
+          {rapInfo?.ten_rap ? `PHIM TẠI ${rapInfo.ten_rap.toUpperCase()}` : 'PHIM TẠI RẠP'}
         </h2>
         
         {phimList.length > 0 ? (
