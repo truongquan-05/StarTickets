@@ -1,5 +1,5 @@
 .voucher-wrapper {
-  background: linear-gradient(to bottom, #0D0C1D, #1D1441);
+  background: #1a0933;
   color: white;
   padding: 40px 16px;
   min-height: 100vh;
@@ -8,10 +8,8 @@
 
 .voucher-container {
   width: 100%;
-  background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%);
-  /* Deep, cinematic background */
+  background: #1a0933;
   padding: 100px 10%;
-  /* Increased padding for better spacing */
   font-family: "Alata", sans-serif;
   box-sizing: border-box;
 }
@@ -25,8 +23,55 @@
   min-height: 300px;
   margin-bottom: 60px;
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Tạo 3 hình tròn ở bên trái - dàn đều */
+.voucher-item::before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: #1a0933;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 0 5px #1a0933, 0 -80px 0 0 #1a0933, 0 -80px 0 5px #1a0933, 0 80px 0 0 #1a0933, 0 80px 0 5px #1a0933;
+}
+
+/* Tạo 3 hình tròn ở bên phải - dàn đều */
+.voucher-item::after {
+  content: '';
+  position: absolute;
+  right: -15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background: #1a0933;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 0 5px #1a0933, 0 -80px 0 0 #1a0933, 0 -80px 0 5px #1a0933, 0 80px 0 0 #1a0933, 0 80px 0 5px #1a0933;
+}
+
+/* Đường đứt nét ở giữa nối 2 rạch tròn */
+.voucher-item {
+  background-image: 
+    linear-gradient(135deg, #6B46C1, #EC4899, #F59E0B),
+    repeating-linear-gradient(
+      to right,
+      transparent 0px,
+      transparent 8px,
+      rgba(255, 255, 255, 0.4) 8px,
+      rgba(255, 255, 255, 0.4) 16px
+    );
+  background-position: 0 0, 0 50%;
+  background-size: 100% 100%, 100% 2px;
+  background-repeat: no-repeat, repeat-x;
 }
 
 .voucher-content {
@@ -53,6 +98,23 @@
   
   .voucher-item:nth-child(even) {
     flex-direction: row-reverse;
+  }
+
+  /* Điều chỉnh 3 hình tròn cho desktop - dàn đều hơn */
+  .voucher-item::before,
+  .voucher-item::after {
+    width: 40px;
+    height: 40px;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 8px #1a0933, 0 -120px 0 0 #1a0933, 0 -120px 0 8px #1a0933, 0 120px 0 0 #1a0933, 0 120px 0 8px #1a0933;
+  }
+  
+  .voucher-item::before {
+    left: -20px;
+  }
+  
+  .voucher-item::after {
+    right: -20px;
   }
 }
 
@@ -131,5 +193,22 @@
   
   .voucher-title {
     font-size: 24px;
+  }
+  
+  /* 3 hình tròn nhỏ hơn trên mobile - dàn đều */
+  .voucher-item::before,
+  .voucher-item::after {
+    width: 25px;
+    height: 25px;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 3px #1a0933, 0 -70px 0 0 #1a0933, 0 -70px 0 3px #1a0933, 0 70px 0 0 #1a0933, 0 70px 0 3px #1a0933;
+  }
+  
+  .voucher-item::before {
+    left: -12px;
+  }
+  
+  .voucher-item::after {
+    right: -12px;
   }
 }

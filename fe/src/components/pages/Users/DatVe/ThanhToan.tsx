@@ -149,8 +149,11 @@ const ThanhToan: React.FC = () => {
   >(undefined);
 
   // Gọi luôn hook, không cần điều kiện
-  useBackDelete(bookingData?.id, selectedPaymentMethod === undefined , selectedVoucherId );
-
+  useBackDelete(
+    bookingData?.id,
+    selectedPaymentMethod === undefined,
+    selectedVoucherId
+  );
 
   // Đếm ngược thời gian
   useEffect(() => {
@@ -242,7 +245,7 @@ const ThanhToan: React.FC = () => {
       ho_ten: formStep1Data.fullName,
       email: formStep1Data.email,
       ma_giam_gia_id: formStep1Data.ma_giam_gia_id,
-      diem_thanh_vien : checkDiem.variables?.diem || null
+      diem_thanh_vien: checkDiem.variables?.diem || null,
     };
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
@@ -914,8 +917,10 @@ const ThanhToan: React.FC = () => {
                   SỐ TIỀN CẦN THANH TOÁN
                 </Text>
                 <Text className="total-price">
-                  {(tongTienData?.data?.tong_tien ?? 0).toLocaleString("vi-VN")}{" "}
-                  VNĐ
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(tongTienData?.data?.tong_tien ?? 0)}
                 </Text>
               </div>
             </Card>
