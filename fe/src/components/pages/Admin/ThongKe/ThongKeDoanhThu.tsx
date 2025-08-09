@@ -399,7 +399,7 @@ const ThongKeDoanhThu = () => {
                           }}
                         >
                           <p>{`${name}: ${value} %`}</p>
-                          <p>{`Doanh thu: ${doanhthu.toLocaleString()}đ`}</p>
+                          <p>{`Doanh thu: ${doanhthu?.toLocaleString()}đ`}</p>
                         </div>
                       );
                     }
