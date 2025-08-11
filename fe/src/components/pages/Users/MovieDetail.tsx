@@ -160,14 +160,18 @@ const MovieDetailUser = () => {
   }, [checkGheList]);
 
   useEffect(() => {
-    if (gheData &&  errorStatus !== 422  && !isLoadingsss && newSeatsRef.current) {
+    if (
+      gheData &&
+      errorStatus !== 422 &&
+      !isLoadingsss &&
+      newSeatsRef.current
+    ) {
       setIsLoadingsss(false);
       setSelectedSeats(newSeatsRef.current);
 
       newSeatsRef.current = null;
     }
   }, [gheData, isLoadingsss]);
-
 
   useEffect(() => {}, [checkGheList]);
   // Hàm core để giải phóng ghế trên API
@@ -546,11 +550,10 @@ const MovieDetailUser = () => {
     }
 
     const ghe = danhSachGhe.find((g: any) => g.id === gheId);
-
     if (!ghe) return;
 
+    // Xác định các ghế cần toggle (ghế đôi, v.v)
     let seatsToToggle: IGhe[] = [ghe];
-
     if (ghe.loai_ghe_id === 3) {
       const row = ghe.so_ghe[0];
       const col = parseInt(ghe.so_ghe.slice(1));
@@ -566,6 +569,7 @@ const MovieDetailUser = () => {
       seatsToToggle.push(pair);
     }
 
+    // Kiểm tra ghế đã bán
     const anySeatSold = seatsToToggle.some((st) =>
       checkGheList.some(
         (item: any) =>
@@ -579,6 +583,7 @@ const MovieDetailUser = () => {
       return;
     }
 
+    // Xác định trạng thái mới
     const newTrangThai =
       currentTrangThai === "trong"
         ? "dang_dat"
@@ -588,6 +593,7 @@ const MovieDetailUser = () => {
 
     if (!newTrangThai) return;
 
+    // Tạo danh sách ghế mới theo toggle
     let newSelectedSeats = [...selectedSeats];
     const toggleSoGhe = seatsToToggle.map((s) => s.so_ghe);
 
@@ -601,6 +607,7 @@ const MovieDetailUser = () => {
       );
     }
 
+    // Hàm lấy trạng thái ghế theo danh sách ghế mới (để check điều kiện)
     const getTrangThai = (soGhe: string): string => {
       if (newSelectedSeats.includes(soGhe)) return "dang_dat";
       const inDb = checkGheList.find(
@@ -610,34 +617,33 @@ const MovieDetailUser = () => {
       return inDb?.trang_thai || "trong";
     };
 
-    if (
-      newTrangThai === "dang_dat" &&
-      (ghe.loai_ghe_id === 1 || ghe.loai_ghe_id === 2)
-    ) {
-      const row = ghe.so_ghe[0];
-      const num = parseInt(ghe.so_ghe.slice(1));
+    // ==== BẮT ĐẦU KIỂM TRA ĐIỀU KIỆN RÀNG BUỘC ====
+    // Ví dụ bạn giữ nguyên các đoạn kiểm tra ghế trống, ghế kẹp, ghế lẻ, ... như bạn cung cấp:
+    // (Bạn có thể đặt đoạn này thành hàm riêng nếu muốn)
+    // 1. Kiểm tra không để ghế trống đơn lẻ ở đầu hàng:
+    const row = ghe.so_ghe[0];
+    const num = parseInt(ghe.so_ghe.slice(1));
+    const rowSeats = danhSachGhe
+      .filter(
+        (g: any) =>
+          g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
+      )
+      .sort(
+        (a: any, b: any) =>
+          parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
+      );
+    const min = parseInt(rowSeats[0].so_ghe.slice(1));
+    const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
 
-      const rowSeats = danhSachGhe
-        .filter(
-          (g: any) =>
-            g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
-        )
-        .sort(
-          (a: any, b: any) =>
-            parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
-        );
+    const isSecondFromLeft = num === min + 1;
+    const isSecondFromRight = num === max - 1;
 
-      const min = parseInt(rowSeats[0].so_ghe.slice(1));
-      const max = parseInt(rowSeats[rowSeats.length - 1].so_ghe.slice(1));
+    const ghe3FromLeft = `${row}${min + 2}`;
+    const ghe3FromRight = `${row}${max - 2}`;
+    const tGhe3Left = getTrangThai(ghe3FromLeft);
+    const tGhe3Right = getTrangThai(ghe3FromRight);
 
-      const isSecondFromLeft = num === min + 1;
-      const isSecondFromRight = num === max - 1;
-
-      const ghe3FromLeft = `${row}${min + 2}`;
-      const ghe3FromRight = `${row}${max - 2}`;
-      const tGhe3Left = getTrangThai(ghe3FromLeft);
-      const tGhe3Right = getTrangThai(ghe3FromRight);
-
+    if (newTrangThai === "dang_dat") {
       if (isSecondFromLeft && tGhe3Left !== "da_dat") {
         const ghe1 = `${row}${min}`;
         const ghe3 = `${row}${min + 2}`;
@@ -660,12 +666,11 @@ const MovieDetailUser = () => {
         }
       }
 
-      // ❌ THÊM TRƯỜNG HỢP: A3 đã mua, A4-A6 đều trống, cấm chọn A5
+      // Kiểm tra trường hợp A3 đã mua, A4-A6 trống, cấm chọn A5
       const gheIndex = rowSeats.findIndex((g: any) => g.id === ghe.id);
       const prev2 = rowSeats[gheIndex - 2];
       const prev1 = rowSeats[gheIndex - 1];
       const next1 = rowSeats[gheIndex + 1];
-
       if (
         prev2 &&
         prev1 &&
@@ -682,16 +687,6 @@ const MovieDetailUser = () => {
       }
     }
 
-    const row = ghe.so_ghe[0];
-    const rowSeats = danhSachGhe
-      .filter(
-        (g: any) =>
-          g.so_ghe[0] === row && (g.loai_ghe_id === 1 || g.loai_ghe_id === 2)
-      )
-      .sort(
-        (a: any, b: any) =>
-          parseInt(a.so_ghe.slice(1)) - parseInt(b.so_ghe.slice(1))
-      );
     const gheIndex = rowSeats.findIndex((g: any) => g.id === ghe.id);
     const prev = rowSeats[gheIndex - 1];
     const next = rowSeats[gheIndex + 1];
@@ -699,8 +694,9 @@ const MovieDetailUser = () => {
     const tPrev = prev ? getTrangThai(prev.so_ghe) : null;
     const tNext = next ? getTrangThai(next.so_ghe) : null;
 
-    // ❌ Trường hợp không được huỷ: [da_dat][dang_dat-1][dang_dat-2]
+    // Không được huỷ ghế làm kẹp ghế đã bán
     if (
+      newTrangThai === "trong" &&
       tPrev === "da_dat" &&
       tNext === "dang_dat" &&
       toggleSoGhe.includes(ghe.so_ghe)
@@ -710,16 +706,15 @@ const MovieDetailUser = () => {
       );
       return;
     }
+
     const emptySeats = rowSeats.filter(
       (g: any) => getTrangThai(g.so_ghe) === "trong"
     );
-
     if (emptySeats.length > 2) {
       const hasFloatingMiddle = rowSeats.some((g: any, i: number) => {
         const cur = g;
         const prev = rowSeats[i - 1];
         const next = rowSeats[i + 1];
-
         if (!prev || !next) return false;
 
         const tPrev = getTrangThai(prev.so_ghe);
@@ -733,7 +728,6 @@ const MovieDetailUser = () => {
             i + 2 < rowSeats.length
               ? getTrangThai(rowSeats[i + 2].so_ghe)
               : null;
-
           if (
             (!tPrev2 || tPrev2 === "trong") &&
             (!tNext2 || tNext2 === "trong")
@@ -743,7 +737,6 @@ const MovieDetailUser = () => {
         }
         return false;
       });
-
       if (hasFloatingMiddle) {
         message.warning(
           "Không được để 1 ghế trống bị kẹp giữa 2 ghế chọn, xung quanh cũng trống."
@@ -751,12 +744,13 @@ const MovieDetailUser = () => {
         return;
       }
     }
+
+    // Kiểm tra ghế đã mua - trống - đang mua - trống
     const isInvalidSoldGapSelectedGap = rowSeats.some((g: any, i: number) => {
       const g1 = g;
       const g2 = rowSeats[i + 1];
       const g3 = rowSeats[i + 2];
       const g4 = rowSeats[i + 3];
-
       if (!g1 || !g2 || !g3 || !g4) return false;
 
       const t1 = getTrangThai(g1.so_ghe);
@@ -769,7 +763,6 @@ const MovieDetailUser = () => {
         t2 === "trong" &&
         t3 === "dang_dat" &&
         t4 === "trong";
-
       const caseRightToLeft =
         t1 === "trong" &&
         t2 === "dang_dat" &&
@@ -783,12 +776,13 @@ const MovieDetailUser = () => {
       message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
       return;
     }
+
+    // Kiểm tra khoảng trống giữa các ghế đang đặt
     const isGapBetweenDangDat = rowSeats.some((g: any, i: number) => {
       const t1 = getTrangThai(rowSeats[i]?.so_ghe);
       const t2 = getTrangThai(rowSeats[i + 1]?.so_ghe);
       const t3 = getTrangThai(rowSeats[i + 2]?.so_ghe);
       const t4 = getTrangThai(rowSeats[i + 3]?.so_ghe);
-
       return (
         t1 === "dang_dat" &&
         t2 === "dang_dat" &&
@@ -801,39 +795,38 @@ const MovieDetailUser = () => {
       message.warning("Không được để trống ghế giữa các ghế đang đặt.");
       return;
     }
+
+    // Không thể hủy ghế ở giữa 2 ghế đang chọn
     if (newTrangThai === "trong") {
       const isMiddleUnselect = rowSeats.some((g: any, i: number) => {
         const prev = rowSeats[i - 1];
         const next = rowSeats[i + 1];
-
         if (!prev || !next) return false;
-
         const tPrev = getTrangThai(prev.so_ghe);
         const tCur = g.so_ghe;
         const tNext = getTrangThai(next.so_ghe);
-
-        // Nếu ghế hiện tại là ghế đang bỏ chọn và bị kẹp giữa 2 ghế đang giữ
         return (
           toggleSoGhe.includes(tCur) &&
           tPrev === "dang_dat" &&
           tNext === "dang_dat"
         );
       });
-
       if (isMiddleUnselect) {
         message.warning("Không thể hủy ghế ở giữa 2 ghế đang chọn!");
         return;
       }
     }
-    // setSelectedSeats(newSelectedSeats);
-    newSeatsRef.current = newSelectedSeats;
+    // ==== KẾT THÚC KIỂM TRA ĐIỀU KIỆN ====
 
-    // THÊM ĐOẠN NÀY NGAY SAU setSelectedSeats(newSelectedSeats);
+    // Cập nhật state ghế được chọn
+    setSelectedSeats(newSelectedSeats);
+
+    // Reset selectedFoods nếu không còn ghế nào
     if (newSelectedSeats.length === 0) {
-      setSelectedFoods([]); // Reset selectedFoods nếu không còn ghế nào được chọn
+      setSelectedFoods([]);
     }
-    // KẾT THÚC ĐOẠN THÊM
 
+    // Cập nhật trạng thái ghế lên backend từng ghế
     seatsToToggle.forEach((gheToggle) => {
       const found = checkGheList.find(
         (x: any) =>
@@ -855,10 +848,11 @@ const MovieDetailUser = () => {
               setGheData(data);
               setErrorStatus(null);
               setIsLoadingsss(false);
+              // Đã cập nhật trạng thái ghế thành công
             },
             onError: (error: any) => {
               setErrorStatus(error?.response?.status || null);
-              setIsLoadingsss(false); // ❗️fix chỗ này
+              setIsLoadingsss(false);
             },
           }
         );
@@ -1052,6 +1046,7 @@ const MovieDetailUser = () => {
                 isErrorGhe={isErrorGhe}
                 trangThaiPhong={3}
                 danhSachCheckGhe={checkGheList}
+                selectedSeats={selectedSeats} // <-- thêm prop này
                 onClickCheckGhe={handleClickCheckGhe}
               />
 

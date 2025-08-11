@@ -15,6 +15,7 @@ interface SoDoGheProps {
   isErrorGhe: boolean;
   trangThaiPhong: number; // 0 cho phép sửa, 1 không cho sửa, 3 cho phép mua ghế, không sửa
   danhSachCheckGhe?: ICheckGhe[];
+  selectedSeats: string[];
   onClickCheckGhe?: (gheId: number, currentTrangThai: string) => void;
 }
 
@@ -109,8 +110,25 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
   };
 
   const handleClick = (soGhe: string) => {
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
+    if (!user) {
+      alert("Bạn chưa đăng nhập!");
+      return;
+    }
+
     const gheHienTai = localDanhSachGhe.find((g) => g.so_ghe === soGhe);
     if (!gheHienTai) return;
+
+    // User hiện tại: giữ nguyên number | null để gán, dùng string để so sánh
+    const currentUserId: number | null = user?.id ?? null;
+    const currentUserIdStr =
+      currentUserId !== null ? String(currentUserId) : null;
+
+    // Hàm lấy trạng thái ghế
+    const getTrangThaiCheckGhe = (gheSingle: IGhe) => {
+      return checkGheStatusMap.get(gheSingle.id) || "trong";
+    };
 
     if (trangThaiPhong === 3) {
       let isHidden = false;
@@ -119,8 +137,8 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
       if ((gheHienTai as IGheDoi).ghe_doi) {
         // Ghế đôi
         const gheDoi = gheHienTai as IGheDoi;
-        const tt1 = checkGheStatusMap.get(gheDoi.ghe_doi[0].id) || "trong";
-        const tt2 = checkGheStatusMap.get(gheDoi.ghe_doi[1].id) || "trong";
+        const tt1 = getTrangThaiCheckGhe(gheDoi.ghe_doi[0]);
+        const tt2 = getTrangThaiCheckGhe(gheDoi.ghe_doi[1]);
 
         if (!gheDoi.ghe_doi[0].trang_thai || !gheDoi.ghe_doi[1].trang_thai) {
           isHidden = true;
@@ -128,86 +146,139 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
         if (tt1 === "da_dat" || tt2 === "da_dat") {
           isBooked = true;
         }
-      } else {
-        // Ghế đơn
-        const gheDon = gheHienTai as IGhe;
-        const currentStatus = checkGheStatusMap.get(gheDon.id) || "trong";
 
-        if (!gheDon.trang_thai) {
-          isHidden = true;
+        if (isHidden) {
+          alert("Ghế đang hỏng, vui lòng chọn ghế khác.");
+          return;
         }
-        if (currentStatus === "da_dat") {
-          isBooked = true;
+        if (isBooked) {
+          alert("Ghế đã có người mua, vui lòng chọn ghế khác.");
+          return;
         }
-      }
 
-      if (isHidden) {
-        alert("Ghế đang hỏng, vui lòng chọn ghế khác.");
-        return;
-      }
-      if (isBooked) {
-        alert("Ghế đã có người mua, vui lòng chọn ghế khác.");
-        return;
-      }
-
-      // Xử lý chọn/bỏ chọn ghế (trong selectedSeats là so_ghe)
-      if ((gheHienTai as IGheDoi).ghe_doi) {
-        // Ghế đôi: thao tác với cả 2 ghế thành viên
-        const gheDoi = gheHienTai as IGheDoi;
         const gheDoiSoGhe = gheDoi.ghe_doi.map((g) => g.so_ghe);
         const allSelected = gheDoiSoGhe.every((sg) =>
           selectedSeats.includes(sg)
         );
-
         let newSelectedSeats = [...selectedSeats];
+
         if (allSelected) {
-          // Bỏ chọn cả 2 ghế
+          // Bỏ chọn cả 2 ghế, kiểm tra user_id cùng user hiện tại
+          const allUserIdsMatch = gheDoi.ghe_doi.every(
+            (g) => String(g.user_id) === currentUserIdStr
+          );
+          if (!allUserIdsMatch) {
+            alert("Bạn không thể bỏ chọn ghế người khác đang giữ.");
+            return;
+          }
+
+          // Cập nhật user_id = null cho cả 2 ghế
+          gheDoi.ghe_doi.forEach((g) => {
+            updateGheState(g.so_ghe, (gh) => ({
+              ...gh,
+              user_id: null,
+            }));
+          });
+
           newSelectedSeats = newSelectedSeats.filter(
             (sg) => !gheDoiSoGhe.includes(sg)
           );
         } else {
-          // Thêm chọn cả 2 ghế (nếu chưa có)
+          // Thêm chọn cả 2 ghế, kiểm tra ghế dang_dat người khác
+          const dangDatNgKhac = gheDoi.ghe_doi.some(
+            (g) =>
+              getTrangThaiCheckGhe(g) === "dang_dat" &&
+              String(g.user_id) !== currentUserIdStr
+          );
+          if (dangDatNgKhac) {
+            alert("Ghế này đang được người khác chọn, không thể chọn.");
+            return;
+          }
+
           gheDoiSoGhe.forEach((sg) => {
             if (!newSelectedSeats.includes(sg)) {
               newSelectedSeats.push(sg);
             }
+            // Cập nhật user_id = currentUserId cho ghế vừa chọn
+            updateGheState(sg, (gh) => ({
+              ...gh,
+              user_id: currentUserId,
+            }));
           });
         }
+
         setSelectedSeats(newSelectedSeats);
 
         if (onClickCheckGhe) {
           gheDoi.ghe_doi.forEach((g) => {
-            const currentStatus = checkGheStatusMap.get(g.id) || "trong";
-            onClickCheckGhe(g.id, currentStatus);
+            const status = getTrangThaiCheckGhe(g);
+            onClickCheckGhe(g.id, status);
           });
         }
       } else {
         // Ghế đơn
-        const gheDon = gheHienTai as IGhe;
-        const soGheCurrent = gheDon.so_ghe;
-        let newSelectedSeats = [...selectedSeats];
+        const trangThaiCheck = getTrangThaiCheckGhe(gheHienTai as IGhe);
+        if (!gheHienTai.trang_thai) {
+          isHidden = true;
+        }
+        if (trangThaiCheck === "da_dat") {
+          isBooked = true;
+        }
 
-        if (newSelectedSeats.includes(soGheCurrent)) {
-          // Bỏ chọn ghế
-          newSelectedSeats = newSelectedSeats.filter(
-            (sg) => sg !== soGheCurrent
-          );
+        if (isHidden) {
+          alert("Ghế đang hỏng, vui lòng chọn ghế khác.");
+          return;
+        }
+        if (isBooked) {
+          alert("Ghế đã có người mua, vui lòng chọn ghế khác.");
+          return;
+        }
+
+        let newSelectedSeats = [...selectedSeats];
+        const gheUserId: number | null = gheHienTai.user_id;
+
+        if (newSelectedSeats.includes(soGhe)) {
+          // Bỏ chọn ghế, chỉ được nếu user_id trùng user hiện tại
+          if (String(gheUserId) !== currentUserIdStr) {
+            alert("Bạn không thể bỏ chọn ghế người khác đang giữ.");
+            return;
+          }
+          newSelectedSeats = newSelectedSeats.filter((sg) => sg !== soGhe);
+
+          // Cập nhật user_id = null cho ghế vừa bỏ chọn
+          updateGheState(soGhe, (gh) => ({
+            ...gh,
+            user_id: null,
+          }));
         } else {
-          // Thêm chọn ghế
-          newSelectedSeats.push(soGheCurrent);
+          // Thêm chọn ghế, không chọn ghế đang dang_dat của người khác
+          if (
+            trangThaiCheck === "dang_dat" &&
+            String(gheUserId) !== currentUserIdStr
+          ) {
+            alert("Ghế này đang được người khác chọn, không thể chọn.");
+            return;
+          }
+          newSelectedSeats.push(soGhe);
+
+          // Cập nhật user_id = currentUserId cho ghế vừa chọn
+          updateGheState(soGhe, (gh) => ({
+            ...gh,
+            user_id: currentUserId,
+          }));
         }
 
         setSelectedSeats(newSelectedSeats);
 
         if (onClickCheckGhe) {
-          const currentStatus = checkGheStatusMap.get(gheDon.id) || "trong";
-          onClickCheckGhe(gheDon.id, currentStatus);
+          onClickCheckGhe(gheHienTai.id, trangThaiCheck);
         }
       }
+
       return;
     }
 
-    // Chỉ cho phép sửa loại ghế khi trangThaiPhong = 0
+    // Xử lý khi trangThaiPhong !== 3 (ví dụ sửa loại ghế khi trangThaiPhong === 0)
     if (trangThaiPhong !== 0) return;
 
     if ((gheHienTai as IGheDoi).ghe_doi) {
@@ -216,9 +287,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
     }
 
     const gheDon = gheHienTai as IGhe;
-    if (gheDon.loai_ghe_id !== 1 && gheDon.loai_ghe_id !== 2) {
-      return;
-    }
+    if (gheDon.loai_ghe_id !== 1 && gheDon.loai_ghe_id !== 2) return;
 
     const newLoaiGheId = gheDon.loai_ghe_id === 1 ? 2 : 1;
 
@@ -534,7 +603,8 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                       );
                       return;
                     }
-                    handleClick(ghe.so_ghe);
+                    // Chỉ call khi ghế có thể chọn
+                    if (cursor === "pointer") handleClick(ghe.so_ghe);
                   }}
                   onDoubleClick={() => handleDoubleClick(ghe.so_ghe)}
                   title={`${ghe.so_ghe} - Loại: Ghế đôi - Trạng thái API: ${
@@ -668,7 +738,7 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
                     );
                     return;
                   }
-                  handleClick(ghe.so_ghe);
+                  if (cursor === "pointer") handleClick(ghe.so_ghe);
                 }}
                 onDoubleClick={() => handleDoubleClick(ghe.so_ghe)}
                 title={`${ghe.so_ghe} - Loại: ${
