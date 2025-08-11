@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import {
-  Table,
   Button,
   Modal,
   Spin,
@@ -13,15 +12,18 @@ import {
   Col,
   Typography,
   Empty,
+  Tabs,
 } from "antd";
-import { EyeOutlined, QrcodeOutlined } from "@ant-design/icons";
+import { EyeOutlined, QrcodeOutlined, CalendarOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
 import {
   useListLichSuDonHang,
   useListLichSuDonHangChiTiet,
 } from "../../../hook/hungHook";
+import "./LichSuTatCaVe.css";
 
 const { Title, Text } = Typography;
+const { TabPane } = Tabs;
 
 const LichSuTatCaVe = () => {
   const { data: lichSu, isLoading: loadingLichSu } = useListLichSuDonHang({
@@ -31,6 +33,7 @@ const LichSuTatCaVe = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [modalChiTietVisible, setModalChiTietVisible] = useState(false);
   const [modalQRVisible, setModalQRVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState("all");
 
   const {
     data: chiTietData,
@@ -72,6 +75,8 @@ const LichSuTatCaVe = () => {
       const phim = lichChieu?.phim;
       const phong = lichChieu?.phong_chieu;
       const rap = phong?.rap;
+      const gioChieu = moment(lichChieu?.gio_chieu);
+      const isWatched = moment().isAfter(gioChieu);
 
       return {
         id: don.id,
@@ -81,223 +86,158 @@ const LichSuTatCaVe = () => {
         ten_phim: phim?.ten_phim || "",
         ten_rap: rap?.ten_rap || "Không rõ",
         thanh_toan_id: don.id,
+        poster: phim?.hinh_anh || "/default-poster.jpg",
+        gio_chieu: lichChieu?.gio_chieu,
+        ten_phong: phong?.ten_phong,
+        thoi_luong: phim?.thoi_luong,
+        isWatched,
+        the_loai: phim?.the_loai?.map((tl: any) => tl.ten_the_loai).join(", ") || "",
       };
     });
   }, [lichSu]);
 
-  const columns = [
-    {
-      title: (
-        <Space>
-          <span>Mã đơn</span>
-        </Space>
-      ),
-      dataIndex: "ma_giao_dich",
-      key: "ma_giao_dich",
-      render: (text: string) => (
-        <Tag
-          style={{
-            fontWeight: "bold",
-            fontFamily: "Alata, sans-serif",
-            borderRadius: "0px",
-            color: "#000",
-          }}
-        >
-          {text}
-        </Tag>
-      ),
-      onHeaderCell: () => ({
-        style: {
-          borderRadius: "0px",
-        },
-      }),
-    },
-    {
-      title: (
-        <Space>
-          <span>Chi nhánh</span>
-        </Space>
-      ),
-      dataIndex: "ten_rap",
-      key: "chi_nhanh",
-      render: (text: string) => (
-        <Text strong style={{ color: "#000", fontFamily: "Alata, sans-serif" }}>
-          {text}
-        </Text>
-      ),
-    },
-    {
-      title: (
-        <Space>
-          <span>Ngày mua</span>
-        </Space>
-      ),
-      dataIndex: "created_at",
-      key: "ngay",
-      render: (text: string) => (
-        <Text style={{ color: "#000", fontFamily: "Alata, sans-serif" }}>
-          {moment(text).format("DD/MM/YYYY")}
-        </Text>
-      ),
-    },
-    {
-      title: (
-        <Space>
-          <span>Tổng cộng</span>
-        </Space>
-      ),
-      dataIndex: "tong_tien",
-      key: "tong_cong",
-      render: (value: number) => (
-        <Text
-          strong
-          style={{
-            color: "#000",
-            fontSize: "16px",
-            fontFamily: "Alata, sans-serif",
-          }}
-        >
-          {value.toLocaleString("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          })}
-        </Text>
-      ),
-    },
-    {
-      title: "Thao tác",
-      key: "actions",
-      onHeaderCell: () => ({
-        style: {
-          borderRadius: "0px",
-        },
-      }),
-      render: (_: any, record: any) => (
-        <Space>
+  const filteredData = useMemo(() => {
+    if (activeTab === "watched") {
+      return mergedData.filter(item => item.isWatched);
+    }
+    if (activeTab === "upcoming") {
+      return mergedData.filter(item => !item.isWatched);
+    }
+    return mergedData;
+  }, [mergedData, activeTab]);
+
+  const renderTicketCard = (ticket: any) => (
+    <Col xs={24} sm={12} lg={8} xl={6} key={ticket.id}>
+      <Card className={`history-ticket-card ${ticket.isWatched ? 'history-watched' : 'history-upcoming'}`}>
+        <div className="history-ticket-header">
+          <div className="history-status-section">
+            {ticket.isWatched ? (
+              <Tag color="success" className="history-status-tag history-watched-tag">
+                ĐÃ XEM
+              </Tag>
+            ) : (
+              <Tag color="processing" className="history-status-tag history-upcoming-tag">
+                CHƯA XEM
+              </Tag>
+            )}
+          </div>
+          <div className="history-movie-info">
+            <Title level={4} className="history-movie-title" title={ticket.ten_phim}>
+              {ticket.ten_phim}
+            </Title>
+            <Text className="history-movie-genre">{ticket.the_loai}</Text>
+            <div className="history-cinema-info">
+              <Text className="history-cinema-name">{ticket.ten_rap}</Text>
+              <Text className="history-room-name">Phòng {ticket.ten_phong}</Text>
+            </div>
+          </div>
+        </div>
+        
+        <div className="history-ticket-details">
+          <div className="history-time-info">
+            <div className="history-time-item">
+              <CalendarOutlined className="history-icon" />
+              <span>{moment(ticket.gio_chieu).format("DD/MM/YYYY")}</span>
+            </div>
+            <div className="history-time-item">
+              <ClockCircleOutlined className="history-icon" />
+              <span>{moment(ticket.gio_chieu).format("HH:mm")}</span>
+            </div>
+          </div>
+          
+          <div className="history-price-info">
+            <Text className="history-total-price">
+              {ticket.tong_tien.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </Text>
+          </div>
+          
+          <div className="history-transaction-code">
+            <Text className="history-code">#{ticket.ma_giao_dich}</Text>
+          </div>
+        </div>
+        
+        <div className="history-ticket-actions">
           <Button
             type="default"
             icon={<QrcodeOutlined />}
-            onClick={() => showModalQR(record.thanh_toan_id)}
-            style={{
-              borderColor: "#1a0933",
-              color: "#1a0933",
-              borderRadius: "4px",
-            }}
+            onClick={() => showModalQR(ticket.thanh_toan_id)}
+            className="history-qr-button"
+            disabled={ticket.isWatched}
           >
             Mã QR
           </Button>
           <Button
             type="primary"
             icon={<EyeOutlined />}
-            onClick={() => showModalChiTiet(record.thanh_toan_id)}
-            style={{
-              background: "#1a0933",
-              borderRadius: "4px",
-            }}
+            onClick={() => showModalChiTiet(ticket.thanh_toan_id)}
+            className="history-detail-button"
           >
             Chi tiết
           </Button>
-        </Space>
-      ),
-    },
-  ];
+        </div>
+      </Card>
+    </Col>
+  );
 
   if (loadingLichSu) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "400px",
-          background: "#1a0933",
-        }}
-      >
-        <Card
-          style={{
-            textAlign: "center",
-            padding: "40px",
-            background: "transparent",
-            border: "none",
-          }}
-        >
+      <div className="history-loading-container">
+        <Card className="history-loading-card">
           <Spin size="large" />
-          <div style={{ marginTop: "16px", color: "#666" }}>
-            Đang tải dữ liệu...
-          </div>
+          <div className="history-loading-text">Đang tải dữ liệu...</div>
         </Card>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        background:
-          "linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%)",
-        padding: "24px 10%",
-      }}
-    >
-      <div style={{ textAlign: "center" }}>
-        <Title
-          level={2}
-          style={{
-            fontFamily: "Anton, sans-serif",
-            margin: "30px 0",
-            fontSize: "40px",
-            fontWeight: "100",
-            color: "white",
-          }}
-        >
+    <div className="history-container">
+      <div className="history-header-section">
+        <Title level={2} className="history-page-title">
           LỊCH SỬ MUA VÉ
         </Title>
       </div>
-      <Row justify="center">
-        <Col xs={24} lg={30}>
-          <Card
-            style={{
-              background: "transparent",
-              borderRadius: "4px",
-              border: "none",
-            }}
-          >
-            {mergedData.length === 0 ? (
-              <Empty
-                description="Chưa có lịch sử mua vé nào"
-                style={{ padding: "60px 0" }}
-              />
-            ) : (
-              <Table
-                columns={columns}
-                dataSource={mergedData}
-                rowKey="id"
-                pagination={{
-                  pageSize: 10,
-                  showSizeChanger: true,
-                  showQuickJumper: true,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} của ${total} đơn hàng`,
-                }}
-                style={{
-                  background: "#fff",
-                }}
-                className="modern-table"
-              />
-            )}
-          </Card>
-        </Col>
-      </Row>
+
+      <div className="history-content-wrapper">
+        <Tabs 
+          activeKey={activeTab} 
+          onChange={setActiveTab}
+          className="history-tabs"
+          centered
+        >
+          <TabPane tab={`Tất cả (${mergedData.length})`} key="all" />
+          <TabPane 
+            tab={`Chưa xem (${mergedData.filter(item => !item.isWatched).length})`} 
+            key="upcoming" 
+          />
+          <TabPane 
+            tab={`Đã xem (${mergedData.filter(item => item.isWatched).length})`} 
+            key="watched" 
+          />
+          
+        </Tabs>
+
+        <div className="history-tickets-section">
+          {filteredData.length === 0 ? (
+            <Empty
+              description="Chưa có lịch sử mua vé nào"
+              className="history-empty-state"
+            />
+          ) : (
+            <Row gutter={[24, 24]} className="history-tickets-grid">
+              {filteredData.map(renderTicketCard)}
+            </Row>
+          )}
+        </div>
+      </div>
 
       {/* Modal Chi Tiết Vé */}
       <Modal
         title={
-          <div
-            style={{
-              fontSize: "18px",
-              fontWeight: "100",
-              fontFamily: "Anton, sans-serif",
-            }}
-          >
+          <div className="history-modal-title">
             Chi tiết vé #{selectedId}
           </div>
         }
@@ -305,35 +245,21 @@ const LichSuTatCaVe = () => {
         onCancel={handleCloseChiTiet}
         footer={null}
         width={700}
-        style={{ top: 100 }}
+        className="history-detail-modal"
       >
         {loadingChiTiet ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "60px 0",
-              // background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-              borderRadius: "4px",
-            }}
-          >
+          <div className="history-modal-loading">
             <Spin size="large" />
-            <div style={{ marginTop: "16px", color: "#666" }}>
-              Đang tải chi tiết...
-            </div>
+            <div className="history-loading-text">Đang tải chi tiết...</div>
           </div>
         ) : chiTietData ? (
-          <Card
-            style={{
-              borderRadius: "4px",
-              border: "none",
-            }}
-          >
+          <Card className="history-detail-card">
             <Descriptions bordered column={1} size="middle">
               <Descriptions.Item
                 label={<Text strong>Phim</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text strong style={{ color: "#000", fontSize: "16px" }}>
+                <Text strong className="history-detail-movie-name">
                   {chiTietData.data.dat_ve.lich_chieu.phim.ten_phim}
                 </Text>
               </Descriptions.Item>
@@ -341,7 +267,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Rạp</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text style={{ color: "#000", fontSize: "15px" }}>
+                <Text className="history-detail-cinema">
                   {chiTietData.data.dat_ve.lich_chieu.phong_chieu.rap.ten_rap}
                 </Text>
               </Descriptions.Item>
@@ -349,7 +275,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Phòng</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Tag color="#000" style={{ fontSize: "14px" }}>
+                <Tag color="#000" className="history-room-tag">
                   {chiTietData.data.dat_ve.lich_chieu.phong_chieu.ten_phong}
                 </Tag>
               </Descriptions.Item>
@@ -365,7 +291,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Giờ chiếu</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text strong style={{ color: "#000" }}>
+                <Text strong className="history-showtime">
                   {moment(chiTietData.data.dat_ve.lich_chieu.gio_chieu).format(
                     "HH:mm DD/MM/YYYY"
                   )}
@@ -375,7 +301,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Giờ kết thúc</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text style={{ color: "#000" }}>
+                <Text className="history-endtime">
                   {moment(
                     chiTietData.data.dat_ve.lich_chieu.gio_ket_thuc
                   ).format("HH:mm DD/MM/YYYY")}
@@ -390,11 +316,7 @@ const LichSuTatCaVe = () => {
                     <Tag
                       key={item.ghe_dat.so_ghe}
                       color="#000"
-                      style={{
-                        fontSize: "14px",
-                        padding: "4px 8px",
-                        fontWeight: "bold",
-                      }}
+                      className="history-seat-tag"
                     >
                       {item.ghe_dat.so_ghe}
                     </Tag>
@@ -404,20 +326,14 @@ const LichSuTatCaVe = () => {
 
               <Descriptions.Item
                 label={<Text strong>Đồ ăn đã đặt</Text>}
-                labelStyle={{ fontWeight: "bold", fontSize: 16 }}
+                labelStyle={{ fontWeight: "bold" }}
               >
-                <Space wrap size={[8, 8]} style={{ marginTop: 4 }}>
+                <Space wrap size={[8, 8]} className="history-food-tags">
                   {chiTietData.data.dat_ve.don_do_an.map((item: any) => (
                     <Tag
                       key={item.id}
                       color="geekblue"
-                      style={{
-                        fontSize: "14px",
-                        padding: "6px 12px",
-                        fontWeight: "500",
-                        backgroundColor: "#f0f5ff",
-                        color: "#2f54eb",
-                      }}
+                      className="history-food-tag"
                     >
                       {item.do_an.ten_do_an} × {item.so_luong}
                     </Tag>
@@ -429,14 +345,7 @@ const LichSuTatCaVe = () => {
                 label={<Text strong>Tổng tiền</Text>}
                 labelStyle={{ fontWeight: "bold" }}
               >
-                <Text
-                  strong
-                  style={{
-                    color: "#000",
-                    fontSize: "18px",
-                    WebkitBackgroundClip: "text",
-                  }}
-                >
+                <Text strong className="history-total-amount">
                   {Number(chiTietData.data?.dat_ve?.tong_tien).toLocaleString(
                     "vi-VN",
                     {
@@ -456,15 +365,8 @@ const LichSuTatCaVe = () => {
       {/* Modal QR Code */}
       <Modal
         title={
-          <div
-            style={{
-              color: "#1a0933",
-              WebkitBackgroundClip: "text",
-              fontSize: "18px",
-              fontWeight: "bold",
-            }}
-          >
-            <QrcodeOutlined style={{ marginRight: "8px", color: "#1a0933" }} />
+          <div className="history-qr-modal-title">
+            <QrcodeOutlined className="history-qr-icon" />
             Mã QR vé #{selectedId}
           </div>
         }
@@ -472,48 +374,26 @@ const LichSuTatCaVe = () => {
         onCancel={handleCloseQR}
         footer={null}
         width={450}
-        style={{ top: 150 }}
+        className="history-qr-modal"
       >
         {loadingChiTiet ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "60px 0",
-              borderRadius: "4px",
-            }}
-          >
+          <div className="history-modal-loading">
             <Spin size="large" />
-            <div style={{ marginTop: "16px", color: "#666" }}>
-              Đang tải mã QR...
-            </div>
+            <div className="history-loading-text">Đang tải mã QR...</div>
           </div>
         ) : chiTietData?.data?.qr_code ? (
-          <Card
-            style={{
-              borderRadius: "4px",
-              border: "none",
-              textAlign: "center",
-            }}
-          >
-            <div
-              style={{
-                background: "white",
-                padding: "20px",
-                borderRadius: "4px",
-                display: "inline-block",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-              }}
-            >
+          <Card className="history-qr-card">
+            <div className="history-qr-container">
               <Image
                 src={`${chiTietData.data.qr_code}`}
                 alt="QR Code"
                 width={250}
                 preview={false}
-                style={{ borderRadius: "4px" }}
+                className="history-qr-image"
               />
             </div>
-            <div style={{ marginTop: "16px" }}>
-              <Text style={{ color: "#666", fontFamily: "Alata, sans-serif" }}>
+            <div className="history-qr-description">
+              <Text className="history-qr-text">
                 Quét mã QR để check-in tại rạp.
               </Text>
             </div>
@@ -522,26 +402,6 @@ const LichSuTatCaVe = () => {
           <Empty description="Không có QR Code để hiển thị" />
         )}
       </Modal>
-
-      <style>{`
-        .modern-table .ant-table-thead > tr > th {
-          background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #1a0933 100%); 
-          border-bottom: 2px solid #4b4b4b;
-          font-weight: 100;
-          font-size: 18px;
-          font-family: "Anton", sans-serif;
-          color: #fff;  
-          text-align: center;
-        }
-        .modern-table .ant-table-tbody > tr:hover > td {
-          background: linear-gradient(135deg, #f0f5ff 0%, #e6f7ff 100%);
-        }
-        .modern-table .ant-table-tbody > tr > td {
-          border-bottom: 1px solid #f0f0f0;
-          padding: 16px;
-          text-align: center;
-        }
-      `}</style>
     </div>
   );
 };
