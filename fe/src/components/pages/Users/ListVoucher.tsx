@@ -29,11 +29,14 @@ const ListVoucher = () => {
             <div className="voucher-description">
               <p>
                 <strong>Giảm:</strong> {voucher.phan_tram_giam}% (tối đa{" "}
-                {voucher.giam_toi_da.toLocaleString()}đ)
+                {new Intl.NumberFormat("vi-VN").format(voucher.giam_toi_da)} ₫)
               </p>
               <p>
                 <strong>Đơn tối thiểu:</strong>{" "}
-                {voucher.gia_tri_don_hang_toi_thieu.toLocaleString()}đ
+                {new Intl.NumberFormat("vi-VN").format(
+                  voucher.gia_tri_don_hang_toi_thieu
+                )}{" "}
+                ₫
               </p>
               <p>
                 <strong>Thời gian áp dụng:</strong>{" "}
