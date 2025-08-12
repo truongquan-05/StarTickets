@@ -140,18 +140,19 @@ const FoodList = () => {
       key: "rap",
       render: (_, record) => record.rap?.ten_rap || "—",
     },
-    {
-      title: "Giá nhập",
-      dataIndex: "gia_nhap",
-      key: "gia_nhap",
-      render: (gia: number) => gia.toLocaleString() + " đ",
-    },
-    {
-      title: "Giá bán",
-      dataIndex: "gia_ban",
-      key: "gia_ban",
-      render: (gia: number) => gia.toLocaleString() + " đ",
-    },
+   {
+  title: "Giá nhập",
+  dataIndex: "gia_nhap",
+  key: "gia_nhap",
+  render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
+},
+{
+  title: "Giá bán",
+  dataIndex: "gia_ban",
+  key: "gia_ban",
+  render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
+},
+
     {
       title: "Số lượng tồn",
       dataIndex: "so_luong_ton",

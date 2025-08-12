@@ -139,7 +139,7 @@ const FooterUser = () => {
               </li>
               {rapList.map((rap) => (
                 <li key={rap.id}>
-                  <a href="#">{rap.ten_rap}</a>
+                  <a href={`rap-phim/${rap.id}`}>{rap.ten_rap}</a>
                 </li>
               ))}
             </ul>

@@ -3,6 +3,7 @@ import "./ListVoucher.css";
 import { useListVouchers } from "../../hook/thinhHook";
 import { IVoucher } from "../Admin/interface/vouchers";
 import dayjs from "dayjs";
+import { CopyOutlined } from "@ant-design/icons";
 
 const ListVoucher = () => {
   const { data } = useListVouchers({ resource: "ma_giam_gia" });
@@ -59,7 +60,7 @@ const ListVoucher = () => {
               className="voucher-button"
               onClick={() => handleCopy(voucher.ma)}
             >
-              SAO CHÉP MÃ
+              <CopyOutlined style={{ marginRight: 8 }} />SAO CHÉP MÃ
             </button>
           </div>
 

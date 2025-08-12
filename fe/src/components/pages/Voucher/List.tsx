@@ -199,7 +199,8 @@ const ListVouchers = () => {
       title: "Giảm tối đa",
       dataIndex: "giam_toi_da",
       key: "giam_toi_da",
-      render: (value) => value?.toLocaleString() + " đ",
+      render: (value) =>
+        value != null ? Number(value).toLocaleString("vi-VN") + " đ" : "0 đ",
       align: "right",
       width: 120,
     },
@@ -208,7 +209,8 @@ const ListVouchers = () => {
       title: "Giá trị tối thiểu",
       dataIndex: "gia_tri_don_hang_toi_thieu",
       key: "gia_tri_don_hang_toi_thieu",
-      render: (value) => value?.toLocaleString() + " đ",
+      render: (value) =>
+        value != null ? Number(value).toLocaleString("vi-VN") + " đ" : "0 đ",
       align: "right",
       width: 140,
     },

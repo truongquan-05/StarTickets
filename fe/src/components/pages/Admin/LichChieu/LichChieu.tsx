@@ -165,7 +165,7 @@ const LichChieu = () => {
         const gia = donThuong?.pivot?.gia_ve;
 
         return gia !== undefined
-          ? `${gia.toLocaleString()} đ`
+          ? `${Number(gia).toLocaleString("vi-VN")} đ`
           : "Không có giá Đơn Thường";
       },
     },
