@@ -48,7 +48,7 @@ const NotFound = () => {
         </div>
 
         {/* Modern Geometric Illustration */}
-        <div style={styles.illustrationContainer}>
+        <div style={styles.illustrationContainer}><img src="https://media.tenor.com/sbfBfp3FeY8AAAAj/oia-uia.gif" alt="hihi" />
           <div style={styles.illustration}>
             {/* Central Planet/Circle */}
             <div style={styles.mainPlanet}>
