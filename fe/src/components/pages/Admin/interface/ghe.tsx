@@ -7,4 +7,5 @@ export interface IGhe{
   cot:string,
   trang_thai:boolean
   user_id: number | null;
+  nguoi_dung_id: number | null;
 }

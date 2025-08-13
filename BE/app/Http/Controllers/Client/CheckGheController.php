@@ -95,7 +95,10 @@ class CheckGheController extends Controller
                     ], 404);
                 }
 
-                $ghe->update(['trang_thai' => 'trong']);
+                $ghe->update([
+                    'trang_thai' => 'trong',
+                    'nguoi_dung_id' => null,
+                ]);
             }
 
             return response()->json([

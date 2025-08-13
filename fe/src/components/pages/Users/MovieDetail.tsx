@@ -89,10 +89,23 @@ const MovieDetailUser = () => {
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
   // const [hasGap, setHasGap] = useState(false);
-  const { data: checkGheList = [], isLoading: loadingCheckGhe } =
-    useListCheckGhe({
-      id: selectedLichChieuId ?? undefined,
-    });
+  const {
+    data: checkGheList = [],
+    isLoading: loadingCheckGhe,
+    refetch,
+  } = useListCheckGhe({
+    id: selectedLichChieuId ?? undefined,
+  });
+
+  // Bắt đầu gọi liên tục
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+    }, 1000); // gọi mỗi 1 giây
+
+    return () => clearInterval(interval); // clear khi component unmount
+  }, [refetch]);
+
   const { data: lichChieuList = [], isLoading: loadingLichChieu } =
     useListLichChieuClient({ resource: "client/lich_chieu" });
   const phongQuery = useListPhongChieuClien({ resource: "client/phong_chieu" });
@@ -160,14 +173,18 @@ const MovieDetailUser = () => {
   }, [checkGheList]);
 
   useEffect(() => {
-    if (gheData &&  errorStatus !== 422  && !isLoadingsss && newSeatsRef.current) {
+    if (
+      gheData &&
+      errorStatus !== 422 &&
+      !isLoadingsss &&
+      newSeatsRef.current
+    ) {
       setIsLoadingsss(false);
       setSelectedSeats(newSeatsRef.current);
 
       newSeatsRef.current = null;
     }
   }, [gheData, isLoadingsss]);
-
 
   useEffect(() => {}, [checkGheList]);
   // Hàm core để giải phóng ghế trên API
@@ -434,6 +451,80 @@ const MovieDetailUser = () => {
 
   // --- Logic xử lý thanh toán ---
   const handleThanhToanClick = () => {
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
+
+    if (!user) {
+      message.warning("Vui lòng đăng nhập trước khi thanh toán.");
+      navigate("/login");
+      return;
+    }
+
+    // Chỉnh sửa điều kiện kiểm tra để bao gồm cả đồ ăn
+    if (selectedLichChieuId === null && selectedFoods.length === 0) {
+      message.warning("Vui lòng chọn ghế hoặc đồ ăn trước khi thanh toán.");
+      return;
+    }
+
+    // Nếu không có ghế nào được chọn nhưng có đồ ăn, thì vẫn cho phép thanh toán đồ ăn
+    if (selectedSeats.length === 0 && selectedFoods.length === 0) {
+      message.warning("Vui lòng chọn ghế hoặc đồ ăn trước khi thanh toán.");
+      return;
+    }
+
+    clearTimer(); // Dừng bộ đếm thời gian
+    setIsProcessingPayment(true); // Đặt cờ đang xử lý thanh toán
+
+    // Rất quan trọng: Thiết lập cờ này TRƯỚC KHI navigate
+    sessionStorage.setItem("justNavigatedFromThanhToan", "true");
+
+    const dat_ve_chi_tiet: IDatVeChiTietPayload[] = displaySelectedSeats.map(
+      (seatInfo) => ({
+        ghe_id: seatInfo.ghe_id,
+        gia_ve: seatInfo.gia, // Đảm bảo rằng seatInfo.gia đã được định nghĩa và có giá trị đúng
+      })
+    );
+
+    // CHUẨN BỊ DỮ LIỆU ĐỒ ĂN TỪ selectedFoods STATE
+    const don_do_an_payload = selectedFoods.map((foodItem) => ({
+      do_an_id: foodItem.id, // ID của món ăn
+      so_luong: foodItem.quantity, // Số lượng món ăn
+      gia_ban: foodItem.gia_ban, // Giá bán của món ăn (đảm bảo foodItem.gia_ban có trong SelectedFoodItem)
+    }));
+
+    const payload = {
+      dat_ve: [
+        {
+          lich_chieu_id: selectedLichChieuId, // Có thể null nếu chỉ đặt đồ ăn, backend cần xử lý
+          nguoi_dung_id: user.id,
+          tong_tien: Number(totalPrice),
+        },
+      ],
+      dat_ve_chi_tiet: dat_ve_chi_tiet,
+      don_do_an: don_do_an_payload, // <-- ĐÃ THÊM DỮ LIỆU ĐỒ ĂN VÀO ĐÂY!
+    };
+
+    createDatVe(payload, {
+      onSuccess: (response) => {
+        // message.success("Đặt vé thành công!");
+        // Xóa thông tin ghế đã chọn khỏi sessionStorage sau khi đã đặt vé thành công
+        sessionStorage.removeItem("selectedSeats");
+        sessionStorage.removeItem("selectedLichChieuId");
+        setSelectedFoods([]); // RẤT QUAN TRỌNG: reset state đồ ăn sau khi đặt thành công
+        // Cờ justNavigatedFromThanhToan đã được set true trước navigate, sẽ được xóa ở trang check-out hoặc khi quay lại
+        navigate("/check-out", {
+          state: { bookingData: response.data },
+        });
+        setIsProcessingPayment(false);
+      },
+      onError: (error: any) => {
+        console.error("Lỗi thanh toán:", error); // Log lỗi chi tiết để debug
+        message.error(error?.response?.data.message || "Lỗi không xác định");
+        setIsProcessingPayment(false);
+        // Nếu thanh toán thất bại, quan trọng là đặt lại cờ để cho phép giải phóng ghế nếu người dùng thoát
+        sessionStorage.setItem("justNavigatedFromThanhToan", "false");
+      },
+    });
   };
 
   const filteredLichChieu = (lichChieuList as ILichChieu[]).filter(
@@ -760,36 +851,42 @@ const MovieDetailUser = () => {
     }
     // KẾT THÚC ĐOẠN THÊM
 
-    seatsToToggle.forEach((gheToggle) => {
+    const gheToggle = seatsToToggle.find((ghe) =>
+      checkGheList.some(
+        (x: any) =>
+          x.ghe_id === ghe.id && x.lich_chieu_id === selectedLichChieuId
+      )
+    );
+
+    if (gheToggle) {
       const found = checkGheList.find(
         (x: any) =>
           x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
       );
-      if (found) {
-        setIsLoadingsss(true);
-        updateCheckGhe(
-          {
-            id: found.id,
-            values: {
-              trang_thai: newTrangThai,
-              nguoi_dung_id: user?.id || null,
-            },
-            lichChieuId: selectedLichChieuId,
+
+      setIsLoadingsss(true);
+      updateCheckGhe(
+        {
+          id: found.id,
+          values: {
+            trang_thai: newTrangThai,
+            nguoi_dung_id: user?.id || null,
           },
-          {
-            onSuccess: (data) => {
-              setGheData(data);
-              setErrorStatus(null);
-              setIsLoadingsss(false);
-            },
-            onError: (error: any) => {
-              setErrorStatus(error?.response?.status || null);
-              setIsLoadingsss(false); // ❗️fix chỗ này
-            },
-          }
-        );
-      }
-    });
+          lichChieuId: selectedLichChieuId,
+        },
+        {
+          onSuccess: (data) => {
+            setGheData(data);
+            setErrorStatus(null);
+            setIsLoadingsss(false);
+          },
+          onError: (error: any) => {
+            setErrorStatus(error?.response?.status || null);
+            setIsLoadingsss(false);
+          },
+        }
+      );
+    }
   };
 
   return (
