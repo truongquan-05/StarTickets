@@ -76,6 +76,7 @@ import { Props } from "../provider/hungProvider";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
+import { useRef } from "react";
 
 export const useListMovies = ({ resource = "phim" }: Props) => {
   return useQuery({
@@ -615,6 +616,8 @@ export const useUpdateCheckGhe = ({
   resource?: string;
 }) => {
   const queryClient = useQueryClient();
+  const flagRef = useRef(true);
+
   return useMutation({
     mutationFn: (variables: UpdateCheckGheVariables) => {
       return getUpdateCheckGhe({
@@ -623,19 +626,26 @@ export const useUpdateCheckGhe = ({
         values: variables.values,
       });
     },
+    onMutate: () => {
+      flagRef.current = true;
+    },
     onSuccess: (data, variables) => {
-      // 'variables' ở đây chính là đối tượng `UpdateCheckGheVariables`
       queryClient.invalidateQueries({
         queryKey: [resource, variables.lichChieuId],
       });
     },
     onError: (err) => {
       if ((err as any)?.response?.data?.message) {
-        message.error((err as any).response.data.message);
+        if (flagRef.current) {
+          message.error((err as any).response.data.message);
+          flagRef.current = false;
+        }
       }
     },
   });
 };
+
+
 // ✅ XÓA MỀM PHIM
 export const useSoftDeleteMovies = ({ resource = "phim" }: Props) => {
   const queryClient = useQueryClient();

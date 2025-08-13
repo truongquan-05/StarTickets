@@ -89,10 +89,23 @@ const MovieDetailUser = () => {
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
   // const [hasGap, setHasGap] = useState(false);
-  const { data: checkGheList = [], isLoading: loadingCheckGhe } =
-    useListCheckGhe({
-      id: selectedLichChieuId ?? undefined,
-    });
+  const {
+    data: checkGheList = [],
+    isLoading: loadingCheckGhe,
+    refetch,
+  } = useListCheckGhe({
+    id: selectedLichChieuId ?? undefined,
+  });
+
+  // Bắt đầu gọi liên tục
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+    }, 1000); // gọi mỗi 1 giây
+
+    return () => clearInterval(interval); // clear khi component unmount
+  }, [refetch]);
+
   const { data: lichChieuList = [], isLoading: loadingLichChieu } =
     useListLichChieuClient({ resource: "client/lich_chieu" });
   const phongQuery = useListPhongChieuClien({ resource: "client/phong_chieu" });
@@ -160,14 +173,18 @@ const MovieDetailUser = () => {
   }, [checkGheList]);
 
   useEffect(() => {
-    if (gheData &&  errorStatus !== 422  && !isLoadingsss && newSeatsRef.current) {
+    if (
+      gheData &&
+      errorStatus !== 422 &&
+      !isLoadingsss &&
+      newSeatsRef.current
+    ) {
       setIsLoadingsss(false);
       setSelectedSeats(newSeatsRef.current);
 
       newSeatsRef.current = null;
     }
   }, [gheData, isLoadingsss]);
-
 
   useEffect(() => {}, [checkGheList]);
   // Hàm core để giải phóng ghế trên API
@@ -834,36 +851,42 @@ const MovieDetailUser = () => {
     }
     // KẾT THÚC ĐOẠN THÊM
 
-    seatsToToggle.forEach((gheToggle) => {
+    const gheToggle = seatsToToggle.find((ghe) =>
+      checkGheList.some(
+        (x: any) =>
+          x.ghe_id === ghe.id && x.lich_chieu_id === selectedLichChieuId
+      )
+    );
+
+    if (gheToggle) {
       const found = checkGheList.find(
         (x: any) =>
           x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
       );
-      if (found) {
-        setIsLoadingsss(true);
-        updateCheckGhe(
-          {
-            id: found.id,
-            values: {
-              trang_thai: newTrangThai,
-              nguoi_dung_id: user?.id || null,
-            },
-            lichChieuId: selectedLichChieuId,
+
+      setIsLoadingsss(true);
+      updateCheckGhe(
+        {
+          id: found.id,
+          values: {
+            trang_thai: newTrangThai,
+            nguoi_dung_id: user?.id || null,
           },
-          {
-            onSuccess: (data) => {
-              setGheData(data);
-              setErrorStatus(null);
-              setIsLoadingsss(false);
-            },
-            onError: (error: any) => {
-              setErrorStatus(error?.response?.status || null);
-              setIsLoadingsss(false); // ❗️fix chỗ này
-            },
-          }
-        );
-      }
-    });
+          lichChieuId: selectedLichChieuId,
+        },
+        {
+          onSuccess: (data) => {
+            setGheData(data);
+            setErrorStatus(null);
+            setIsLoadingsss(false);
+          },
+          onError: (error: any) => {
+            setErrorStatus(error?.response?.status || null);
+            setIsLoadingsss(false);
+          },
+        }
+      );
+    }
   };
 
   return (
@@ -1101,39 +1124,6 @@ const MovieDetailUser = () => {
                 }}
               >
                 Ghế Chọn
-              </span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              {/* Ghế chọn */}
-              <div
-                style={{
-                  width: "40px",
-                  height: "29px",
-                  backgroundColor: "#1E90FF",
-                  borderRadius: "8px",
-                  border: "none",
-                  opacity: 1,
-                  visibility: "visible",
-                  pointerEvents: "auto",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  userSelect: "none",
-                  margin: "3px 0",
-                  position: "relative",
-                }}
-              ></div>
-
-              {/* Chữ "Ghế thường" */}
-              <span
-                style={{
-                  fontSize: "15px",
-                  fontWeight: 500,
-                  color: "#fff",
-                  userSelect: "none",
-                }}
-              >
-                Ghế Người Khác Đang Chọn
               </span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>

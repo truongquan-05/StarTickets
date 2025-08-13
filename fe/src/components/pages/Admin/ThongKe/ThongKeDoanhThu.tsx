@@ -204,17 +204,25 @@ const ThongKeDoanhThu = () => {
     "#1890ff",
     "#73d13d",
   ];
-  const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram);
-  const momoPercent = 100 - vnpayPercent;
+const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram ?? 0);
+const vnpayName = data?.phuongThucTT?.phuong_thuc?.ten ?? "VNPAY";
+const vnpayDoanhThu = data?.phuongThucTT?.doanh_thu ?? 0;
 
-  const Pay = [
-    { 
-      name: data?.phuongThucTT?.phuong_thuc?.ten, 
-      value: vnpayPercent ,
-      doanhthu:  data?.phuongThucTT?.doanh_thu
-    },
-    { name: "MOMO", value: momoPercent },
-  ];
+const momoPercent = 100 - vnpayPercent;
+
+const Pay = [
+  { 
+    name: vnpayName, 
+    value: vnpayPercent,
+    doanhthu: vnpayDoanhThu
+  },
+  { 
+    name: "MOMO", 
+    value: momoPercent,
+    doanhthu: 0
+  },
+];
+
 
   const COLORSS = ["#2F3A8F", "#1db80fff"]; // màu gần giống trong ảnh
 
@@ -373,7 +381,8 @@ const ThongKeDoanhThu = () => {
           <div style={{ textAlign: "center" }}>
             <h3>Phương thức thanh toán</h3>
             <p>Tỷ lệ sử dụng các phương thức thanh toán</p>
-            <PieChart width={400} height={300}>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
               <Pie
                 data={Pay}
                 cx="50%"
@@ -408,6 +417,8 @@ const ThongKeDoanhThu = () => {
                 />
               <Legend />
             </PieChart>
+            </ResponsiveContainer>
+          
           </div>
         </Col>
       </Row>
