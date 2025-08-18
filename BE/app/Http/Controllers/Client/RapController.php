@@ -75,10 +75,18 @@ class RapController extends Controller
             ->groupBy('phim_id')
             ->map(fn($group) => $group->first())
             ->values();
+            $rap = Rap::find($id);
 
-            if($data->isEmpty()) {
-                $data['phong_chieu']['rap'] = "123";
-            }
+        if ($data->isEmpty()) {
+            $data = collect([
+                (object)[
+                    'phong_chieu' => (object)[
+                        'rap' => $rap
+                    ]
+                ]
+            ]);
+        }
+
 
         return response()->json([
             'data' => $data,

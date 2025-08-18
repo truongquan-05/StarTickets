@@ -12,10 +12,22 @@ export function useBackConfirm(selectedCheckGhe: any[]) {
   useEffect(() => {
     if (selectedRef.current.length === 0) return;
 
+    const sendDataBeforeLeave = () => {
+      const dataUpdate = selectedRef.current.map((item: any) => ({
+        id: item.id,
+        lich_chieu_id: item.lich_chieu_id,
+      }));
+      if (dataUpdate.length === 0) return;
+
+      const data = JSON.stringify({ data: dataUpdate });
+      navigator.sendBeacon(
+        "http://127.0.0.1:8000/api/check_ghe/bulk-update",
+        data
+      );
+    };
+
     const handlePopState = () => {
-      if (confirmedRef.current) {
-        return;
-      }
+      if (confirmedRef.current) return;
 
       const confirmed = window.confirm("Bạn có chắc chắn muốn quay lại không?");
       if (!confirmed) {
@@ -43,21 +55,6 @@ export function useBackConfirm(selectedCheckGhe: any[]) {
       sendDataBeforeLeave();
     };
 
-    const sendDataBeforeLeave = () => {
-      const dataUpdate = selectedRef.current.map((item: any) => ({
-        id: item.id,
-        lich_chieu_id: item.lich_chieu_id,
-      }));
-      if (dataUpdate.length === 0) return;
-
-      const data = JSON.stringify({ data: dataUpdate });
-      navigator.sendBeacon(
-        "http://127.0.0.1:8000/api/check_ghe/bulk-update",
-        data
-      );
-    };
-
-    // ✅ Chỉ push state nếu chưa có
     if (!hasFakeState.current) {
       window.history.pushState({ __keep: true }, "", window.location.pathname);
       hasFakeState.current = true;
@@ -68,6 +65,9 @@ export function useBackConfirm(selectedCheckGhe: any[]) {
     window.addEventListener("unload", handleUnload);
 
     return () => {
+      // 🔹 gọi khi component bị unmount
+      sendDataBeforeLeave();
+
       window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("beforeunload", handleBeforeUnload);
       window.removeEventListener("unload", handleUnload);
@@ -87,16 +87,19 @@ export function useBackDelete(
   const hasTriggeredOnce = useRef(false);
 
   useEffect(() => {
-    if (!dat_ve_id || !shouldTrigger ) return;
+    if (!dat_ve_id || !shouldTrigger) return;
+
     const sendDataBeforeLeave = () => {
       if (!dat_ve_id || hasTriggeredOnce.current) return;
       hasTriggeredOnce.current = true;
       navigator.sendBeacon(
         `http://127.0.0.1:8000/api/delete-dat-ve/${dat_ve_id}`
       );
-      navigator.sendBeacon(
-        `http://127.0.0.1:8000/api/delete-voucher/${voucherId}`
-      );
+      if (voucherId) {
+        navigator.sendBeacon(
+          `http://127.0.0.1:8000/api/delete-voucher/${voucherId}`
+        );
+      }
     };
 
     const handlePopState = () => {
@@ -137,6 +140,9 @@ export function useBackDelete(
     window.addEventListener("unload", handleUnload);
 
     return () => {
+      // 🔹 gọi khi component bị unmount
+      sendDataBeforeLeave();
+
       window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("beforeunload", handleBeforeUnload);
       window.removeEventListener("unload", handleUnload);

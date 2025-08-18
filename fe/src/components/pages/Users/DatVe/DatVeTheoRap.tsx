@@ -66,7 +66,7 @@ interface LichChieuItem {
 }
 
 const getImageUrl = (path: string | null | undefined) => {
-  if (!path) return "https://via.placeholder.com/220x280?text=No+Image";
+  if (!path) return "";
   if (path.startsWith("http")) return path;
   return `${BASE_URL}/storage/${path}`;
 };
@@ -102,32 +102,23 @@ const DatVeTheoRap: React.FC = () => {
 
   const parseGenres = (movie: Phim) => {
     try {
-      if (movie.the_loai_id) {
-        const genres = JSON.parse(movie.the_loai_id);
+      if (movie?.the_loai_id) {
+        const genres = JSON.parse(movie?.the_loai_id);
         if (Array.isArray(genres)) {
           return genres.map((genre: any) => genre.ten_the_loai).join(", ");
         }
       }
 
-      if (movie.the_loai && Array.isArray(movie.the_loai)) {
-        return movie.the_loai.join(", ");
+      if (movie?.the_loai && Array.isArray(movie?.the_loai)) {
+        return movie?.the_loai.join(", ");
       }
 
-      return movie.the_loai || "Chưa cập nhật";
+      return movie?.the_loai || "Chưa cập nhật";
     } catch {
-      return movie.the_loai || "Chưa cập nhật";
+      return movie?.the_loai || "Chưa cập nhật";
     }
   };
 
-  // Fetch detailed cinema information
-  // const fetchRapInfo = async (rapId: string) => {
-  //   try {
-  //     const response = await axios.get(`${BASE_URL}/api/client/rap/${rapId}`);
-  //     setRapInfo(response.data.data);
-  //   } catch (error) {
-  //     console.error('Error fetching cinema info:', error);
-  //   }
-  // };
 
   useEffect(() => {
     if (!id) return;
@@ -186,32 +177,32 @@ const DatVeTheoRap: React.FC = () => {
     <SwiperSlide key={index}>
       <div className="movie-card">
         <div className="movie-poster-wrapper">
-          <Link to={`/phim/${movie.slug || movie.id}`}>
+          <Link to={`/phim/${movie?.slug || movie?.id}`}>
             <img
               src={getImageUrl(
-                movie.image || movie.hinh_anh || movie.anh_poster
+                movie?.image || movie?.hinh_anh || movie?.anh_poster
               )}
-              alt={movie.title || movie.ten_phim}
+              alt={movie?.title || movie?.ten_phim}
               onError={(e) => {
                 e.currentTarget.src =
-                  "https://via.placeholder.com/220x280?text=No+Image";
+                  "";
               }}
             />
           </Link>
-          <Link to={`/phim/${movie.slug || movie.id}`}>
+          <Link to={`/phim/${movie?.slug || movie?.id}`}>
             <div className="movie-overlay">
               <div className="attach">
                 <div className="type-movie">
                   <span className="txt">2D</span>
                 </div>
                 <div className="age">
-                  <span className="num">T{movie.do_tuoi_gioi_han || "?"}</span>
+                  <span className="num">T{movie?.do_tuoi_gioi_han || "?"}</span>
                   <span className="txt2">
-                    {movie.do_tuoi_gioi_han && movie.do_tuoi_gioi_han >= 18
+                    {movie?.do_tuoi_gioi_han && movie?.do_tuoi_gioi_han >= 18
                       ? "ADULT"
-                      : movie.do_tuoi_gioi_han && movie.do_tuoi_gioi_han >= 13
+                      : movie?.do_tuoi_gioi_han && movie?.do_tuoi_gioi_han >= 13
                       ? "TEEN"
-                      : movie.do_tuoi_gioi_han && movie.do_tuoi_gioi_han > 0
+                      : movie?.do_tuoi_gioi_han && movie?.do_tuoi_gioi_han > 0
                       ? "KID"
                       : "???"}
                   </span>
@@ -219,7 +210,7 @@ const DatVeTheoRap: React.FC = () => {
               </div>
               <div className="contentphimm">
                 <h5 className="movie-title1">
-                  {movie.title || movie.ten_phim}
+                  {movie?.title || movie?.ten_phim}
                 </h5>
                 <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
                   <CalendarOutlined
@@ -235,29 +226,29 @@ const DatVeTheoRap: React.FC = () => {
                   <ClockCircleOutlined
                     style={{ color: "yellow", marginRight: "5px" }}
                   />{" "}
-                  {movie.thoi_luong
-                    ? `${movie.thoi_luong} phút`
+                  {movie?.thoi_luong
+                    ? `${movie?.thoi_luong} phút`
                     : "Chưa cập nhật"}
                 </p>
                 <p style={{ fontSize: 12, color: "#fff" }}>
                   <CommentOutlined
                     style={{ color: "yellow", marginRight: "5px" }}
                   />{" "}
-                  {movie.ngon_ngu || "Chưa rõ phiên bản"}
+                  {movie?.ngon_ngu || "Chưa rõ phiên bản"}
                 </p>
               </div>
             </div>
           </Link>
         </div>
 
-        <Link to={`/phim/${movie.slug || movie.id}`}>
-          <h4 className="movie-title">{movie.title || movie.ten_phim}</h4>
+        <Link to={`/phim/${movie?.slug || movie?.id}`}>
+          <h4 className="movie-title">{movie?.title || movie?.ten_phim}</h4>
         </Link>
 
         <div className="movie-buttons">
           <button
             className="play-button"
-            onClick={() => handleShowTrailer(movie.trailer || "", movie.ten_phim)}
+            onClick={() => handleShowTrailer(movie?.trailer || "", movie?.ten_phim)}
           >
             <PlayCircleTwoTone
               twoToneColor="yellow"
@@ -265,7 +256,7 @@ const DatVeTheoRap: React.FC = () => {
             />
             <span>Trailer</span>
           </button>
-          <Link to={`/phim/${movie.slug || movie.id}`}>
+          <Link to={`/phim/${movie?.slug || movie?.id}`}>
             <button className="book-button">
               <span>ĐẶT VÉ</span>
             </button>
