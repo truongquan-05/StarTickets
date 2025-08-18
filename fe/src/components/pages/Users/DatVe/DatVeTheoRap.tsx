@@ -120,14 +120,14 @@ const DatVeTheoRap: React.FC = () => {
   };
 
   // Fetch detailed cinema information
-  const fetchRapInfo = async (rapId: string) => {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/client/rap/${rapId}`);
-      setRapInfo(response.data.data);
-    } catch (error) {
-      console.error('Error fetching cinema info:', error);
-    }
-  };
+  // const fetchRapInfo = async (rapId: string) => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}/api/client/rap/${rapId}`);
+  //     setRapInfo(response.data.data);
+  //   } catch (error) {
+  //     console.error('Error fetching cinema info:', error);
+  //   }
+  // };
 
   useEffect(() => {
     if (!id) return;
@@ -163,7 +163,7 @@ const DatVeTheoRap: React.FC = () => {
         }
 
         // Fetch detailed cinema information
-        await fetchRapInfo(rapId!);
+        // await fetchRapInfo(rapId!);
         
       } catch (error) {
         console.error('Error fetching data:', error);

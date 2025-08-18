@@ -800,7 +800,7 @@ const MovieDetailUser = () => {
       message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
       return;
     }
-    const isGapBetweenDangDat = rowSeats.some((g: any, i: number) => {
+    const isGapBetweenDangDat = rowSeats.some(( i: number) => {
       const t1 = getTrangThai(rowSeats[i]?.so_ghe);
       const t2 = getTrangThai(rowSeats[i + 1]?.so_ghe);
       const t3 = getTrangThai(rowSeats[i + 2]?.so_ghe);
@@ -1328,7 +1328,7 @@ const MovieDetailUser = () => {
                   <>
                     <div className="selected-foods-scroll">
                       <div className="selected-foods-list">
-                        {selectedFoods.map((food, index) => (
+                        {selectedFoods.map((food) => (
                           <div key={food.id} className="selected-food-item">
                             <div className="selected-food-info">
                               <div className="selected-food-name">

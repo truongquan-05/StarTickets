@@ -76,6 +76,10 @@ class RapController extends Controller
             ->map(fn($group) => $group->first())
             ->values();
 
+            if($data->isEmpty()) {
+                $data['phong_chieu']['rap'] = "123";
+            }
+
         return response()->json([
             'data' => $data,
         ], 200);

@@ -237,7 +237,7 @@ class CheckOutController extends Controller
                                 'diem' => $diemCong
                             ]);
                         }
-                        Mail::to($thanhToan->email)->send(new MaQRVeMail($extraData['ma_giao_dich']));
+                        Mail::to($thanhToan->email)->send(new MaQRVeMail($extraData['ma_giao_dich'],$thanhToan->dat_ve_id));
 
 
                         // Redirect về trang history với dữ liệu truyền qua query string
@@ -304,7 +304,20 @@ class CheckOutController extends Controller
 
                     $thanhToan = ThanhToan::create($data);
                     $DatVe = DatVe::find($thanhToan->dat_ve_id);
-                    Mail::to($thanhToan->email)->send(new MaQRVeMail($data['ma_giao_dich']));
+
+                     $data = DatVe::with(['DatVeChiTiet', 'DonDoAn','lichChieu.phim'])
+            ->where('id', $thanhToan->dat_ve_id)
+            ->first();
+
+                    return response()->json([
+                        'message' => 'Thanh toán thành công',
+                        'Data' => $data
+                    ]);
+
+
+
+                    
+                    Mail::to($thanhToan->email)->send(new MaQRVeMail($data['ma_giao_dich'],$thanhToan->dat_ve_id));
                     $diemCong = $DatVe->tong_tien * 0.05;
                     $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
