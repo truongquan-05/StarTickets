@@ -10,6 +10,7 @@ class DatVe extends Model
     protected $fillable = [
         'nguoi_dung_id',
         'lich_chieu_id',
+        'job_id',
         'tong_tien',
     ];
 

@@ -4,16 +4,14 @@ namespace App\Http\Controllers\Client;
 
 use App\Models\DoAn;
 use App\Models\DatVe;
-use App\Models\DonDoAn;
-use App\Jobs\XoaDonHang;
 use App\Mail\MaQRVeMail;
 use App\Models\CheckGhe;
 use App\Models\MaGiamGia;
 use App\Models\ThanhToan;
 use Illuminate\Http\Request;
 use App\Models\DiemThanhVien;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Jobs\XoaThanhToanJob;
 use Illuminate\Support\Facades\Mail;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -46,7 +44,10 @@ class CheckOutController extends Controller
 
     public function momo_payment(Request $request)
     {
-        XoaDonHang::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
+        $datVe = DatVe::find($request->input('dat_ve_id'));
+        $datVe->update([
+            'job_id' => $request->input('dat_ve_id')
+        ]);
         //Xử lý thanh toán bằng MOMO
         if ($request->input('phuong_thuc_thanh_toan_id') == 1) {
             $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -206,7 +207,8 @@ class CheckOutController extends Controller
 
     public function handleIpn(Request $request)
     {
-        XoaDonHang::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
+
+        XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
 
         try {
             $data = $request->all();
@@ -237,7 +239,7 @@ class CheckOutController extends Controller
                                 'diem' => $diemCong
                             ]);
                         }
-                        Mail::to($thanhToan->email)->send(new MaQRVeMail($extraData['ma_giao_dich'],$thanhToan->dat_ve_id));
+                        Mail::to($thanhToan->email)->send(new MaQRVeMail($extraData['ma_giao_dich'], $thanhToan->dat_ve_id));
 
 
                         // Redirect về trang history với dữ liệu truyền qua query string
@@ -296,6 +298,7 @@ class CheckOutController extends Controller
                 // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
 
                 if ($data['vnp_ResponseCode'] == "00") {
+
                     $data['ma_giao_dich'] = $data['vnp_TxnRef'];
 
                     //TẠO QR MÃ GIAO DỊCH
@@ -305,19 +308,8 @@ class CheckOutController extends Controller
                     $thanhToan = ThanhToan::create($data);
                     $DatVe = DatVe::find($thanhToan->dat_ve_id);
 
-                     $data = DatVe::with(['DatVeChiTiet', 'DonDoAn','lichChieu.phim'])
-            ->where('id', $thanhToan->dat_ve_id)
-            ->first();
+                    Mail::to($thanhToan->email)->send(new MaQRVeMail($data['ma_giao_dich'], $thanhToan->dat_ve_id));
 
-                    return response()->json([
-                        'message' => 'Thanh toán thành công',
-                        'Data' => $data
-                    ]);
-
-
-
-                    
-                    Mail::to($thanhToan->email)->send(new MaQRVeMail($data['ma_giao_dich'],$thanhToan->dat_ve_id));
                     $diemCong = $DatVe->tong_tien * 0.05;
                     $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 

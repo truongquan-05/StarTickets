@@ -18,6 +18,7 @@ class MaQRVeMail extends Mailable
     public $Ghe;
     public $DoAn;
     public $GioChieu;
+    public $Rap;
 
     /**
      * Create a new message instance.
@@ -28,10 +29,17 @@ class MaQRVeMail extends Mailable
     public function __construct($ticketData, $id)
     {
         $this->ticketData = $ticketData;
-        $data =  DatVe::with(['DatVeChiTiet', 'DonDoAn','lichChieu.phim'])
+        $data =  DatVe::with(['DatVeChiTiet.GheDat', 'DonDoAn.DoAn', 'lichChieu.phim'])
             ->where('id', $id)
             ->first();
         $this->subject = $data;
+
+        $this->Phim = $data->lichChieu->phim->ten_phim;
+        $this->Rap = $data->lichChieu->phong_chieu->rap->ten_rap;
+        $this->Ghe  = $data->DatVeChiTiet->pluck('GheDat.so_ghe')->implode(', ');
+        $this->DoAn = $data->DonDoAn->pluck('doAn.ten_do_an')->implode(', ');
+        $this->GioChieu = \Carbon\Carbon::parse($data->lichChieu->gio_chieu)
+            ->format('H:i d-m-Y');
     }
 
     /**
@@ -47,16 +55,16 @@ class MaQRVeMail extends Mailable
 
         $qrCodeUrl = "https://quickchart.io/qr?text={$qrContent}&size=200&margin=0";
 
-        Log::info('[MaQRVeMail] QR Code URL: ' . $qrCodeUrl);
 
         return $this->from('support@yourapp.com', 'Hệ Thống Đặt Vé')
             ->subject('Đơn hàng của bạn')
             ->html("
                     <h1>Thông tin vé của bạn</h1>
-                    <p>Phim: {$this->ticketData}</p>
-                    <p>Ghế:  {$this->ticketData}    </p>
-                    <p>Đồ ăn: {$this->ticketData}</p>
-                    <p>Giờ chiếu: " . date('H:i') . "</p
+                    <p>Rạp: {$this->Rap}</p>
+                    <p>Phim: {$this->Phim}</p>
+                    <p>Ghế:  {$this->Ghe}    </p>
+                    <p>Đồ ăn: {$this->DoAn}</p>
+                    <p>Giờ chiếu: {$this->GioChieu}</p>
                         <p>Mã QR của bạn là:</p>
                         <p>
                             <img src='{$qrCodeUrl}' alt='Mã QR Vé' style='max-width: 200px; height: auto; display: block; margin: 0 auto;' />

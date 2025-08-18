@@ -16,6 +16,7 @@
         "laravel/socialite": "^5.21",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.6",
+        "predis/predis": "^3.2",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {
