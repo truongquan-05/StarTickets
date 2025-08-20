@@ -379,7 +379,7 @@ class DashboardController extends Controller
             }
 
 
-            $DoanhThuPhim[] = $groupPhim->map(function ($item, $i) {
+            $DoanhThuPhim = $groupPhim->map(function ($item, $i) {
                 return [
                     'phim_id' => Phim::find($i),
                     'tong_doanh_thu' => $item->sum('tong_tien')
@@ -392,7 +392,7 @@ class DashboardController extends Controller
                 'rap' => $resultRap ?? 0,
                 'phimDoanhThuMax' => $resultPhim ?? 0,
                 'phuongThucTT' => $phuongThucTT,
-                'doanhthurap' =>  0,
+                'doanhthurap' =>  $tongRap,
                 'doanhthutheothang' => $doanhthunam,
                 'DoanhThuPhim' => $DoanhThuPhim
 
@@ -611,9 +611,9 @@ class DashboardController extends Controller
                 $tiLeLapDay = '0%';
             }
 
-            $rawData = DatVe::whereBetween('created_at', [$batdau, $ketthuc])->selectRaw('HOUR(created_at) as gio, COUNT(*) as so_lan')
+            $rawData = DatVeChiTiet::whereBetween('created_at', [$batdau, $ketthuc])->selectRaw('HOUR(created_at) as gio, COUNT(*) as so_lan')
                 ->when($RapId !== null, function ($query) use ($RapId) {
-                    $query->whereHas('lichChieu.phong_chieu', function ($q) use ($RapId) {
+                    $query->whereHas('GheDat.phong.rap', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
                     });
                 })
@@ -627,6 +627,7 @@ class DashboardController extends Controller
                 $label = str_pad($gio, 2, '0', STR_PAD_LEFT) . ':00';
                 $gioMuaNhieu[$label] = (int) $so_lan;
             }
+
 
             //
             $DatVe = DatVeChiTiet::whereBetween('created_at', [$batdau, $ketthuc])
