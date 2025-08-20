@@ -14,6 +14,11 @@
   margin: 0 auto;
   align-items: flex-start;
 }
+.ql-size-small { font-size: 12px; }
+.ql-size-normal { font-size: 15px; }
+.ql-size-large { font-size: 18px; }
+.ql-size-huge { font-size: 22px; }
+
 
 .movie-poster {
   object-fit: cover;

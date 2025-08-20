@@ -17,7 +17,7 @@ import { getGenreList, getListChuyenNgu } from "../../../provider/hungProvider";
 import { useCreateMovies } from "../../../hook/hungHook";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
@@ -51,6 +51,9 @@ const AddMoviesPage = () => {
     if (Array.isArray(e)) return e;
     return e?.fileList;
   };
+  const Size = Quill.import("formats/size") as any;
+  Size.whitelist = ["small", "normal", "large", "huge"];
+  Quill.register(Size, true);
 
   const onCreateOrUpdate = (values: Record<string, any>) => {
     const formData = new FormData();
@@ -170,13 +173,18 @@ const AddMoviesPage = () => {
                 >
                   <ReactQuill
                     theme="snow"
-                    style={{ height: "300px", marginBottom: "50px" }} // tăng chiều cao
+                    style={{ height: "350px", marginBottom: "50px" }} // tăng chiều cao
                     modules={{
                       toolbar: [
-                        [{ header: [1, 2, false] }],
-                        ["bold", "italic", "underline"],
+                        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                        [{ size: ["small", "normal", "large", "huge"] }], // dùng size chuẩn
+                        ["bold", "italic", "underline", "strike"],
+                        [{ color: [] }, { background: [] }],
                         [{ list: "ordered" }, { list: "bullet" }],
-                        ["link"],
+                        [{ indent: "-1" }, { indent: "+1" }],
+                        [{ align: [] }],
+                        ["blockquote", "code-block"],
+                        ["link", "image", "video"],
                         ["clean"],
                       ],
                     }}
@@ -201,12 +209,7 @@ const AddMoviesPage = () => {
                   valuePropName="fileList"
                   getValueFromEvent={normFile}
                 >
-                  <Upload
-                    name="anh_poster"
-                    listType="picture"
-                   
-                    maxCount={1}
-                  >
+                  <Upload name="anh_poster" listType="picture" maxCount={1}>
                     <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
                   </Upload>
                 </Form.Item>

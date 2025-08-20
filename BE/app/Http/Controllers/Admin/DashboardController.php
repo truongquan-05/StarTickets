@@ -256,7 +256,7 @@ class DashboardController extends Controller
 
             return response()->json([
                 'doanhThu' => $tongDoanhThu,
-                'rap' => $resultRap,
+                'rap' => $resultRap ?? 0,
                 'phimDoanhThuMax' => $resultPhim,
                 'phuongThucTT' => $phuongThucTT,
                 'doanhthurap' => $tongRap,

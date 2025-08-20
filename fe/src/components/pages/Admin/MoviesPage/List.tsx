@@ -37,7 +37,7 @@ import {
 import { getGenreList } from "../../../provider/hungProvider";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const { Option } = Select;
@@ -163,7 +163,7 @@ const List = () => {
   };
   const [searchText, setSearchText] = useState("");
 
-  const handleSearch = (selectedKeys:any, confirm:any) => {
+  const handleSearch = (selectedKeys: any, confirm: any) => {
     confirm();
     setSearchText(selectedKeys[0]);
   };
@@ -207,42 +207,41 @@ const List = () => {
       width: 520,
 
       filteredValue: searchText ? [searchText] : null,
-      onFilter: (value:any, record:any) =>
+      onFilter: (value: any, record: any) =>
         record.ten_phim.toLowerCase().includes(value.toLowerCase()),
-     filterDropdown: ({
-  setSelectedKeys,
-  selectedKeys,
-  confirm,
-  clearFilters,
-}: FilterDropdownProps) => (
-  <div style={{ padding: 8 }}>
-    <Input
-      placeholder="Tìm theo tên phim"
-      value={selectedKeys[0]}
-      onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-      onPressEnter={() => handleSearch(selectedKeys as string[], confirm)}
-      style={{ marginBottom: 8, display: "block" }}
-    />
-    <Space>
-      <Button
-        type="primary"
-        onClick={() => handleSearch(selectedKeys as string[], confirm)}
-        icon={<SearchOutlined />}
-        size="small"
-        style={{ width: 90 }}
-      >
-        Tìm
-      </Button>
-      <Button
-        onClick={() => clearFilters?.()}
-        size="small"
-      >
-        Xóa
-      </Button>
-    </Space>
-  </div>
-),
-      filterIcon: (filtered:any) => (
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }: FilterDropdownProps) => (
+        <div style={{ padding: 8 }}>
+          <Input
+            placeholder="Tìm theo tên phim"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => handleSearch(selectedKeys as string[], confirm)}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <Space>
+            <Button
+              type="primary"
+              onClick={() => handleSearch(selectedKeys as string[], confirm)}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Tìm
+            </Button>
+            <Button onClick={() => clearFilters?.()} size="small">
+              Xóa
+            </Button>
+          </Space>
+        </div>
+      ),
+      filterIcon: (filtered: any) => (
         <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
       render: (_: any, record: IMovies) => (
@@ -396,6 +395,9 @@ const List = () => {
       ),
     },
   ];
+    const Size = Quill.import("formats/size") as any;
+    Size.whitelist = ["small", "normal", "large", "huge"];
+    Quill.register(Size, true);
 
   return (
     <>
@@ -548,15 +550,22 @@ const List = () => {
               >
                 <ReactQuill
                   theme="snow"
-                  style={{ height: "300px", marginBottom: "50px" }}
+                  style={{ height: "350px", marginBottom: "50px" }}
                   placeholder="Nhập mô tả phim"
                   modules={{
                     toolbar: [
-                      [{ header: [1, 2, 3, false] }],
-                      ["bold", "italic", "underline", "strike"],
-                      [{ list: "ordered" }, { list: "bullet" }],
-                      ["clean"],
-                    ],
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [{ size: ["small", "normal", "large", "huge"] }], // dùng size chuẩn
+  ["bold", "italic", "underline", "strike"],
+  [{ color: [] }, { background: [] }],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ indent: "-1" }, { indent: "+1" }],
+  [{ align: [] }],
+  ["blockquote", "code-block"],
+  ["link", "image", "video"],
+  ["clean"],
+],
+
                   }}
                 />
               </Form.Item>

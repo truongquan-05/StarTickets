@@ -16,7 +16,6 @@
   align-items: center;
   flex-wrap: wrap;
   justify-content: center;
-  height: 90px;
 }
 
 /* ===== TIÊU ĐỀ ===== */
@@ -312,9 +311,10 @@ input[type="date"], .genres-toggle {
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
+@media (max-width: 810px) {
   .quick-booking-inner {
     flex-direction: column;
+    padding: 30px;
     align-items: stretch;
     gap: 20px;
   }
@@ -332,4 +332,11 @@ input[type="date"], .genres-toggle {
     width: 100%;
     align-self: center;
   }
+}
+
+@media (max-width: 1270px) {
+  .quick-booking-inner {
+    padding: 30px;
+  }
+
 }

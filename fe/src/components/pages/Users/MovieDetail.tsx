@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState, useRef } from "react";
 import { Spin, Image, Modal, message, Empty } from "antd";
+import "react-quill/dist/quill.snow.css";
+
 import {
   FieldTimeOutlined,
   GlobalOutlined,
@@ -863,8 +865,7 @@ const MovieDetailUser = () => {
         (x: any) =>
           x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
       );
-      console.log(found);
-      
+
       if (selectedCheckGhe.length >= 8 && newTrangThai == "dang_dat") {
         message.warning(
           "Bạn chỉ có thể đặt tối đa 8 ghế cho mỗi lần thanh toán."
@@ -895,6 +896,7 @@ const MovieDetailUser = () => {
       );
     }
   };
+  
 
   return (
     <div className="movie-detail-wrapper">
@@ -960,7 +962,7 @@ const MovieDetailUser = () => {
           <div className="movie-section">
             <h3>MÔ TẢ</h3>
             <div
-              style={{ color: "white" }}
+              className="movie-description"
               dangerouslySetInnerHTML={{ __html: movie.mo_ta }}
             />
           </div>
