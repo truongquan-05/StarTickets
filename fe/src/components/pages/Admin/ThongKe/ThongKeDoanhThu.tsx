@@ -28,6 +28,7 @@ import {
   Pie,
   BarChart,
   Bar,
+  CartesianGrid,
 } from "recharts";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -204,25 +205,59 @@ const ThongKeDoanhThu = () => {
     "#1890ff",
     "#73d13d",
   ];
-const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram ?? 0);
-const vnpayName = data?.phuongThucTT?.phuong_thuc?.ten ?? "VNPAY";
-const vnpayDoanhThu = data?.phuongThucTT?.doanh_thu ?? 0;
+  const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram ?? 0);
+  const vnpayName = data?.phuongThucTT?.phuong_thuc?.ten ?? "VNPAY";
+  const vnpayDoanhThu = data?.phuongThucTT?.doanh_thu ?? 0;
 
-const momoPercent = 100 - vnpayPercent;
+  const momoPercent = 100 - vnpayPercent;
 
-const Pay = [
-  { 
-    name: vnpayName, 
-    value: vnpayPercent,
-    doanhthu: vnpayDoanhThu
-  },
-  { 
-    name: "MOMO", 
-    value: momoPercent,
-    doanhthu: 0
-  },
-];
+  const Pay = [
+    {
+      name: vnpayName,
+      value: vnpayPercent,
+      doanhthu: vnpayDoanhThu,
+    },
+    {
+      name: "MOMO",
+      value: momoPercent,
+      doanhthu: 0,
+    },
+  ];
 
+ 
+
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: {
+    active?: boolean;
+    payload?: Array<{ color?: string; value?: number } & Record<string, any>>;
+    label?: string;
+  }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            padding: "8px 12px",
+            fontSize: "13px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            maxWidth: "200px",
+          }}
+        >
+          <p style={{ margin: "0 0 4px 0", fontWeight: "bold" }}>{label}</p>
+          <p style={{ margin: "0", color: payload[0].color }}>
+            Doanh thu: {new Intl.NumberFormat("vi-VN").format(payload[0].value)}{" "}
+            đ
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const COLORSS = ["#2F3A8F", "#1db80fff"]; // màu gần giống trong ảnh
 
@@ -383,19 +418,19 @@ const Pay = [
             <p>Tỷ lệ sử dụng các phương thức thanh toán</p>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
-              <Pie
-                data={Pay}
-                cx="50%"
-                cy="50%"
-                label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
-                outerRadius={100}
-                dataKey="value"
-              >
-                {Pay.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORSS[index]} />
-                ))}
-              </Pie>
-             <Tooltip
+                <Pie
+                  data={Pay}
+                  cx="50%"
+                  cy="50%"
+                  label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
+                  outerRadius={100}
+                  dataKey="value"
+                >
+                  {Pay.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORSS[index]} />
+                  ))}
+                </Pie>
+                <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const { name, value, doanhthu } = payload[0].payload;
@@ -415,15 +450,14 @@ const Pay = [
                     return null;
                   }}
                 />
-              <Legend />
-            </PieChart>
+                <Legend />
+              </PieChart>
             </ResponsiveContainer>
-          
           </div>
         </Col>
       </Row>
       <Row gutter={16}>
-        <Col xs={24}>
+        {/* <Col xs={24}>
           {" "}
           <Card title="Doanh thu theo phim">
             <ResponsiveContainer
@@ -479,9 +513,33 @@ const Pay = [
               ))}
             </div>
           </Card>
-        </Col>
+        </Col> */}
+        <div style={{ width: "100%", height: 300, padding: "20px" }}>
+          <h3>Doanh Thu Phim</h3>
+          <p>Doanh thu theo phim hôm nay</p>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={dataPhim}
+              margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+              barCategoryGap="45%"
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="tenPhim" fontSize={12} />
+              <YAxis allowDecimals={false} fontSize={12} />
+              <Tooltip content={<CustomTooltip />} cursor={false} />
+              <Bar dataKey="doanhThu" radius={[5, 5, 0, 0]}>
+                {dataPhim.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </Row>
-
+      <br />
       {/* Biểu đồ doanh thu theo tháng */}
       <Card title="Doanh Thu Theo Tháng" style={{ marginTop: 16 }}>
         <ResponsiveContainer width="100%" height={300}>

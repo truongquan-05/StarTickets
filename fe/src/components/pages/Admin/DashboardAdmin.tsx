@@ -230,7 +230,7 @@ const isLoading =
                   />
                   <div className="movie-details">
                     <p className="movie-revenue">
-                      Doanh thu:{" "}
+                      Tổng thu:{" "}
                       <strong>{formatNumber(item?.doanh_thu)} ₫</strong>
                     </p>
                     <p className="movie-tickets">

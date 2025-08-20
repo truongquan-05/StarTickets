@@ -389,10 +389,10 @@ class DashboardController extends Controller
 
             return response()->json([
                 'doanhThu' => $tongDoanhThu,
-                'rap' => $resultRap,
-                'phimDoanhThuMax' => $resultPhim,
+                'rap' => $resultRap ?? 0,
+                'phimDoanhThuMax' => $resultPhim ?? 0,
                 'phuongThucTT' => $phuongThucTT,
-                'doanhthurap' => $tongRap,
+                'doanhthurap' =>  0,
                 'doanhthutheothang' => $doanhthunam,
                 'DoanhThuPhim' => $DoanhThuPhim
 
@@ -427,7 +427,7 @@ class DashboardController extends Controller
             $tiLeLapDay =  str_pad(round($gheDaDat, 2), 0, '0', STR_PAD_LEFT) . '%';
 
 
-            $rawData = DatVe::selectRaw('HOUR(created_at) as gio, COUNT(*) as so_lan')
+            $rawData = DatVeChiTiet::selectRaw('HOUR(created_at) as gio, COUNT(*) as so_lan')
                 ->groupBy('gio')
                 ->orderByDesc('so_lan')
                 ->limit(5)
@@ -806,7 +806,7 @@ class DashboardController extends Controller
             return response()->json([
                 'tongVe' => $VeBanRa,
                 'trungBinhNgay' => round($VeBanRaThang / 30, 2),
-                'gioCaoDiem' => $gio,
+                'gioCaoDiem' => $gio ?? 0,
                 'tiLeLapDay' => $tiLeLapDay,
                 'xuHuongve' => $gioMuaNhieu,
                 'phimBanChay' => $phimBanChay,
