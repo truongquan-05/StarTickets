@@ -155,6 +155,7 @@ const ThanhToan: React.FC = () => {
     selectedPaymentMethod === undefined,
     selectedVoucherId
   );
+  console.log("tong tien goc>>>", tongTienGoc)
 
   // Đếm ngược thời gian
   useEffect(() => {
@@ -191,7 +192,7 @@ const ThanhToan: React.FC = () => {
       return;
     }
     setLoading(true);
-    fetch(`http://127.0.0.1:8000/api/lich_chieu/${bookingData.lich_chieu_id}`, {
+    fetch(`http://127.0.0.1:8000/api/client/lich_chieu/${bookingData.lich_chieu_id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -247,6 +248,7 @@ const ThanhToan: React.FC = () => {
       email: formStep1Data.email,
       ma_giam_gia_id: formStep1Data.ma_giam_gia_id,
       diem_thanh_vien: checkDiem.variables?.diem || null,
+      tong_tien_goc: tongTienGoc
     };
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {

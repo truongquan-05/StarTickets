@@ -197,6 +197,8 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phuong_thuc_thanh_toan_id')->constrained('phuong_thuc_thanh_toan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ma_giao_dich', 255)->unique();
+            $table->string('ma_giam_gia_id',50)->nullable();
+            $table->decimal('tong_tien_goc', 10, 2)->nullable();
             $table->string('email', 255);
             $table->string('ho_ten', 255);
             $table->text('qr_code')->nullable(); // base64
@@ -238,15 +240,6 @@ return new class extends Migration {
             $table->integer('so_lan_su_dung')->nullable();
             $table->integer('so_lan_da_su_dung')->default(0);
             $table->enum('trang_thai', ['CHƯA KÍCH HOẠT', 'KÍCH HOẠT', 'HẾT HẠN'])->default('KÍCH HOẠT');
-            $table->timestamps();
-        });
-
-        Schema::create('tin_nhan', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('nhan_vien_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
-            $table->text('noi_dung');
-            $table->enum('trang_thai', ['chua_tra_loi', 'da_tra_loi', 'da_dong']);
             $table->timestamps();
         });
 

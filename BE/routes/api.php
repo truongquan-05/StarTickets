@@ -65,6 +65,10 @@ Route::post('/phim/restore/{id}', [PhimController::class, 'restore']);
 Route::get('/phim/trashed/list', [PhimController::class, 'trashed']);
 Route::get('do_an', [DoAnController::class, 'index']);
 Route::post('do_an', [DoAnController::class, 'store']);
+Route::get('do_an-rap/{id}', [DoAnController::class, 'showByRap']);
+Route::post('do_an-add', [DoAnController::class, 'storeByRap']);
+
+
 Route::get('do_an/{id}', [DoAnController::class, 'show']);
 Route::put('do_an/{id}', [DoAnController::class, 'update']);
 Route::delete('do_an/{id}', [DoAnController::class, 'delete']);

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\DoAnRequest;
-use Illuminate\Http\Request;
 use App\Models\DoAn;
+use App\Models\DonDoAn;
+use Illuminate\Http\Request;
+use App\Http\Requests\DoAnRequest;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class DoAnController extends Controller
 {
@@ -100,5 +103,64 @@ class DoAnController extends Controller
         $item = DoAn::withTrashed()->findOrFail($id);
         $item->restore();
         return response()->json(['message' => 'Khôi phục thành công!']);
+    }
+
+    public function showByRap($id)
+    {
+        $doAn = DoAn::where('rap_id', $id)->get();
+
+        if ($doAn->isEmpty()) {
+            return response()->json(['message' => 'Không tìm thấy món ăn cho rạp này'], 404);
+        }
+
+        return response()->json($doAn);
+    }
+
+
+    public function storeByRap(Request $request)
+    {
+        $data = $request->all();
+
+        foreach ($data['items'] as $item) {
+            $validator = Validator::make($item, [
+                'dat_ve_id' => 'required|integer|exists:dat_ve,id',
+                'do_an_id'  => 'required|integer|exists:do_an,id',
+                'so_luong'  => 'required|integer|min:1',
+                'gia_ban'   => 'required|numeric|min:0',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Dữ liệu không hợp lệ',
+                    'errors'  => $validator->errors()
+                ], 422);
+            }
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($data['items'] as $item) {
+                $doAn = DoAn::findOrFail($item['do_an_id']);
+                if ($doAn->so_luong_ton < $item['so_luong']) {
+                    return response()->json([
+                        'message' => 'Số lượng món ăn không đủ trong kho',
+                        'available' => $doAn->so_luong_ton,
+                    ], 422);
+                }
+                DonDoAn::create($item);
+                $doAn = DoAn::find($item['do_an_id']);
+                $doAn->so_luong_ton -= $item['so_luong'];
+                $doAn->save();
+            }
+            DB::commit();
+
+            return response()->json(['message' => 'Thêm món ăn thành công']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Lỗi hệ thống',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
 }

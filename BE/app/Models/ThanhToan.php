@@ -17,7 +17,9 @@ class ThanhToan extends Model
         'qr_code',
         'da_quet',
         'email',
-        'ho_ten'
+        'ho_ten',
+        'tong_tien_goc',
+        'ma_giam_gia_id',
 
     ];
     public function nguoiDung()

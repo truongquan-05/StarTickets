@@ -41,5 +41,6 @@ class LichChieuController extends Controller
         }
         return response()->json($lichChieu);
     }
+    
 
 }

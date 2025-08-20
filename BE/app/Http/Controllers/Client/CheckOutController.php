@@ -48,6 +48,8 @@ class CheckOutController extends Controller
         $datVe->update([
             'job_id' => $request->input('dat_ve_id')
         ]);
+
+
         //Xử lý thanh toán bằng MOMO
         if ($request->input('phuong_thuc_thanh_toan_id') == 1) {
             $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -59,6 +61,7 @@ class CheckOutController extends Controller
             $dat_ve_id = $request->input('dat_ve_id');
             $phuong_thuc_thanh_toan_id = $request->input('phuong_thuc_thanh_toan_id');
             $ma_giam_gia_id = $request->input('ma_giam_gia_id', null);
+            $tong_tien_goc = $request->input('tong_tien_goc');
             $diem = $request->input('diem', null);
             $nguoi_dung_id = $request->input('nguoi_dung_id');
             $email = $request->input('email');
@@ -71,6 +74,13 @@ class CheckOutController extends Controller
 
             $requestId = time() . "";
             $requestType = "payWithATM";
+            $startTime = now();
+
+            // Thời gian hết hạn sau 10 phút
+            $expireTime = $startTime->copy()->addMinutes(10);
+
+            // Nếu MoMo yêu cầu timestamp milliseconds
+            $orderExpireTime = $expireTime->timestamp * 1000;
             $extraData = json_encode([
                 'dat_ve_id' => $dat_ve_id,
                 'phuong_thuc_thanh_toan_id' => $phuong_thuc_thanh_toan_id,
@@ -80,6 +90,7 @@ class CheckOutController extends Controller
                 'email' => $email,
                 'ho_ten' => $ho_ten,
                 'diem_thanh_vien' => $diem_thanh_vien,
+                'tong_tien_goc' => $tong_tien_goc,
             ]);
 
             // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
@@ -102,7 +113,8 @@ class CheckOutController extends Controller
                 'lang' => 'vi',
                 'extraData' => $extraData,
                 'requestType' => $requestType,
-                'signature' => $signature
+                'signature' => $signature,
+                
             );
             $result = $this->execPostRequest($endpoint, json_encode($data));
             $jsonResult = json_decode($result, true);  // decode json
@@ -113,6 +125,8 @@ class CheckOutController extends Controller
                 'status' => 200
             ]);
         }
+
+
         // Xử lý thanh toán bằng VNPAY
         if ($request->input('phuong_thuc_thanh_toan_id') == 2) {
             $data = $request->all();
@@ -127,6 +141,7 @@ class CheckOutController extends Controller
             $ho_ten = $request->input('ho_ten');
             $diem = $request->input('diem', null);
             $diem_thanh_vien = $request->input('diem_thanh_vien', 0);
+            $tong_tien_goc = $request->input('tong_tien_goc');
 
 
             $vnp_Returnurl = "http://localhost:8000/api/momo-ipn?"
@@ -137,12 +152,13 @@ class CheckOutController extends Controller
                 . "&email={$email}"
                 . "&diem={$diem}"
                 . "&ho_ten=" . ($ho_ten)
-                . "&diem_thanh_vien=" . ($diem_thanh_vien);;
+                . "&diem_thanh_vien=" . ($diem_thanh_vien)
+                . "&tong_tien_goc=" . ($tong_tien_goc);
 
 
 
-            $vnp_TmnCode = "0YDOPCOD";
-            $vnp_HashSecret = "4QBR5J042GRID1BWUREA2SMOV6CI216M";
+            $vnp_TmnCode = "V7XCMPHJ";
+            $vnp_HashSecret = "ESL0Y5WLBHHL74R13V26P2G89IYV1JC8";
 
             $vnp_TxnRef = $code_cart;
             $vnp_OrderInfo = 'Thanh toán đơn hàng ';
@@ -168,7 +184,7 @@ class CheckOutController extends Controller
                 "vnp_OrderType" => $vnp_OrderType,
                 "vnp_ReturnUrl" => $vnp_Returnurl,
                 "vnp_TxnRef" => $vnp_TxnRef,
-                "vnp_ExpireDate" => $expire
+                "vnp_ExpireDate" => $expire,
             );
 
             // Nếu muốn thêm bank
@@ -208,7 +224,7 @@ class CheckOutController extends Controller
     public function handleIpn(Request $request)
     {
 
-        XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
+        XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(11));
 
         try {
             $data = $request->all();
@@ -219,7 +235,13 @@ class CheckOutController extends Controller
 
                 if ($extraData['phuong_thuc_thanh_toan_id'] == 1) {
 
+
                     if ($data['resultCode'] == 0) {
+
+                        if (isset($extraData['ma_giam_gia_id'])) {
+                            $vouvher = MaGiamGia::find($extraData['ma_giam_gia_id']);
+                            $extraData['ma_giam_gia_id'] = $vouvher->ma;
+                        }
 
                         //TẠO QR MÃ GIAO DỊCH
                         $qrSvg = QrCode::format('svg')->size(250)->generate($extraData['ma_giao_dich']);
@@ -294,13 +316,19 @@ class CheckOutController extends Controller
                 }
             }
             if ($request->phuong_thuc_thanh_toan_id == 2) {
+                XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
 
                 // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
+
+
 
                 if ($data['vnp_ResponseCode'] == "00") {
 
                     $data['ma_giao_dich'] = $data['vnp_TxnRef'];
-
+                    if (isset($data['ma_giam_gia_id'])) {
+                        $vouvher = MaGiamGia::find($data['ma_giam_gia_id']);
+                        $data['ma_giam_gia_id'] = $vouvher->ma;
+                    }
                     //TẠO QR MÃ GIAO DỊCH
                     $qrSvg = QrCode::format('svg')->size(250)->generate($data['ma_giao_dich']);
                     $data['qr_code'] = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
@@ -368,6 +396,10 @@ class CheckOutController extends Controller
                 }
             }
         } catch (\Throwable $th) {
+            // return response()->json([
+            //     'message' => 'Lỗi trong quá trình xử lý thanh toán',
+            //     'error' => $th->getMessage()
+            // ], 500);
             $dataVeId = $data['dat_ve_id'];
             $dataVe = DatVe::with(['DatVeChiTiet', 'DonDoAn'])->find($dataVeId);
             if (!$dataVe) {
