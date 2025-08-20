@@ -358,6 +358,21 @@ const ThongKeVe = () => {
               </Select>
             </Form.Item>
           </Col>
+           <Col span={6}>
+            <Form.Item label="Rạp chiếu" name="rap">
+              <Select
+                allowClear
+                placeholder="--- Tất cả ---"
+                style={{ width: "100%" }}
+              >
+                {dataRap.data.map((rap: any) => (
+                  <Option key={rap.id} value={rap.id}>
+                    {rap.ten_rap}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
           <Col span={4}>
             <Form.Item>
               <Button

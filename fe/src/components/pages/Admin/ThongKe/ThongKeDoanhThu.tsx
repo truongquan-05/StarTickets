@@ -34,7 +34,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const { Option } = Select;
-const { Paragraph } = Typography;
 
 const ThongKeDoanhThu = () => {
   const token = localStorage.getItem("token");
@@ -302,6 +301,7 @@ const ThongKeDoanhThu = () => {
               </Select>
             </Form.Item>
           </Col>
+          
           <Col span={4}>
             <Form.Item>
               <Button
