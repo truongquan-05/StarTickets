@@ -18,4 +18,8 @@ class CheckGhe extends Model
     public function Ghe(){
         return $this->belongsTo(Ghe::class, 'ghe_id', 'id');
     }
+
+    public function LichChieu(){
+        return $this->belongsTo(LichChieu::class, 'lich_chieu_id', 'id');
+    }
 }

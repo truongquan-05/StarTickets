@@ -12,8 +12,13 @@ class DatVeChiTiet extends Model
         'dat_ve_id',
         'gia_ve',
     ];
-    public function GheDat(){
+    public function GheDat()
+    {
         return $this->belongsTo(Ghe::class, 'ghe_id', 'id');
     }
-   
+
+    public function DatVe()
+    {
+        return $this->belongsTo(DatVe::class, 'dat_ve_id');
+    }
 }

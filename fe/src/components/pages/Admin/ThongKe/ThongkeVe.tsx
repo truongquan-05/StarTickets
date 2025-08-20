@@ -41,6 +41,9 @@ const ThongKeVe = () => {
   const [loadingRap, setLoadingRap] = useState<boolean>(true);
   const [extraText, setExtraText] = useState("Các giờ được mua nhiều nhất");
   const [extraPhim, setExtraPhim] = useState("Phim bán chạy nhất");
+  const [dataPhim, setDataPhim] = useState<{ data: any[] }>({ data: [] });
+  const [loadingPhim, setLoadingPhim] = useState<boolean>(true);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const fetchData = async () => {
@@ -63,10 +66,32 @@ const ThongKeVe = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:8000/api/phim", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setDataPhim(res.data);
+      } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+      } finally {
+        setLoadingPhim(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
     const payload = {
       bat_dau: null,
       ket_thuc: null,
       rap_id: null,
+      phim_id: null,
     };
     const postData = async () => {
       try {
@@ -96,6 +121,7 @@ const ThongKeVe = () => {
       bat_dau: values.startDate?.format("YYYY-MM-DD"),
       ket_thuc: values.endDate?.format("YYYY-MM-DD"),
       rap_id: values.rap || null,
+      phim_id: values.phim || null,
     };
     const startDate = values.startDate?.format("DD/MM/YYYY");
     const endDate = values.endDate?.format("DD/MM/YYYY");
@@ -124,7 +150,7 @@ const ThongKeVe = () => {
     }
   };
 
-  if (loading || loadingRap) {
+  if (loading || loadingRap || loadingPhim) {
     return (
       <div
         style={{
@@ -155,7 +181,7 @@ const ThongKeVe = () => {
     );
   }
 
-  const chartData = data?.tyLeDat?.map((item:any) => ({
+  const chartData = data?.tyLeDat?.map((item: any) => ({
     name: item.rap,
     value: 100,
     daDat: item.daDatChiem,
@@ -165,7 +191,7 @@ const ThongKeVe = () => {
     gheDaDat: "#00c0ef",
     gheTrong: "#3c8dbc",
   };
-  const CustomBar = (props:any) => {
+  const CustomBar = (props: any) => {
     const { x, y, width, height, payload } = props;
     const daDat = payload?.daDat ?? 0;
     const daDatHeight = (daDat / 100) * height;
@@ -358,22 +384,29 @@ const ThongKeVe = () => {
               </Select>
             </Form.Item>
           </Col>
-           <Col span={6}>
-            <Form.Item label="Rạp chiếu" name="rap">
+          <Col span={4}>
+            <Form.Item label="Phim" name="phim">
               <Select
                 allowClear
+                showSearch  
                 placeholder="--- Tất cả ---"
                 style={{ width: "100%" }}
+                optionFilterProp="children"  
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
               >
-                {dataRap.data.map((rap: any) => (
-                  <Option key={rap.id} value={rap.id}>
-                    {rap.ten_rap}
-                  </Option>
+                {dataPhim.data.map((phim: any) => (
+                  <Select.Option key={phim.id} value={phim.id}>
+                    {phim.ten_phim}
+                  </Select.Option>
                 ))}
               </Select>
             </Form.Item>
           </Col>
-          <Col span={4}>
+          <Col span={2}>
             <Form.Item>
               <Button
                 type="primary"
@@ -517,10 +550,10 @@ const ThongKeVe = () => {
             >
               <XAxis dataKey="name" />
               <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} />
-              <Tooltip formatter={(value:any) => `${value}%`} />
+              <Tooltip formatter={(value: any) => `${value}%`} />
               <Bar
                 dataKey="value"
-                shape={(props :any) => <CustomBar {...props} />}
+                shape={(props: any) => <CustomBar {...props} />}
               />
             </BarChart>
           </ResponsiveContainer>

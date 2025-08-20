@@ -13,7 +13,6 @@ import {
   Form,
   Card,
   Statistic,
-  Typography,
 } from "antd";
 import {
   ResponsiveContainer,
@@ -42,6 +41,8 @@ const ThongKeDoanhThu = () => {
   const [dataRap, setDataRap] = useState<{ data: any[] }>({ data: [] });
   const [loadingRap, setLoadingRap] = useState<boolean>(true);
   const [form] = Form.useForm();
+   const [dataFilterPhim, setDataPhim] = useState<{ data: any[] }>({ data: [] });
+  const [loadingPhim, setLoadingPhim] = useState<boolean>(true);
 
   // Lấy danh sách rạp (rap)
   useEffect(() => {
@@ -62,6 +63,26 @@ const ThongKeDoanhThu = () => {
 
     fetchDataRap();
   }, [token]);
+
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://127.0.0.1:8000/api/phim", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setDataPhim(res.data);
+      } catch (error) {
+        console.error("Lỗi khi gọi API:", error);
+      } finally {
+        setLoadingPhim(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Lấy dữ liệu thống kê doanh thu lần đầu (payload rỗng)
   useEffect(() => {
@@ -93,6 +114,7 @@ const ThongKeDoanhThu = () => {
       bat_dau: values.startDate?.format("YYYY-MM-DD"),
       ket_thuc: values.endDate?.format("YYYY-MM-DD"),
       rap_id: values.rap || null,
+      phim_id: values.phim || null,
     };
 
     setLoading(true);
@@ -114,7 +136,7 @@ const ThongKeDoanhThu = () => {
     }
   };
 
-  if (loading || loadingRap) {
+  if (loading || loadingRap || loadingPhim) {
     return (
       <div
         style={{
@@ -249,7 +271,7 @@ const ThongKeDoanhThu = () => {
         >
           <p style={{ margin: "0 0 4px 0", fontWeight: "bold" }}>{label}</p>
           <p style={{ margin: "0", color: payload[0].color }}>
-            Doanh thu: {new Intl.NumberFormat("vi-VN").format(payload[0].value)}{" "}
+            Doanh thu: {new Intl.NumberFormat("vi-VN").format(payload[0].value ?? 0)}{" "}
             đ
           </p>
         </div>
@@ -301,8 +323,30 @@ const ThongKeDoanhThu = () => {
               </Select>
             </Form.Item>
           </Col>
+             <Col span={4}>
+            <Form.Item label="Phim" name="phim">
+              <Select
+                allowClear
+                showSearch  
+                placeholder="--- Tất cả ---"
+                style={{ width: "100%" }}
+                optionFilterProp="children"  
+                filterOption={(input, option) =>
+                  (option?.children as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+              >
+                {dataFilterPhim.data.map((phim: any) => (
+                  <Select.Option key={phim.id} value={phim.id}>
+                    {phim.ten_phim}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
           
-          <Col span={4}>
+          <Col span={2}>
             <Form.Item>
               <Button
                 type="primary"

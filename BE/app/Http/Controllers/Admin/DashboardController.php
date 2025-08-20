@@ -141,7 +141,7 @@ class DashboardController extends Controller
         $data = collect();
         foreach ($DatVe as $item) {
             $dulieu = DatVe::with('lichChieu')->find($item->dat_ve_id);
-         $dulieu->tien_ve = $item->gia_ve;
+            $dulieu->tien_ve = $item->gia_ve;
             $data->push($dulieu);
         }
 
@@ -268,12 +268,18 @@ class DashboardController extends Controller
             $batdau = Carbon::parse($filter['bat_dau'])->startOfDay();
             $ketthuc = Carbon::parse($filter['ket_thuc'])->endOfDay();
             $RapId = $filter['rap_id'] ?? null;
+            $Phim = $filter['phim_id'] ?? null;
 
             $DoanhThu = ThanhToan::with('datVe.lichChieu.phong_chieu')
                 ->whereBetween('created_at', [$batdau, $ketthuc])
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('datVe.lichChieu.phong_chieu', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                 ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('datVe.lichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })
                 ->get();
@@ -285,6 +291,11 @@ class DashboardController extends Controller
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('lichChieu.phong_chieu', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                 ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('lichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })
                 ->get();
@@ -315,11 +326,17 @@ class DashboardController extends Controller
             })->sortByDesc('tong_doanh_thu')->first();
 
 
-            $tongSoLuong = ThanhToan::whereBetween('created_at', [$batdau, $ketthuc])->when($RapId !== null, function ($query) use ($RapId) {
+            $tongSoLuong = ThanhToan::whereBetween('created_at', [$batdau, $ketthuc])
+            ->when($RapId !== null, function ($query) use ($RapId) {
                 $query->whereHas('datVe.lichChieu.phong_chieu', function ($q) use ($RapId) {
                     $q->where('rap_id', $RapId);
                 });
             })
+              ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('datVe.lichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                })
                 ->count();
 
             if ($tongSoLuong === 0) {
@@ -333,11 +350,16 @@ class DashboardController extends Controller
                         DB::raw('SUM((SELECT tong_tien FROM dat_ve WHERE dat_ve.id = thanh_toan.dat_ve_id)) as doanh_thu')
                     )
                     ->whereBetween('created_at', [$batdau, $ketthuc])
-                    ->when($RapId !== null, function ($query) use ($RapId) {
-                        $query->whereHas('datVe.lichChieu.phong_chieu', function ($q) use ($RapId) {
-                            $q->where('rap_id', $RapId);
-                        });
-                    })
+                    ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('datVe.lichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                })
+                     ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                })
                     ->groupBy('phuong_thuc_thanh_toan_id')
                     ->orderByDesc('so_luong')
                     ->first();
@@ -361,6 +383,11 @@ class DashboardController extends Controller
                 ->when($RapId, function ($query) use ($RapId) {
                     $query->whereHas('lichChieu.phong_chieu', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                 ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('lichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })
                 ->whereBetween('created_at', [$batdau, $ketthuc])
@@ -567,13 +594,21 @@ class DashboardController extends Controller
             $batdau = Carbon::parse($filter['bat_dau'])->startOfDay();
             $ketthuc = Carbon::parse($filter['ket_thuc'])->endOfDay();
             $RapId = $filter['rap_id'] ?? null;
+            $Phim = $filter['phim_id'] ?? null;
 
             $VeBanRa = DatVeChiTiet::whereBetween('created_at', [$batdau, $ketthuc])
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('GheDat.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
                     });
-                })->count();
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                })
+
+                ->count();
 
             $VeBanRaThang = DatVeChiTiet::whereMonth('created_at', Carbon::now()->month)
                 ->count();
@@ -583,6 +618,11 @@ class DashboardController extends Controller
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('GheDat.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })
                 ->groupBy('gio')
@@ -596,13 +636,24 @@ class DashboardController extends Controller
                     $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
                     });
-                })->count();
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                })
+                ->count();
 
             if ($lapDayRap > 0) {
                 $gheDaDat = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])
                     ->when($RapId !== null, function ($query) use ($RapId) {
                         $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                             $q->where('rap_id', $RapId);
+                        });
+                    })
+                    ->when($Phim !== null, function ($query) use ($Phim) {
+                        $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                            $q->where('phim_id', $Phim);
                         });
                     })->where('trang_thai', 'da_dat')->count();
 
@@ -615,6 +666,11 @@ class DashboardController extends Controller
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('GheDat.phong.rap', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })
                 ->groupBy('gio')
@@ -635,6 +691,11 @@ class DashboardController extends Controller
                     $query->whereHas('GheDat.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
                     });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
                 })->get();
             $data = collect();
 
@@ -649,6 +710,11 @@ class DashboardController extends Controller
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('GheDat.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })->count();
 
@@ -683,12 +749,22 @@ class DashboardController extends Controller
                     $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
                     });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
                 })->get()->count();
             $gheThuong = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])
                 ->where('trang_thai', 'da_dat')
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })->where('trang_thai', 'da_dat')
                 ->whereHas('Ghe', function ($query) {
@@ -703,6 +779,11 @@ class DashboardController extends Controller
                     $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
                     });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
                 })->where('trang_thai', 'da_dat')
                 ->whereHas('Ghe', function ($query) {
                     $query->where('loai_ghe_id', 3);
@@ -713,6 +794,11 @@ class DashboardController extends Controller
                 ->when($RapId !== null, function ($query) use ($RapId) {
                     $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
                     });
                 })->where('trang_thai', 'da_dat')
                 ->whereHas('Ghe', function ($query) {
@@ -747,6 +833,11 @@ class DashboardController extends Controller
                     $query->whereHas('GheDat.phong', function ($q) use ($RapId) {
                         $q->where('rap_id', $RapId);
                     });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
                 })->selectRaw('HOUR(created_at) as gio, count(*) as so_luong')
                 ->whereDate('created_at', $now->toDateString())
                 ->groupBy('gio')
@@ -761,22 +852,37 @@ class DashboardController extends Controller
 
 
             //TI LE LAP DAY
-            $tongGheOfRap = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])->when($RapId !== null, function ($query) use ($RapId) {
+            $tongGheOfRap = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])
+            ->when($RapId !== null, function ($query) use ($RapId) {
                 $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                     $q->where('rap_id', $RapId);
                 });
-            })->whereHas('Ghe.phong.rap')
+            })
+              ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                    
+                })
+                ->whereHas('Ghe.phong.rap')
                 ->with('Ghe.phong.rap')
                 ->get()
                 ->groupBy('Ghe.phong.rap_id')
                 ->map(function ($items) {
                     return count($items);
                 });
-            $dataGheOfRap = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])->when($RapId !== null, function ($query) use ($RapId) {
+            $dataGheOfRap = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])
+            ->when($RapId !== null, function ($query) use ($RapId) {
                 $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
                     $q->where('rap_id', $RapId);
                 });
-            })->where('trang_thai', 'da_dat')
+            })
+              ->when($Phim !== null, function ($query) use ($Phim) {
+                    $query->whereHas('LichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                    
+                })->where('trang_thai', 'da_dat')
                 ->whereHas('Ghe.phong.rap')
                 ->with('Ghe.phong.rap')
                 ->get()
