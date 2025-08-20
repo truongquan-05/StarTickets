@@ -800,7 +800,7 @@ const MovieDetailUser = () => {
       message.warning("Không được để ghế đã mua - trống - đang mua - trống.");
       return;
     }
-    const isGapBetweenDangDat = rowSeats.some(( i: number) => {
+    const isGapBetweenDangDat = rowSeats.some((i: number) => {
       const t1 = getTrangThai(rowSeats[i]?.so_ghe);
       const t2 = getTrangThai(rowSeats[i + 1]?.so_ghe);
       const t3 = getTrangThai(rowSeats[i + 2]?.so_ghe);
@@ -863,7 +863,14 @@ const MovieDetailUser = () => {
         (x: any) =>
           x.ghe_id === gheToggle.id && x.lich_chieu_id === selectedLichChieuId
       );
-
+      console.log(found);
+      
+      if (selectedCheckGhe.length >= 8 && newTrangThai == "dang_dat") {
+        message.warning(
+          "Bạn chỉ có thể đặt tối đa 8 ghế cho mỗi lần thanh toán."
+        );
+        return;
+      }
       setIsLoadingsss(true);
       updateCheckGhe(
         {

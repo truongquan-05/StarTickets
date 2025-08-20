@@ -141,7 +141,7 @@ class DashboardController extends Controller
         $data = collect();
         foreach ($DatVe as $item) {
             $dulieu = DatVe::with('lichChieu')->find($item->dat_ve_id);
-
+         $dulieu->tien_ve = $item->gia_ve;
             $data->push($dulieu);
         }
 
@@ -156,7 +156,7 @@ class DashboardController extends Controller
             return [
                 'phim' => $phim,
                 'phim_id' => $phim_id,
-                'doanh_thu' => $items->sum('tong_tien'),
+                'doanh_thu' => $items->sum('tien_ve'),
                 'so_luong' => $items->count(),
             ];
         })->values()
