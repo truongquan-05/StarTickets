@@ -20,6 +20,7 @@ import {
   EyeFilled,
   PlusOutlined,
   UploadOutlined,
+  ClearOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Food } from "../../types/Uses";
@@ -52,6 +53,32 @@ const FoodList = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Food | undefined>(undefined);
   const [fileList, setFileList] = useState<any[]>([]);
+  
+  // State cho việc lọc
+  const [selectedCinemaFilter, setSelectedCinemaFilter] = useState<number | undefined>(undefined);
+  const [filteredFoods, setFilteredFoods] = useState<Food[]>([]);
+
+  const { data: cinemas } = useListCinemas({ resource: "rap" });
+
+  // Effect để lọc dữ liệu khi foods hoặc selectedCinemaFilter thay đổi
+  useEffect(() => {
+    if (selectedCinemaFilter) {
+      const filtered = foods.filter(food => food.rap?.id === selectedCinemaFilter);
+      setFilteredFoods(filtered);
+    } else {
+      setFilteredFoods(foods);
+    }
+  }, [foods, selectedCinemaFilter]);
+
+  // Hàm xử lý thay đổi bộ lọc rạp
+  const handleCinemaFilterChange = (value: number | undefined) => {
+    setSelectedCinemaFilter(value);
+  };
+
+  // Hàm xóa bộ lọc
+  const clearFilter = () => {
+    setSelectedCinemaFilter(undefined);
+  };
 
   const openModal = (record?: Food) => {
     setModalOpen(true);
@@ -83,7 +110,6 @@ const FoodList = () => {
       },
     });
   };
-  const { data: cinemas } = useListCinemas({ resource: "rap" });
 
   const onFinish = async (values: Food) => {
     const formData = new FormData();
@@ -154,6 +180,18 @@ const FoodList = () => {
     },
 
     {
+      title: "Giá nhập",
+      dataIndex: "gia_nhap",
+      key: "gia_nhap",
+      render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
+    },
+    {
+      title: "Giá bán",
+      dataIndex: "gia_ban",
+      key: "gia_ban",
+      render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
+    },
+    {
       title: "Số lượng tồn",
       dataIndex: "so_luong_ton",
       key: "so_luong_ton",
@@ -207,9 +245,51 @@ const FoodList = () => {
         )}
       </div>
 
+      {/* Bộ lọc theo rạp */}
+      <div style={{ marginBottom: 16, display: "flex", gap: 12, alignItems: "center" }}>
+        <span style={{ fontWeight: 500 }}>Lọc theo rạp:</span>
+        <Select
+          placeholder="Chọn rạp để lọc"
+          style={{ width: 250 }}
+          allowClear
+          showSearch
+          optionFilterProp="label"
+          value={selectedCinemaFilter}
+          onChange={handleCinemaFilterChange}
+          options={[
+            { label: "Tất cả rạp", value: undefined },
+            ...(cinemas?.map((rap) => ({
+              label: rap.ten_rap,
+              value: rap.id,
+            })) || [])
+          ]}
+          filterOption={(input, option) =>
+            String(option?.label ?? "")
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+        />
+        {selectedCinemaFilter && (
+          <Button
+            icon={<ClearOutlined />}
+            onClick={clearFilter}
+            type="link"
+            size="small"
+          >
+            Xóa bộ lọc
+          </Button>
+        )}
+        <span style={{ color: "#666", fontSize: "14px" }}>
+          {selectedCinemaFilter 
+            ? `Hiển thị ${filteredFoods.length} món ăn của rạp đã chọn`
+            : `Hiển thị tất cả ${filteredFoods.length} món ăn`
+          }
+        </span>
+      </div>
+
       <Table
         rowKey="id"
-        dataSource={foods}
+        dataSource={filteredFoods}
         columns={columns}
         bordered
         pagination={{ pageSize: 5 }}
