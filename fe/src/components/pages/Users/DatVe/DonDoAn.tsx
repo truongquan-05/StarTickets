@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Button, Spin } from "antd";
 import { useListFoodsClient } from "../../../hook/duHook";
 import { Food } from "../../../types/Uses";
-import {  useListPhongChieuClien } from "../../../hook/hungHook";
+import { useListPhongChieuClien } from "../../../hook/hungHook";
 
 export interface SelectedFoodItem extends Food {
   quantity: number;
@@ -19,9 +19,14 @@ interface Props {
   phongId: number;
 }
 
-const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }) => {
+const FoodSelectionDisplay: React.FC<Props> = ({
+  onFoodQuantityChange,
+  phongId,
+}) => {
   const { data: foodData, isLoading: isLoadingFoods } = useListFoodsClient();
-  const { data: phongData } = useListPhongChieuClien({resource:"client/phong_chieu"});
+  const { data: phongData } = useListPhongChieuClien({
+    resource: "client/phong_chieu",
+  });
 
   const foodList = foodData?.data || [];
   const phongList = phongData?.data || [];
@@ -42,22 +47,24 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }
   }, [foodList, rapId]);
 
   // State lưu số lượng món ăn
-  const [foodQuantities, setFoodQuantities] = useState<Map<number, number>>(new Map());
+  const [foodQuantities, setFoodQuantities] = useState<Map<number, number>>(
+    new Map()
+  );
 
   // Reset số lượng món ăn khi filteredFoodList thay đổi
   useEffect(() => {
     const initialQuantities = new Map<number, number>();
-    filteredFoodList.forEach((food:Food) => {
+    filteredFoodList.forEach((food: Food) => {
       initialQuantities.set(food.id, 0);
     });
     setFoodQuantities(initialQuantities);
   }, [filteredFoodList]);
 
-  const getQuantity = (foodId: number): number => foodQuantities.get(foodId) || 0;
+  const getQuantity = (foodId: number): number =>
+    foodQuantities.get(foodId) || 0;
 
   const handleQuantityChange = (food: Food, change: number) => {
     setFoodQuantities((prev) => {
-      
       const newMap = new Map(prev);
       const current = newMap.get(food.id) || 0;
       const updated = Math.max(0, current + change);
@@ -71,9 +78,17 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }
   if (isLoadingFoods) return <Spin />;
 
   return (
-    <div style={{ flex: 1, padding: 20, border: "1px solid #333", borderRadius: 4, marginLeft: 20 }}>
+    <div
+      style={{
+        flex: 1,
+        padding: 20,
+        border: "1px solid #333",
+        borderRadius: 4,
+        marginLeft: 20,
+      }}
+    >
       <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-        {filteredFoodList.map((food:Food) => {
+        {filteredFoodList.map((food: Food) => {
           const quantity = getQuantity(food.id);
           return (
             <div
@@ -94,12 +109,37 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }
               <img
                 src={getImageUrl(food.image)}
                 alt={food.ten_do_an}
-                style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 4, marginRight: 12 }}
+                style={{
+                  width: 80,
+                  height: 80,
+                  objectFit: "cover",
+                  borderRadius: 4,
+                  marginRight: 12,
+                }}
               />
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                <div style={{ fontSize: 15, color: "black", paddingBottom: 10 }}>{food.ten_do_an}</div>
-                <div style={{ color: "#555", fontSize: 14 }}>{food.gia_ban.toLocaleString("vi-VN")} VNĐ</div>
-                <div style={{ color: "#555", fontSize: 10 }}>Số lượng: {food.so_luong_ton} </div>
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <div
+                  style={{ fontSize: 15, color: "black", paddingBottom: 5 }}
+                >
+                  {food.ten_do_an}
+                </div>
+                <div style={{ color: "#555", fontSize: 14,paddingBottom: 5  }}>
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(food.gia_ban)}
+                </div>
+
+                <div style={{ color: "#555", fontSize: 10 }}>
+                  Số lượng: {food.so_luong_ton}{" "}
+                </div>
               </div>
               <div
                 style={{
@@ -134,7 +174,8 @@ const FoodSelectionDisplay: React.FC<Props> = ({ onFoodQuantityChange, phongId }
                     outline: "none",
                   }}
                   onMouseEnter={(e) => {
-                    if (quantity > 0) e.currentTarget.style.backgroundColor = "yellow";
+                    if (quantity > 0)
+                      e.currentTarget.style.backgroundColor = "yellow";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "transparent";
