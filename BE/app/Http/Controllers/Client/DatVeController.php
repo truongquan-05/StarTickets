@@ -32,7 +32,7 @@ class DatVeController extends Controller
                         "tong_tien" => $value['tong_tien'],
                     ]);
                     $lich_chieu_id = $value['lich_chieu_id'];
-                    XoaDonHang::dispatch($DatVe->id)->delay(now()->addMinutes(5));
+                    XoaDonHang::dispatch($DatVe->id)->delay(now()->addMinute(5));
                 }
             }
 

@@ -6,7 +6,7 @@ import { useGoogleAuth } from "./GoogleAuth";
 const GoogleCallback = () => {
   const { handleGoogleCallback } = useGoogleAuth();
   const navigate = useNavigate();
-  const hasHandled = useRef(false); // 👈 Ngăn gọi lại
+  const hasHandled = useRef(false); 
   useEffect(() => {
     if (hasHandled.current) return;
     hasHandled.current = true;
@@ -16,9 +16,8 @@ const GoogleCallback = () => {
         await handleGoogleCallback();
         message.success("Đăng nhập Google thành công!");
         navigate("/");
-      } catch (err) {
-        console.error("❌ Lỗi callback:", err);
-        message.error("Đăng nhập thất bại.");
+      } catch (err:any) {
+        message.error( err.message||"Đăng nhập thất bại.");
         navigate("/login");
       }
     })();

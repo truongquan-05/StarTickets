@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('vai_tro', function (Blueprint $table) {
             $table->id();
             $table->string('ten_vai_tro', 50);
+            $table->string('menu',50)->nullable();
             $table->text('mo_ta')->nullable();
             $table->timestamps();
         });

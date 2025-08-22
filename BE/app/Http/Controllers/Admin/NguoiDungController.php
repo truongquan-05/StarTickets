@@ -127,6 +127,25 @@ class NguoiDungController extends Controller
     public function update(Request $request, string $id)
     {
         $nguoiDung = NguoiDung::find($id);
+
+
+        if ($nguoiDung->google_id && isset($request->trang_thai) && (!$request->trang_thai || $request->trang_thai)) {
+            $nguoiDung->trang_thai = $request->trang_thai;
+            $nguoiDung->save();
+            return response()->json([
+                'message' => 'Cập nhật thành công ',
+                'data' => NguoiDung::with('vaitro')->find($nguoiDung->id)
+            ]);
+        }
+
+
+        $user = Auth::guard('sanctum')->user();
+        if ($user->vai_tro_id == 1 && $nguoiDung->vai_tro_id == 99) {
+            return response()->json([
+                'message' => "Bạn không có quyền cập nhật thông tin của SuperAdmin",
+            ], 403);
+        }
+
         if ($nguoiDung->google_id != null) {
             return response()->json([
                 'errors' => [

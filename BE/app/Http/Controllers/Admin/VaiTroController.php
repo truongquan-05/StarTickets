@@ -57,7 +57,7 @@ class VaiTroController extends Controller
             ], 422);
         }
 
-        $data = $request->only(['ten_vai_tro', 'mo_ta']);
+        $data = $request->only(['ten_vai_tro', 'mo_ta','menu']);
         $vaiTro = VaiTro::create($data);
 
         return response()->json([

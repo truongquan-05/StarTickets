@@ -77,6 +77,9 @@ export const GoogleAuthProvider = ({ children }: GoogleAuthProviderProps) => {
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
       const userStr = params.get("user");
+      const message = params.get("message");
+
+      if (message) throw new Error(message);
 
       if (!token || !userStr) throw new Error("Thiếu token hoặc user");
 

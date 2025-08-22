@@ -1,7 +1,4 @@
-import {
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import {
   message,
@@ -66,14 +63,21 @@ const ListCinemas = () => {
   };
 
   const getColumnSearchProps = (dataIndex: string) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }: any) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }: any) => (
       <div style={{ padding: 8 }}>
         <Input
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => confirm()}
-          style={{ marginBottom: 8, display: 'block' }}
+          style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
@@ -95,12 +99,14 @@ const ListCinemas = () => {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <EditOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      <EditOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value: string, record: any) =>
       record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
   });
-
+  const datauser = localStorage.getItem("user");
+  const user = JSON.parse(datauser || "{}");
+  const menu = user.vaitro.menu;
   const columns = [
     {
       title: "ID",
@@ -113,43 +119,59 @@ const ListCinemas = () => {
       dataIndex: "ten_rap",
       key: "name",
       width: "35%",
-      ...getColumnSearchProps('ten_rap'),
+      ...getColumnSearchProps("ten_rap"),
     },
     {
       title: "Address",
       dataIndex: "dia_chi",
       key: "address",
       width: "35%",
-      ...getColumnSearchProps('dia_chi'),
+      ...getColumnSearchProps("dia_chi"),
     },
+
     {
       title: "Action",
       key: "action",
       align: "center" as const,
       width: "20%",
-      render: (_: any, record: ICinemas) => (
-        <Space>
-          <Button
-            title="Edit"
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => openEditModal(record)}
-          />
-          <Popconfirm
-            title="Are you sure to delete this cinema?"
-            okText="Yes"
-            cancelText="No"
-            onConfirm={() => onDelete(record.id)}
-          >
-            <Button title="Delete" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
-        </Space>
-      ),
+      render: (_: any, record: ICinemas) => {
+        if (menu == 3 || menu == 4) {
+          return null; // ẩn Action nếu menu = 3
+        }
+
+        return (
+          <Space>
+            <Button
+              title="Edit"
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={() => openEditModal(record)}
+            />
+            <Popconfirm
+              title="Are you sure to delete this cinema?"
+              okText="Yes"
+              cancelText="No"
+              onConfirm={() => onDelete(record.id)}
+            >
+              <Button title="Delete" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Space>
+        );
+      },
     },
   ];
 
   return (
-    <Card title="Danh sách rạp" bordered={true} style={{ margin: 10, boxShadow: '0 4px 8px rgba(0,0,0,0.1)',background: "#fff", height: "95%"  }}>
+    <Card
+      title="Danh sách rạp"
+      bordered={true}
+      style={{
+        margin: 10,
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        background: "#fff",
+        height: "95%",
+      }}
+    >
       <Table
         rowKey="id"
         dataSource={dataSource}

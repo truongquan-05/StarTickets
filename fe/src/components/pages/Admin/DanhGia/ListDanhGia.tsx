@@ -261,7 +261,7 @@ const ListDanhGia: React.FC = () => {
 
   return (
     <Card
-      title="Danh sách rạp"
+      title="Danh sách đánh giá"
       bordered={true}
       style={{
         margin: 10,

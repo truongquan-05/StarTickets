@@ -140,18 +140,18 @@ const FoodList = () => {
       key: "rap",
       render: (_, record) => record.rap?.ten_rap || "—",
     },
-   {
-  title: "Giá nhập",
-  dataIndex: "gia_nhap",
-  key: "gia_nhap",
-  render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
-},
-{
-  title: "Giá bán",
-  dataIndex: "gia_ban",
-  key: "gia_ban",
-  render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
-},
+    {
+      title: "Giá nhập",
+      dataIndex: "gia_nhap",
+      key: "gia_nhap",
+      render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
+    },
+    {
+      title: "Giá bán",
+      dataIndex: "gia_ban",
+      key: "gia_ban",
+      render: (gia: number) => Number(gia).toLocaleString("vi-VN") + " đ",
+    },
 
     {
       title: "Số lượng tồn",
@@ -180,6 +180,9 @@ const FoodList = () => {
       ),
     },
   ];
+  const datauser = localStorage.getItem("user");
+  const user = JSON.parse(datauser || "{}");
+  const menu = user.vaitro.menu;
 
   return (
     <Card style={{ margin: "15px", background: "#fff", height: "95%" }}>
@@ -193,13 +196,15 @@ const FoodList = () => {
         <Title level={3} style={{ margin: 0 }}>
           Danh sách món ăn
         </Title>
-        <Button
-          icon={<PlusOutlined />}
-          type="primary"
-          onClick={() => openModal()}
-        >
-          Thêm món ăn
-        </Button>
+        {menu != 3 && (
+          <Button
+            icon={<PlusOutlined />}
+            type="primary"
+            onClick={() => openModal()}
+          >
+            Thêm món ăn
+          </Button>
+        )}
       </div>
 
       <Table

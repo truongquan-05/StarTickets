@@ -67,8 +67,6 @@ Route::get('do_an', [DoAnController::class, 'index']);
 Route::post('do_an', [DoAnController::class, 'store']);
 Route::get('do_an-rap/{id}', [DoAnController::class, 'showByRap']);
 Route::post('do_an-add', [DoAnController::class, 'storeByRap']);
-
-
 Route::get('do_an/{id}', [DoAnController::class, 'show']);
 Route::put('do_an/{id}', [DoAnController::class, 'update']);
 Route::delete('do_an/{id}', [DoAnController::class, 'delete']);
@@ -170,11 +168,9 @@ Route::post('thong-ke-ve',[DashboardController::class,'thongKeVe']);
 
 Route::get('/client/nguoi_dung/{id}', [ClientNguoiDungController::class, 'show']);
 Route::get('/home', [HomeController::class, 'index']);
-
 Route::get('/home/dang-chieu', [HomeController::class, 'getPhimDangChieu']);
 Route::get('/home/sap-chieu', [HomeController::class, 'getPhimSapChieu']);
 Route::get('/home/dac-biet', [HomeController::class, 'getPhimDacBiet']);
-
 Route::get('/phim-dang-chieu', [HomeController::class, 'getAllPhimDangChieu']);
 Route::get('/phim-sap-chieu', [HomeController::class, 'getAllPhimSapChieu']);
 Route::get('/phim-dac-biet', [HomeController::class, 'getAllPhimDacBiet']);

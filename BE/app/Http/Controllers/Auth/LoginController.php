@@ -56,11 +56,18 @@ class LoginController extends Controller
                 ]
             );
 
+            if (!$user->trang_thai) {
+                return redirect()->away(
+                    'http://localhost:5173/auth/google/callback?' . http_build_query([
+                        'message' => "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.",
+
+                    ])
+                );
+            }
 
             $token = $user->createToken('google-api')->plainTextToken;
 
 
-            // 🔁 Redirect về FE kèm theo token và user (nếu muốn)
             return redirect()->away(
                 'http://localhost:5173/auth/google/callback?' . http_build_query([
                     'token' => $token,
@@ -69,7 +76,6 @@ class LoginController extends Controller
                     ]))
                 ])
             );
-            
         } catch (\Throwable $th) {
             // Có thể redirect sang FE với thông báo lỗi cũng được
             return redirect()->away(
@@ -93,7 +99,7 @@ class LoginController extends Controller
             ], 422);
         }
 
-        $user = NguoiDung::where('email', $request->email)->first();
+        $user = NguoiDung::with('vaitro')->where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([

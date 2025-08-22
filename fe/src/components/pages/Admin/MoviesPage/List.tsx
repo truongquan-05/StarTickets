@@ -172,6 +172,9 @@ const List = () => {
   //   clearFilters();
   //   setSearchText("");
   // };
+  const datauser = localStorage.getItem("user");
+  const user = JSON.parse(datauser || "{}");
+  const menu = user.vaitro.menu;
 
   const columns = [
     {
@@ -395,9 +398,9 @@ const List = () => {
       ),
     },
   ];
-    const Size = Quill.import("formats/size") as any;
-    Size.whitelist = ["small", "normal", "large", "huge"];
-    Quill.register(Size, true);
+  const Size = Quill.import("formats/size") as any;
+  Size.whitelist = ["small", "normal", "large", "huge"];
+  Quill.register(Size, true);
 
   return (
     <>
@@ -412,13 +415,16 @@ const List = () => {
           <Typography.Title level={3} style={{ marginBottom: 16 }}>
             Danh sách phim
           </Typography.Title>
-          <Button
-            type="primary"
-            icon={<ExportOutlined />}
-            style={{ marginBottom: 12 }}
-          >
-            <Link to={`/admin/movies/add`}>Thêm phim mới</Link>
-          </Button>
+
+          {menu != 3 && (
+            <Button
+              type="primary"
+              icon={<ExportOutlined />}
+              style={{ marginBottom: 12 }}
+            >
+              <Link to={`/admin/movies/add`}>Thêm phim mới</Link>
+            </Button>
+          )}
         </div>
 
         <Table
@@ -554,18 +560,17 @@ const List = () => {
                   placeholder="Nhập mô tả phim"
                   modules={{
                     toolbar: [
-  [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  [{ size: ["small", "normal", "large", "huge"] }], // dùng size chuẩn
-  ["bold", "italic", "underline", "strike"],
-  [{ color: [] }, { background: [] }],
-  [{ list: "ordered" }, { list: "bullet" }],
-  [{ indent: "-1" }, { indent: "+1" }],
-  [{ align: [] }],
-  ["blockquote", "code-block"],
-  ["link", "image", "video"],
-  ["clean"],
-],
-
+                      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                      [{ size: ["small", "normal", "large", "huge"] }], // dùng size chuẩn
+                      ["bold", "italic", "underline", "strike"],
+                      [{ color: [] }, { background: [] }],
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      [{ indent: "-1" }, { indent: "+1" }],
+                      [{ align: [] }],
+                      ["blockquote", "code-block"],
+                      ["link", "image", "video"],
+                      ["clean"],
+                    ],
                   }}
                 />
               </Form.Item>

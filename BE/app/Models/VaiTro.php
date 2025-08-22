@@ -11,6 +11,7 @@ class VaiTro extends Model
     protected $fillable = [
         'ten_vai_tro',
         'mo_ta',
+        'menu'
     ];
     public function QuyenTruyCap()
     {

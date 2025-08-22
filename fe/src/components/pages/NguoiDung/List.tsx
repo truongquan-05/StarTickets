@@ -136,8 +136,10 @@ const UserList = () => {
           );
           refetch();
         },
-        onError: () => {
-          // message.error("Cập nhật trạng thái thất bại");
+        onError: (err) => {
+          message.error(
+            err.response?.data?.message || "Cập nhật trạng thái thất bại"
+          );
         },
       }
     );
@@ -165,9 +167,9 @@ const UserList = () => {
       dataIndex: "anh_dai_dien",
       key: "anh_dai_dien",
       render: (url: string | null) => {
-  if (!url) {
-    return <span>Không có ảnh</span>; // hoặc ảnh mặc định
-  }
+        if (!url) {
+          return <span>Không có ảnh</span>; // hoặc ảnh mặc định
+        }
         const fullUrl = url.startsWith("http")
           ? url
           : `http://localhost:8000/storage/${url}`;
@@ -285,16 +287,7 @@ const UserList = () => {
                 <Input placeholder="Nhập họ tên" />
               </Form.Item>
 
-              <Form.Item
-                label="Ảnh đại diện"
-                name="anh_dai_dien"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập URL ảnh đại diện!",
-                  },
-                ]}
-              >
+              <Form.Item label="Ảnh đại diện" name="anh_dai_dien">
                 <Input placeholder="Nhập URL ảnh đại diện" />
               </Form.Item>
 

@@ -48,6 +48,7 @@ class CheckOutController extends Controller
         $datVe->update([
             'job_id' => $request->input('dat_ve_id')
         ]);
+        XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinute(11));
 
 
         //Xử lý thanh toán bằng MOMO
@@ -114,7 +115,7 @@ class CheckOutController extends Controller
                 'extraData' => $extraData,
                 'requestType' => $requestType,
                 'signature' => $signature,
-                
+
             );
             $result = $this->execPostRequest($endpoint, json_encode($data));
             $jsonResult = json_decode($result, true);  // decode json
@@ -224,7 +225,7 @@ class CheckOutController extends Controller
     public function handleIpn(Request $request)
     {
 
-        XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(11));
+
 
         try {
             $data = $request->all();
@@ -316,12 +317,9 @@ class CheckOutController extends Controller
                 }
             }
             if ($request->phuong_thuc_thanh_toan_id == 2) {
-                XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
+                // XoaThanhToanJob::dispatch($request->input('dat_ve_id'))->delay(now()->addMinutes(10));
 
                 // $data['vnp_TxnRef' MÃ ĐƠN HÀNG
-
-
-
                 if ($data['vnp_ResponseCode'] == "00") {
 
                     $data['ma_giao_dich'] = $data['vnp_TxnRef'];

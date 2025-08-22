@@ -78,7 +78,7 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    let timer: number;
+    let timer: ReturnType<typeof setInterval>;
     if (countdown > 0) {
       timer = setInterval(() => {
         setCountdown((prev) => prev - 1);
@@ -204,7 +204,7 @@ const ProfilePage = () => {
                       ? user.anh_dai_dien
                       : `http://127.0.0.1:8000/storage/${user?.anh_dai_dien}`
                   }
-                  icon={!user.avatar && <UserOutlined />}
+                  icon={!user.anh_dai_dien && <UserOutlined />}
                   className="profile-avatar"
                 />
                 <h2 className="profile-username">
