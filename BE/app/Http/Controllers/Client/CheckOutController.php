@@ -249,7 +249,7 @@ class CheckOutController extends Controller
                         $extraData['qr_code'] = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
                         $thanhToan = ThanhToan::create($extraData);
                         $DatVe = DatVe::find($thanhToan->dat_ve_id);
-                        $diemCong = $DatVe->tong_tien * 0.05;
+                        $diemCong = $DatVe->tong_tien * 0.03;
 
                         $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
@@ -336,7 +336,7 @@ class CheckOutController extends Controller
 
                     Mail::to($thanhToan->email)->send(new MaQRVeMail($data['ma_giao_dich'], $thanhToan->dat_ve_id));
 
-                    $diemCong = $DatVe->tong_tien * 0.05;
+                    $diemCong = $DatVe->tong_tien * 0.03;
                     $DiemThanhVien = DiemThanhVien::find($thanhToan->nguoi_dung_id);
 
                     if ($DiemThanhVien) {

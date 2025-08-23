@@ -34,8 +34,10 @@ class LichChieuController extends Controller
     {
         $lichChieus = LichChieu::with(['phim', 'phong_chieu', 'chuyenngu', 'giaVe'])
             ->orderBy('id', 'desc')->FilterByRap('phong_chieu.rap')
-            ->paginate(11);
-        return response()->json($lichChieus);
+            ->get();
+        return response()->json([
+            'data' => $lichChieus
+        ]);
     }
 
     public function store(Request $request)
@@ -322,7 +324,7 @@ class LichChieuController extends Controller
         }
 
         //CHECK THỜI GIAN UPDATE LỊCH
-    $phongId = $request->get('phong_id'); // rõ ràng hơn so với $IdPhong
+        $phongId = $request->get('phong_id'); // rõ ràng hơn so với $IdPhong
         $ngayChieu = Carbon::parse($request->get('gio_chieu'))->toDateString(); // rõ nghĩa: chỉ ngày
         $gioChieu = Carbon::parse($request->get('gio_chieu'))->format('Y-m-d H:i:s');
         $gioKetThuc = Carbon::parse($request->get('gio_ket_thuc'))->format('Y-m-d H:i:s');

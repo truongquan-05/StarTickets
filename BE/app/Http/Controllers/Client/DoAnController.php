@@ -22,9 +22,9 @@ class DoAnController extends Controller
 
         // Phân trang
         $perPage = $request->input('per_page', 10);
-        $items = $query->paginate($perPage);
+        $items = $query->get();
 
-        return response()->json($items);
+        return response()->json(['data'=>$items]);
     }
 
     /**

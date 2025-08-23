@@ -896,7 +896,6 @@ const MovieDetailUser = () => {
       );
     }
   };
-  
 
   return (
     <div className="movie-detail-wrapper">
@@ -1310,8 +1309,7 @@ const MovieDetailUser = () => {
                   />
                 </div>
               </div>
-
-              {/* Đồ ăn đã chọn bên phải */}
+              <br />
               <div className="selected-foods-section">
                 <h4 className="selected-foods-title">
                   Đồ ăn đã chọn ({selectedFoods.length})
