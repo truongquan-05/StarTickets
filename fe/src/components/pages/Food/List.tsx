@@ -114,7 +114,7 @@ const FoodList = () => {
   const onFinish = async (values: Food) => {
     const formData = new FormData();
     formData.append("ten_do_an", values.ten_do_an);
-    formData.append("mo_ta", values.mo_ta);
+    formData.append("mo_ta", values.mo_ta || "");
     formData.append("gia_nhap", values.gia_nhap.toString());
     formData.append("gia_ban", values.gia_ban.toString());
     formData.append("so_luong_ton", values.so_luong_ton.toString());
@@ -344,7 +344,6 @@ const FoodList = () => {
               <Form.Item
                 label="Mô tả"
                 name="mo_ta"
-                rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
               >
                 <Input.TextArea />
               </Form.Item>

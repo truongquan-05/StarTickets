@@ -89,6 +89,8 @@ const ProfilePage = () => {
     return () => clearInterval(timer);
   }, [countdown]);
 
+ const token = localStorage.getItem("token");
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -111,6 +113,7 @@ const ProfilePage = () => {
       }
 
       const user = JSON.parse(storedUser);
+     
 
       const payload = {
         ...values,
@@ -128,6 +131,8 @@ const ProfilePage = () => {
           },
         }
       );
+    
+      
 
       const updatedUser = {
         ...user,
@@ -159,12 +164,18 @@ const ProfilePage = () => {
     }
 
     const user = JSON.parse(storedUser);
-
+  console.log(token);
     try {
       await axios.put(
         `http://localhost:8000/api/nguoi_dung/${user.id}`,
-        values
+        values,{
+          headers: {
+            Authorization: `Bearer ${token}`, // token lấy từ localStorage hoặc state
+            "Content-Type": "application/json",
+          },
+        }
       );
+
       message.success("Đổi mật khẩu thành công!");
       passwordForm.resetFields();
     } catch (error: any) {

@@ -169,7 +169,6 @@
 }
 
 .food-selection-container {
-  display: flex;
   gap: 24px;
   min-height: 400px;
 }
@@ -196,18 +195,18 @@
 }
 
 .food-list-scroll {
-  max-height: 320px;
+  /* max-height: 320px; */
   overflow-y: auto;
   padding-right: 8px;
 }
 
 /* Đồ ăn đã chọn bên phải */
 .selected-foods-section {
-  width: 350px;
+  /* width: 350px; */
   background: #0c0b1f;
   border-radius: 4px;
   padding: 16px;
-  border: 2px solid yellow;
+  /* border: 2px solid yellow; */
   box-shadow: 0 4px 16px rgba(251, 191, 36, 0.2);
   display: flex;
   flex-direction: column;
@@ -234,7 +233,7 @@
 
 .selected-foods-scroll {
   flex: 1;
-  max-height: 240px;
+  /* height: 540px; */
   overflow-y: auto;
   margin-bottom: 16px;
 }
@@ -243,6 +242,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: 310px;
 }
 
 .selected-food-item {

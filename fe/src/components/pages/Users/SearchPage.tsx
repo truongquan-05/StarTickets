@@ -138,7 +138,7 @@ const SearchPage = () => {
                       </div>
                     </div>
                     <div className="contentphimm">
-                      <Link to={`/chi-tiet-phim/${movie.id}`}>
+                      <Link to={`/phim/${movie.id}`}>
                         <h5 className="movie-title1">{movie.ten_phim}</h5>
                       </Link>
                       <p style={{ fontSize: 12, color: "#fff", paddingBottom: "2px" }}>
