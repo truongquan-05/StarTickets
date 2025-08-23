@@ -124,7 +124,7 @@ const ProfilePage = () => {
         payload,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // token lấy từ localStorage hoặc state
+            Authorization: `Bearer ${token}`, 
             "Content-Type": "application/json",
           },
         }
