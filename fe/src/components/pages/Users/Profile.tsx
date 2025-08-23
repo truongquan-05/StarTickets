@@ -87,7 +87,7 @@ const ProfilePage = () => {
     return () => clearInterval(timer);
   }, [countdown]);
 
- const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -111,41 +111,50 @@ const ProfilePage = () => {
       }
 
       const user = JSON.parse(storedUser);
-     
 
       const payload = {
         ...values,
         id: user.id,
-        email: user.email,
       };
 
-      await axios.put(
-        `http://localhost:8000/api/nguoi_dung/${user.id}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    
-      
-
-      const updatedUser = {
+      let updatedUser = {
         ...user,
-        ten: values.ten,
-        so_dien_thoai: values.so_dien_thoai,
-        email: values.email,
+        ten: user?.ten,
+        so_dien_thoai: user?.so_dien_thoai,
+        email: user?.email,
       };
+      await axios
+        .put(
+          `http://localhost:8000/api/client/nguoi_dung/${user.id}`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+         
+          updatedUser = {
+            ...user,
+            ten: res.data?.data?.ten,
+            so_dien_thoai: res.data?.data?.so_dien_thoai,
+            email: res.data?.data?.email,
+          };
 
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          message.success("Cập nhật thông tin thành công!");
+        })
+        .catch((error) => {
+          message.error(
+            error?.response?.data?.message || "Cập nhật thông tin thất bại!"
+          );
+        });
       setUser(updatedUser);
       form.resetFields();
       form.setFieldsValue(updatedUser);
       setIsEditing(false);
-
-      message.success("Cập nhật thành công!");
     } catch (error: any) {
       console.error(error);
       message.error(
@@ -162,11 +171,12 @@ const ProfilePage = () => {
     }
 
     const user = JSON.parse(storedUser);
-  console.log(token);
+    console.log(token);
     try {
       await axios.put(
-        `http://localhost:8000/api/nguoi_dung/${user.id}`,
-        values,{
+        `http://localhost:8000/api/client/nguoi_dung/${user.id}`,
+        values,
+        {
           headers: {
             Authorization: `Bearer ${token}`, // token lấy từ localStorage hoặc state
             "Content-Type": "application/json",
@@ -189,12 +199,6 @@ const ProfilePage = () => {
           <LoadingOutlined
             style={{ fontSize: "100px", marginBottom: "30px", color: "yellow" }}
           />
-          <LoadingOutlined
-            style={{ fontSize: "100px", marginBottom: "30px", color: "yellow" }}
-          />
-          <div className="profile-loading-text">
-            Đang tải thông tin người dùng...
-          </div>
         </Card>
       </div>
     );
