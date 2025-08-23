@@ -75,7 +75,7 @@ const SideBar: React.FC<SideBarProps> = ({
 
   const data = localStorage.getItem("user");
   const user = JSON.parse(data || "{}");
-  const menu = user.vaitro.menu;
+  const menu = user.vaitro?.menu;
   
 
   const menuContent = (
