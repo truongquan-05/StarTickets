@@ -23,6 +23,7 @@ import {
   LoadingOutlined,
   GiftOutlined,
   QuestionCircleOutlined,
+  DollarOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import "./Profile.css";
@@ -41,6 +42,7 @@ const ProfilePage = () => {
   const { data: listDiem } = useListDiem({ resource: "diem_thanh_vien" });
   const { logout } = useGoogleAuth();
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -262,17 +264,28 @@ const ProfilePage = () => {
 
                 {/* Modal hiển thị mô tả cách tích điểm */}
                 <Modal
-                  title="Cách tích điểm"
+                  title={
+                    <span>
+                      <DollarOutlined
+                        style={{ marginRight: 8, color: "gold" }}
+                      />
+                      Cách tích điểm
+                    </span>
+                  }
                   open={isModalVisible}
                   onCancel={handleCancel}
                   footer={null}
                   centered
                 >
                   <p>- Bạn sẽ nhận được điểm khi mua vé xem phim.</p>
-                  <p>- 1.000đ = 1 điểm.</p>
+                  <p>- 1.000đ = 50 điểm.</p>
                   <p>
                     - Điểm có thể dùng để giảm giá vé trực tiếp khi bạn thanh
                     toán.
+                  </p>
+                  <p>
+                    - 1.000 điểm = 1.000đ khi quy đổi (áp điểm sẽ trừ thẳng vào
+                    giá trị đơn hàng).
                   </p>
                 </Modal>
               </div>
