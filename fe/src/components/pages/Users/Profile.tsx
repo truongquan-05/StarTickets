@@ -42,8 +42,8 @@ const ProfilePage = () => {
   const { data: listDiem } = useListDiem({ resource: "diem_thanh_vien" });
   const { logout } = useGoogleAuth();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
   const [isModalVisible, setIsModalVisible] = useState(false);
+   const token = localStorage.getItem("token");
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -89,7 +89,7 @@ const ProfilePage = () => {
     return () => clearInterval(timer);
   }, [countdown]);
 
-  const token = localStorage.getItem("token");
+ 
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
