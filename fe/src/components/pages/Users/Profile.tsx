@@ -42,7 +42,6 @@ const ProfilePage = () => {
   const { data: listDiem } = useListDiem({ resource: "diem_thanh_vien" });
   const { logout } = useGoogleAuth();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
