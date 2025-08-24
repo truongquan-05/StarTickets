@@ -67,6 +67,7 @@ class DanhGiaController extends Controller
         $userId = Auth::id();
         $danhGia = DanhGia::where('phim_id', $phimId)
             ->where('nguoi_dung_id', $userId)
+            ->where('trang_thai', true)
             ->with(['nguoiDung', 'phim'])
             ->first();
 
@@ -86,6 +87,7 @@ class DanhGiaController extends Controller
     {
         $danhGia = DanhGia::where('phim_id', $phimId)
             ->with(['nguoiDung', 'phim'])
+            ->where('trang_thai', true)
             ->orderBy('id', 'desc')
             ->get();
 
