@@ -13,6 +13,7 @@ class DanhGia extends Model
         'phim_id',
         'so_sao',
         'noi_dung',
+        'trang_thai'
     ];
 
     public function nguoiDung()

@@ -95,6 +95,7 @@ return new class extends Migration {
             $table->foreignId('phim_id')->constrained('phim')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('so_sao');
             $table->text('noi_dung');
+             $table->boolean('trang_thai')->default(true);
             $table->timestamps();
         });
 

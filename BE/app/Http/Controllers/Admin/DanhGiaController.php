@@ -24,7 +24,7 @@ class DanhGiaController extends Controller
     public function index()
     {
         $danhGias = DanhGia::with(['nguoiDung', 'phim'])->get();
-        return response()->json(['data'=>$danhGias]);
+        return response()->json(['data' => $danhGias]);
     }
 
     public function show($id)
@@ -33,8 +33,18 @@ class DanhGiaController extends Controller
         return response()->json($danhGia);
     }
 
-    public function update(Request $request, string $id){
+    public function update(Request $request, string $id)
+    {
+        $DanhGia = DanhGia::find($id);
 
+        if ($DanhGia) {
+            $DanhGia->update([
+                'trang_thai' => $request->input('trang_thai')
+            ]);
+        }
+        return response()->json([
+            'message' => 'Thành công'
+        ]);
     }
 
     // public function delete($id)
