@@ -365,7 +365,7 @@ export const useRestorePhongChieu = ({ resource = "phong_chieu" }: Props) => {
   });
 };
 
-export const useListCinemas = ({ resource = "rap" }: Props) => {
+export const useListCinemas = ({ resource = "client/rap" }: Props) => {
   return useQuery({
     queryKey: [resource],
     queryFn: async () => {
