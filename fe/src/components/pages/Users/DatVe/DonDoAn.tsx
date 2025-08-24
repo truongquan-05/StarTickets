@@ -82,15 +82,13 @@ return (
     style={{
       flex: 1,
       padding: 24,
-      background: "#0c0b1f",
-      border: "1px solid rgba(226, 232, 240, 0.6)",
-      borderRadius: 4,
+      // background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
       // minHeight: "100vh",
     }}
   >
     <div style={{ 
       display: "grid", 
-      gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", 
+      gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))", 
       gap: 20,
       maxWidth: "1200px",
       margin: "0 auto"
@@ -102,7 +100,7 @@ return (
             key={food.id}
             style={{
               background: "white",
-              borderRadius: 4,
+              borderRadius: 16,
               padding: 20,
               boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
               border: "1px solid rgba(226, 232, 240, 0.6)",
@@ -127,7 +125,7 @@ return (
                     width: 100,
                     height: 100,
                     objectFit: "cover",
-                    borderRadius: 4,
+                    borderRadius: 12,
                     border: "2px solid #f1f5f9",
                   }}
                 />
@@ -135,7 +133,7 @@ return (
                   position: "absolute",
                   top: -6,
                   right: -6,
-                  backgroundColor: "#8200d8",
+                  backgroundColor: "#10b981",
                   color: "white",
                   fontSize: 11,
                   fontWeight: "600",
@@ -161,7 +159,7 @@ return (
                 <div style={{ 
                   fontSize: 20, 
                   fontWeight: "700", 
-                  color: "#8200d8", 
+                  color: "#059669", 
                   marginBottom: 8 
                 }}>
                   {new Intl.NumberFormat("vi-VN", {
@@ -194,7 +192,7 @@ return (
                     display: "flex",
                     alignItems: "center",
                     backgroundColor: "#f8fafc",
-                    borderRadius: 4,
+                    borderRadius: 12,
                     padding: 4,
                     border: "1px solid #e2e8f0"
                   }}>
@@ -211,7 +209,7 @@ return (
                         color: quantity === 0 ? "#94a3b8" : "#475569",
                         width: 32,
                         height: 32,
-                        borderRadius: 4,
+                        borderRadius: 8,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -263,7 +261,7 @@ return (
                         color: "#475569",
                         width: 32,
                         height: 32,
-                        borderRadius: 4,
+                        borderRadius: 8,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -275,8 +273,8 @@ return (
                         boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "yellow";
-                        e.currentTarget.style.color = "#8200d8";
+                        e.currentTarget.style.backgroundColor = "#f0fdf4";
+                        e.currentTarget.style.color = "#16a34a";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "white";
