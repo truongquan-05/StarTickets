@@ -137,14 +137,17 @@ const ThanhToan: React.FC = () => {
   const momoMutation = useCreateThanhToanMoMo({ resource: "momo-pay" });
 
   // Gán tên và email mặc định vào form, có thể sửa được
-  useEffect(() => {
-    if (user) {
+  const isInit = useRef(true);
+   useEffect(() => {
+    if (user && isInit.current) {
+     isInit.current = false;
       form.setFieldsValue({
         fullName: user.ten || "",
         email: user.email || "",
       });
     }
-  }, [user, form]);
+  }, [user, form,]);
+
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<
     number | undefined
   >(undefined);
@@ -155,7 +158,7 @@ const ThanhToan: React.FC = () => {
     selectedPaymentMethod === undefined,
     selectedVoucherId
   );
-  console.log("tong tien goc>>>", tongTienGoc)
+  console.log("tong tien goc>>>", tongTienGoc);
 
   // Đếm ngược thời gian
   useEffect(() => {
@@ -192,14 +195,17 @@ const ThanhToan: React.FC = () => {
       return;
     }
     setLoading(true);
-    fetch(`http://127.0.0.1:8000/api/client/lich_chieu/${bookingData.lich_chieu_id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      `http://127.0.0.1:8000/api/client/lich_chieu/${bookingData.lich_chieu_id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data: LichChieuInfo) => {
         setLichChieuInfo(data);
@@ -248,7 +254,7 @@ const ThanhToan: React.FC = () => {
       email: formStep1Data.email,
       ma_giam_gia_id: formStep1Data.ma_giam_gia_id,
       diem_thanh_vien: checkDiem.variables?.diem || null,
-      tong_tien_goc: tongTienGoc
+      tong_tien_goc: tongTienGoc,
     };
     // Không còn đặt cờ isPayingRef hoặc skipRelease vì backend xử lý
     momoMutation.mutate(payload, {
@@ -258,11 +264,13 @@ const ThanhToan: React.FC = () => {
         } else {
           message.error(response?.data?.message);
           try {
-            await axios.delete(`http://127.0.0.1:8000/api/dat_ve/${bookingData.id}`);
+            await axios.delete(
+              `http://127.0.0.1:8000/api/dat_ve/${bookingData.id}`
+            );
             await axios.post(
               `http://127.0.0.1:8000/api/delete-voucher/${formStep1Data.ma_giam_gia_id}`
             );
-            navigate(`/phim/${bookingData?.lich_chieu?.phim_id}`)
+            navigate(`/phim/${bookingData?.lich_chieu?.phim_id}`);
           } catch (error) {
             console.error("Xử lý khi lỗi thanh toán thất bại:", error);
           }
@@ -433,6 +441,7 @@ const ThanhToan: React.FC = () => {
                       className="form-input"
                     />
                   </Form.Item>
+
                   <Form.Item
                     label={
                       <span

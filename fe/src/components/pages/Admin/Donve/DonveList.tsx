@@ -11,6 +11,7 @@ import {
   Dropdown,
   MenuProps,
   Modal,
+  Menu,
 } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { getListDonVe } from "../../../provider/duProvider";
@@ -21,6 +22,8 @@ import {
   DownloadOutlined,
   FileExcelOutlined,
   FilePdfOutlined,
+  LogoutOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { DatePicker } from "antd";
@@ -56,7 +59,6 @@ export default function DonVeList() {
 
   // Hàm xuất Excel
   const exportToExcel = (from: any, to: any) => {
-    
     try {
       const dataForExcel = filteredData
         .filter((i: any) => {
@@ -73,7 +75,7 @@ export default function DonVeList() {
         .map((item: any, index: number) => ({
           STT: index + 1,
           "Mã đơn hàng": item.ma_giao_dich || "—",
-          Email: item.nguoi_dung?.email || "—",
+          Email: item?.email || "—",
           "Tên phim": item.dat_ve?.lich_chieu?.phim?.ten_phim || "—",
           "Rạp chiếu":
             item.dat_ve?.lich_chieu?.phong_chieu?.rap.ten_rap || "CGV Vincom",
@@ -115,8 +117,7 @@ export default function DonVeList() {
   };
 
   // Hàm xuất PDF (phiên bản cải tiến)
-  const exportToPDF = (from:any, to:any) => {
-    
+  const exportToPDF = (from: any, to: any) => {
     try {
       const doc = new jsPDF("landscape");
 
@@ -190,93 +191,95 @@ export default function DonVeList() {
       doc.setFont(undefined, "normal");
       doc.setFontSize(8);
 
-      filteredData.filter((i: any) => {
-            if (from) {
-              return (
-                dayjs(i.created_at).format("YYYY-MM-DD") >=
-                  dayjs(from).format("YYYY-MM-DD") &&
-                dayjs(i.created_at).format("YYYY-MM-DD") <=
-                  dayjs(to).format("YYYY-MM-DD")
-              );
-            }
-            return i;
-          }).forEach((item: any, index: number) => {
-        // Kiểm tra nếu cần trang mới
-        if (yPosition > pageHeight - 30) {
-          doc.addPage();
-          yPosition = 30;
+      filteredData
+        .filter((i: any) => {
+          if (from) {
+            return (
+              dayjs(i.created_at).format("YYYY-MM-DD") >=
+                dayjs(from).format("YYYY-MM-DD") &&
+              dayjs(i.created_at).format("YYYY-MM-DD") <=
+                dayjs(to).format("YYYY-MM-DD")
+            );
+          }
+          return i;
+        })
+        .forEach((item: any, index: number) => {
+          // Kiểm tra nếu cần trang mới
+          if (yPosition > pageHeight - 30) {
+            doc.addPage();
+            yPosition = 30;
 
-          // Vẽ lại header trên trang mới
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(9);
-          doc.setFillColor(240, 240, 240);
-          doc.rect(14, yPosition - 5, 269, 8, "F");
+            // Vẽ lại header trên trang mới
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(9);
+            doc.setFillColor(240, 240, 240);
+            doc.rect(14, yPosition - 5, 269, 8, "F");
 
-          doc.text("STT", cols.stt, yPosition);
-          doc.text("Mã giao dịch", cols.maGD, yPosition);
-          doc.text("Email", cols.email, yPosition);
-          doc.text("Tên phim", cols.phim, yPosition);
-          doc.text("Rạp chiếu", cols.rap, yPosition);
-          doc.text("Ngày đặt", cols.ngay, yPosition);
-          doc.text("Tổng tiền", cols.tien, yPosition);
+            doc.text("STT", cols.stt, yPosition);
+            doc.text("Mã giao dịch", cols.maGD, yPosition);
+            doc.text("Email", cols.email, yPosition);
+            doc.text("Tên phim", cols.phim, yPosition);
+            doc.text("Rạp chiếu", cols.rap, yPosition);
+            doc.text("Ngày đặt", cols.ngay, yPosition);
+            doc.text("Tổng tiền", cols.tien, yPosition);
 
-          yPosition += 3;
-          doc.line(14, yPosition, 283, yPosition);
-          yPosition += 5;
+            yPosition += 3;
+            doc.line(14, yPosition, 283, yPosition);
+            yPosition += 5;
 
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(8);
-        }
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+          }
 
-        // Vẽ background xen kẽ cho các dòng
-        if (index % 2 === 0) {
-          doc.setFillColor(250, 250, 250);
-          doc.rect(14, yPosition - 4, 269, 6, "F");
-        }
+          // Vẽ background xen kẽ cho các dòng
+          if (index % 2 === 0) {
+            doc.setFillColor(250, 250, 250);
+            doc.rect(14, yPosition - 4, 269, 6, "F");
+          }
 
-        // Dữ liệu từng cột
-        doc.text(String(index + 1), cols.stt + 3, yPosition, {
-          align: "center",
+          // Dữ liệu từng cột
+          doc.text(String(index + 1), cols.stt + 3, yPosition, {
+            align: "center",
+          });
+          doc.text(
+            (item.ma_giao_dich || "—").substring(0, 15),
+            cols.maGD,
+            yPosition
+          );
+
+          // Cắt email nếu quá dài
+          const email = item?.email || "—";
+          const shortEmail =
+            email.length > 25 ? email.substring(0, 22) + "..." : email;
+          doc.text(shortEmail, cols.email, yPosition);
+
+          // Cắt tên phim nếu quá dài
+          const tenPhim = item.dat_ve?.lich_chieu?.phim?.ten_phim || "—";
+          const shortPhim =
+            tenPhim.length > 20 ? tenPhim.substring(0, 17) + "..." : tenPhim;
+          doc.text(shortPhim, cols.phim, yPosition);
+
+          // Tên rạp
+          const tenRap =
+            item.dat_ve?.lich_chieu?.phong_chieu?.rap?.ten_rap || "CGV Vincom";
+          const shortRap =
+            tenRap.length > 15 ? tenRap.substring(0, 12) + "..." : tenRap;
+          doc.text(shortRap, cols.rap, yPosition);
+
+          // Ngày đặt
+          doc.text(
+            dayjs(item.created_at).format("DD/MM/YYYY"),
+            cols.ngay,
+            yPosition
+          );
+
+          // Tổng tiền (căn phải)
+          const tongTien =
+            Number(item.dat_ve?.tong_tien || 0).toLocaleString() + " đ";
+          doc.text(tongTien, cols.tien + 20, yPosition, { align: "right" });
+
+          yPosition += lineHeight;
         });
-        doc.text(
-          (item.ma_giao_dich || "—").substring(0, 15),
-          cols.maGD,
-          yPosition
-        );
-
-        // Cắt email nếu quá dài
-        const email = item.nguoi_dung?.email || "—";
-        const shortEmail =
-          email.length > 25 ? email.substring(0, 22) + "..." : email;
-        doc.text(shortEmail, cols.email, yPosition);
-
-        // Cắt tên phim nếu quá dài
-        const tenPhim = item.dat_ve?.lich_chieu?.phim?.ten_phim || "—";
-        const shortPhim =
-          tenPhim.length > 20 ? tenPhim.substring(0, 17) + "..." : tenPhim;
-        doc.text(shortPhim, cols.phim, yPosition);
-
-        // Tên rạp
-        const tenRap =
-          item.dat_ve?.lich_chieu?.phong_chieu?.rap?.ten_rap || "CGV Vincom";
-        const shortRap =
-          tenRap.length > 15 ? tenRap.substring(0, 12) + "..." : tenRap;
-        doc.text(shortRap, cols.rap, yPosition);
-
-        // Ngày đặt
-        doc.text(
-          dayjs(item.created_at).format("DD/MM/YYYY"),
-          cols.ngay,
-          yPosition
-        );
-
-        // Tổng tiền (căn phải)
-        const tongTien =
-          Number(item.dat_ve?.tong_tien || 0).toLocaleString() + " đ";
-        doc.text(tongTien, cols.tien + 20, yPosition, { align: "right" });
-
-        yPosition += lineHeight;
-      });
 
       // Đường kẻ cuối bảng
       doc.line(14, yPosition, 283, yPosition);
@@ -312,20 +315,57 @@ export default function DonVeList() {
   const [date, setDate] = useState<any>(null);
 
   // Menu dropdown cho nút xuất
-  const exportMenuItems: MenuProps["items"] = [
-    {
-      key: "excel",
-      label: "Xuất Excel",
-      icon: <FileExcelOutlined style={{ color: "#10b981" }} />,
-      onClick: () => setOpen(true), // mở modal
-    },
-    {
-      key: "pdf",
-      label: "Xuất PDF",
-      icon: <FilePdfOutlined style={{ color: "#ef4444" }} />,
-      onClick: () => setOpenPdf(true), // mở modal
-    },
-  ];
+  // const exportMenuItems: MenuProps["items"] = [
+
+  // {
+  //   key: "excel",
+  //   label: "Xuất Excel",
+  //   icon: <FileExcelOutlined style={{ color: "#10b981" }} />,
+  //   onClick: () => setOpen(true), // mở modal
+  // },
+  // {
+  //   key: "pdf",
+  //   label: "Xuất PDF",
+  //   icon: <FilePdfOutlined style={{ color: "#ef4444" }} />,
+  //   onClick: () => setOpenPdf(true), // mở modal
+  // },
+  // ];
+
+  const accountMenu = (
+    <Menu
+      className="custom-dropdown-menu"
+      items={[
+        {
+          key: "excel",
+          label: (
+            <span
+              style={{
+                color: "black",
+              }}
+            >
+              <FileExcelOutlined style={{ color: "#10b981" }} /> Xuất Excel
+            </span>
+          ),
+          style: { color: "black" },
+          onClick: () => setOpen(true), // mở modal
+        },
+        {
+          key: "pdf",
+          label: (
+            <span
+              style={{
+                color: "black",
+              }}
+            >
+              <FilePdfOutlined style={{ color: "#ef4444" }} /> Xuất PDF
+            </span>
+          ),
+          style: { color: "black" },
+          onClick: () => setOpenPdf(true), // mở modal
+        },
+      ]}
+    />
+  );
 
   const getColumnSearchProps = (dataIndex: string): ColumnType<any> => ({
     filterDropdown: ({
@@ -419,7 +459,7 @@ export default function DonVeList() {
     },
     {
       title: "Email",
-      render: (r: any) => <div>{r.nguoi_dung?.email || "—"}</div>,
+      render: (r: any) => <div>{r?.email || "—"}</div>,
       width: 200,
     },
     {
@@ -553,7 +593,7 @@ export default function DonVeList() {
               style={{ width: 250 }}
               allowClear
             />
-            <Dropdown menu={{ items: exportMenuItems }} placement="bottomRight">
+            <Dropdown overlay={accountMenu} placement="bottomRight">
               <Button type="default" icon={<DownloadOutlined />}>
                 Xuất dữ liệu
               </Button>

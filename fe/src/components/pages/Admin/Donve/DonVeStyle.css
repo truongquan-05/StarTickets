@@ -1,4 +1,4 @@
-.ant-dropdown-menu {
+/* .ant-dropdown-menu {
   background-color: #fff !important;
 }
 
@@ -8,4 +8,11 @@
 
 .ant-dropdown-menu-item:hover {
   background-color: #f5f5f5 !important;
+} */
+.ant-dropdown .custom-dropdown-menu {
+  background-color: #fff !important;
+}
+
+.custom-dropdown-menu{
+  color: black !important;
 }
