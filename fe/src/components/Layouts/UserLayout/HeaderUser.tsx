@@ -138,7 +138,7 @@ const HeaderUser = () => {
                       ? user.anh_dai_dien
                       : `http://127.0.0.1:8000/storage/${user?.anh_dai_dien}`
                   }
-                  alt={user.ten}
+                  alt={user?.ten}
                   style={{
                     width: 30,
                     height: 30,
@@ -154,7 +154,7 @@ const HeaderUser = () => {
               )}
               <span className="login-text" title={user?.ten}>
                 {user
-                  ? `${user.ten.slice(0, 6).toUpperCase()}...`
+                  ? `${user?.ten?.slice(0, 6).toUpperCase()}...`
                   : "TÀI KHOẢN"}
               </span>
             </div>

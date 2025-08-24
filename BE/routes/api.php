@@ -167,6 +167,7 @@ Route::post('thong-ke-ve',[DashboardController::class,'thongKeVe']);
 //-------------------CLIENT-------------------//
 
 Route::get('/client/nguoi_dung/{id}', [ClientNguoiDungController::class, 'show']);
+Route::put('/client/nguoi_dung/{id}', [ClientNguoiDungController::class, 'update']);
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/home/dang-chieu', [HomeController::class, 'getPhimDangChieu']);
 Route::get('/home/sap-chieu', [HomeController::class, 'getPhimSapChieu']);
