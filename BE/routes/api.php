@@ -163,7 +163,7 @@ Route::get('doanh-thu-nam',[DashboardController::class,'DoanhThuNam']);
 Route::get('doanh-thu-phim',[DashboardController::class,'PhimDoanhThuCaoNhat']);
 Route::post('doanh-thu',[DashboardController::class,'DoanhThu']);
 Route::post('thong-ke-ve',[DashboardController::class,'thongKeVe']);
-Route::put('updat-danh-gia/{id}',[AdminDanhGiaController::class,'update']);
+Route::put('update-danh-gia/{id}',[AdminDanhGiaController::class,'update']);
 
 
 //-------------------CLIENT-------------------//

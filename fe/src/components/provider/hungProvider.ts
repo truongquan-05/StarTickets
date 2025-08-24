@@ -458,5 +458,9 @@ export const getThongKeDoanhThu = async ({resource = "doanh-thu"} : Props) => {
   return data;
 }
 
-
+export const getUpdateDanhGia= async ({resource = "update-danh-gia", id, values} : Props) => {
+  if(!id) return;
+  const {data} = await axiosClient.put(`${resource}/${id}`,values);
+  return data
+}
 

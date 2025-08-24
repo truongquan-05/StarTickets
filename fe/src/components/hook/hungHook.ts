@@ -62,6 +62,7 @@ import {
   getTongQuan,
   getUpdateCategoryChair,
   getUpdateCheckGhe,
+  getUpdateDanhGia,
   getUpdateLichChieu,
   getUpdateLoaiGhe,
   getUpdateMovies,
@@ -907,5 +908,13 @@ export const useThongKeDoanhThu = ({ resource = "doanh-thu" }) => {
   return useQuery({
     queryKey: [resource],
     queryFn: () => getThongKeDoanhThu({ resource }),
+  });
+};
+
+
+export const useUpdateDanhGia = ({ resource = "update-danh-gia" }) => {
+  return useMutation({
+    mutationFn: ({ id, values }: { id: number | string; values: any }) =>
+      getUpdateDanhGia({ resource, id, values }),
   });
 };

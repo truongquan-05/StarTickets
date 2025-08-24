@@ -8,10 +8,14 @@ import {
   Modal,
   Select,
   Card,
+  Switch,
+  message,
 } from "antd";
 import axios from "axios";
 import type { ColumnsType } from "antd/es/table";
-import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
+import { EditFilled, FilterOutlined, SearchOutlined } from "@ant-design/icons";
+import { useUpdateDanhGia } from "../../../hook/hungHook";
+import { useQueryClient } from "@tanstack/react-query";
 
 // const { Title } = Typography;
 const { Option } = Select;
@@ -47,6 +51,7 @@ const ListDanhGia: React.FC = () => {
   const [soSaoFilter, setSoSaoFilter] = useState<number | null>(null);
   const [phimOptions, setPhimOptions] = useState<Phim[]>([]);
   const [selectedPhimId, setSelectedPhimId] = useState<number | null>(null);
+  const { mutate } = useUpdateDanhGia({ resource: "update-danh-gia" });
 
   useEffect(() => {
     fetchDanhGia();
@@ -71,6 +76,7 @@ const ListDanhGia: React.FC = () => {
       setLoading(false);
     }
   };
+  const queryClient = useQueryClient();
 
   const fetchPhimList = async () => {
     try {
@@ -83,6 +89,23 @@ const ListDanhGia: React.FC = () => {
   const handleViewDetail = (record: DanhGia) => {
     setSelectedDanhGia(record);
     setModalVisible(true);
+  };
+  const handleToggle = (checked: boolean, record: any) => {
+    mutate(
+      {
+        id: record.id,
+        values: { trang_thai: checked }, // payload BE yêu cầu
+      },
+      {
+        onSuccess: () => {
+          message.success("Cập nhật trạng thái thành công");
+          fetchDanhGia();
+        },
+        onError: () => {
+          message.error("Lỗi khi cập nhật trạng thái");
+        },
+      }
+    );
   };
 
   const filteredData = data.filter((item) => {
@@ -246,7 +269,17 @@ const ListDanhGia: React.FC = () => {
         </div>
       ),
     },
-
+    {
+      title: "Hiển thị",
+      width: 100,
+      align: 'center' as const,
+      render: (_:any, record:any) => (
+        <Switch
+          checked={record.trang_thai ?? 1}
+          onChange={(checked) => handleToggle(checked, record)}
+        />
+      ),
+    },
     {
       title: "Hành động",
       key: "actions",
@@ -257,6 +290,7 @@ const ListDanhGia: React.FC = () => {
       ),
       width: 120,
     },
+    
   ];
 
   return (
