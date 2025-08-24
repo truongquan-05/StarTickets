@@ -37,9 +37,9 @@ class PhimController extends Controller
 
 
         $perPage = $request->get('per_page', 10);
-        $phims = $query->orderBy('id', 'desc')->paginate($perPage);
+        $phims = $query->orderBy('id', 'desc')->get();
 
-        return response()->json($phims);
+        return response()->json(['data'=>$phims]);
     }
 
 

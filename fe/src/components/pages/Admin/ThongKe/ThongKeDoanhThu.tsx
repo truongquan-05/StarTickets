@@ -28,6 +28,7 @@ import {
   BarChart,
   Bar,
   CartesianGrid,
+  LabelList,
 } from "recharts";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -41,7 +42,7 @@ const ThongKeDoanhThu = () => {
   const [dataRap, setDataRap] = useState<{ data: any[] }>({ data: [] });
   const [loadingRap, setLoadingRap] = useState<boolean>(true);
   const [form] = Form.useForm();
-   const [dataFilterPhim, setDataPhim] = useState<{ data: any[] }>({ data: [] });
+  const [dataFilterPhim, setDataPhim] = useState<{ data: any[] }>({ data: [] });
   const [loadingPhim, setLoadingPhim] = useState<boolean>(true);
 
   // Lấy danh sách rạp (rap)
@@ -64,7 +65,7 @@ const ThongKeDoanhThu = () => {
     fetchDataRap();
   }, [token]);
 
-    useEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
     const fetchData = async () => {
       try {
@@ -192,16 +193,15 @@ const ThongKeDoanhThu = () => {
     {
       icon: <VideoCameraOutlined style={{ color: "#faad14", fontSize: 24 }} />,
       title: "PHIM CÓ DOANH THU NHIỀU NHẤT",
-      value: data?.phimDoanhThuMax?.phim_id?.ten_phim || "Không có dữ liệu",
+      value: data?.phimDoanhThuMax?.ten_phim || "Không có dữ liệu",
       suffix: "",
       description: "",
     },
     {
       icon: <CreditCardOutlined style={{ color: "#722ed1", fontSize: 24 }} />,
-      title: "PHƯƠNG THỨC THANH TOÁN PHỔ BIẾN",
-      value: data?.phuongThucTT?.phuong_thuc?.nha_cung_cap || 0,
+      title: "DOANH THU ĐỒ ĂN",
+      value: data?.TongdoAn || 0,
       suffix: "",
-      description: `${data?.phuongThucTT?.phan_tram || 0}%`,
     },
   ];
 
@@ -210,11 +210,42 @@ const ThongKeDoanhThu = () => {
     doanhThu: item?.tong_doanh_thu,
   }));
 
+  const dataDoAn = Object.values(data?.doanhThuDoAn || {}).map((item: any) => ({
+    tenDoAn: item?.dataMon?.ten_do_an,
+    doanhThu: item?.tongtien,
+    soluong: item?.soluong, // ✅ thêm số lượng vào
+  }));
+
+  console.log(dataDoAn);
+
   const dataRaps = Object.values(data?.doanhthurap || {}).map((item: any) => ({
     name: item.rap_id.ten_rap,
     value: item.chiem,
     doanh_thu: item.tong_doanh_thu,
   }));
+  const CustomTooltipDoAn = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          className="bg-white p-2 shadow-md rounded"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            padding: "8px 12px",
+            fontSize: "13px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            maxWidth: "200px",
+          }}
+        >
+          <p className="font-semibold">{payload[0].payload.tenDoAn}</p>
+          <p>Doanh thu: {payload[0].payload.doanhThu}</p>
+          <p>Số lượng: {payload[0].payload.soluong}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const COLORS = [
     "#2f54eb",
@@ -226,6 +257,17 @@ const ThongKeDoanhThu = () => {
     "#1890ff",
     "#73d13d",
   ];
+
+  const COLORSDOAN = [
+    "#73ff00ff",
+    "#4e9a23ff",
+    "#6c538eff",
+    "#f5222d",
+    "#b6b5b8ff",
+    "#4b7237ff",
+    "#ff1818ff",
+  ];
+
   const vnpayPercent = parseFloat(data?.phuongThucTT?.phan_tram ?? 0);
   const vnpayName = data?.phuongThucTT?.phuong_thuc?.ten ?? "VNPAY";
   const vnpayDoanhThu = data?.phuongThucTT?.doanh_thu ?? 0;
@@ -244,8 +286,6 @@ const ThongKeDoanhThu = () => {
       doanhthu: 0,
     },
   ];
-
- 
 
   const CustomTooltip = ({
     active,
@@ -271,8 +311,8 @@ const ThongKeDoanhThu = () => {
         >
           <p style={{ margin: "0 0 4px 0", fontWeight: "bold" }}>{label}</p>
           <p style={{ margin: "0", color: payload[0].color }}>
-            Doanh thu: {new Intl.NumberFormat("vi-VN").format(payload[0].value ?? 0)}{" "}
-            đ
+            Doanh thu:{" "}
+            {new Intl.NumberFormat("vi-VN").format(payload[0].value ?? 0)} đ
           </p>
         </div>
       );
@@ -323,14 +363,14 @@ const ThongKeDoanhThu = () => {
               </Select>
             </Form.Item>
           </Col>
-             <Col span={4}>
+          <Col span={4}>
             <Form.Item label="Phim" name="phim">
               <Select
                 allowClear
-                showSearch  
+                showSearch
                 placeholder="--- Tất cả ---"
                 style={{ width: "100%" }}
-                optionFilterProp="children"  
+                optionFilterProp="children"
                 filterOption={(input, option) =>
                   (option?.children as unknown as string)
                     .toLowerCase()
@@ -345,7 +385,7 @@ const ThongKeDoanhThu = () => {
               </Select>
             </Form.Item>
           </Col>
-          
+
           <Col span={2}>
             <Form.Item>
               <Button
@@ -501,66 +541,8 @@ const ThongKeDoanhThu = () => {
         </Col>
       </Row>
       <Row gutter={16}>
-        {/* <Col xs={24}>
-          {" "}
-          <Card title="Doanh thu theo phim">
-            <ResponsiveContainer
-              width="100%"
-              height={Math.max(dataPhim.length * 50, 150)}
-            >
-              <BarChart
-                layout="vertical"
-                data={dataPhim}
-                margin={{ top: 20, right: 20, left: 100, bottom: 10 }}
-              >
-                <XAxis type="number" domain={[0, "dataMax"]} />
-                <YAxis
-                  type="category"
-                  dataKey="tenPhim"
-                  tick={{ fontSize: 14 }}
-                  width={200}
-                />
-                <Tooltip />
-                <Bar dataKey="doanhThu" barSize={30}>
-                  {dataPhim.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-
-            <div style={{ display: "flex", flexWrap: "wrap", marginTop: 12 }}>
-              {dataPhim.map((phim, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginRight: 16,
-                    marginBottom: 8,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 12,
-                      height: 12,
-                      backgroundColor: COLORS[index % COLORS.length],
-                      marginRight: 6,
-                      borderRadius: 2,
-                    }}
-                  />
-                  <span style={{ fontSize: 12 }}>{phim.tenPhim}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </Col> */}
         <div style={{ width: "100%", height: 300, padding: "20px" }}>
           <h3>Doanh Thu Phim</h3>
-          <p>Doanh thu theo phim hôm nay</p>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={dataPhim}
@@ -573,6 +555,34 @@ const ThongKeDoanhThu = () => {
               <Tooltip content={<CustomTooltip />} cursor={false} />
               <Bar dataKey="doanhThu" radius={[5, 5, 0, 0]}>
                 {dataPhim.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </Row>
+      <br />
+
+      <Row gutter={16}>
+        <div style={{ width: "100%", height: 300, padding: "20px" }}>
+          <h3>Doanh thu đồ ăn</h3>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={dataDoAn}
+              margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+              barCategoryGap="45%"
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="tenDoAn" fontSize={12} />
+
+              <YAxis allowDecimals={false} fontSize={12} />
+              <Tooltip content={<CustomTooltipDoAn />} cursor={false} />
+              <Bar dataKey="doanhThu" radius={[5, 5, 0, 0]}>
+                {dataDoAn.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}

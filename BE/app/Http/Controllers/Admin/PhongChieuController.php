@@ -11,14 +11,14 @@ use Illuminate\Support\Facades\Validator;
 class PhongChieuController extends Controller
 {
 
-     public function __construct()
+    public function __construct()
     {
 
         $this->middleware('IsAdmin');
         $this->middleware('permission:PhongChieu-read')->only(['index', 'show']);
         $this->middleware('permission:PhongChieu-create')->only(['store']);
         $this->middleware('permission:PhongChieu-update')->only(['update']);
-        $this->middleware('permission:PhongChieu-delete')->only(['destroy','restore','forceDelete','trashed']);
+        $this->middleware('permission:PhongChieu-delete')->only(['destroy', 'restore', 'forceDelete', 'trashed']);
     }
 
 
@@ -46,24 +46,19 @@ class PhongChieuController extends Controller
             $query->where('trang_thai', $trangThai);
         }
 
-        $phongChieus = $query->paginate($perPage, ['*'], 'page', $page);
+        $phongChieus = $query->get();
 
         return response()->json([
-            'data' => $phongChieus->items(),
+            'data' => $phongChieus,
             'message' => 'Danh sách phòng chiếu',
-            'meta' => [
-                'current_page' => $phongChieus->currentPage(),
-                'per_page' => $phongChieus->perPage(),
-                'total' => $phongChieus->total(),
-                'last_page' => $phongChieus->lastPage(),
-            ],
+
         ], 200);
     }
 
     // Tạo phòng chiếu mới
     public function store(Request $request)
     {
-       $validate= Validator::make($request->all(),[
+        $validate = Validator::make($request->all(), [
             'rap_id' => 'required|exists:rap,id',
             'ten_phong' => 'required|string|max:100',
             'loai_so_do' => ['required', 'string', 'regex:/^\d+x\d+$/'], // Ví dụ: "8x8", "12x12"
@@ -272,9 +267,9 @@ class PhongChieuController extends Controller
         // Phân trang (mặc định 10)
         $perPage = $request->get('per_page', 10);
         $page = $request->get('page', 1);
-        $result = $query->paginate($perPage, ['*'], 'page', $page);
+        $result = $query->get();
 
-        return response()->json($result, 200);
+        return response()->json(['data' => $result], 200);
     }
     // Tạo ghế tự động dựa trên sơ đồ
     private function createSeats($phongChieu, $rows, $cols, $hangThuong, $hangVip, $hangDoi)

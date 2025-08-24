@@ -17,4 +17,7 @@ class DonDoAn extends Model
     {
         return $this->belongsTo(DoAn::class, 'do_an_id', 'id');
     }
+    public function DatVe(){
+        return $this->belongsTo(DatVe::class, 'dat_ve_id','id');
+    }
 }

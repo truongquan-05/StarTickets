@@ -25,16 +25,10 @@ class TinTucController extends Controller
     public function index(Request $request)
     {
         $tinTuc = TinTuc::orderBy('created_at', 'desc')
-            ->paginate($request->query('limit', 10));
+            ->get();
 
         return response()->json([
-            'data' => $tinTuc->items(),
-            'pagination' => [
-                'page' => $tinTuc->currentPage(),
-                'limit' => $tinTuc->perPage(),
-                'total' => $tinTuc->total(),
-                'totalPages' => $tinTuc->lastPage()
-            ]
+            'data' => $tinTuc,
         ]);
     }
 
@@ -43,16 +37,10 @@ class TinTucController extends Controller
     {
         $tinTuc = TinTuc::onlyTrashed()
             ->orderBy('deleted_at', 'desc')
-            ->paginate($request->query('limit', 10));
+            ->get();
 
         return response()->json([
-            'data' => $tinTuc->items(),
-            'pagination' => [
-                'page' => $tinTuc->currentPage(),
-                'limit' => $tinTuc->perPage(),
-                'total' => $tinTuc->total(),
-                'totalPages' => $tinTuc->lastPage()
-            ]
+            'data' => $tinTuc
         ]);
     }
 

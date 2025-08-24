@@ -10,22 +10,24 @@ import {
   Input,
   Dropdown,
   MenuProps,
+  Modal,
 } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { getListDonVe } from "../../../provider/duProvider";
 import { useNavigate } from "react-router-dom";
-import { 
-  SearchOutlined, 
-  FileSearchOutlined, 
+import {
+  SearchOutlined,
+  FileSearchOutlined,
   DownloadOutlined,
   FileExcelOutlined,
-  FilePdfOutlined 
+  FilePdfOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { DatePicker } from "antd";
 import QRCodeScanner from "./QuetQR";
-import * as XLSX from 'xlsx';
-import jsPDF from 'jspdf';
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import "./DonVeStyle.css";
 
 const { Title, Text } = Typography;
 
@@ -34,6 +36,7 @@ export default function DonVeList() {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const navigate = useNavigate();
+  const { RangePicker } = DatePicker;
 
   useEffect(() => {
     fetchDonVe();
@@ -52,62 +55,97 @@ export default function DonVeList() {
   };
 
   // Hàm xuất Excel
-  const exportToExcel = () => {
+  const exportToExcel = (from: any, to: any) => {
+    
     try {
-      const dataForExcel = filteredData.map((item: any, index: number) => ({
-        'STT': index + 1,
-        'Mã đơn hàng': item.ma_giao_dich || '—',
-        'Email': item.nguoi_dung?.email || '—',
-        'Tên phim': item.dat_ve?.lich_chieu?.phim?.ten_phim || '—',
-        'Rạp chiếu': item.dat_ve?.lich_chieu?.phong_chieu?.rap.ten_rap || 'CGV Vincom',
-        'Ngày đặt': dayjs(item.created_at).format('DD/MM/YYYY'),
-        'Phương thức thanh toán': item.phuong_thuc?.ten || '—',
-        'Tổng tiền (VNĐ)': Number(item.dat_ve?.tong_tien || 0).toLocaleString()
-      }));
+      const dataForExcel = filteredData
+        .filter((i: any) => {
+          if (from) {
+            return (
+              dayjs(i.created_at).format("YYYY-MM-DD") >=
+                dayjs(from).format("YYYY-MM-DD") &&
+              dayjs(i.created_at).format("YYYY-MM-DD") <=
+                dayjs(to).format("YYYY-MM-DD")
+            );
+          }
+          return i;
+        })
+        .map((item: any, index: number) => ({
+          STT: index + 1,
+          "Mã đơn hàng": item.ma_giao_dich || "—",
+          Email: item.nguoi_dung?.email || "—",
+          "Tên phim": item.dat_ve?.lich_chieu?.phim?.ten_phim || "—",
+          "Rạp chiếu":
+            item.dat_ve?.lich_chieu?.phong_chieu?.rap.ten_rap || "CGV Vincom",
+          "Ngày đặt": dayjs(item.created_at).format("DD/MM/YYYY"),
+          "Phương thức thanh toán": item.phuong_thuc?.ten || "—",
+          "Tổng tiền (VNĐ)": Number(
+            item.dat_ve?.tong_tien || 0
+          ).toLocaleString(),
+        }));
 
       const ws = XLSX.utils.json_to_sheet(dataForExcel);
-      
+
       // Tự động điều chỉnh độ rộng cột
       const wscols = [
-        { wch: 5 },  // STT
+        { wch: 5 }, // STT
         { wch: 15 }, // Mã đơn hàng
         { wch: 25 }, // Email
         { wch: 30 }, // Tên phim
         { wch: 20 }, // Rạp chiếu
         { wch: 12 }, // Ngày đặt
         { wch: 18 }, // Phương thức thanh toán
-        { wch: 15 }  // Tổng tiền
+        { wch: 15 }, // Tổng tiền
       ];
-      ws['!cols'] = wscols;
+      ws["!cols"] = wscols;
 
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Danh sách đơn vé");
-      
-      const fileName = `DanhSachDonVe_${dayjs().format('DDMMYYYY_HHmmss')}.xlsx`;
+
+      const fileName = `DanhSachDonVe_${dayjs().format(
+        "DDMMYYYY_HHmmss"
+      )}.xlsx`;
       XLSX.writeFile(wb, fileName);
-      
-      message.success('Xuất Excel thành công!');
+
+      message.success("Xuất Excel thành công!");
     } catch (error) {
-      console.error('Lỗi xuất Excel:', error);
-      message.error('Có lỗi xảy ra khi xuất Excel');
+      console.error("Lỗi xuất Excel:", error);
+      message.error("Có lỗi xảy ra khi xuất Excel");
     }
   };
 
   // Hàm xuất PDF (phiên bản cải tiến)
-  const exportToPDF = () => {
+  const exportToPDF = (from:any, to:any) => {
+    
     try {
-      const doc = new jsPDF('landscape');
-      
+      const doc = new jsPDF("landscape");
+
       // Tiêu đề
       doc.setFontSize(18);
-      doc.setFont(undefined, 'bold');
-      doc.text('DANH SÁCH ĐƠN VÉ', 140, 20, { align: 'center' });
-      
+      doc.setFont("helvetica", "bold");
+      doc.text("DANH SÁCH ĐƠN VÉ", 140, 20, { align: "center" });
+
       // Thông tin xuất file
       doc.setFontSize(10);
-      doc.setFont(undefined, 'normal');
-      doc.text(`Ngày xuất: ${dayjs().format('DD/MM/YYYY HH:mm:ss')}`, 14, 30);
-      doc.text(`Tổng số: ${filteredData.length} đơn vé`, 14, 35);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Ngày xuất: ${dayjs().format("DD/MM/YYYY HH:mm:ss")}`, 14, 30);
+      doc.text(
+        `Tổng số: ${
+          filteredData.filter((i: any) => {
+            if (from) {
+              return (
+                dayjs(i.created_at).format("YYYY-MM-DD") >=
+                  dayjs(from).format("YYYY-MM-DD") &&
+                dayjs(i.created_at).format("YYYY-MM-DD") <=
+                  dayjs(to).format("YYYY-MM-DD")
+              );
+            }
+            return i;
+          }).length
+        } đơn vé`,
+        14,
+        35
+      );
 
       // Vẽ đường kẻ phân cách
       doc.line(14, 40, 283, 40);
@@ -120,137 +158,172 @@ export default function DonVeList() {
         phim: 130,
         rap: 190,
         ngay: 230,
-        tien: 260
+        tien: 260,
       };
-      
+
       let yPosition = 50;
       const pageHeight = doc.internal.pageSize.height;
       const lineHeight = 7;
-      
+
       // Header bảng
       doc.setFontSize(9);
-      doc.setFont(undefined, 'bold');
-      
+      doc.setFont(undefined, "bold");
+
       // Vẽ background cho header
       doc.setFillColor(240, 240, 240);
-      doc.rect(14, yPosition - 5, 269, 8, 'F');
-      
-      doc.text('STT', cols.stt, yPosition);
-      doc.text('Mã giao dịch', cols.maGD, yPosition);
-      doc.text('Email', cols.email, yPosition);
-      doc.text('Tên phim', cols.phim, yPosition);
-      doc.text('Rạp chiếu', cols.rap, yPosition);
-      doc.text('Ngày đặt', cols.ngay, yPosition);
-      doc.text('Tổng tiền', cols.tien, yPosition);
-      
+      doc.rect(14, yPosition - 5, 269, 8, "F");
+
+      doc.text("STT", cols.stt, yPosition);
+      doc.text("Mã giao dịch", cols.maGD, yPosition);
+      doc.text("Email", cols.email, yPosition);
+      doc.text("Tên phim", cols.phim, yPosition);
+      doc.text("Rạp chiếu", cols.rap, yPosition);
+      doc.text("Ngày đặt", cols.ngay, yPosition);
+      doc.text("Tổng tiền", cols.tien, yPosition);
+
       // Đường kẻ dưới header
       yPosition += 3;
       doc.line(14, yPosition, 283, yPosition);
       yPosition += 5;
-      
+
       // Dữ liệu bảng
-      doc.setFont(undefined, 'normal');
+      doc.setFont(undefined, "normal");
       doc.setFontSize(8);
-      
-      filteredData.forEach((item: any, index: number) => {
+
+      filteredData.filter((i: any) => {
+            if (from) {
+              return (
+                dayjs(i.created_at).format("YYYY-MM-DD") >=
+                  dayjs(from).format("YYYY-MM-DD") &&
+                dayjs(i.created_at).format("YYYY-MM-DD") <=
+                  dayjs(to).format("YYYY-MM-DD")
+              );
+            }
+            return i;
+          }).forEach((item: any, index: number) => {
         // Kiểm tra nếu cần trang mới
         if (yPosition > pageHeight - 30) {
           doc.addPage();
           yPosition = 30;
-          
+
           // Vẽ lại header trên trang mới
-          doc.setFont(undefined, 'bold');
+          doc.setFont("helvetica", "bold");
           doc.setFontSize(9);
           doc.setFillColor(240, 240, 240);
-          doc.rect(14, yPosition - 5, 269, 8, 'F');
-          
-          doc.text('STT', cols.stt, yPosition);
-          doc.text('Mã giao dịch', cols.maGD, yPosition);
-          doc.text('Email', cols.email, yPosition);
-          doc.text('Tên phim', cols.phim, yPosition);
-          doc.text('Rạp chiếu', cols.rap, yPosition);
-          doc.text('Ngày đặt', cols.ngay, yPosition);
-          doc.text('Tổng tiền', cols.tien, yPosition);
-          
+          doc.rect(14, yPosition - 5, 269, 8, "F");
+
+          doc.text("STT", cols.stt, yPosition);
+          doc.text("Mã giao dịch", cols.maGD, yPosition);
+          doc.text("Email", cols.email, yPosition);
+          doc.text("Tên phim", cols.phim, yPosition);
+          doc.text("Rạp chiếu", cols.rap, yPosition);
+          doc.text("Ngày đặt", cols.ngay, yPosition);
+          doc.text("Tổng tiền", cols.tien, yPosition);
+
           yPosition += 3;
           doc.line(14, yPosition, 283, yPosition);
           yPosition += 5;
-          
-          doc.setFont(undefined, 'normal');
+
+          doc.setFont("helvetica", "normal");
           doc.setFontSize(8);
         }
-        
+
         // Vẽ background xen kẽ cho các dòng
         if (index % 2 === 0) {
           doc.setFillColor(250, 250, 250);
-          doc.rect(14, yPosition - 4, 269, 6, 'F');
+          doc.rect(14, yPosition - 4, 269, 6, "F");
         }
-        
+
         // Dữ liệu từng cột
-        doc.text(String(index + 1), cols.stt + 3, yPosition, { align: 'center' });
-        doc.text((item.ma_giao_dich || '—').substring(0, 15), cols.maGD, yPosition);
-        
+        doc.text(String(index + 1), cols.stt + 3, yPosition, {
+          align: "center",
+        });
+        doc.text(
+          (item.ma_giao_dich || "—").substring(0, 15),
+          cols.maGD,
+          yPosition
+        );
+
         // Cắt email nếu quá dài
-        const email = item.nguoi_dung?.email || '—';
-        const shortEmail = email.length > 25 ? email.substring(0, 22) + '...' : email;
+        const email = item.nguoi_dung?.email || "—";
+        const shortEmail =
+          email.length > 25 ? email.substring(0, 22) + "..." : email;
         doc.text(shortEmail, cols.email, yPosition);
-        
+
         // Cắt tên phim nếu quá dài
-        const tenPhim = item.dat_ve?.lich_chieu?.phim?.ten_phim || '—';
-        const shortPhim = tenPhim.length > 20 ? tenPhim.substring(0, 17) + '...' : tenPhim;
+        const tenPhim = item.dat_ve?.lich_chieu?.phim?.ten_phim || "—";
+        const shortPhim =
+          tenPhim.length > 20 ? tenPhim.substring(0, 17) + "..." : tenPhim;
         doc.text(shortPhim, cols.phim, yPosition);
-        
+
         // Tên rạp
-        const tenRap = item.dat_ve?.lich_chieu?.phong_chieu?.rap?.ten_rap || 'CGV Vincom';
-        const shortRap = tenRap.length > 15 ? tenRap.substring(0, 12) + '...' : tenRap;
+        const tenRap =
+          item.dat_ve?.lich_chieu?.phong_chieu?.rap?.ten_rap || "CGV Vincom";
+        const shortRap =
+          tenRap.length > 15 ? tenRap.substring(0, 12) + "..." : tenRap;
         doc.text(shortRap, cols.rap, yPosition);
-        
+
         // Ngày đặt
-        doc.text(dayjs(item.created_at).format('DD/MM/YYYY'), cols.ngay, yPosition);
-        
+        doc.text(
+          dayjs(item.created_at).format("DD/MM/YYYY"),
+          cols.ngay,
+          yPosition
+        );
+
         // Tổng tiền (căn phải)
-        const tongTien = Number(item.dat_ve?.tong_tien || 0).toLocaleString() + ' đ';
-        doc.text(tongTien, cols.tien + 20, yPosition, { align: 'right' });
-        
+        const tongTien =
+          Number(item.dat_ve?.tong_tien || 0).toLocaleString() + " đ";
+        doc.text(tongTien, cols.tien + 20, yPosition, { align: "right" });
+
         yPosition += lineHeight;
       });
 
       // Đường kẻ cuối bảng
       doc.line(14, yPosition, 283, yPosition);
-      
+
       // Thông tin tổng kết
       yPosition += 10;
-      doc.setFont(undefined, 'bold');
+      doc.setFont(undefined, "bold");
       doc.setFontSize(10);
-      const tongDoanhThu = filteredData.reduce((sum: number, item: any) => 
-        sum + Number(item.dat_ve?.tong_tien || 0), 0
+      const tongDoanhThu = filteredData.reduce(
+        (sum: number, item: any) => sum + Number(item.dat_ve?.tong_tien || 0),
+        0
       );
-      doc.text(`Tổng doanh thu: ${tongDoanhThu.toLocaleString()} đ`, cols.tien + 20, yPosition, { align: 'right' });
+      doc.text(
+        `Tổng doanh thu: ${tongDoanhThu.toLocaleString()} đ`,
+        cols.tien + 20,
+        yPosition,
+        { align: "right" }
+      );
 
       // Lưu file
-      const fileName = `DanhSachDonVe_${dayjs().format('DDMMYYYY_HHmmss')}.pdf`;
+      const fileName = `DanhSachDonVe_${dayjs().format("DDMMYYYY_HHmmss")}.pdf`;
       doc.save(fileName);
-      
-      message.success('Xuất PDF thành công!');
+
+      message.success("Xuất PDF thành công!");
     } catch (error) {
-      console.error('Lỗi xuất PDF:', error);
-      message.error('Có lỗi xảy ra khi xuất PDF');
+      console.error("Lỗi xuất PDF:", error);
+      message.error("Có lỗi xảy ra khi xuất PDF");
     }
   };
 
+  const [open, setOpen] = useState(false);
+  const [openPdf, setOpenPdf] = useState(false);
+  const [date, setDate] = useState<any>(null);
+
   // Menu dropdown cho nút xuất
-  const exportMenuItems: MenuProps['items'] = [
+  const exportMenuItems: MenuProps["items"] = [
     {
-      key: 'excel',
-      label: 'Xuất Excel',
-      icon: <FileExcelOutlined style={{ color: '#10b981' }} />,
-      onClick: exportToExcel,
+      key: "excel",
+      label: "Xuất Excel",
+      icon: <FileExcelOutlined style={{ color: "#10b981" }} />,
+      onClick: () => setOpen(true), // mở modal
     },
     {
-      key: 'pdf',
-      label: 'Xuất PDF',
-      icon: <FilePdfOutlined style={{ color: '#ef4444' }} />,
-      onClick: exportToPDF,
+      key: "pdf",
+      label: "Xuất PDF",
+      icon: <FilePdfOutlined style={{ color: "#ef4444" }} />,
+      onClick: () => setOpenPdf(true), // mở modal
     },
   ];
 
@@ -309,11 +382,7 @@ export default function DonVeList() {
   });
 
   const filteredData = donVe.filter((item: any) => {
-    const searchContent = [
-      item.ma_giao_dich,
-    ]
-      .join(" ")
-      .toLowerCase();
+    const searchContent = [item.ma_giao_dich].join(" ").toLowerCase();
 
     return searchContent.includes(searchText.toLowerCase());
   });
@@ -510,6 +579,38 @@ export default function DonVeList() {
             pageSizeOptions: ["10", "20", "50", "100"],
           }}
         />
+        <Modal
+          title="Chọn khoảng thời gian xuất Excel"
+          open={open}
+          onOk={() => {
+            const from = date?.[0] || null;
+            const to = date?.[1] || null;
+            exportToExcel(from, to);
+            setOpen(false);
+          }}
+          onCancel={() => setOpen(false)}
+        >
+          <RangePicker
+            onChange={(dates) => setDate(dates)}
+            style={{ width: "100%" }}
+          />
+        </Modal>
+        <Modal
+          title="Chọn khoảng thời gian xuất Pdf"
+          open={openPdf}
+          onOk={() => {
+            const from = date?.[0] || null;
+            const to = date?.[1] || null;
+            exportToPDF(from, to);
+            setOpenPdf(false);
+          }}
+          onCancel={() => setOpenPdf(false)}
+        >
+          <RangePicker
+            onChange={(dates) => setDate(dates)}
+            style={{ width: "100%" }}
+          />
+        </Modal>
       </Card>
     </div>
   );

@@ -135,7 +135,7 @@ class HomeController extends Controller
         }
 
         // phan trang neu co
-        $phim = $request->has('paginate') ? $query->paginate(10) : $query->get();
+        $phim =  $query->get();
 
         return response()->json($phim);
     }

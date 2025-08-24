@@ -42,18 +42,12 @@ class RapController extends Controller
             });
         }
 
-        $raps = $query->orderBy($sortBy, 'DESC')->paginate($perPage);
+        $raps = $query->orderBy($sortBy, 'DESC')->get();
 
         return response()->json([
             'success' => true,
             'message' => 'Danh sách rạp',
-            'data' => $raps->items(),
-            'pagination' => [
-                'current_page' => $raps->currentPage(),
-                'per_page' => $raps->perPage(),
-                'total' => $raps->total(),
-                'last_page' => $raps->lastPage(),
-            ]
+            'data' => $raps,
         ], 200);
     }
     /**

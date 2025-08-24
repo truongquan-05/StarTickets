@@ -45,8 +45,8 @@ class BannerController extends Controller
 
         // Phân trang
         $perPage = $request->get('per_page', 10);
-        $banners = $query->orderBy('id', 'desc')->paginate($perPage);
-        return response()->json($banners);
+        $banners = $query->orderBy('id', 'desc')->get();
+        return response()->json(['data'=>$banners]);
     }
 
     public function store(Request $request)

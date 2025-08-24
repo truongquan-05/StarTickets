@@ -40,7 +40,7 @@ class MaGiamGiaController extends Controller
 
         $truyVan->orderByDesc('created_at');
         $perPage = $request->get('per_page', 10);
-        return response()->json($truyVan->paginate($perPage));
+        return response()->json(['data'=>$truyVan->get()]);
     }
 
     // Danh sách mã đã hết hạn
@@ -54,7 +54,7 @@ class MaGiamGiaController extends Controller
         }
 
         $truyVan->orderByDesc('ngay_ket_thuc');
-        return response()->json($truyVan->paginate($request->get('per_page', 10)));
+        return response()->json(['data'=>$truyVan->get()]);
     }
 
     // Chi tiết mã giảm giá

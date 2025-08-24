@@ -36,17 +36,12 @@ class PhongChieuController extends Controller
             $query->where('trang_thai', $trangThai);
         }
 
-        $phongChieus = $query->paginate($perPage, ['*'], 'page', $page);
+        $phongChieus = $query->get();
 
         return response()->json([
-            'data' => $phongChieus->items(),
+            'data' => $phongChieus,
             'message' => 'Danh sách phòng chiếu',
-            'meta' => [
-                'current_page' => $phongChieus->currentPage(),
-                'per_page' => $phongChieus->perPage(),
-                'total' => $phongChieus->total(),
-                'last_page' => $phongChieus->lastPage(),
-            ],
+          
         ], 200);
     }
 

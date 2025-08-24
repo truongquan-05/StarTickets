@@ -43,7 +43,7 @@ const ProfilePage = () => {
   const { logout } = useGoogleAuth();
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
-   const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -88,8 +88,6 @@ const ProfilePage = () => {
     }
     return () => clearInterval(timer);
   }, [countdown]);
-
- 
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -137,7 +135,6 @@ const ProfilePage = () => {
           }
         )
         .then((res) => {
-         
           updatedUser = {
             ...user,
             ten: res.data?.data?.ten,

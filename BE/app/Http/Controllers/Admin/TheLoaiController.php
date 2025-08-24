@@ -20,9 +20,9 @@ class TheLoaiController extends Controller
         }
 
         $perPage = $request->get('per_page', 10);
-        $theloais = $query->paginate($perPage);
+        $theloais = $query->get();
 
-        return response()->json($theloais);
+        return response()->json(['data'=>$theloais]);
     }
 
     // Thêm mới thể loại

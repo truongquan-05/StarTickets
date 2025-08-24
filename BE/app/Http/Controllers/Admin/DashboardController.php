@@ -14,7 +14,7 @@ use App\Models\DatVeChiTiet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-
+use App\Models\DoAn;
 
 class DashboardController extends Controller
 {
@@ -177,7 +177,7 @@ class DashboardController extends Controller
             $DoanhThu = ThanhToan::with('datVe')->get();
             $tongDoanhThu = $DoanhThu->sum(fn($tt) => $tt->datVe->tong_tien ?? 0);
 
-            $rapMax = DatVe::with('lichChieu.phong_chieu')->get();
+            $rapMax = DatVe::with(['lichChieu.phong_chieu', 'DonDoAn'])->get();
 
             $groupRap = $rapMax->groupBy(function ($item) {
                 return $item->lichChieu->phong_chieu->rap_id;
@@ -190,24 +190,31 @@ class DashboardController extends Controller
                 ];
             })->sortByDesc('tong_doanh_thu')->first();
 
-            $groupPhim = $rapMax->groupBy(function ($item) {
-                return $item->lichChieu->phim_id;
-            });
-            $resultPhim = $groupPhim->map(function ($item, $i) {
-                return [
-                    'phim_id' => Phim::find($i),
-                    'tong_doanh_thu' => $item->sum('tong_tien')
+            $groupPhim = $rapMax->groupBy(fn($item) => $item->lichChieu->phim_id)
+                ->map(function ($items) {
+                    return [
+                        'items'     => $items,
+                        'tienDoAn'  => $items->sum(fn($tt) => $tt->DonDoAn->sum('gia_ban') ?? 0),
+                        'tong_tien' => $items->sum('tong_tien'),
+                    ];
+                });
 
+            $resultPhim = $groupPhim->map(function ($item, $phimId) {
+                return [
+                    'phim_id'        => $phimId,
+                    'ten_phim'       => Phim::find($phimId)->ten_phim ?? null,
+                    'tong_doanh_thu' => $item['tong_tien'] - $item['tienDoAn'],
                 ];
             })->sortByDesc('tong_doanh_thu')->first();
+
 
             $DoanhThuPhim = $groupPhim->map(function ($item, $i) {
                 return [
                     'phim_id' => Phim::find($i),
-                    'tong_doanh_thu' => $item->sum('tong_tien')
+                    'tong_doanh_thu' => $item['tong_tien']  - $item['tienDoAn']
 
                 ];
-            })->sortByDesc('tong_doanh_thu')->take(5);
+            })->sortByDesc('tong_doanh_thu')->take(8);
 
             $tongSoLuong = ThanhToan::count();
 
@@ -254,6 +261,24 @@ class DashboardController extends Controller
                 $doanhthunam->put($thang, $rawData[$thang] ?? 0);
             }
 
+
+
+            $doAn = DonDoAn::all();
+
+            $dtDoAn = $doAn->groupBy(fn($item) => $item->do_an_id)
+                ->map(
+                    function ($i, $id) {
+                        return [
+                            'soluong' => $i->sum('so_luong'),
+                            'dataMon' => DoAn::find($id),
+                            'tongtien' => $i->sum('gia_ban')
+                        ];
+                    }
+
+                )->take(10);
+
+            $tongDtDoAn = $dtDoAn->sum('tongtien');
+
             return response()->json([
                 'doanhThu' => $tongDoanhThu,
                 'rap' => $resultRap ?? 0,
@@ -261,7 +286,10 @@ class DashboardController extends Controller
                 'phuongThucTT' => $phuongThucTT,
                 'doanhthurap' => $tongRap,
                 'doanhthutheothang' => $doanhthunam,
-                'DoanhThuPhim' => $DoanhThuPhim
+                'DoanhThuPhim' => $DoanhThuPhim,
+                'TongdoAn' => $tongDtDoAn,
+                'doanhThuDoAn' => $dtDoAn
+
 
             ]);
         } else {
@@ -277,7 +305,7 @@ class DashboardController extends Controller
                         $q->where('rap_id', $RapId);
                     });
                 })
-                 ->when($Phim !== null, function ($query) use ($Phim) {
+                ->when($Phim !== null, function ($query) use ($Phim) {
                     $query->whereHas('datVe.lichChieu', function ($q) use ($Phim) {
                         $q->where('phim_id', $Phim);
                     });
@@ -293,7 +321,7 @@ class DashboardController extends Controller
                         $q->where('rap_id', $RapId);
                     });
                 })
-                 ->when($Phim !== null, function ($query) use ($Phim) {
+                ->when($Phim !== null, function ($query) use ($Phim) {
                     $query->whereHas('lichChieu', function ($q) use ($Phim) {
                         $q->where('phim_id', $Phim);
                     });
@@ -314,25 +342,36 @@ class DashboardController extends Controller
                 ];
             })->sortByDesc('tong_doanh_thu')->first();
 
-            $groupPhim = $rapMax->groupBy(function ($item) {
-                return $item->lichChieu->phim_id;
-            });
-            $resultPhim = $groupPhim->map(function ($item, $i) {
-                return [
-                    'phim_id' => Phim::find($i),
-                    'tong_doanh_thu' => $item->sum('tong_tien')
 
+
+            $groupPhim = $rapMax->groupBy(fn($item) => $item->lichChieu->phim_id)
+                ->map(function ($items) {
+                    return [
+                        'items'     => $items,
+                        'tienDoAn'  => $items->sum(fn($tt) => $tt->DonDoAn->sum('gia_ban') ?? 0),
+                        'tong_tien' => $items->sum('tong_tien'),
+                    ];
+                });
+
+            $resultPhim = $groupPhim->map(function ($item, $phimId) {
+                return [
+                    'phim_id'        => $phimId,
+                    'ten_phim'       => Phim::find($phimId)->ten_phim ?? null,
+                    'tong_doanh_thu' => $item['tong_tien'] - $item['tienDoAn'],
                 ];
             })->sortByDesc('tong_doanh_thu')->first();
 
 
+
+
+
             $tongSoLuong = ThanhToan::whereBetween('created_at', [$batdau, $ketthuc])
-            ->when($RapId !== null, function ($query) use ($RapId) {
-                $query->whereHas('datVe.lichChieu.phong_chieu', function ($q) use ($RapId) {
-                    $q->where('rap_id', $RapId);
-                });
-            })
-              ->when($Phim !== null, function ($query) use ($Phim) {
+                ->when($RapId !== null, function ($query) use ($RapId) {
+                    $query->whereHas('datVe.lichChieu.phong_chieu', function ($q) use ($RapId) {
+                        $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
                     $query->whereHas('datVe.lichChieu', function ($q) use ($Phim) {
                         $q->where('phim_id', $Phim);
                     });
@@ -351,15 +390,15 @@ class DashboardController extends Controller
                     )
                     ->whereBetween('created_at', [$batdau, $ketthuc])
                     ->when($Phim !== null, function ($query) use ($Phim) {
-                    $query->whereHas('datVe.lichChieu', function ($q) use ($Phim) {
-                        $q->where('phim_id', $Phim);
-                    });
-                })
-                     ->when($Phim !== null, function ($query) use ($Phim) {
-                    $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
-                        $q->where('phim_id', $Phim);
-                    });
-                })
+                        $query->whereHas('datVe.lichChieu', function ($q) use ($Phim) {
+                            $q->where('phim_id', $Phim);
+                        });
+                    })
+                    ->when($Phim !== null, function ($query) use ($Phim) {
+                        $query->whereHas('DatVe.lichChieu.phim', function ($q) use ($Phim) {
+                            $q->where('phim_id', $Phim);
+                        });
+                    })
                     ->groupBy('phuong_thuc_thanh_toan_id')
                     ->orderByDesc('so_luong')
                     ->first();
@@ -385,7 +424,7 @@ class DashboardController extends Controller
                         $q->where('rap_id', $RapId);
                     });
                 })
-                 ->when($Phim !== null, function ($query) use ($Phim) {
+                ->when($Phim !== null, function ($query) use ($Phim) {
                     $query->whereHas('lichChieu', function ($q) use ($Phim) {
                         $q->where('phim_id', $Phim);
                     });
@@ -405,14 +444,43 @@ class DashboardController extends Controller
                 }
             }
 
-
             $DoanhThuPhim = $groupPhim->map(function ($item, $i) {
                 return [
                     'phim_id' => Phim::find($i),
-                    'tong_doanh_thu' => $item->sum('tong_tien')
+                    'tong_doanh_thu' => $item['tong_tien']  - $item['tienDoAn']
 
                 ];
-            })->sortByDesc('tong_doanh_thu')->take(5);
+            })->sortByDesc('tong_doanh_thu')->take(8);
+
+
+            $doAn = DonDoAn::
+                when($RapId, function ($query) use ($RapId) {
+                    $query->whereHas('DatVe.lichChieu.phong_chieu', function ($q) use ($RapId) {
+                        $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim != null, function ($query) use ($Phim) {
+                    $query->whereHas('DatVe.lichChieu', function ($q) use ($Phim) {
+                        $q->where('phim_id', $Phim);
+                    });
+                })
+                ->whereBetween('created_at', [$batdau, $ketthuc])
+                ->get();
+
+            $dtDoAn = $doAn->groupBy(fn($item) => $item->do_an_id)
+                ->map(
+                    function ($i, $id) {
+                        return [
+                            'soluong' => $i->sum('so_luong'),
+                            'dataMon' => DoAn::find($id),
+                            'tongtien' => $i->sum('gia_ban')
+                        ];
+                    }
+
+                )->take(10);
+
+            $tongDtDoAn = $dtDoAn->sum('tongtien');
+
 
             return response()->json([
                 'doanhThu' => $tongDoanhThu,
@@ -421,7 +489,9 @@ class DashboardController extends Controller
                 'phuongThucTT' => $phuongThucTT,
                 'doanhthurap' =>  $tongRap,
                 'doanhthutheothang' => $doanhthunam,
-                'DoanhThuPhim' => $DoanhThuPhim
+                'DoanhThuPhim' => $DoanhThuPhim,
+                'TongdoAn' => $tongDtDoAn,
+                'doanhThuDoAn' => $dtDoAn
 
             ]);
         }
@@ -853,16 +923,15 @@ class DashboardController extends Controller
 
             //TI LE LAP DAY
             $tongGheOfRap = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])
-            ->when($RapId !== null, function ($query) use ($RapId) {
-                $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
-                    $q->where('rap_id', $RapId);
-                });
-            })
-              ->when($Phim !== null, function ($query) use ($Phim) {
+                ->when($RapId !== null, function ($query) use ($RapId) {
+                    $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
+                        $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
                     $query->whereHas('LichChieu', function ($q) use ($Phim) {
                         $q->where('phim_id', $Phim);
                     });
-                    
                 })
                 ->whereHas('Ghe.phong.rap')
                 ->with('Ghe.phong.rap')
@@ -872,16 +941,15 @@ class DashboardController extends Controller
                     return count($items);
                 });
             $dataGheOfRap = CheckGhe::whereBetween('created_at', [$batdau, $ketthuc])
-            ->when($RapId !== null, function ($query) use ($RapId) {
-                $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
-                    $q->where('rap_id', $RapId);
-                });
-            })
-              ->when($Phim !== null, function ($query) use ($Phim) {
+                ->when($RapId !== null, function ($query) use ($RapId) {
+                    $query->whereHas('Ghe.phong', function ($q) use ($RapId) {
+                        $q->where('rap_id', $RapId);
+                    });
+                })
+                ->when($Phim !== null, function ($query) use ($Phim) {
                     $query->whereHas('LichChieu', function ($q) use ($Phim) {
                         $q->where('phim_id', $Phim);
                     });
-                    
                 })->where('trang_thai', 'da_dat')
                 ->whereHas('Ghe.phong.rap')
                 ->with('Ghe.phong.rap')

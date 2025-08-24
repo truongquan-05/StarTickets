@@ -23,8 +23,8 @@ class DanhGiaController extends Controller
 
     public function index()
     {
-        $danhGias = DanhGia::with(['nguoiDung', 'phim'])->paginate(10);
-        return response()->json($danhGias);
+        $danhGias = DanhGia::with(['nguoiDung', 'phim'])->get();
+        return response()->json(['data'=>$danhGias]);
     }
 
     public function show($id)
