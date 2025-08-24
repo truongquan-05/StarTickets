@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Table, Button, Modal, Card } from "antd";
+import { Table, Button, Modal, Card, Input } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { IPhongChieu } from "../interface/phongchieu";
 import {
@@ -9,6 +9,8 @@ import {
 } from "../../../provider/hungProvider";
 import { useListGhe } from "../../../hook/hungHook";
 import SoDoGhe from "./SoDoGhe";
+import { SearchOutlined } from "@ant-design/icons";
+import type { InputRef } from "antd";
 
 interface IRap {
   id: number;
@@ -18,6 +20,7 @@ interface IRap {
 const ListPhongChieu = () => {
   const [open, setOpen] = useState(false);
   const [selectedPhong, setSelectedPhong] = useState<IPhongChieu | null>(null);
+  const searchInput = useRef<InputRef>(null);
 
   // Lấy danh sách phòng chiếu
   const {
@@ -74,7 +77,6 @@ const ListPhongChieu = () => {
     phong_id: selectedPhong?.id,
   });
 
-
   if (isLoadingPhong || isLoadingRap) {
     return (
       <div
@@ -114,15 +116,16 @@ const ListPhongChieu = () => {
 
   const rapMap = new Map<number, string>();
 
-const rapArray = Array.isArray(rapData) ? rapData : [];
-rapArray.forEach((r: IRap) => {
-  rapMap.set(r.id, r.ten_rap);
-});
+  const rapArray = Array.isArray(rapData) ? rapData : [];
+  rapArray.forEach((r: IRap) => {
+    rapMap.set(r.id, r.ten_rap);
+  });
 
   const openModal = (phong: IPhongChieu) => {
     setSelectedPhong(phong);
     setOpen(true);
   };
+  console.log(phongChieuData);
 
   const columns: ColumnsType<IPhongChieu> = [
     {
@@ -139,11 +142,139 @@ rapArray.forEach((r: IRap) => {
       align: "center",
       render: (rap_id: number) =>
         rapMap.get(rap_id) || `Không có rạp ID ${rap_id}`,
+      filters: Array.from(rapMap.entries()).map(([id, name]) => ({
+        text: name,
+        value: id,
+      })),
+      onFilter: (value, record) => record.rap_id === value,
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys = [],
+        confirm,
+        clearFilters,
+      }) => (
+        <div
+          style={{
+            padding: 10,
+            background: "#fff",
+            borderRadius: 6,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          }}
+        >
+          {Array.from(rapMap.entries()).map(([id, name]) => (
+            <div key={id} style={{ marginBottom: 6 }}>
+              <label style={{ cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedKeys.includes(id)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    const keys = checked
+                      ? [...selectedKeys, id]
+                      : selectedKeys.filter((k) => k !== id);
+                    setSelectedKeys?.(keys); // check undefined
+                    confirm?.(); // check undefined
+                  }}
+                  style={{ marginRight: 6 }}
+                />
+                {name}
+              </label>
+            </div>
+          ))}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: 6,
+            }}
+          >
+            <button
+              onClick={() => clearFilters?.()}
+              style={{
+                border: "none",
+                background: "#f0f0f0",
+                padding: "4px 8px",
+                borderRadius: 4,
+                cursor: "pointer",
+              }}
+            >
+              Xóa
+            </button>
+            <button
+              onClick={() => confirm?.()}
+              style={{
+                border: "none",
+                background: "#1890ff",
+                color: "#fff",
+                padding: "4px 8px",
+                borderRadius: 4,
+                cursor: "pointer",
+              }}
+            >
+              Lọc
+            </button>
+          </div>
+        </div>
+      ),
     },
+
     {
-      title: "Tên phòng",
+      title: "Tên Phòng",
       dataIndex: "ten_phong",
       key: "ten_phong",
+      align: "center",
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys,
+        confirm,
+        clearFilters,
+      }) => (
+        <div
+          style={{
+            padding: 8,
+            background: "#fff",
+            borderRadius: 6,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          }}
+        >
+          <Input
+            ref={searchInput}
+            placeholder="Nhập tên phòng"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm?.()}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              type="primary"
+              onClick={() => confirm?.()}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Tìm
+            </Button>
+            <Button
+              onClick={() => clearFilters?.()}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value, record) =>
+        record.ten_phong
+          .toString()
+          .toLowerCase()
+          .includes((value as string).toLowerCase()),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
     },
     {
       title: "Loại sơ đồ",

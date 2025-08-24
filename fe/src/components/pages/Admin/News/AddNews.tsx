@@ -1,14 +1,4 @@
-import React from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Upload,
-  message,
-  Card,
-  Space,
-} from "antd";
-import type { UploadFile } from "antd/es/upload/interface";
+import { Form, Input, Button, Upload, message, Card, Space } from "antd";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
@@ -19,14 +9,18 @@ const BASE_URL = "http://127.0.0.1:8000";
 const AddNews = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { mutate: createMutate,  } = useCreateNews({ resource: "tin_tuc" });
+  const { mutate: createMutate } = useCreateNews({ resource: "tin_tuc" });
 
   const onFinish = (values: any) => {
     const formData = new FormData();
     formData.append("tieu_de", values.tieu_de);
     formData.append("noi_dung", values.noi_dung);
 
-    if (values.hinh_anh && values.hinh_anh.length > 0 && values.hinh_anh[0].originFileObj) {
+    if (
+      values.hinh_anh &&
+      values.hinh_anh.length > 0 &&
+      values.hinh_anh[0].originFileObj
+    ) {
       formData.append("hinh_anh", values.hinh_anh[0].originFileObj);
     }
 
@@ -41,7 +35,10 @@ const AddNews = () => {
   };
 
   return (
-    <Card title="Thêm mới tin tức" style={{ maxWidth: "100%", margin: "20px auto" }}>
+    <Card
+      title="Thêm mới tin tức"
+      style={{ maxWidth: "100%", margin: "20px auto" }}
+    >
       <Form
         form={form}
         layout="vertical"
@@ -72,7 +69,6 @@ const AddNews = () => {
           </Upload>
         </Form.Item>
 
-
         <Form.Item
           label="Nội dung"
           name="noi_dung"
@@ -82,20 +78,23 @@ const AddNews = () => {
         >
           <ReactQuill
             theme="snow"
-            style={{ height: 300, marginBottom: 50 }}
+            style={{ height: "350px", marginBottom: "50px" }} // tăng chiều cao
             modules={{
               toolbar: [
-                [{ header: [1, 2, false] }],
-                ["bold", "italic", "underline"],
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                [{ size: ["small", "normal", "large", "huge"] }], // dùng size chuẩn
+                ["bold", "italic", "underline", "strike"],
+                [{ color: [] }, { background: [] }],
                 [{ list: "ordered" }, { list: "bullet" }],
-                ["link"],
+                [{ indent: "-1" }, { indent: "+1" }],
+                [{ align: [] }],
+                ["blockquote", "code-block"],
+                ["link", "image", "video"],
                 ["clean"],
               ],
             }}
           />
         </Form.Item>
-
-        
 
         <Form.Item>
           <Space>

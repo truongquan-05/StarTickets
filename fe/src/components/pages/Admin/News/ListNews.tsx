@@ -42,6 +42,7 @@ const ListNews = () => {
   const { mutate: deleteMutate } = useDeleteNews({ resource: "tin_tuc" });
   const { mutate: updateMutate } = useUpdateNews({ resource: "tin_tuc" });
   const { mutate: createMutate } = useCreateNews({ resource: "tin_tuc" });
+  
 
   const openEditModal = (record: INews | null) => {
     setEditingItem(record);
@@ -52,7 +53,7 @@ const ListNews = () => {
               uid: "-1",
               name: "image.jpg",
               status: "done",
-              url: `${BASE_URL}${record.hinh_anh}`,
+              url: `${BASE_URL}/storage/${record.hinh_anh}`,
             },
           ]
         : [];
@@ -61,6 +62,7 @@ const ListNews = () => {
         noi_dung: record.noi_dung,
         hinh_anh: initialFileList,
       });
+      
       setPreviewImage(initialFileList);
     } else {
       // Thêm mới
@@ -283,19 +285,24 @@ const ListNews = () => {
             name="noi_dung"
             rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}
           >
-            <ReactQuill
-              theme="snow"
-              style={{ height: "300px", marginBottom: "50px" }}
-              placeholder="Nhập mô tả phim"
-              modules={{
-                toolbar: [
-                  [{ header: [1, 2, 3, false] }],
-                  ["bold", "italic", "underline", "strike"],
-                  [{ list: "ordered" }, { list: "bullet" }],
-                  ["clean"],
-                ],
-              }}
-            />
+             <ReactQuill
+            theme="snow"
+            style={{ height: "350px", marginBottom: "50px" }} // tăng chiều cao
+            modules={{
+              toolbar: [
+                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                [{ size: ["small", "normal", "large", "huge"] }], // dùng size chuẩn
+                ["bold", "italic", "underline", "strike"],
+                [{ color: [] }, { background: [] }],
+                [{ list: "ordered" }, { list: "bullet" }],
+                [{ indent: "-1" }, { indent: "+1" }],
+                [{ align: [] }],
+                ["blockquote", "code-block"],
+                ["link", "image", "video"],
+                ["clean"],
+              ],
+            }}
+          />
           </Form.Item>
 
           <Form.Item
@@ -303,6 +310,7 @@ const ListNews = () => {
             name="hinh_anh"
             valuePropName="fileList"
             getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
+            
           >
             <Upload
               listType="picture"

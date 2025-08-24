@@ -36,6 +36,7 @@ const ListCinemas = () => {
     setIsModalOpen(true);
   };
 
+
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingItem(null);

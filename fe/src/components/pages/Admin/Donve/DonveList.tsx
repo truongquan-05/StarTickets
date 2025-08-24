@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Table,
   Button,
@@ -9,9 +9,9 @@ import {
   Typography,
   Input,
   Dropdown,
-  MenuProps,
   Modal,
   Menu,
+  InputRef,
 } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { getListDonVe } from "../../../provider/duProvider";
@@ -22,8 +22,6 @@ import {
   DownloadOutlined,
   FileExcelOutlined,
   FilePdfOutlined,
-  LogoutOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { DatePicker } from "antd";
@@ -56,6 +54,7 @@ export default function DonVeList() {
       setLoading(false);
     }
   };
+  const searchInput = useRef<InputRef>(null);
 
   // Hàm xuất Excel
   const exportToExcel = (from: any, to: any) => {
@@ -314,23 +313,6 @@ export default function DonVeList() {
   const [openPdf, setOpenPdf] = useState(false);
   const [date, setDate] = useState<any>(null);
 
-  // Menu dropdown cho nút xuất
-  // const exportMenuItems: MenuProps["items"] = [
-
-  // {
-  //   key: "excel",
-  //   label: "Xuất Excel",
-  //   icon: <FileExcelOutlined style={{ color: "#10b981" }} />,
-  //   onClick: () => setOpen(true), // mở modal
-  // },
-  // {
-  //   key: "pdf",
-  //   label: "Xuất PDF",
-  //   icon: <FilePdfOutlined style={{ color: "#ef4444" }} />,
-  //   onClick: () => setOpenPdf(true), // mở modal
-  // },
-  // ];
-
   const accountMenu = (
     <Menu
       className="custom-dropdown-menu"
@@ -438,7 +420,6 @@ export default function DonVeList() {
         : "default";
     return <Tag color={color}>{method || "—"}</Tag>;
   };
-
   const columns = [
     {
       title: "#",
@@ -474,9 +455,64 @@ export default function DonVeList() {
     },
     {
       title: "Rạp",
-      render: (r: any) =>
-        r.dat_ve?.lich_chieu?.phong_chieu?.rap.ten_rap || "CGV Vincom",
       width: 150,
+      render: (r: any) => r.dat_ve?.lich_chieu?.phong_chieu?.rap.ten_rap || "",
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys = [],
+        confirm,
+        clearFilters,
+      }: {
+        setSelectedKeys: (selectedKeys: React.Key[]) => void;
+        selectedKeys: React.Key[];
+        confirm: (param?: { closeDropdown: boolean }) => void;
+        clearFilters?: () => void;
+      }) => (
+        <div
+          style={{
+            padding: 8,
+            background: "#fff",
+            borderRadius: 6,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          }}
+        >
+          <Input
+            ref={searchInput}
+            placeholder="Nhập tên rạp"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm?.()}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="small"
+              onClick={() => confirm?.()}
+              style={{ width: 90 }}
+            >
+              Tìm
+            </Button>
+            <Button
+              size="small"
+              onClick={() => clearFilters?.()}
+              style={{ width: 90 }}
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value:any, record:any) =>
+        record.dat_ve?.lich_chieu?.phong_chieu?.rap.ten_rap
+          ?.toLowerCase()
+          .includes((value as string).toLowerCase()),
+      filterIcon: (filtered:any) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
     },
     {
       title: "Ngày đặt",

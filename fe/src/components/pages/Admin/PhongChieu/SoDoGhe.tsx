@@ -252,10 +252,10 @@ const SoDoGhe: React.FC<SoDoGheProps> = ({
         );
 
         // Nếu có ÍT NHẤT 1 bản ghi khác "trong" → không cho ẩn
-        if (!allTrong) {
-          alert(`Ghế ${soGheLog} đang có người đặt hoặc đã mua, không thể ẩn.`);
-          return;
-        }
+        // if (!allTrong) {
+        //   alert(`Ghế ${soGheLog} đang có người đặt hoặc đã mua, không thể ẩn.`);
+        //   return;
+        // }
         /* allTrong === true  ->  tiếp tục cho ẩn */
       } catch (error) {
         console.error("Lỗi khi kiểm tra trạng thái check_ghe:", error);

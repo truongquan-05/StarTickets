@@ -13,11 +13,13 @@ import {
   Col,
   Row,
   notification,
+  InputRef,
 } from "antd";
 import {
   CloseCircleFilled,
   EyeFilled,
   PlusOutlined,
+  SearchOutlined,
   UnlockOutlined,
 } from "@ant-design/icons";
 
@@ -30,7 +32,7 @@ import {
   useUpdateUser,
 } from "../../hook/duHook";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const { Title } = Typography;
 
@@ -153,6 +155,8 @@ const UserList = () => {
     }
   }, [isModalOpen, editingItem]);
 
+  const searchInput = useRef<InputRef>(null);
+
   // Map vai trò id sang tên để hiển thị trong bảng
   const roleMap = roles.reduce((acc: Record<number, string>, role: any) => {
     acc[role.id] = role.ten_vai_tro;
@@ -189,7 +193,70 @@ const UserList = () => {
       },
     },
 
-    { title: "Email", dataIndex: "email", key: "email" },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      align: "center",
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys = [],
+        confirm,
+        clearFilters,
+      }: {
+        setSelectedKeys: (selectedKeys: React.Key[]) => void;
+        selectedKeys?: React.Key[];
+        confirm?: () => void;
+        clearFilters?: () => void;
+      }) => (
+        <div
+          style={{
+            padding: 8,
+            background: "#fff",
+            borderRadius: 6,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          }}
+        >
+          <Input
+            ref={searchInput}
+            placeholder="Nhập email"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm?.()}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              type="primary"
+              onClick={() => confirm?.()}
+              icon={<SearchOutlined />}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Tìm
+            </Button>
+            <Button
+              onClick={() => clearFilters?.()}
+              size="small"
+              style={{ width: 90 }}
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
+      ),
+      onFilter: (value:any, record:any) =>
+        record.email
+          .toString()
+          .toLowerCase()
+          .includes((value as string).toLowerCase()),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+    },
+
     { title: "SĐT", dataIndex: "so_dien_thoai", key: "so_dien_thoai" },
 
     {
