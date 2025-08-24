@@ -9,7 +9,7 @@ const GioiThieu = () => {
     data: rapListRaw,
     isLoading,
     error,
-  } = useListCinemas({ resource: "rap" });
+  } = useListCinemas({ resource: "client/rap" });
 
   const rapList = Array.isArray(rapListRaw)
     ? rapListRaw
