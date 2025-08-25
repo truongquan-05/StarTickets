@@ -480,7 +480,10 @@ const AddLichChieu = () => {
             <Form.Item
               name="gia_ve"
               label="Giá vé chính"
-              rules={[{ required: true, message: "Vui lòng nhập giá vé" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập giá vé" },
+                { max: 10, message: "Giá nhập tối đa 10 số" },
+              ]}
             >
               <InputNumber<number> // Đã sửa lỗi TypeScript tại đây
                 placeholder="Giá Vé"

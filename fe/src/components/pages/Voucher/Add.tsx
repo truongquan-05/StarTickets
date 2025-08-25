@@ -102,6 +102,7 @@ const AddVoucher = () => {
               name="giam_toi_da"
               rules={[
                 { required: true, message: "Vui lòng nhập giảm tối đa!" },
+                 { max: 10, message: "Giá nhập tối đa 10 số" },
               ]}
             >
               <InputNumber min={0} style={{ width: "100%" }} />
@@ -112,6 +113,7 @@ const AddVoucher = () => {
               name="so_lan_su_dung"
               rules={[
                 { required: true, message: "Vui lòng nhập số lần sử dụng!" },
+                 { max: 10, message: "Giá nhập tối đa 10 số" },
               ]}
             >
               <InputNumber min={0} style={{ width: "100%" }} />
@@ -124,6 +126,7 @@ const AddVoucher = () => {
               name="image"
               rules={[
                 { required: true, message: "Vui lòng nhập đường dẫn ảnh!" },
+                
               ]}
             >
               <Input placeholder="Nhập URL hoặc chuỗi ảnh base64" />
@@ -134,6 +137,7 @@ const AddVoucher = () => {
               name="gia_tri_don_hang_toi_thieu"
               rules={[
                 { required: true, message: "Vui lòng nhập giá trị tối thiểu!" },
+                 { max: 10, message: "Giá nhập tối đa 10 số" },
               ]}
             >
               <InputNumber min={0} style={{ width: "100%" }} />

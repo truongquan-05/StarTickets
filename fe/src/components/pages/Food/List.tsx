@@ -33,6 +33,7 @@ import {
   useDeleteFood,
 } from "../../hook/duHook";
 import { useListCinemas } from "../../hook/hungHook";
+import { max } from "moment";
 
 const { Title } = Typography;
 
@@ -252,8 +253,9 @@ const FoodList = () => {
         clearFilters?: () => void;
       }) => {
         // state tạm giữ lựa chọn
-        const [tempKeys, setTempKeys] =
-          useState<(number | string)[]>(selectedKeys as (string | number)[]);
+        const [tempKeys, setTempKeys] = useState<(number | string)[]>(
+          selectedKeys as (string | number)[]
+        );
 
         return (
           <div
@@ -324,7 +326,7 @@ const FoodList = () => {
           </div>
         );
       },
-      onFilter: (value:any, record:any) => record.rap?.id === value,
+      onFilter: (value: any, record: any) => record.rap?.id === value,
     },
 
     {
@@ -532,7 +534,10 @@ const FoodList = () => {
               <Form.Item
                 label="Giá nhập (VND)"
                 name="gia_nhap"
-                rules={[{ required: true, message: "Vui lòng nhập giá nhập!" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập giá nhập!" },
+                  { max: 10, message: "Giá nhập tối đa 10 số" },
+                ]}
               >
                 <InputNumber min={0} style={{ width: "100%" }} />
               </Form.Item>
@@ -540,7 +545,10 @@ const FoodList = () => {
               <Form.Item
                 label="Giá bán (VND)"
                 name="gia_ban"
-                rules={[{ required: true, message: "Vui lòng nhập giá bán!" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập giá bán!" },
+                  { max: 10, message: "Giá nhập tối đa 10 số" },
+                ]}
               >
                 <InputNumber min={0} style={{ width: "100%" }} />
               </Form.Item>
@@ -550,6 +558,7 @@ const FoodList = () => {
                 name="so_luong_ton"
                 rules={[
                   { required: true, message: "Vui lòng nhập số lượng tồn!" },
+                  { max: 10, message: "Giá nhập tối đa 10 số" },
                 ]}
               >
                 <InputNumber min={0} style={{ width: "100%" }} />
