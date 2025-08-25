@@ -207,8 +207,18 @@ export const getListDonVe = async () => {
   return res.data.data; // ✅ đúng
 };
 
+export const getListDonVeHong = async () => {
+  const res = await axiosClient.get("/admin/don-ve-hong-ghe");
+  return res.data.data; // ✅ đúng
+};
+
 export const getDonVeById = async (id: number | string) => {
   const res = await axiosClient.get(`/admin/don-ve/${id}`);
+  return res.data.data;
+};
+
+export const getDonVeHongById = async (id: number | string) => {
+  const res = await axiosClient.get(`/admin/don-ve-hong/${id}`);
   return res.data.data;
 };
 

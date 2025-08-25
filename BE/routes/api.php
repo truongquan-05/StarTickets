@@ -113,8 +113,11 @@ Route::prefix('admin')->group(function () {
 Route::prefix('admin')->group(function () {
     Route::get('don-ve', [QuanLyDonVeController::class, 'index']);
     Route::get('don-ve/{id}', [QuanLyDonVeController::class, 'show']);
+    Route::get('don-ve-hong/{id}', [QuanLyDonVeController::class, 'showVeHong']);
     Route::post('don-ve/loc', [QuanLyDonVeController::class, 'loc']);
     Route::get('don-ve-phim', [QuanLyDonVeController::class, 'phimCoLichChieu']);
+    Route::get('don-ve-hong-ghe', [QuanLyDonVeController::class, 'GheHong']);
+    Route::put('xu-ly-ve/{id}', [QuanLyDonVeController::class, 'UpdateGheHong']);
 });
 Route::prefix('auth/google')->group(function () {
     Route::get('redirect', [LoginController::class, 'redirect']);
@@ -156,14 +159,14 @@ Route::post('xac-nhan-ma', [QuenMatKhau::class, 'checkMaXacNhan']);
 Route::post('reset-password', [QuenMatKhau::class, 'update']);
 Route::post('add-rap', [NhanVienRap::class, 'store']);
 Route::get("add-rap/{id}", [NhanVienRap::class, 'show']);
-Route::apiResource('admin/profile',Profile::class);
+Route::apiResource('admin/profile', Profile::class);
 Route::get('lay-vaitro/{id}', [VaiTroController::class, 'getVaiTro']);
-Route::get('tong-quan',[DashboardController::class,'index']);
-Route::get('doanh-thu-nam',[DashboardController::class,'DoanhThuNam']);
-Route::get('doanh-thu-phim',[DashboardController::class,'PhimDoanhThuCaoNhat']);
-Route::post('doanh-thu',[DashboardController::class,'DoanhThu']);
-Route::post('thong-ke-ve',[DashboardController::class,'thongKeVe']);
-Route::put('update-danh-gia/{id}',[AdminDanhGiaController::class,'update']);
+Route::get('tong-quan', [DashboardController::class, 'index']);
+Route::get('doanh-thu-nam', [DashboardController::class, 'DoanhThuNam']);
+Route::get('doanh-thu-phim', [DashboardController::class, 'PhimDoanhThuCaoNhat']);
+Route::post('doanh-thu', [DashboardController::class, 'DoanhThu']);
+Route::post('thong-ke-ve', [DashboardController::class, 'thongKeVe']);
+Route::put('update-danh-gia/{id}', [AdminDanhGiaController::class, 'update']);
 
 
 //-------------------CLIENT-------------------//

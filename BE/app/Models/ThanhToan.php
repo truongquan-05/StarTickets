@@ -20,6 +20,7 @@ class ThanhToan extends Model
         'ho_ten',
         'tong_tien_goc',
         'ma_giam_gia_id',
+        'ghe_hong'
 
     ];
     public function nguoiDung()

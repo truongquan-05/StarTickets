@@ -32,6 +32,8 @@ import {
   CarryOutOutlined,
   CloseSquareOutlined,
   LaptopOutlined,
+  ApiOutlined,
+  AccountBookOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import logoStar from "../../../assets/logonho2.png";
@@ -76,7 +78,6 @@ const SideBar: React.FC<SideBarProps> = ({
   const data = localStorage.getItem("user");
   const user = JSON.parse(data || "{}");
   const menu = user.vaitro?.menu;
-  
 
   const menuContent = (
     <Menu
@@ -114,6 +115,17 @@ const SideBar: React.FC<SideBarProps> = ({
         <Menu.Item key="/admin/don-ve" icon={<ShoppingOutlined />}>
           <Link to="/admin/don-ve">Quản Lý Đơn Vé</Link>
         </Menu.Item>
+      )}
+      {(menu == 1 || menu == 3 || menu == 4) && (
+        <Menu.SubMenu
+          key="don-ve"
+          icon={<AccountBookOutlined />}
+          title="Đơn vé"
+        >
+          <Menu.Item key="/admin/don-ve-hong" icon={<ApiOutlined />}>
+            <Link to="/admin/don-ve-hong">Quản Lý Đơn Vé Hỏng</Link>
+          </Menu.Item>
+        </Menu.SubMenu>
       )}
 
       {/* Quản Lý Phim - tất cả có thể xem (menu = 1, 3, 4) */}

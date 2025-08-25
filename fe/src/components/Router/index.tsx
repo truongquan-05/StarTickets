@@ -71,6 +71,8 @@ import ThongKeDoanhThu from "../pages/Admin/ThongKe/ThongKeDoanhThu";
 import DatVeTheoRap from "../pages/Users/DatVe/DatVeTheoRap";
 import NotFound from "../pages/Users/NotFound";
 import GopY from "../pages/Users/GopY";
+import DonVeListHong from "../pages/Admin/Donve/DonVeHong";
+import DetailVeHong from "../pages/Admin/Donve/DetailVeHong";
 
 const Routermain = () => {
   const element = useRoutes([
@@ -132,7 +134,9 @@ const Routermain = () => {
         { path: "banner/trash", element: <TrashBanners /> },
         { path: "banner/het-han", element: <BannerHetHan /> },
         { path: "don-ve", element: <DonVeList /> },
+        { path: "don-ve-hong", element: <DonVeListHong /> },
         { path: "don-ve/:id", element: <DonVeDetail /> },
+        { path: "don-ve-hong/:id", element: <DetailVeHong /> },
         { path: "chair/list", element: <Chair /> },
         { path: "lichchieu/list", element: <LichChieu /> },
         { path: "lichchieucu/list", element: <LichChieuCu /> },

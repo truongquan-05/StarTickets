@@ -11,11 +11,11 @@ use App\Models\Phim;
 
 class QuanLyDonVeController extends Controller
 {
-  public function __construct()
+    public function __construct()
     {
 
         $this->middleware('IsAdmin');
-        $this->middleware('permission:Ve-read')->only(['index', 'show','loc']);
+        $this->middleware('permission:Ve-read')->only(['index', 'show', 'loc']);
         $this->middleware('permission:Ve-create')->only(['store']);
         $this->middleware('permission:Ve-update')->only(['update']);
         $this->middleware('permission:Ve-delete')->only(['destroy']);
@@ -54,6 +54,39 @@ class QuanLyDonVeController extends Controller
             'datVe.DonDoAn',
             'datVe.DonDoAn.DoAn'
         ])->find($id);
+
+        if (!$donVe) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy đơn vé'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $donVe
+        ]);
+    }
+
+
+    public function showVeHong($id)
+    {
+        $donVe = ThanhToan::with([
+            'nguoiDung:id,ten,email,so_dien_thoai',
+            'phuongThuc:id,ten',
+            'datVe:id,lich_chieu_id,tong_tien',
+            'datVe.lichChieu',
+            'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
+            'datVe.DatVeChiTiet.GheDat',
+            'datVe.DonDoAn',
+            'datVe.DonDoAn.DoAn'
+        ])
+            ->where('ghe_hong', false)
+            ->whereHas('datVe.DatVeChiTiet.GheDat', function ($q) {
+                $q->where('trang_thai', false);
+            })
+            ->find($id);
 
         if (!$donVe) {
             return response()->json([
@@ -118,6 +151,54 @@ class QuanLyDonVeController extends Controller
         return response()->json([
             'success' => true,
             'data' => $phim
+        ]);
+    }
+
+    public function GheHong()
+    {
+        $donVe = ThanhToan::with([
+            'nguoiDung:id,ten,email',
+            'phuongThuc:id,ten',
+            'datVe:id,lich_chieu_id,tong_tien',
+            'datVe.lichChieu',
+            'datVe.lichChieu.phim',
+            'datVe.lichChieu.phong_chieu.rap',
+            'datVe.DatVeChiTiet.GheDat'
+        ])
+            ->whereHas('datVe.DatVeChiTiet.GheDat', function ($q) {
+                $q->where('trang_thai', false);
+            })
+            ->where('ghe_hong', false)
+            ->FilterByRap('datVe.lichChieu.phong_chieu.rap')
+            ->latest()
+            ->get();
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $donVe
+        ]);
+    }
+
+    public function UpdateGheHong(Request $request, $id)
+    {
+        $data = $request->all();
+
+        $ThanhToan = ThanhToan::find($id);
+
+        if (!$ThanhToan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy thanh toán'
+            ], 404);
+        }
+
+        $ThanhToan->ghe_hong = $data['trang_thai'] ?? 0;
+        $ThanhToan->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cập nhật thành công'
         ]);
     }
 }
