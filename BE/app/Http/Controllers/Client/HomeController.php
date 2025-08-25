@@ -201,7 +201,9 @@ class HomeController extends Controller
             ->map(function ($item) {
                 $item->the_loai_id = json_decode($item->the_loai_id, true);
                 return $item;
-            });
+            })
+            ->unique('id')   // Giữ lại duy nhất theo id phim
+            ->values();      // Reset lại index (0,1,2,...)
 
         return response()->json($phim);
     }
