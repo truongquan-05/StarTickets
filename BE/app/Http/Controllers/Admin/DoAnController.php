@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\DoAnRequest;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\DatVe;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -35,7 +36,7 @@ class DoAnController extends Controller
         $perPage = $request->input('per_page', 10);
         $items = $query->get();
 
-        return response()->json(['data'=>$items]);
+        return response()->json(['data' => $items]);
     }
 
     public function show($id)
@@ -138,19 +139,33 @@ class DoAnController extends Controller
         }
 
         DB::beginTransaction();
+
         try {
             foreach ($data['items'] as $item) {
+                $DonDoAn = DonDoAn::where('do_an_id', $item['do_an_id'])
+                    ->where('dat_ve_id', $item['dat_ve_id'])->first();
+
                 $doAn = DoAn::findOrFail($item['do_an_id']);
+                $dataDatVe = DatVe::find($item['dat_ve_id']);
                 if ($doAn->so_luong_ton < $item['so_luong']) {
                     return response()->json([
                         'message' => 'Số lượng món ăn không đủ trong kho',
                         'available' => $doAn->so_luong_ton,
                     ], 422);
                 }
-                DonDoAn::create($item);
+                if ($DonDoAn) {
+                    $DonDoAn->so_luong += $item['so_luong'];
+                    $DonDoAn->save();
+                } else {
+                    DonDoAn::create($item);
+                }
+
+
                 $doAn = DoAn::find($item['do_an_id']);
                 $doAn->so_luong_ton -= $item['so_luong'];
                 $doAn->save();
+                $dataDatVe->tong_tien += $item['gia_ban'];
+                $dataDatVe->save();
             }
             DB::commit();
 

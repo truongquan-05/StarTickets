@@ -41,7 +41,7 @@ use App\Http\Controllers\Client\NguoiDungController as ClientNguoiDungController
 use App\Http\Controllers\Client\PhongChieuController as ClientPhongChieuController;
 use App\Http\Controllers\Client\DoAnController as DoAnControllerClient;
 use App\Http\Controllers\Client\QuenMatKhau;
-use App\Models\DanhGia;
+use App\Http\Controllers\Client\TinTucController as ClientTinTucController;
 
 //-------------------ADMIN-------------------//
 
@@ -207,3 +207,4 @@ Route::apiResource('client/phong_chieu', ClientPhongChieuController::class);
 Route::get('/client/rap', [ClientRapController::class, 'index']);
 Route::get('/client/do_an', [DoAnControllerClient::class, 'index']);
 Route::get('/client/rap-phim/{id}', [ClientRapController::class, 'show']);
+Route::get('/client-tin-tuc', [ClientTinTucController::class, 'index']);

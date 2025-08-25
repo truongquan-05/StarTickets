@@ -8,7 +8,7 @@ import "../../../assets/css/tintuc.css"; // Assuming you have a CSS file for sty
 const BASE_URL = "http://127.0.0.1:8000";
 
 const NewsUser: React.FC = () => {
-  const { data, isLoading, isError } = useListNews({ resource: "tin_tuc" });
+  const { data, isLoading, isError } = useListNews({ resource: "client-tin-tuc" });
 
   const newsList: INews[] = data?.data || [];
 
