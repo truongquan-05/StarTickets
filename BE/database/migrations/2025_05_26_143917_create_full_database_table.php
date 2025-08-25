@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('vai_tro', function (Blueprint $table) {
             $table->id();
             $table->string('ten_vai_tro', 50);
-            $table->string('menu',50)->nullable();
+            $table->string('menu', 50)->nullable();
             $table->text('mo_ta')->nullable();
             $table->timestamps();
         });
@@ -95,7 +95,7 @@ return new class extends Migration {
             $table->foreignId('phim_id')->constrained('phim')->onUpdate('cascade')->onDelete('cascade');
             $table->integer('so_sao');
             $table->text('noi_dung');
-             $table->boolean('trang_thai')->default(true);
+            $table->boolean('trang_thai')->default(true);
             $table->timestamps();
         });
 
@@ -163,7 +163,7 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('lich_chieu_id')->constrained('lich_chieu')->onUpdate('cascade')->onDelete('cascade');
             $table->decimal('tong_tien', 10, 2);
-            $table->string('job_id',50)->nullable(); 
+            $table->string('job_id', 50)->nullable();
             $table->timestamps();
         });
 
@@ -199,12 +199,13 @@ return new class extends Migration {
             $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('phuong_thuc_thanh_toan_id')->constrained('phuong_thuc_thanh_toan')->onUpdate('cascade')->onDelete('cascade');
             $table->string('ma_giao_dich', 255)->unique();
-            $table->string('ma_giam_gia_id',50)->nullable();
+            $table->string('ma_giam_gia_id', 50)->nullable();
             $table->decimal('tong_tien_goc', 10, 2)->nullable();
             $table->string('email', 255);
             $table->string('ho_ten', 255);
             $table->text('qr_code')->nullable(); // base64
             $table->boolean('da_quet')->default(false);
+            $table->boolean('ghe_hong')->default(false);
             $table->timestamps();
         });
 

@@ -211,3 +211,4 @@ Route::get('/client/rap', [ClientRapController::class, 'index']);
 Route::get('/client/do_an', [DoAnControllerClient::class, 'index']);
 Route::get('/client/rap-phim/{id}', [ClientRapController::class, 'show']);
 Route::get('/client-tin-tuc', [ClientTinTucController::class, 'index']);
+Route::get('/client-tin-tuc/{id}', [ClientTinTucController::class, 'show']);

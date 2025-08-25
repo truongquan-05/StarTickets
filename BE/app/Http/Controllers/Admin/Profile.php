@@ -37,7 +37,7 @@ class Profile extends Controller
     public function update(Request $request, string $id)
     {
         $dulieu = $request->all();
-        $data = NguoiDung::find($id);
+        $data = NguoiDung::with('vaitro')->find($id);
         if ($request->has('new_password')) {
             if (!Hash::check($request->input('old_password'), $data->password)) {
                 return response()->json([
@@ -83,10 +83,10 @@ class Profile extends Controller
         }
 
         $data->update($dulieu);
-        $user = $data->fresh();
+        $newData = NguoiDung::with('vaitro')->find($id);
         return response()->json([
             'message' => 'Cập nhật thành công',
-            'data' => $user
+            'data' => $newData
 
         ]);
     }

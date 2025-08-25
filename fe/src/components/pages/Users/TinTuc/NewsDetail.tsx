@@ -11,7 +11,7 @@ const NewsDetail = () => {
   const { id } = useParams();
   const { data, isLoading, isError } = useDetailTinTuc({
     id: Number(id),
-    resource: "tin_tuc",
+    resource: "client-tin-tuc",
   });
 
   if (isLoading)

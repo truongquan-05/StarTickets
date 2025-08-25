@@ -57,6 +57,8 @@ const ProfileAdmin = () => {
         setAdmin(res.data.data);
         infoForm.setFieldsValue(res.data.data);
         localStorage.setItem("user", JSON.stringify(res.data.data));
+
+        
       } else {
         const res = await updateAdminProfile(values, user.id);
         setAdmin(res.data.data);

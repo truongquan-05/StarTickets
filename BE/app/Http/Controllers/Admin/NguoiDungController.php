@@ -52,6 +52,7 @@ class NguoiDungController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::guard('sanctum')->user();
         $validatedData = Validator::make($request->all(), [
             'ten' => 'required|string|max:255',
             'email' => 'required|email|unique:nguoi_dung,email|max:255',
@@ -82,6 +83,19 @@ class NguoiDungController extends Controller
             ], 422);
         }
         $data = $request->all();
+        if ($data['vai_tro_id'] == 99) {
+            return response()->json([
+                'message' => 'Không được thêm SuperAdmin',
+                'errors' => $validatedData->errors()
+            ], 422);
+        }
+
+        if($user->vai_tro_id != 99 && $data['vai_tro_id'] == 1){
+             return response()->json([
+                'message' => 'Không có quyền thêm Admin',
+                'errors' => $validatedData->errors()
+            ], 422);
+        }
 
         if ($request->hasFile('anh_dai_dien')) {
             $file = $request->file('anh_dai_dien');
@@ -126,8 +140,11 @@ class NguoiDungController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = Auth::guard('sanctum')->user();
+
         $nguoiDung = NguoiDung::find($id);
 
+        $dataNguoiDung = $request->all();
 
         if ($nguoiDung->google_id && isset($request->trang_thai) && (!$request->trang_thai || $request->trang_thai)) {
             $nguoiDung->trang_thai = $request->trang_thai;
@@ -243,6 +260,9 @@ class NguoiDungController extends Controller
                 'errors' => $validatedData->errors()
             ], 422);
         }
+
+
+
         $anh = $request->input('anh_dai_dien');
         $isUrl = is_string($anh) && (str_starts_with($anh, 'http://') || str_starts_with($anh, 'https://'));
         if (
@@ -251,6 +271,25 @@ class NguoiDungController extends Controller
             $isUrl
         ) {
             Storage::disk('public')->delete($nguoiDung->anh_dai_dien);
+        }
+
+        if ($dataNguoiDung['vai_tro_id'] == 1 && $user->vai_tro_id == 1) {
+            return response()->json([
+                'message' => 'Không có quyền',
+            ], 422);
+        }
+
+         if ($nguoiDung['vai_tro_id'] == 1 && $user->vai_tro_id == 1 && $dataNguoiDung['vai_tro_id'] != 1) {
+            return response()->json([
+                'message' => 'Không có quyền',
+            ], 422);
+        }
+        
+
+        if ($dataNguoiDung['vai_tro_id'] == 99) {
+            return response()->json([
+                'message' => 'Không có quyền',
+            ], 422);
         }
 
         //  Nếu hợp lệ thì cập nhật
