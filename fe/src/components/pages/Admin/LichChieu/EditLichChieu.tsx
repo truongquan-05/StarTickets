@@ -143,6 +143,7 @@ const EditLichChieu = () => {
         gia_ve: values.gia_ve,
         chuyen_ngu_id: values.chuyen_ngu_id,
         gio_ket_thuc: gioKetThucTinh,
+        ly_do: values.ly_do
       };
 
       updateLichChieu(
@@ -153,7 +154,6 @@ const EditLichChieu = () => {
             navigate("/admin/lichchieu/list");
           },
           onError: (error: any) => {
-            navigate("/admin/lichchieu/list");
             message.error(error.response.data.message);
 
             setSubmitting(false);
@@ -269,6 +269,13 @@ const EditLichChieu = () => {
         </Row>
         <Form.Item label="🕓 Giờ kết thúc">
           <Input value={gioKetThucTinh} readOnly />
+        </Form.Item>
+        <Form.Item name="ly_do" label="Lý do rời lịch">
+          <Input
+            style={{ width: "100%" }}
+            min={0}
+            placeholder="Nhập giá vé (vd: 70000)"
+          />
         </Form.Item>
 
         <Form.Item>

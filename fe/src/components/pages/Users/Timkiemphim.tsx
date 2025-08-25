@@ -94,7 +94,7 @@ const TimKiemPhim = () => {
   return (
     <div className="home-wrapper">
       <div className="section section-trangcon">
-        <h2 className="section-title-phimdangchieu">KẾT QUẢ TÌM KIẾM PHIM</h2>
+        <h2 className="section-title-phimdangchieu">KẾT QUẢ LỌC PHIM</h2>
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Spin size="large" />

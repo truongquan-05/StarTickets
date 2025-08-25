@@ -6,11 +6,16 @@ use Carbon\Carbon;
 use App\Models\Phim;
 use App\Models\GiaVe;
 use App\Models\CheckGhe;
+use App\Mail\DoiLichMail;
 use App\Models\ChuyenNgu;
 use App\Models\LichChieu;
+use App\Models\PhongChieu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\PhongChieu;
+use App\Models\DatVe;
+use App\Models\ThanhToan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class LichChieuController extends Controller
@@ -266,6 +271,7 @@ class LichChieuController extends Controller
 
     public function update(Request $request, $id)
     {
+        $user = Auth::guard('sanctum')->user();
         $ve = CheckGhe::where('lich_chieu_id', $id)->get();
         $phim = Phim::find($request->phim_id);
 
@@ -306,14 +312,20 @@ class LichChieuController extends Controller
                 'message' => $validator->errors()
             ], 422);
         }
-
-        foreach ($ve as $item) {
-            if ($item['trang_thai'] == 'da_dat') {
-                return response()->json([
-                    'message' => 'Lịch chiếu này đã có vé được đặt, không thể sửa',
-                ], 422);
+        $checkgiave = GiaVe::where('lich_chieu_id', $id)
+            ->where('loai_ghe_id', 1)
+            ->first();
+        if ($user->vai_tro_id != 1 && $user->vai_tro_id != 99 || $request->get('gia_ve') != $checkgiave->gia_ve) {
+            foreach ($ve as $item) {
+                if ($item['trang_thai'] == 'da_dat') {
+                    return response()->json([
+                        'message' => 'Lịch chiếu này đã có vé được đặt, không thể sửa',
+                        'user' => $checkgiave
+                    ], 422);
+                }
             }
         }
+
 
         foreach ($ve as $item) {
             if ($item['trang_thai'] == 'dang_dat') {
@@ -378,6 +390,41 @@ class LichChieuController extends Controller
 
 
         $data = $request->all();
+        $dataThanhToan = collect();
+
+        // lấy danh sách đặt vé theo lịch chiếu
+        $dataDatVe = DatVe::where('lich_chieu_id', $id)->get();
+
+        foreach ($dataDatVe as $item) {
+            $thanhToan = ThanhToan::where('dat_ve_id', $item->id)->first();
+            if ($thanhToan) { // tránh null
+                $dataThanhToan->push($thanhToan);
+            }
+        }
+
+        // kiểm tra vé
+        foreach ($ve as $item) {
+            if ($item['trang_thai'] == 'da_dat') {
+
+                // nếu giờ chiếu thay đổi
+                if ($data['gio_chieu'] != $lichChieu->gio_chieu) {
+
+                    if (empty($data['ly_do'])) {
+                        return response()->json([
+                            'message' => 'Lý do dời lịch không được để trống',
+                            'data' => $dataThanhToan
+                        ], 422);
+                    }
+
+                    // gửi mail
+                    foreach ($dataThanhToan as $value) {
+                        Mail::to($value->email)
+                            ->send(new DoiLichMail($value->ma_giao_dich, $value->dat_ve_id, $data['ly_do']));
+                    }
+                }
+            }
+        }
+
 
         LichChieu::find($id)->update($data);
 

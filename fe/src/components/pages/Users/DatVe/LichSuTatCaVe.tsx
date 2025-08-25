@@ -414,7 +414,7 @@ const LichSuTatCaVe = () => {
         <div className="ticket-main-info">
           {/* Movie Title */}
           <div className="movie-title-section">
-            <h2 className="movie-title">
+            <h2 className="movie-title" style={{maxWidth: "340px"}}>
               {chiTietData.data.dat_ve.lich_chieu.phim.ten_phim}
             </h2>
             <div className="duration">

@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, DatePicker, message, Popconfirm, Space, Table } from "antd";
+import {
+  Button,
+  DatePicker,
+  Input,
+  message,
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -19,7 +28,11 @@ import {
   getListPhongChieu,
   getListChuyenNgu,
 } from "../../../provider/hungProvider";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 const LichChieu = () => {
@@ -107,6 +120,8 @@ const LichChieu = () => {
     navigate(`/admin/lichchieu/edit/${id}`);
   };
 
+  console.log(rapListData);
+
   const columns: ColumnsType<ILichChieu> = [
     {
       title: "STT",
@@ -119,13 +134,113 @@ const LichChieu = () => {
       dataIndex: "phim_id",
       key: "phim_id",
       render: (phim_id?: number) => getTenPhim(phim_id),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys = [],
+        confirm,
+        clearFilters,
+      }) => (
+        <div
+          style={{
+            padding: 8,
+            background: "#fff",
+            borderRadius: 6,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          }}
+        >
+          <Input
+            placeholder="Nhập tên phim"
+            value={selectedKeys[0]}
+            onChange={(e) =>
+              setSelectedKeys(e.target.value ? [e.target.value] : [])
+            }
+            onPressEnter={() => confirm?.()}
+            style={{ marginBottom: 8, display: "block" }}
+          />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              size="small"
+              onClick={() => confirm?.()}
+              style={{ width: 90 }}
+            >
+              Tìm
+            </Button>
+            <Button
+              size="small"
+              onClick={() => clearFilters?.()}
+              style={{ width: 90 }}
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        getTenPhim(record.phim_id)
+          ?.toLowerCase()
+          .includes((value as string).toLowerCase()),
     },
+
     {
       title: "Rạp",
       dataIndex: "phong_id",
       key: "rap",
       render: (phong_id?: number) => getTenRapTheoPhongId(phong_id),
+      filterDropdown: ({
+        setSelectedKeys,
+        selectedKeys = [],
+        confirm,
+        clearFilters,
+      }) => (
+        <div style={{ padding: 8 }}>
+          <Select
+            mode="multiple"
+            showSearch
+            placeholder="Chọn rạp"
+            value={selectedKeys}
+            onChange={(values) => setSelectedKeys(values)}
+            allowClear
+            style={{ width: 200, marginBottom: 8, display: "block" }}
+          >
+            {rapListData?.map((rap: any) => (
+              <Select.Option key={rap.id} value={rap.ten_rap}>
+                {rap.ten_rap}
+              </Select.Option>
+            ))}
+          </Select>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              type="primary"
+              size="small"
+              onClick={() => confirm?.()}
+              style={{ width: 90 }}
+            >
+              Lọc
+            </Button>
+            <Button
+              size="small"
+              onClick={() => clearFilters?.()}
+              style={{ width: 90 }}
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
+      ),
+      onFilter: (value, record) =>
+        getTenRapTheoPhongId(record.phong_id)
+          ?.toLowerCase()
+          .includes((value as string).toLowerCase()),
     },
+
     {
       title: "Phòng",
       dataIndex: "phong_id",
@@ -169,6 +284,7 @@ const LichChieu = () => {
           : "Không có giá Đơn Thường";
       },
     },
+    
     {
       title: "Thao tác",
       key: "action",

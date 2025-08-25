@@ -8,17 +8,18 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log; // Để bạn vẫn có thể log URL QR
 
-class MaQRVeMail extends Mailable
+class DoiLichMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $ticketData; // Dữ liệu bạn muốn mã QR đại diện VD:Mã đơn hàng
+    public $ticketData; // Dữ liệu bạn muốn mã QR đại diện
     public $subject;
     public $Phim;
     public $Ghe;
     public $DoAn;
     public $GioChieu;
     public $Rap;
+    public $lydo;
 
     /**
      * Create a new message instance.
@@ -26,9 +27,10 @@ class MaQRVeMail extends Mailable
      * @param string $ticketData Dữ liệu để tạo mã QR (ví dụ: ID vé, URL kiểm tra vé)
      * @return void
      */
-    public function __construct($ticketData, $id)
+    public function __construct($ticketData, $id, $lydo)
     {
         $this->ticketData = $ticketData;
+        $this->lydo = $lydo;
         $data =  DatVe::with(['DatVeChiTiet.GheDat', 'DonDoAn.DoAn', 'lichChieu.phim'])
             ->where('id', $id)
             ->first();
@@ -253,6 +255,7 @@ class MaQRVeMail extends Mailable
                 <div class='ticket-container'>
                     <div class='ticket-body'>
                         <div class='info-grid'>
+                         <h1 style='font-size: 15px; font-weight: font-style: italic; 600; padding: 10px 0;'>Vì lý do {$this->lydo}, chúng tôi buộc phải dời lịch chiếu sang ngày khác. Rất mong bạn thông cảm.</h1>
                             <h1 style='font-size: 20px; font-weight: 600; padding: 10px 0;'>THÔNG TIN VÉ</h1>
                             <div class='info-item'>
                                 <div class='info-content'>
